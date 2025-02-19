@@ -1,0 +1,58 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+java {
+    targetCompatibility = JavaVersion.VERSION_17
+    sourceCompatibility = JavaVersion.VERSION_17
+}
+
+dependencies {
+    implementation(project(':core'))
+    implementation 'com.google.code.gson:gson:2.10.1'
+    implementation 'com.squareup.retrofit2:converter-gson:2.1.0'
+}
+
+def mainClassNameParam = 'org.happysanta.gdtralive.GdDesktopApp';
+
+application {
+    mainModule = 'org.happysanta.gdtralive'
+    mainClass = "${mainClassNameParam}"
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': "${mainClassNameParam}"
+    }
+}
+
+//https://stackoverflow.com/questions/77160801/how-can-i-build-the-jar-file-of-my-javafx-application-using-gradle
+task createJar(type: Jar) {
+    dependsOn("build")
+    manifest {
+        attributes 'Main-Class': "${mainClassNameParam}"
+    }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
+
+def os = System.getProperty('os.name').toLowerCase(Locale.ROOT)
+def vmOptions = '\'-XX:+UseZGC\''
+
+
+//https://docs.oracle.com/en/java/javase/17/docs/specs/man/jpackage.html
+task packApp(type: Exec) {
+    dependsOn("build", "createJar")
+    workingDir "$projectDir/build/libs"
+    if (os.contains('windows')) {
+        commandLine 'jpackage', '--input', './', '--name', 'GravityDefied', '--main-jar', 'desktop.jar', '--main-class', "${mainClassNameParam}", '--java-options', "${vmOptions}", '--type', 'exe'
+    } else if (os.contains('mac')){
+        commandLine 'jpackage', '--input', './', '--name', 'GravityDefied', '--main-jar', 'desktop.jar', '--main-class', "${mainClassNameParam}", '--java-options', "${vmOptions}", '--type', 'dmg'
+    } else if (os.contains('linux')){
+        commandLine 'jpackage', '--input', './', '--name', 'GravityDefied', '--main-jar', 'desktop.jar', '--main-class', "${mainClassNameParam}", '--type', 'deb'
+        commandLine 'jpackage', '--input', './', '--name', 'GravityDefied', '--main-jar', 'desktop.jar', '--main-class', "${mainClassNameParam}", '--type', 'rpm'
+    }
+}

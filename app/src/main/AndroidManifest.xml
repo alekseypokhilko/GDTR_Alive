@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+		package="org.happysanta.gdtralive"
+		android:versionCode="29"
+		android:versionName="1.1.1">
+
+	<uses-sdk
+			android:minSdkVersion="8"
+			android:targetSdkVersion="19" />
+
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+	<uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+	<uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+	<uses-permission android:name="android.permission.WAKE_LOCK" />
+	<uses-permission android:name="android.permission.INTERNET" />
+
+	<application
+			android:allowBackup="true"
+			android:icon="@drawable/icon"
+			android:label="@string/app_name"
+			android:theme="@style/AppTheme"
+		    android:requestLegacyExternalStorage="true"
+			android:hardwareAccelerated="true"
+			android:name="org.happysanta.gdtralive.android.GDApplication">
+		<activity
+				android:name="org.happysanta.gdtralive.android.GDActivity"
+				android:label="@string/app_name"
+				android:screenOrientation="portrait"
+				android:configChanges="keyboardHidden"
+				android:launchMode="singleInstance">
+<!--			<intent-filter>-->
+<!--				<action android:name="android.intent.action.SEND"/>-->
+<!--				<category android:name="android.intent.category.DEFAULT"/>-->
+<!--				<data android:mimeType="application/json"/>-->
+<!--			</intent-filter>-->
+
+			<intent-filter android:autoVerify="true">
+				<action android:name="android.intent.action.VIEW" />
+				<category android:name="android.intent.category.DEFAULT" />
+				<data android:mimeType="*/*" />
+				<data android:pathPrefix="/" />
+				<data android:scheme="file" />
+				<data android:scheme="content" />
+			</intent-filter>
+
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+				<action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+				<category android:name="android.intent.category.LAUNCHER" />
+			</intent-filter>
+		</activity>
+	</application>
+</manifest>
