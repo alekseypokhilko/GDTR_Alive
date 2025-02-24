@@ -5,6 +5,7 @@ import static org.happysanta.gdtralive.DesktopGdView.ZOOM;
 import org.happysanta.gdtralive.game.external.GdCanvas;
 import org.happysanta.gdtralive.game.mod.Color;
 import org.happysanta.gdtralive.game.recorder.EngineStateRecord;
+import org.happysanta.gdtralive.game.util.Utils;
 import org.happysanta.gdtralive.game.visual.Sprite;
 import org.happysanta.gdtralive.game.visual.ViewState;
 
@@ -83,10 +84,9 @@ public class DesktopCanvas implements GdCanvas {
     }
 
     private static byte[] readBytes(String path) {
-        DesktopFileStorage storage = new DesktopFileStorage();
         ClassLoader classloader = Thread.currentThread().getContextClassLoader();
         try (InputStream inputStream = classloader.getResourceAsStream(path)) {
-            return storage.readAllBytes(inputStream);
+            return Utils.readAllBytes(inputStream);
         } catch (Exception e) {
             e.printStackTrace();
             return null;

@@ -8,6 +8,10 @@ public class Fmt {
         return String.format("%s: %s", label, name);
     }
 
+    public static String colonNoSpace(String label, String name) {
+        return String.format("%s:%s", label, name);
+    }
+
     public static String colon(String label) {
         return String.format("%s: ", label);
     }
@@ -22,6 +26,10 @@ public class Fmt {
 
     public static String us(String left, String right) {
         return String.format("%s_%s", left, right);
+    }
+
+    public static String dot(String left, String right) {
+        return String.format("%s.%s", left, right);
     }
 
     public static String formatLevelsCount(Mod mod) {

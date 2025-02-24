@@ -55,6 +55,7 @@ import org.happysanta.gdtralive.game.modes.MenuType;
 import org.happysanta.gdtralive.game.recorder.TrackRecord;
 import org.happysanta.gdtralive.game.storage.GDFile;
 import org.happysanta.gdtralive.game.storage.HighScoreManager;
+import org.happysanta.gdtralive.game.util.Utils;
 import org.happysanta.gdtralive.game.visual.SplashScreen;
 import org.happysanta.gdtralive.game.visual.Sprite;
 
@@ -113,7 +114,7 @@ public class GDActivity extends Activity implements GdApplication, Runnable {
 
         this.utils = new AndroidGdUtils();
         this.settings = new AndroidGdSettings();
-        this.fileStorage = new AndroidFileStorage();
+        this.fileStorage = new AndroidFileStorage(this);
         this.dataSource = new AndroidDataSource(this);
         this.highScoreManager = new HighScoreManager(this, dataSource);
         this.menuFactory = new MenuFactory(this);
@@ -426,29 +427,29 @@ public class GDActivity extends Activity implements GdApplication, Runnable {
             try (InputStream inputStream = Helpers.getGDActivity().getContentResolver().openInputStream(uri)) {
                 switch (GDFile.UNDEFINED != typeFromExtension ? typeFromExtension : getType(uri)) { //todo fixme
                     case RECORD:
-                        TrackRecord trackRecord = fileStorage.read(inputStream);
+                        TrackRecord trackRecord = Utils.read(inputStream);
                         MenuScreen recordMenu = menuFactory.get(MenuType.RECORDING_OPTIONS).build(new MenuData(trackRecord));
                         menu.setCurrentMenu(recordMenu);
                         break;
                     case TRACK:
-                        TrackReference track = fileStorage.read(inputStream);
+                        TrackReference track = Utils.read(inputStream);
                         //todo track screen
                         modManager.setTrackProperties(track);
                         game.startTrack(GameParams.of(GameMode.SINGLE_TRACK, track.getData()));
                         break;
                     case MRG:
                         final File file1 = new File(Objects.requireNonNull(uri.getPath()));
-                        Mod mrg = MrgUtils.convertMrg(file1.getName(), fileStorage.readAllBytes(inputStream));
+                        Mod mrg = MrgUtils.convertMrg(file1.getName(), Utils.readAllBytes(inputStream));
                         menu.setCurrentMenu(menuFactory.get(MenuType.MOD_OPTIONS).build(new MenuData(mrg)));
                         break;
                     case MOD:
-                        Mod mod = fileStorage.read(inputStream);
+                        Mod mod = Utils.read(inputStream);
                         modManager.setMod(mod);
                         MenuScreen packMenu = menuFactory.get(MenuType.MOD_OPTIONS).build(new MenuData(mod));
                         menu.setCurrentMenu(packMenu);
                         break;
                     case THEME:
-                        Theme theme = fileStorage.read(inputStream);
+                        Theme theme = Utils.read(inputStream);
 //                        menu.mods.getThemes().themes.add(theme);//todo
                         MenuScreen themeMenu = menuFactory.get(MenuType.THEME_OPTIONS).build(new MenuData(theme));
                         menu.setCurrentMenu(themeMenu);
@@ -460,7 +461,7 @@ public class GDActivity extends Activity implements GdApplication, Runnable {
         } catch (Exception e) {
             e.printStackTrace();
             //todo request permission
-            Helpers.showToast("File loading error:" + e.getMessage());
+            notify("File loading error:" + e.getMessage());
         }
     }
 
@@ -468,7 +469,7 @@ public class GDActivity extends Activity implements GdApplication, Runnable {
         //todo fixme
         String content = null;
         try (InputStream inputStream = Helpers.getGDActivity().getContentResolver().openInputStream(uri)) {
-            content = fileStorage.readContent(inputStream);
+            content = Utils.readContent(inputStream);
         } catch (Exception e) {
             return MRG;
         }

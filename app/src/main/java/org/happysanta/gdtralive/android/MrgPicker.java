@@ -16,6 +16,7 @@ import org.happysanta.gdtralive.game.levels.mrg.MrgUtils;
 import org.happysanta.gdtralive.game.mod.Mod;
 import org.happysanta.gdtralive.game.modes.MenuData;
 import org.happysanta.gdtralive.game.modes.MenuType;
+import org.happysanta.gdtralive.game.util.Utils;
 
 import java.io.File;
 import java.io.InputStream;
@@ -43,7 +44,7 @@ public class MrgPicker {
                             String name = input.getText().toString();
                             final File file1 = new File(Objects.requireNonNull(Uri.fromFile(file).getPath()));
                             try (InputStream in = Helpers.getGDActivity().getContentResolver().openInputStream(Uri.fromFile(file))) {
-                                Mod mod = MrgUtils.convertMrg(name, file1.getName(), new AndroidFileStorage().readAllBytes(in));
+                                Mod mod = MrgUtils.convertMrg(name, file1.getName(), Utils.readAllBytes(in));
                                 gd.menu.setCurrentMenu(gd.getMenuFactory().get(MenuType.MOD_OPTIONS).build(new MenuData(mod)));
                             }
                         } catch (Exception e) {

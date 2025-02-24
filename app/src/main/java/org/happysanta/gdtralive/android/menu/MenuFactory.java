@@ -24,6 +24,7 @@ import org.happysanta.gdtralive.android.menu.element.PropInput;
 import org.happysanta.gdtralive.android.menu.element.TextMenuElement;
 import org.happysanta.gdtralive.android.menu.screens.ClassicPlayMenuState;
 import org.happysanta.gdtralive.game.Achievement;
+import org.happysanta.gdtralive.game.Constants;
 import org.happysanta.gdtralive.game.Game;
 import org.happysanta.gdtralive.game.util.Utils;
 import org.happysanta.gdtralive.game.mod.Mod;
@@ -228,7 +229,7 @@ public class MenuFactory {
                 String packName = mod.getName();
                 application.getModManager().setMod(mod);
                 //game.levelsManager.activateMod(mod);
-                Helpers.showToast(Fmt.colon(s(R.string.mod_activated), packName));
+                application.notify(Fmt.colon(s(R.string.mod_activated), packName));
                 // todo game.getLevelsManager().install(file, name, "", 0);
                 classicPlayMenu.getScreen().setTitle(Fmt.sp(s(R.string.play), packName));
                 classicPlayMenu.resetSelectors();
@@ -285,7 +286,7 @@ public class MenuFactory {
             }));
             s.addItem(new MenuAction(s(R.string.save), -1, menu, item -> {
                 String fileName = Fmt.us(theme.getHeader().getName(), theme.getHeader().getAuthor());
-                new AndroidFileStorage().writeToFile(theme, GDFile.THEME, fileName);
+                application.getFileStorage().writeToFile(theme, GDFile.THEME, fileName);
             }));
             s.addItem(menu.backAction(() -> this.get(MenuType.THEMES).build()));
             return s;
@@ -303,7 +304,7 @@ public class MenuFactory {
             int i = 0;
             //todo refactoring
             try {
-                for (File file : new File(AndroidFileStorage.EXTERNAL_MODS_FOLDER).listFiles()) {
+                for (File file : new File(application.getFileStorage().getModsFolder()).listFiles()) {
                     try {
                         String name = file.getName();
                         packNames.add(name);
@@ -327,12 +328,13 @@ public class MenuFactory {
                     }
                 }
             } catch (Exception e) {
-                e.printStackTrace(); //todo
+                e.printStackTrace();
+                application.notify(e.getMessage());
             }
             try {
                 for (String filename : Objects.requireNonNull(GDActivity.shared.getAssets().list(AndroidFileStorage.ASSETS_MODS_FOLDER))) {
                     try {
-                        String name = filename.replace(".json", "");
+                        String name = filename.replace(Constants.JSON, "");
                         packNames.add(name);
                         String packName = name.substring(name.indexOf("_") + 1);
                         MenuItem options = new MenuItem(packName, this.get(MenuType.MOD_OPTIONS), menu,
@@ -354,7 +356,8 @@ public class MenuFactory {
                     }
                 }
             } catch (IOException e) {
-                e.printStackTrace(); //todo
+                e.printStackTrace();
+                application.notify(e.getMessage());
             }
             return s;
         });
