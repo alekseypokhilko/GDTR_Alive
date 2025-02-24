@@ -1,15 +1,14 @@
 package org.happysanta.gdtralive.game.engine;
 
-
 import org.happysanta.gdtralive.game.Constants;
 import org.happysanta.gdtralive.game.external.GdSettings;
-import org.happysanta.gdtralive.game.external.GdUtils;
 import org.happysanta.gdtralive.game.levels.InvalidTrackException;
 import org.happysanta.gdtralive.game.levels.TrackParams;
 import org.happysanta.gdtralive.game.levels.TrackPhysic;
 import org.happysanta.gdtralive.game.recorder.ElementRecord;
 import org.happysanta.gdtralive.game.recorder.EngineStateRecord;
 import org.happysanta.gdtralive.game.trainer.FullEngineState;
+import org.happysanta.gdtralive.game.util.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +24,6 @@ public class Engine {
     public int selectedPointIndex = 0;
     private EngineStateRecord replayState;
     private EngineStateRecord respawn = null;
-    private final GdUtils utils;
 
     private final TrackPhysic trackPhysic;
     public Element[] elements;
@@ -69,8 +67,7 @@ public class Engine {
     private int delta;
     public int[][] leftWheelParams;
 
-    public Engine(GdUtils utils) {
-        this.utils = utils;
+    public Engine() {
         m_vaI = 0;
         m_waI = 1;
         m_xaI = -1;
@@ -1008,7 +1005,7 @@ public class Engine {
         state.I = m_TI_biker;
         state.L = league;
         state.t = timerTime;
-        state.l = utils.copyArray(leftWheelParams);
+        state.l = Utils.copyArray(leftWheelParams);
         state.X = deltaX;
         state.Y = deltaY;
         state.ft = flagTwitch;
@@ -1016,10 +1013,10 @@ public class Engine {
         state.p = getProgress();
         state.c = String.format(
                 "%s%s%s%s",
-                gasPressed ? 1 : 0,
-                leansBackPressed ? 1 : 0,
-                stopPressed ? 1 : 0,
-                leansForwardPressed ? 1 : 0
+                gasPressed ? "w" : "_",
+                leansBackPressed ? "a" : "_",
+                stopPressed ? "s" : "_",
+                leansForwardPressed ? "d" : "_"
         );
         return state;
     }
@@ -1053,12 +1050,8 @@ public class Engine {
         return trackPhysic;
     }
 
-    public void loadTrack(TrackParams track) { //todo throws InvalidTrackException
-        try {
-            trackPhysic.load(track);
-        } catch (Exception e) {
-            e.printStackTrace(); //todo remove catch
-        }
+    public void loadTrack(TrackParams track) throws InvalidTrackException {
+        trackPhysic.load(track);
     }
 
     public void setDrawBiker(boolean drawBiker) {

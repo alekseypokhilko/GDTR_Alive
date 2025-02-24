@@ -1,16 +1,11 @@
 package org.happysanta.gdtralive.android;
 
-import android.annotation.TargetApi;
-import android.os.Build;
-
 import org.happysanta.gdtralive.R;
 import org.happysanta.gdtralive.game.external.GdUtils;
 import org.happysanta.gdtralive.game.visual.Strings;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class AndroidGdUtils implements GdUtils {
 
@@ -33,16 +28,6 @@ public class AndroidGdUtils implements GdUtils {
         strings.put(Strings.DEVELOPER_DESC, R.string.developer_description);
         strings.put(Strings.BACK_TO_SCHOOL, R.string.back_to_school);
         strings.put(Strings.BACK_TO_SCHOOL_DESC, R.string.back_to_school_description);
-    }
-
-    @TargetApi(Build.VERSION_CODES.N)
-    public int[][] copyArray(int[][] original) {
-        return Arrays.copyOf(original, original.length);
-    }
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public int getRandom(int origin, int bound) {
-        return ThreadLocalRandom.current().nextInt(origin, bound);
     }
 
     public String s(Integer r) {

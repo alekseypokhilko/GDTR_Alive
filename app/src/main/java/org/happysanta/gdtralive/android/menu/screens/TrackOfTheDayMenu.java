@@ -5,9 +5,7 @@ import static org.happysanta.gdtralive.android.Helpers.s;
 import android.text.Html;
 
 import org.happysanta.gdtralive.R;
-import org.happysanta.gdtralive.android.AndroidFileStorage;
 import org.happysanta.gdtralive.android.Helpers;
-import org.happysanta.gdtralive.android.menu.InGameScreenProvider;
 import org.happysanta.gdtralive.android.menu.Menu;
 import org.happysanta.gdtralive.android.menu.MenuScreen;
 import org.happysanta.gdtralive.android.menu.MenuUtils;
@@ -16,17 +14,15 @@ import org.happysanta.gdtralive.android.menu.element.MenuAction;
 import org.happysanta.gdtralive.android.menu.element.TextMenuElement;
 import org.happysanta.gdtralive.game.Game;
 import org.happysanta.gdtralive.game.external.GdApplication;
-import org.happysanta.gdtralive.game.external.GdFileStorage;
 import org.happysanta.gdtralive.game.levels.InvalidTrackException;
 import org.happysanta.gdtralive.game.levels.TrackParams;
 import org.happysanta.gdtralive.game.modes.GameMode;
-import org.happysanta.gdtralive.game.modes.MenuData;
 import org.happysanta.gdtralive.game.modes.GameParams;
 import org.happysanta.gdtralive.game.visual.Fmt;
 
 import java.util.List;
 
-public class TrackOfTheDayMenu implements InGameScreenProvider {
+public class TrackOfTheDayMenu {
     private final GdApplication application;
     private final Menu menu;
     private final Game game;
@@ -53,7 +49,6 @@ public class TrackOfTheDayMenu implements InGameScreenProvider {
         }));
     }
 
-    private final GdFileStorage fileStorage = new AndroidFileStorage();
     public void buildScreen() {
         //todo prepared level files with dates
         String packName = "5b48212c-222d-4b2d-9316-fff5e6804be3_}{ott@bb)4 [10.14.6]";
@@ -63,7 +58,7 @@ public class TrackOfTheDayMenu implements InGameScreenProvider {
         String author = "???";
         TrackParams track = null;
         try {
-            track = fileStorage.getLevelFromPack(packName, trackGuid);
+            track = application.getFileStorage().getLevelFromPack(packName, trackGuid);
             trackName = track.getName();
             author = track.getAuthor();
         } catch (InvalidTrackException e) {
@@ -85,17 +80,6 @@ public class TrackOfTheDayMenu implements InGameScreenProvider {
             //todo replay on click
             screen.addItem(new HighScoreTextMenuElement(score.get(place), place, true));
         }
-    }
-
-    @Override
-    public MenuScreen getInGameScreen(MenuData data) {
-        inGameScreen.resetHighlighted();
-        return inGameScreen;
-    }
-
-    @Override
-    public GameMode getInGameScreenMode() {
-        return GameMode.TRACK_OF_THE_DAY;
     }
 
     public MenuScreen getScreen() {

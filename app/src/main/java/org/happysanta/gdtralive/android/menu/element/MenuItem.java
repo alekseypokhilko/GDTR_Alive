@@ -2,7 +2,7 @@ package org.happysanta.gdtralive.android.menu.element;
 
 import static org.happysanta.gdtralive.android.Helpers.logDebug;
 
-import org.happysanta.gdtralive.android.menu.ActionHandler;
+import org.happysanta.gdtralive.game.util.ActionHandler;
 import org.happysanta.gdtralive.android.menu.MenuHandler;
 import org.happysanta.gdtralive.android.menu.MenuScreen;
 import org.happysanta.gdtralive.game.engine.KeyboardHandler;

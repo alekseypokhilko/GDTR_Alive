@@ -1,6 +1,6 @@
 package org.happysanta.gdtralive.game.visual;
 
-import org.happysanta.gdtralive.game.Utils;
+import org.happysanta.gdtralive.game.util.Utils;
 import org.happysanta.gdtralive.game.engine.Engine;
 import org.happysanta.gdtralive.game.engine.FPMath;
 import org.happysanta.gdtralive.game.external.GdCanvas;

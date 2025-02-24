@@ -1,4 +1,4 @@
-package org.happysanta.gdtralive.game;
+package org.happysanta.gdtralive.game.util;
 
 import com.google.gson.Gson;
 
@@ -7,6 +7,7 @@ import org.happysanta.gdtralive.game.mod.Theme;
 import org.happysanta.gdtralive.game.mod.TrackReference;
 
 import java.util.Arrays;
+import java.util.Random;
 import java.util.UUID;
 
 public class Utils {
@@ -54,6 +55,14 @@ public class Utils {
                 Thread.sleep(l2);
         } catch (InterruptedException ignored) {
         }
+    }
+
+    public static int getRandom(int bound) {
+        return new Random().nextInt(bound);
+    }
+
+    public static int[][] copyArray(int[][] original) {
+        return Arrays.copyOf(original, original.length);
     }
 
     public static int[][] removeElement(int[][] arr, int removedIdx) {

@@ -9,7 +9,7 @@ import android.widget.LinearLayout;
 
 import org.happysanta.gdtralive.android.Global;
 import org.happysanta.gdtralive.android.Helpers;
-import org.happysanta.gdtralive.android.menu.ActionHandler;
+import org.happysanta.gdtralive.game.util.ActionHandler;
 import org.happysanta.gdtralive.android.menu.views.MenuTextView;
 
 public class InputTextElement implements MenuElement {

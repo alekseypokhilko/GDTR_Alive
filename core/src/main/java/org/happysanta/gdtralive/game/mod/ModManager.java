@@ -2,8 +2,8 @@ package org.happysanta.gdtralive.game.mod;
 
 import org.happysanta.gdtralive.game.Constants;
 import org.happysanta.gdtralive.game.external.GdFileStorage;
-import org.happysanta.gdtralive.game.external.GdUtils;
 import org.happysanta.gdtralive.game.levels.TrackParams;
+import org.happysanta.gdtralive.game.util.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,10 +20,7 @@ public class ModManager {
     private TrackReference currentTrack;
     private TrackProperties currentTrackProperties;
 
-    private final GdUtils utils;
-
-    public ModManager(GdFileStorage fileStorage, GdUtils utils) {
-        this.utils = utils;
+    public ModManager(GdFileStorage fileStorage) {
         theme = loadTheme();
         try {
             currentMod = fileStorage.loadMod(Constants.PACK_NAME); //todo handle pack not found
@@ -188,8 +185,8 @@ public class ModManager {
     }
 
     public TrackParams getRandomTrack() {
-        int level = utils.getRandom(0, 3);
-        int track = utils.getRandom(0, currentMod.getLevels().get(level).getTracks().size());
+        int level = Utils.getRandom(currentMod.getLevels().size());
+        int track = Utils.getRandom(currentMod.getLevels().get(level).getTracks().size());
         TrackReference trackReference = currentMod.getLevels().get(level).getTracks().get(track);
         return trackReference.getData();
     }

@@ -15,7 +15,7 @@ import org.happysanta.gdtralive.android.menu.element.InputTextElement;
 import org.happysanta.gdtralive.android.menu.views.MenuImageView;
 import org.happysanta.gdtralive.android.menu.views.MenuLinearLayout;
 import org.happysanta.gdtralive.game.Game;
-import org.happysanta.gdtralive.game.Utils;
+import org.happysanta.gdtralive.game.util.Utils;
 import org.happysanta.gdtralive.game.editor.EditorMode;
 import org.happysanta.gdtralive.game.engine.Engine;
 import org.happysanta.gdtralive.game.external.GdApplication;

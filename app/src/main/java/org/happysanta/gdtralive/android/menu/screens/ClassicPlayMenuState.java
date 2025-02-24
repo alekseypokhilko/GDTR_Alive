@@ -18,7 +18,7 @@ import org.happysanta.gdtralive.android.menu.element.MenuAction;
 import org.happysanta.gdtralive.android.menu.element.MenuItem;
 import org.happysanta.gdtralive.android.menu.element.OptionsMenuElement;
 import org.happysanta.gdtralive.android.menu.element.TextMenuElement;
-import org.happysanta.gdtralive.game.Utils;
+import org.happysanta.gdtralive.game.util.Utils;
 import org.happysanta.gdtralive.game.external.GdApplication;
 import org.happysanta.gdtralive.game.modes.GameMode;
 import org.happysanta.gdtralive.game.modes.MenuData;
@@ -242,6 +242,8 @@ public class ClassicPlayMenuState {
         }
         finishedMenu.addItem(new MenuAction(Fmt.colon(s(R.string.restart), data.getTrackName()), MenuAction.RESTART, menu, item -> menu.menuToGame()));
         finishedMenu.addItem(menu.createAction(MenuAction.PLAY_MENU, item -> actionGoToPlayMenu()));
+        finishedMenu.resetHighlighted();
+        finishedMenu.highlightElement();
         return finishedMenu;
     }
 

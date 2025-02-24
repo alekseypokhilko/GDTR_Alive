@@ -10,7 +10,7 @@ import android.widget.LinearLayout;
 
 import org.happysanta.gdtralive.R;
 import org.happysanta.gdtralive.android.Helpers;
-import org.happysanta.gdtralive.android.menu.ActionHandler;
+import org.happysanta.gdtralive.game.util.ActionHandler;
 import org.happysanta.gdtralive.android.menu.MenuHandler;
 import org.happysanta.gdtralive.android.menu.views.MenuImageView;
 import org.happysanta.gdtralive.android.menu.views.MenuTextView;

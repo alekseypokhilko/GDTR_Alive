@@ -19,6 +19,7 @@ import org.happysanta.gdtralive.game.storage.LevelsManager;
 import org.happysanta.gdtralive.game.storage.ModEntity;
 import org.happysanta.gdtralive.game.storage.Score;
 import org.happysanta.gdtralive.game.trainer.Trainer;
+import org.happysanta.gdtralive.game.util.Utils;
 import org.happysanta.gdtralive.game.visual.FrameRender;
 import org.happysanta.gdtralive.game.visual.GdView;
 import org.happysanta.gdtralive.game.visual.Strings;
@@ -56,7 +57,7 @@ public class Game {
         final FrameRender frameRender = new FrameRender(application.getModManager());
         this.application = application;
         this.levelsManager = new LevelsManager(settings, application.getDataSource());
-        this.engine = new Engine(application.getUtils());
+        this.engine = new Engine();
         try {
             engine.init(settings, application.getModManager().loadLevel(0, 0));
         } catch (InvalidTrackException e) {
@@ -377,7 +378,11 @@ public class Game {
         }
         TrackParams track = params.getTrackParams();
         engine.setEditMode(false);
-        engine.loadTrack(track);
+        try {
+            engine.loadTrack(track);
+        } catch (InvalidTrackException e) {
+            throw new RuntimeException(e); //todo skip damaged track
+        }
         engine.setLeague(track.getLeague());
         engine.unlockKeys();
         view.setDrawTimer(true);

@@ -6,7 +6,6 @@ import android.text.Html;
 
 import org.happysanta.gdtralive.R;
 import org.happysanta.gdtralive.android.Helpers;
-import org.happysanta.gdtralive.android.menu.InGameScreenProvider;
 import org.happysanta.gdtralive.android.menu.Menu;
 import org.happysanta.gdtralive.android.menu.MenuFactory;
 import org.happysanta.gdtralive.android.menu.MenuScreen;
@@ -17,13 +16,12 @@ import org.happysanta.gdtralive.android.menu.element.OptionsMenuElement;
 import org.happysanta.gdtralive.android.menu.element.TextMenuElement;
 import org.happysanta.gdtralive.game.Constants;
 import org.happysanta.gdtralive.game.Game;
-import org.happysanta.gdtralive.game.Utils;
+import org.happysanta.gdtralive.game.util.Utils;
 import org.happysanta.gdtralive.game.external.GdApplication;
 import org.happysanta.gdtralive.game.levels.InvalidTrackException;
 import org.happysanta.gdtralive.game.levels.PackTrackReference;
 import org.happysanta.gdtralive.game.levels.TrackParams;
 import org.happysanta.gdtralive.game.modes.GameMode;
-import org.happysanta.gdtralive.game.modes.MenuData;
 import org.happysanta.gdtralive.game.modes.GameParams;
 import org.happysanta.gdtralive.game.visual.Fmt;
 
@@ -31,7 +29,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class DailyMenu implements InGameScreenProvider {
+public class DailyMenu {
     private final GdApplication application;
     private final Menu menu;
     private final Game game;
@@ -164,18 +162,4 @@ public class DailyMenu implements InGameScreenProvider {
         }
     }
 
-    @Override
-    public MenuScreen getInGameScreen(MenuData data) {
-        inGameScreen.resetHighlighted();
-        return inGameScreen;
-    }
-
-    @Override
-    public GameMode getInGameScreenMode() {
-        return GameMode.DAILY;
-    }
-
-    public MenuScreen getScreen() {
-        return screen;
-    }
 }

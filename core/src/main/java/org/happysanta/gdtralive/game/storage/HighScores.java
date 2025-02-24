@@ -1,6 +1,6 @@
 package org.happysanta.gdtralive.game.storage;
 
-import org.happysanta.gdtralive.game.Utils;
+import org.happysanta.gdtralive.game.util.Utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;

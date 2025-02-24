@@ -1,4 +1,4 @@
-package org.happysanta.gdtralive.android.menu;
+package org.happysanta.gdtralive.game.util;
 
 public interface ActionHandler<T> {
     void handle(T item);

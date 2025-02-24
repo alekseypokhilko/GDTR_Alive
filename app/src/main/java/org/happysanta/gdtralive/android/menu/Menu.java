@@ -15,6 +15,7 @@ import org.happysanta.gdtralive.game.modes.GameMode;
 import org.happysanta.gdtralive.game.modes.MenuData;
 import org.happysanta.gdtralive.game.modes.MenuMode;
 import org.happysanta.gdtralive.game.modes.MenuType;
+import org.happysanta.gdtralive.game.util.ActionHandler;
 
 public class Menu implements GdMenu, MenuHandler {
     private final GdApplication application;

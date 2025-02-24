@@ -25,7 +25,7 @@ import org.happysanta.gdtralive.android.menu.element.TextMenuElement;
 import org.happysanta.gdtralive.android.menu.screens.ClassicPlayMenuState;
 import org.happysanta.gdtralive.game.Achievement;
 import org.happysanta.gdtralive.game.Game;
-import org.happysanta.gdtralive.game.Utils;
+import org.happysanta.gdtralive.game.util.Utils;
 import org.happysanta.gdtralive.game.mod.Mod;
 import org.happysanta.gdtralive.game.mod.Theme;
 import org.happysanta.gdtralive.game.mod.ThemeHeader;
@@ -36,6 +36,8 @@ import org.happysanta.gdtralive.game.modes.MenuType;
 import org.happysanta.gdtralive.game.modes.GameParams;
 import org.happysanta.gdtralive.game.recorder.TrackRecord;
 import org.happysanta.gdtralive.game.storage.GDFile;
+import org.happysanta.gdtralive.game.util.Consumer;
+import org.happysanta.gdtralive.game.util.Function;
 import org.happysanta.gdtralive.game.visual.Fmt;
 
 import java.io.File;

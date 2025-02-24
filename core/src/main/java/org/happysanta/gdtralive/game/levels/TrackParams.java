@@ -1,6 +1,6 @@
 package org.happysanta.gdtralive.game.levels;
 
-import org.happysanta.gdtralive.game.Utils;
+import org.happysanta.gdtralive.game.util.Utils;
 
 import java.io.DataInputStream;
 import java.io.Serializable;

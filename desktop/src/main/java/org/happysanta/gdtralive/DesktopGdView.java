@@ -5,7 +5,6 @@ import org.happysanta.gdtralive.desktop.DesktopFileStorage;
 import org.happysanta.gdtralive.desktop.DesktopGdApplication;
 import org.happysanta.gdtralive.desktop.DesktopGdMenu;
 import org.happysanta.gdtralive.desktop.DesktopGdSettings;
-import org.happysanta.gdtralive.desktop.DesktopGdUtils;
 import org.happysanta.gdtralive.desktop.DesktopKeyboardController;
 import org.happysanta.gdtralive.game.Game;
 import org.happysanta.gdtralive.game.engine.Engine;
@@ -13,7 +12,6 @@ import org.happysanta.gdtralive.game.external.GdApplication;
 import org.happysanta.gdtralive.game.external.GdFileStorage;
 import org.happysanta.gdtralive.game.external.GdMenu;
 import org.happysanta.gdtralive.game.external.GdSettings;
-import org.happysanta.gdtralive.game.external.GdUtils;
 import org.happysanta.gdtralive.game.mod.ModManager;
 import org.happysanta.gdtralive.game.modes.MenuData;
 import org.happysanta.gdtralive.game.trainer.Trainer;
@@ -59,11 +57,10 @@ public class DesktopGdView extends JPanel implements ActionListener, KeyListener
 
 
         this.settings = new DesktopGdSettings();
-        final GdUtils utils = new DesktopGdUtils();
-        modManager = new ModManager(fileStorage, utils);
+        modManager = new ModManager(fileStorage);
         GdApplication gdApplication = new DesktopGdApplication();
         final FrameRender frameRender = new FrameRender(modManager);
-        final Engine engine = new Engine(utils);
+        final Engine engine = new Engine();
         gdView = new GdView(frameRender, engine, width, height);
         menu = new DesktopGdMenu();
 
