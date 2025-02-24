@@ -24,6 +24,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.happysanta.gdtralive.R;
 import org.happysanta.gdtralive.android.menu.KeyboardController;
@@ -519,7 +520,8 @@ public class GDActivity extends Activity implements GdApplication, Runnable {
     }
 
     public void notify(String message) {
-        Helpers.showToast(message);
+        //todo move to application
+        Toast.makeText(Helpers.getGDActivity(), message, Toast.LENGTH_LONG).show();
     }
 
     // @UiThread

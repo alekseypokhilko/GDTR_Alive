@@ -89,7 +89,7 @@ public class DailyMenu {
             String packName = "62feb1e5-b00d-45a1-8bad-6316a4e28e7e_Track 450 (Yaskevich Igor) [150.150.150]";
             tracks = application.getFileStorage().getDailyTracksReferences(packName);
         } catch (Exception e) {
-            Helpers.showToast("File loading error: " + e.getMessage());
+            application.notify("File loading error: " + e.getMessage());
         }
         int dailyTracksCount = tracks.size();
         int completedDailyTracksCount = trackSelector.getUnlockedCount();

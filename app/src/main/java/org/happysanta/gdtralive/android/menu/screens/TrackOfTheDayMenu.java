@@ -5,7 +5,6 @@ import static org.happysanta.gdtralive.android.Helpers.s;
 import android.text.Html;
 
 import org.happysanta.gdtralive.R;
-import org.happysanta.gdtralive.android.Helpers;
 import org.happysanta.gdtralive.android.menu.Menu;
 import org.happysanta.gdtralive.android.menu.MenuScreen;
 import org.happysanta.gdtralive.android.menu.MenuUtils;
@@ -62,7 +61,7 @@ public class TrackOfTheDayMenu {
             trackName = track.getName();
             author = track.getAuthor();
         } catch (InvalidTrackException e) {
-            Helpers.showToast("File loading error: " + e.getMessage());
+            application.notify("File loading error: " + e.getMessage());
         }
         screen.clear();
         screen.addItem(new TextMenuElement(Html.fromHtml(s(R.string.track_of_day_objective))));

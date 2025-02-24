@@ -12,7 +12,6 @@ import android.view.View;
 import org.happysanta.gdtralive.R;
 import org.happysanta.gdtralive.android.AndroidFileStorage;
 import org.happysanta.gdtralive.android.GDActivity;
-import org.happysanta.gdtralive.android.Helpers;
 import org.happysanta.gdtralive.android.MrgPicker;
 import org.happysanta.gdtralive.android.TrackEditorView;
 import org.happysanta.gdtralive.android.menu.element.BadgeWithTextElement;
@@ -26,19 +25,19 @@ import org.happysanta.gdtralive.android.menu.screens.ClassicPlayMenuState;
 import org.happysanta.gdtralive.game.Achievement;
 import org.happysanta.gdtralive.game.Constants;
 import org.happysanta.gdtralive.game.Game;
-import org.happysanta.gdtralive.game.util.Utils;
 import org.happysanta.gdtralive.game.mod.Mod;
 import org.happysanta.gdtralive.game.mod.Theme;
 import org.happysanta.gdtralive.game.mod.ThemeHeader;
 import org.happysanta.gdtralive.game.mod.TrackReference;
 import org.happysanta.gdtralive.game.modes.GameMode;
+import org.happysanta.gdtralive.game.modes.GameParams;
 import org.happysanta.gdtralive.game.modes.MenuData;
 import org.happysanta.gdtralive.game.modes.MenuType;
-import org.happysanta.gdtralive.game.modes.GameParams;
 import org.happysanta.gdtralive.game.recorder.TrackRecord;
 import org.happysanta.gdtralive.game.storage.GDFile;
 import org.happysanta.gdtralive.game.util.Consumer;
 import org.happysanta.gdtralive.game.util.Function;
+import org.happysanta.gdtralive.game.util.Utils;
 import org.happysanta.gdtralive.game.visual.Fmt;
 
 import java.io.File;
@@ -370,7 +369,7 @@ public class MenuFactory {
 //        s.addItem(new MenuItem(s(R.string.daily_challenge), this.get(MenuType.DAILY), menu, __ -> this.get(MenuType.DAILY).build())); //todo
         s.addItem(new MenuItem(s(R.string.play_menu), this.get(MenuType.PLAY_CLASSIC), menu, null));
         s.addItem(new MenuAction(Fmt.ra(s(R.string.random_track)), menu, __ -> game.startTrack(GameParams.of(GameMode.RANDOM, application.getModManager().getRandomTrack()))));
-        s.addItem(new MenuAction(Fmt.ra(s(R.string.tracks)), menu, null));
+        s.addItem(new MenuAction(Fmt.ra(s(R.string.tracks)), menu, __ -> application.notify("Coming soon")));
         s.addItem(new MenuItem(s(R.string.achievements), this.get(MenuType.ACHIEVEMENTS), menu, __ -> this.get(MenuType.ACHIEVEMENTS).build()));
         s.addItem(new MenuItem(s(R.string.recordings), this.get(MenuType.RECORDINGS), menu, __ -> this.get(MenuType.RECORDINGS).build()));
         s.addItem(menu.backAction(game::resetState));
@@ -655,7 +654,7 @@ public class MenuFactory {
         screen.addItem(nameInput);
         screen.addItem(new MenuAction(s(R.string.save), menu, item -> {
             application.getSettings().setPlayerName(nameInput.getText());
-            Helpers.showToast(s(R.string.saved));
+            application.notify(s(R.string.saved));
         }));
         screen.addItem(menu.backAction());
         return screen;

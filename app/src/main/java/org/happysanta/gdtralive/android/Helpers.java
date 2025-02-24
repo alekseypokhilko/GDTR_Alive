@@ -10,7 +10,6 @@ import android.os.Build;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.Log;
-import android.widget.Toast;
 
 import org.happysanta.gdtralive.R;
 import org.happysanta.gdtralive.game.mod.ModManager;
@@ -23,11 +22,6 @@ public class Helpers {
 
     public static ModManager getModManager() {
         return GDActivity.shared.modManager;
-    }
-
-    public static void showToast(String message) {
-        //todo move to application
-        Toast.makeText(Helpers.getGDActivity(), message, Toast.LENGTH_LONG).show();
     }
 
     public static int getDp(int px) {

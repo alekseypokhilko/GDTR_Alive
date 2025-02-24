@@ -1,5 +1,6 @@
 package org.happysanta.gdtralive.game;
 
+import org.happysanta.gdtralive.game.visual.Fmt;
 import org.happysanta.gdtralive.game.visual.Strings;
 
 import java.util.HashMap;
@@ -39,10 +40,10 @@ public class Achievement {
         Type type = Type.fromId(id);
         if (this.level + 1 < type.levels.length) {
             long levelCount = type.levels[this.level + 1];
-            return String.format("%s/%s", count, levelCount);
+            return Fmt.slash(count, levelCount);
         } else {
             long levelCount = type.levels[type.levels.length - 1];
-            return String.format("%s/%s", count, levelCount);
+            return Fmt.slash(count, levelCount);
         }
     }
 

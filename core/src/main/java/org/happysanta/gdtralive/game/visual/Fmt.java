@@ -12,6 +12,10 @@ public class Fmt {
         return String.format("%s:%s", label, name);
     }
 
+    public static String slash(Object left, Object right) {
+        return String.format("%s/%s", left, right);
+    }
+
     public static String colon(String label) {
         return String.format("%s: ", label);
     }

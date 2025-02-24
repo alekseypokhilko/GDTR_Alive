@@ -134,12 +134,13 @@ public class ClassicPlayMenuState {
     public MenuScreen createInGameClassic(Map<MenuType, MenuScreen> r) {
         MenuScreen inGame = new MenuScreen(s(R.string.ingame), r.get(MenuType.PLAY_CLASSIC));
         inGame.addItem(new MenuAction(s(R.string._continue), MenuAction.CONTINUE, menu, item -> application.menuToGame()));
+        inGame.addItem(new MenuAction(Fmt.colon(s(R.string.restart), ""), MenuAction.RESTART, menu, item -> menu.menuToGame()));
         inGame.addItem(new MenuAction(s(R.string.training_mode), menu, item -> {
+            //todo remove Helpers.getGDActivity()
             Helpers.getGDActivity().actionButton.setVisibility(View.VISIBLE);
             application.menuToGame();
         }));
-        inGame.addItem(new MenuAction(Fmt.colon(s(R.string.restart), ""), MenuAction.RESTART, menu, item -> menu.menuToGame()));
-//        inGame.addItem(createAction(ActionMenuElement.LIKE, item -> { }));
+        inGame.addItem(menu.createAction(MenuAction.LIKE, item -> application.notify("Coming soon")));
         inGame.addItem(new MenuItem(s(R.string.options), r.get(MenuType.OPTIONS), menu, null));
         inGame.addItem(new MenuItem(s(R.string.help), r.get(MenuType.HELP), menu, null));
         inGame.addItem(menu.createAction(MenuAction.PLAY_MENU, item -> actionGoToPlayMenu()));
