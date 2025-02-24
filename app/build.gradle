@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId "org.happysanta.gdtralive"
-        minSdkVersion 8
+        minSdkVersion 9
         targetSdkVersion 29
     }
 

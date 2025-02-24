@@ -21,6 +21,7 @@ import org.happysanta.gdtralive.game.levels.InvalidTrackException;
 import org.happysanta.gdtralive.game.levels.TrackParams;
 import org.happysanta.gdtralive.game.modes.GameMode;
 import org.happysanta.gdtralive.game.modes.MenuData;
+import org.happysanta.gdtralive.game.modes.GameParams;
 import org.happysanta.gdtralive.game.visual.Fmt;
 
 import java.util.List;
@@ -74,10 +75,7 @@ public class TrackOfTheDayMenu implements InGameScreenProvider {
         screen.addItem(new TextMenuElement(Html.fromHtml("Track: " + trackName)));
         screen.addItem(new TextMenuElement(Html.fromHtml("Author: " + author)));
         TrackParams finalTrack = track;
-        screen.addItem(new MenuAction(s(R.string.start), menu, it -> {
-            game.startTrack(finalTrack, true);
-            game.setMode(GameMode.TRACK_OF_THE_DAY);
-        }));
+        screen.addItem(new MenuAction(s(R.string.start), menu, __ -> game.startTrack(GameParams.of(GameMode.TRACK_OF_THE_DAY, finalTrack))));
         screen.addItem(menu.backAction());
         screen.addItem(MenuUtils.emptyLine(true));
         screen.addItem(MenuUtils.emptyLine(true));

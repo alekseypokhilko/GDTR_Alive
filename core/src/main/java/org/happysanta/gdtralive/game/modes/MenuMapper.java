@@ -1,34 +1,26 @@
 package org.happysanta.gdtralive.game.modes;
 
-import org.happysanta.gdtralive.game.Game;
 import org.happysanta.gdtralive.game.storage.ModEntity;
 
 public class MenuMapper {
-    private final Game game;
-
-    public MenuMapper(Game game) {
-        this.game = game;
-    }
-
-    public MenuData mapInGameMenuData() {
+    public MenuData mapInGameMenuData(GameParams params) {
         MenuData inGameMenu = new MenuData();
         inGameMenu.setMenuMode(MenuMode.IN_GAME);
-        inGameMenu.setGameMode(game.getMode());
-        inGameMenu.setTrackName(game.getCurrentTrackName());
+        inGameMenu.setGameMode(params.getMode());
+        inGameMenu.setTrackName(params.getTrackParams().name);
         return inGameMenu;
     }
 
-    public MenuData getFinishedMenuData(long lastTrackTime, int selectedLevel, int selectedTrack, int selectedLeague) {
-        ModEntity level = game.getLevelsManager().getCurrentLevel();
+    public MenuData getFinishedMenuData(GameParams params, long lastTrackTime, ModEntity level) {
         MenuData data = new MenuData();
         data.setMenuMode(MenuMode.FINISHED);
-        data.setGameMode(game.getMode());
-        data.setTrackName(game.getCurrentTrackName());
-        data.setTrackGuid(game.getCurrentTrackGuid());
+        data.setGameMode(params.getMode());
+        data.setTrackName(params.getTrackParams().name);
+        data.setTrackGuid(params.getTrackParams().getGuid());
         data.setLastTrackTime(lastTrackTime);
-        data.setSelectedLevel(selectedLevel);
-        data.setSelectedTrack(selectedTrack);
-        data.setSelectedLeague(selectedLeague);
+        data.setSelectedLevel(params.getLevel());
+        data.setSelectedTrack(params.getTrack());
+        data.setSelectedLeague(params.getLeague());
         data.setNewSelectedTrack(level.getSelectedTrack());
         data.setNewSelectedLevel(level.getSelectedLevel());
         data.setNewSelectedLeague(level.getSelectedLeague());

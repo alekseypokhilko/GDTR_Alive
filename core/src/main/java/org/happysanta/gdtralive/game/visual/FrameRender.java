@@ -1,9 +1,9 @@
 package org.happysanta.gdtralive.game.visual;
 
+import org.happysanta.gdtralive.game.Utils;
 import org.happysanta.gdtralive.game.engine.Engine;
 import org.happysanta.gdtralive.game.engine.FPMath;
 import org.happysanta.gdtralive.game.external.GdCanvas;
-import org.happysanta.gdtralive.game.external.GdUtils;
 import org.happysanta.gdtralive.game.mod.Color;
 import org.happysanta.gdtralive.game.mod.ModManager;
 import org.happysanta.gdtralive.game.recorder.EngineStateRecord;
@@ -189,8 +189,8 @@ public class FrameRender {
                 if (state.edit) {
                     setColor(new Color(255, 0, 0));
                     drawLineWheel(
-                            GdUtils.packInt(state.track.points[index][0]),
-                            GdUtils.packInt(state.track.points[index][1]),
+                            Utils.packInt(state.track.points[index][0]),
+                            Utils.packInt(state.track.points[index][1]),
                             state.selectedPointIndex == index ? 8 : 4,
                             view
                     );
@@ -732,6 +732,6 @@ public class FrameRender {
     }
 
     public void drawTimer(long millis, ViewState view) {
-        canvas.drawTimer2(mm().getInterfaceTheme().getTextColor(), GdUtils.getDurationString(millis), view);
+        canvas.drawTimer2(mm().getInterfaceTheme().getTextColor(), Utils.getDurationString(millis), view);
     }
 }

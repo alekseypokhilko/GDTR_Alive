@@ -1,6 +1,6 @@
 package org.happysanta.gdtralive.game.storage;
 
-import org.happysanta.gdtralive.game.external.GdUtils;
+import org.happysanta.gdtralive.game.Utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,7 +28,7 @@ public class HighScores {
                 continue;
             }
             long millis = score.getTime();
-            String time = GdUtils.getDurationString(millis);
+            String time = Utils.getDurationString(millis);
             formattedScores.add("" + i + ". "+ time + " - " + score.getName() + " - " + score.getDate());
             i++;
         }

@@ -2,7 +2,7 @@ package org.happysanta.gdtralive.game.mod;
 
 import org.happysanta.gdtralive.game.Constants;
 import org.happysanta.gdtralive.game.external.GdFileStorage;
-import org.happysanta.gdtralive.game.levels.InvalidTrackException;
+import org.happysanta.gdtralive.game.external.GdUtils;
 import org.happysanta.gdtralive.game.levels.TrackParams;
 
 import java.util.ArrayList;
@@ -20,10 +20,10 @@ public class ModManager {
     private TrackReference currentTrack;
     private TrackProperties currentTrackProperties;
 
-    private final GdFileStorage fileStorage;
+    private final GdUtils utils;
 
-    public ModManager(GdFileStorage fileStorage) {
-        this.fileStorage = fileStorage;
+    public ModManager(GdFileStorage fileStorage, GdUtils utils) {
+        this.utils = utils;
         theme = loadTheme();
         try {
             currentMod = fileStorage.loadMod(Constants.PACK_NAME); //todo handle pack not found
@@ -174,7 +174,7 @@ public class ModManager {
         }
     }
 
-    public TrackParams loadLevel(int levelIndex, int trackIndex) throws InvalidTrackException {
+    public TrackParams loadLevel(int levelIndex, int trackIndex) {
         int index = trackIndex;
         try {
             if (trackIndex >= currentMod.getLevels().get(levelIndex).getTracks().size())
@@ -184,6 +184,13 @@ public class ModManager {
         }
 
         TrackReference trackReference = currentMod.getLevels().get(levelIndex).getTracks().get(index);
+        return trackReference.getData();
+    }
+
+    public TrackParams getRandomTrack() {
+        int level = utils.getRandom(0, 3);
+        int track = utils.getRandom(0, currentMod.getLevels().get(level).getTracks().size());
+        TrackReference trackReference = currentMod.getLevels().get(level).getTracks().get(track);
         return trackReference.getData();
     }
 

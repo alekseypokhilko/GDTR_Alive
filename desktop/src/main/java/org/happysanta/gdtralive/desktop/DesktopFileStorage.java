@@ -4,10 +4,12 @@ import com.google.gson.Gson;
 
 import org.happysanta.gdtralive.game.external.GdFileStorage;
 import org.happysanta.gdtralive.game.levels.InvalidTrackException;
+import org.happysanta.gdtralive.game.levels.PackTrackReference;
 import org.happysanta.gdtralive.game.levels.TrackParams;
 import org.happysanta.gdtralive.game.mod.Mod;
 import org.happysanta.gdtralive.game.mod.PackLevel;
 import org.happysanta.gdtralive.game.mod.TrackReference;
+import org.happysanta.gdtralive.game.recorder.TrackRecord;
 import org.happysanta.gdtralive.game.storage.GDFile;
 
 import java.io.BufferedInputStream;
@@ -19,6 +21,7 @@ import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.URI;
 import java.util.Collection;
+import java.util.List;
 import java.util.regex.Pattern;
 
 public class DesktopFileStorage implements GdFileStorage {
@@ -130,6 +133,21 @@ public class DesktopFileStorage implements GdFileStorage {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public void addRecord(TrackRecord rec) {
+
+    }
+
+    @Override
+    public List<TrackRecord> getAllRecords() {
+        return null;
+    }
+
+    @Override
+    public List<PackTrackReference> getDailyTracksReferences(String packName) throws InvalidTrackException {
+        return null;
     }
 
     private File createFileInDirectory(String subDir, String fileName) {

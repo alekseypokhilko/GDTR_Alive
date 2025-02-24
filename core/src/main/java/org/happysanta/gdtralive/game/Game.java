@@ -4,28 +4,24 @@ import org.happysanta.gdtralive.game.engine.Engine;
 import org.happysanta.gdtralive.game.engine.KeyboardHandler;
 import org.happysanta.gdtralive.game.engine.LevelState;
 import org.happysanta.gdtralive.game.external.GdApplication;
-import org.happysanta.gdtralive.game.external.GdFileStorage;
 import org.happysanta.gdtralive.game.external.GdMenu;
 import org.happysanta.gdtralive.game.external.GdSettings;
 import org.happysanta.gdtralive.game.external.GdUtils;
 import org.happysanta.gdtralive.game.levels.InvalidTrackException;
 import org.happysanta.gdtralive.game.levels.TrackParams;
-import org.happysanta.gdtralive.game.mod.Mod;
-import org.happysanta.gdtralive.game.mod.TrackReference;
 import org.happysanta.gdtralive.game.modes.GameMode;
 import org.happysanta.gdtralive.game.modes.MenuData;
 import org.happysanta.gdtralive.game.modes.MenuMapper;
+import org.happysanta.gdtralive.game.modes.GameParams;
 import org.happysanta.gdtralive.game.recorder.Player;
 import org.happysanta.gdtralive.game.recorder.Recorder;
-import org.happysanta.gdtralive.game.recorder.TrackRecord;
 import org.happysanta.gdtralive.game.storage.LevelsManager;
 import org.happysanta.gdtralive.game.storage.ModEntity;
 import org.happysanta.gdtralive.game.storage.Score;
 import org.happysanta.gdtralive.game.trainer.Trainer;
+import org.happysanta.gdtralive.game.visual.FrameRender;
 import org.happysanta.gdtralive.game.visual.GdView;
 import org.happysanta.gdtralive.game.visual.Strings;
-
-import java.util.List;
 
 public class Game {
     private final Object menuLock = new Object();
@@ -34,7 +30,6 @@ public class Game {
     private final Engine engine;
     private final GdApplication application;
     private final GdSettings settings;
-    private final GdFileStorage fileStorage;
     private final GdUtils utils;
     private final GdView view;
     private GdMenu menu;
@@ -45,14 +40,9 @@ public class Game {
     private final Player player;
     private final Trainer trainer;
     private final KeyboardHandler keyboardHandler;
-
     private final MenuMapper menuMapper;
 
-    private GameMode mode;
-    private int selectedLevel;
-    private int selectedTrack;
-    private int selectedLeague;
-    private boolean singleTrackPlayed;
+    private GameParams params;
     private long startedTime = 0;
     private long finishedTime = 0;
     private long pausedTime = 0;
@@ -60,34 +50,44 @@ public class Game {
     private long lastTrackTime = -1;
     private long delayedRestartAtTime;
 
-    public Game(GdApplication application, GdView view, LevelsManager levelsManager,
-                Engine engine, Player player,
-                GdUtils utils, GdSettings settings, GdFileStorage fileStorage) {
-        this.application = application;
-        this.levelsManager = levelsManager;
-        this.engine = engine;
-        this.view = view;
-        this.recorder = new Recorder(engine, fileStorage, settings);
-        this.player = player;
-        this.trainer = new Trainer(engine, view, utils);
-        this.keyboardHandler = new KeyboardHandler(application, engine, settings.getInputOption());
-        this.utils = utils;
-        this.settings = settings;
-        this.fileStorage = fileStorage;
-        this.menuMapper = new MenuMapper(this);
+    public Game(GdApplication application, int width, int height) {
+        GdSettings settings = application.getSettings();
 
-        //post construct
-        this.player.setRestartMethod(() -> restart(true));
+        final FrameRender frameRender = new FrameRender(application.getModManager());
+        this.application = application;
+        this.levelsManager = new LevelsManager(settings, application.getDataSource());
+        this.engine = new Engine(application.getUtils());
+        try {
+            engine.init(settings, application.getModManager().loadLevel(0, 0));
+        } catch (InvalidTrackException e) {
+            try {
+                engine.init(settings, Utils.trackTemplate(settings.getPlayerName()));
+            } catch (InvalidTrackException ignore) {
+            }
+        }
+        this.view = new GdView(frameRender, engine, width, height);
+        this.recorder = new Recorder(engine, application.getFileStorage(), settings);
+        this.player = new Player(engine, () -> restart(true));
+        this.trainer = new Trainer(engine, view, application.getUtils());
+        this.keyboardHandler = new KeyboardHandler(application, engine, settings.getInputOption());
+        this.utils = application.getUtils();
+        this.settings = settings;
+        this.menuMapper = new MenuMapper();
 
 //        view.adjustDimensions(true); //todo move
     }
 
-    public void setMenu(GdMenu menu) {
+    public void init(GdMenu menu) {
         this.menu = menu;
         keyboardHandler.setMenu(menu);
     }
 
     public void gameLoop() {
+        restart(false);
+        menu.showMenu(MenuData.mainMenu());
+        if (menu.canStartTrack()) {
+            restart(true);
+        }
         while (application.isAlive()) {
             tick();
             if (!application.isAlive()) {
@@ -106,7 +106,7 @@ public class Game {
         long currentTimeMillis = System.currentTimeMillis();
 
         if (application.isMenuShown()) {
-            MenuData inGameMenu = menuMapper.mapInGameMenuData();
+            MenuData inGameMenu = menuMapper.mapInGameMenuData(params);
             menu.showMenu(inGameMenu);
             if (menu.canStartTrack()) {
                 restart(true);
@@ -115,7 +115,7 @@ public class Game {
 
         for (int i1 = settings.getGameSpeed(); i1 > 0; i1--) {
             captureOrPlay();
-            engine.timerTime = calculateTimerTime(startedTime, finishedTime, pausedTime, currentTimeMillis);
+            engine.timerTime = Utils.calculateTimerTime(startedTime, finishedTime, pausedTime, currentTimeMillis);
             LevelState levelState = engine.getLevelState();
             if (LevelState.CRASHED_IN_AIR == levelState && delayedRestartAtTime == 0L) {
                 trainer.onCrash(() -> {
@@ -135,7 +135,7 @@ public class Game {
                     recorder.stopCapture();
                     finishedTime = currentTimeMillis;
                     view.showInfoMessage(utils.s(Strings.CRASHED), 3000);
-                    waitRestart(delayedRestartAtTime, currentTimeMillis);
+                    Utils.waitRestart(delayedRestartAtTime, currentTimeMillis);
                     restart(true);
                 });
             } else if (LevelState.START_NOT_CROSSED == levelState) {
@@ -146,7 +146,7 @@ public class Game {
                 finishedTime = currentTimeMillis;
                 lastTrackTime = (finishedTime - startedTime);
                 saveScore(lastTrackTime);
-                if (GameMode.RANDOM.equals(mode)) {
+                if (GameMode.RANDOM.equals(params.getMode())) {
                     Achievement.achievements.get(Achievement.Type.GAMBLER).increment();
                 }
                 if (recorder.isCapturingMode()) {
@@ -155,10 +155,8 @@ public class Game {
                 trainer.stop();
                 goalLoop();
 
-                updateSelectors(); //todo fix
-                MenuData finishedMenu = menuMapper.getFinishedMenuData(
-                        lastTrackTime, selectedLevel, selectedTrack, selectedLeague
-                );
+                updateSelectors(params, getLevelsManager().getCurrentLevel()); //todo fix
+                MenuData finishedMenu = menuMapper.getFinishedMenuData(params, lastTrackTime, levelsManager.getCurrentLevel());
                 menu.showMenu(finishedMenu);
 
                 if (menu.canStartTrack()) {
@@ -190,15 +188,15 @@ public class Game {
                     }
                 }
             }
-            if (player.isReplayMode()) {
-                player.replay();
+            if (params != null && GameMode.REPLAY == params.getMode()) {
+                player.replay(params.getMode());
                 try {
                     synchronized (menuLock) {
                         menuLock.wait(Constants.WAIT_TIME);
                     }
                 } catch (InterruptedException ignored) {
                 }
-            } else if (engine != null && engine.isKeyLocked()) {
+            } else if (engine.isKeyLocked()) {
                 LevelState j1 = engine.getLevelState();
                 if (j1 != LevelState.IN_PROCESS && j1 != LevelState.START_NOT_CROSSED) {
                     try {
@@ -220,34 +218,33 @@ public class Game {
     }
 
     //todo test and fix
-    private void updateSelectors() {
-        if (GameMode.CLASSIC != mode) {
+    private void updateSelectors(GameParams params, ModEntity level) {
+        if (GameMode.CLASSIC != params.getMode()) {
             return;
         }
-        ModEntity level = getLevelsManager().getCurrentLevel();
-        if (selectedTrack + 1 < level.getTracksCount(selectedLevel)) {
-            level.setUnlockedTracks(selectedLevel, selectedTrack + 1);
-            level.setSelectedTrack(selectedTrack + 1);
+        if (params.getTrack() + 1 < level.getTracksCount(params.getLevel())) {
+            level.setUnlockedTracks(params.getLevel(),  params.getTrack() + 1);
+            level.setSelectedTrack(params.getTrack() + 1);
         } else {
-            level.setUnlockedTracks(selectedLevel, selectedTrack + 1);
-            level.setSelectedTrack(selectedTrack + 1);
-            int newUnlocked = level.getUnlockedTracksCount(selectedLevel) + 1;
-            int tracksCount = level.getTracksCount(selectedLevel);
+            level.setUnlockedTracks(params.getLevel(),  params.getTrack() + 1);
+            level.setSelectedTrack(params.getTrack() + 1);
+            int newUnlocked = level.getUnlockedTracksCount(params.getLevel()) + 1;
+            int tracksCount = level.getTracksCount(params.getLevel());
             if (newUnlocked > tracksCount)
                 newUnlocked = tracksCount;
             int unlockedTrack = newUnlocked;
-            level.setUnlockedTracks(selectedLevel, unlockedTrack);
+            level.setUnlockedTracks(params.getLevel(),  unlockedTrack);
             level.setSelectedTrack(unlockedTrack);
 
             int unlockedLevels = level.getUnlockedLevels();
-            int newSelectedLevel = selectedLevel + 1;
+            int newSelectedLevel = params.getLevel() + 1;
             if (newSelectedLevel < application.getModManager().getLevelsCount() && newSelectedLevel == unlockedLevels - 1) {
-                level.setUnlockedLevels(Math.min(newSelectedLevel, application.getModManager().getLevelsCount()));
+                level.setUnlockedLevels(Math.min(newSelectedLevel,  application.getModManager().getLevelsCount()));
                 level.setSelectedLevel(newSelectedLevel);
-                level.setUnlockedTracks(newSelectedLevel, Math.max(0, level.getUnlockedTracksCount(newSelectedLevel)));
+                level.setUnlockedTracks(newSelectedLevel,  Math.max(0, level.getUnlockedTracksCount(newSelectedLevel)));
                 level.setSelectedTrack(0);
             }
-            int newSelectedLeague = selectedLeague + 1;
+            int newSelectedLeague = params.getLeague() + 1;
             if (newSelectedLeague < Engine.leagueProperties.size() && newSelectedLeague == unlockedLevels - 1) {
                 level.setUnlockedLeagues(Math.min(level.getUnlockedLeagues() + 1, Engine.leagueProperties.size()));
                 level.setSelectedLeague(newSelectedLeague);
@@ -257,7 +254,7 @@ public class Game {
     }
 
     private void captureOrPlay() {
-        if (!player.isReplayMode()) {
+        if (GameMode.REPLAY != params.getMode()) {
             if (recorder.isCapturing()) {
                 recorder.captureState();
             } else {
@@ -267,7 +264,7 @@ public class Game {
         } else {
             recorder.setCapturingMode(false);
             trainer.stop();
-            player.replay();
+            player.replay(params.getMode());
         }
     }
 
@@ -280,7 +277,8 @@ public class Game {
         delayedRestartAtTime = 0;
         if (showLevelName)
             view.showInfoMessage(engine.getTrackPhysic().getTrack().name, 3000);
-        resetControls();
+        engine.resetControls();
+        keyboardHandler.resetButtonsTouch();
         trainer.prepare();
     }
 
@@ -318,7 +316,7 @@ public class Game {
             long l;
             if ((l = System.currentTimeMillis()) - l1 < 30L) {
                 try {
-                    synchronized (this) {
+                    synchronized (this) { //check
                         wait(Math.max(30L - (l - l1), 1L));
                     }
                 } catch (InterruptedException ignored) {
@@ -338,168 +336,63 @@ public class Game {
         }
     }
 
-    public static long calculateTimerTime(long startedTime, long finishedTime,
-                                          long pausedTime, long currentTimeMillis) {
-        if (startedTime > 0) {
-            long finished;
-            if (finishedTime > 0)
-                finished = finishedTime;
-            else
-                finished = currentTimeMillis;
-            return (finished - startedTime - pausedTime);
-        }
-        return 0;
-    }
-
     private void saveScore(long lastTrackTime) {
         Score score = new Score();
-        score.setLevelGuid(getCurrentTrackGuid());
-        score.setLeague(getSelectedLeague());
+        score.setLevelGuid(params.getTrackParams().getGuid());
+        score.setLeague(params.getLeague());
         score.setTime(lastTrackTime);
         score.setName(settings.getPlayerName());
         application.getHighScoreManager().saveHighScore(score);
         Achievement.achievements.get(Achievement.Type.TRIAL_MASTER).increment();
     }
 
-    private void resetControls() {
-        engine.resetControls();
-        keyboardHandler.resetButtonsTouch();
-    }
-
-    private void waitRestart(long delayedRestartAtTime, long currentTimeMillis) {
-        try {
-            long l2 = 1000L;
-            if (delayedRestartAtTime > 0L)
-                l2 = Math.min(delayedRestartAtTime - currentTimeMillis, 1000L);
-            if (l2 > 0L)
-                Thread.sleep(l2);
-        } catch (InterruptedException ignored) {
-        }
-    }
-
     public LevelsManager getLevelsManager() {
         return levelsManager;
     }
 
-    public String getCurrentTrackGuid() {
-        return engine.getTrackPhysic().track.getGuid();
+    public GdView getView() {
+        return view;
     }
 
-    public String getCurrentTrackName() {
-        return engine.getTrackPhysic().getTrack().name;
+    public Engine getEngine() {
+        return engine;
     }
 
-    public void setTrack(TrackParams track) {
-        try {
-            engine.loadTrack(track);
-        } catch (Exception e) {
-            throw new RuntimeException(e); //todo
+    public void startTrack(GameParams params) {
+        this.params = params;
+        if (GameMode.REPLAY == params.getMode()) {
+            player.reset(); //todo check
+            player.setTrackRecord(params.getTrackRecord());
+            Achievement.achievements.get(Achievement.Type.SERIES_LOVER).increment();
+        } else {
+            recorder.setCapturingMode(true);
         }
-    }
-
-    public int getSelectedLevel() {
-        return selectedLevel;
-    }
-
-    public int getSelectedTrack() {
-        return selectedTrack;
-    }
-
-    public long getLastTrackTime() { //todo remove
-        return lastTrackTime;
-    }
-
-    public int getSelectedLeague() {
-        return selectedLeague;
-    }
-
-    public boolean isSingleTrackPlayed() {
-        return singleTrackPlayed;
-    }
-
-    public GameMode getMode() {
-        return mode;
-    }
-
-    public void setMode(GameMode mode) {
-        this.mode = mode;
-    }
-
-    public void startRandomTrack(Mod mod) {
-        int level = utils.getRandom(0, 3);
-        int track = utils.getRandom(0, mod.getLevels().get(level).getTracks().size());
-        TrackReference trackReference = mod.getLevels().get(level).getTracks().get(track);
-        TrackParams data = trackReference.getData();
-        if (data == null) {
-            //todo load track by guid or next
+        if (GameMode.TRACK_EDITOR == params.getMode()) {
+            restart(false);
+            recorder.setCapturingMode(false);
+            recorder.reset();
+            engine.setEditMode(true);
+            view.setDrawTimer(false);
+            return;
         }
-        this.selectedLevel = level;
-        this.selectedLeague = level;
-        this.selectedTrack = track;
-        this.singleTrackPlayed = true;
-        this.mode = GameMode.RANDOM;
-        engine.loadTrack(data);
-        engine.setLeague(selectedLeague);
-        engine.unlockKeys();
-        menu.menuToGame();
-    }
-
-    public void startTrack(int league, int level, int track, boolean single) {
-        this.selectedLevel = level;
-        this.selectedLeague = league;
-        this.selectedTrack = track;
-        this.singleTrackPlayed = single;
-        this.setMode(GameMode.CLASSIC);
-        try {
-            TrackParams trackParams = application.getModManager().loadLevel(selectedLevel, selectedTrack);
-            engine.loadTrack(trackParams);
-        } catch (InvalidTrackException e) {
-            //todo menu.skipDamagedTrack();
-        }
-        engine.setLeague(selectedLeague);
-        engine.unlockKeys();
-        menu.menuToGame();
-    }
-
-    public void startTrack(TrackParams track, boolean single) {
+        TrackParams track = params.getTrackParams();
+        engine.setEditMode(false);
         engine.loadTrack(track);
         engine.setLeague(track.getLeague());
         engine.unlockKeys();
-        this.selectedLeague = track.getLeague();
-        this.singleTrackPlayed = single;
+        view.setDrawTimer(true);
         menu.menuToGame();
     }
 
-    public void startTrack(TrackParams track, int league, boolean single) {
-        engine.loadTrack(track);
-        engine.setLeague(league);
-        engine.unlockKeys();
-        this.selectedLeague = league;
-        this.singleTrackPlayed = single;
-        menu.menuToGame();
-    }
-
-    public void startTrack(String packName, String trackGuid, boolean single) {
-        try {
-            startTrack(fileStorage.getLevelFromPack(packName, trackGuid), single);
-        } catch (InvalidTrackException e) {
-            application.notify("File loading error: " + e.getMessage());
+    public void startAutoplay(boolean resetPlayer) {
+        if (resetPlayer) {
+            player.reset();
         }
-    }
-
-    public void startRandomTrack(List<String> modsNames) {
-        String packName = modsNames.get(utils.getRandom(0, modsNames.size()));
-        try {
-            Mod mod = fileStorage.loadMod(packName);
-            startRandomTrack(mod);
-            setMode(GameMode.RANDOM);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void startAutoplay() {
         engine.startAutoplay();
+    }
+
+    public void showInfoMessage(String message, int time) {
+        view.showInfoMessage(message, time);
     }
 
     // ======= settings =======
@@ -534,23 +427,8 @@ public class Game {
     }
     // ======= settings =======
 
-    public void setShowTimer(boolean draw) {
-        view.setDrawTimer(draw);
-    }
-
     public void pause() {
         pausedTimeStarted = System.currentTimeMillis();
-    }
-
-    public Player getPlayer() {
-        return player;
-    }
-
-    public void startReplay(TrackRecord rec) {
-        player.setTrackRecord(rec);
-        player.setReplayMode(true);
-        startTrack(rec.getTrack(), true);
-        Achievement.achievements.get(Achievement.Type.SERIES_LOVER).increment();
     }
 
     public void handleSetSavepointAction() {
@@ -561,10 +439,6 @@ public class Game {
         trainer.stop();
         recorder.reset();
         player.reset();
-    }
-
-    public Recorder getRecorder() {
-        return recorder;
     }
 
     public KeyboardHandler getKeyboardHandler() {

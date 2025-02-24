@@ -37,7 +37,6 @@ import org.happysanta.gdtralive.android.menu.views.MenuTitleLinearLayout;
 import org.happysanta.gdtralive.android.menu.views.ObservableScrollView;
 import org.happysanta.gdtralive.game.Constants;
 import org.happysanta.gdtralive.game.Game;
-import org.happysanta.gdtralive.game.engine.Engine;
 import org.happysanta.gdtralive.game.external.GdApplication;
 import org.happysanta.gdtralive.game.external.GdDataSource;
 import org.happysanta.gdtralive.game.external.GdFileStorage;
@@ -49,16 +48,14 @@ import org.happysanta.gdtralive.game.mod.Mod;
 import org.happysanta.gdtralive.game.mod.ModManager;
 import org.happysanta.gdtralive.game.mod.Theme;
 import org.happysanta.gdtralive.game.mod.TrackReference;
+import org.happysanta.gdtralive.game.modes.GameMode;
+import org.happysanta.gdtralive.game.modes.GameParams;
 import org.happysanta.gdtralive.game.modes.MenuData;
 import org.happysanta.gdtralive.game.modes.MenuType;
-import org.happysanta.gdtralive.game.recorder.Player;
 import org.happysanta.gdtralive.game.recorder.TrackRecord;
 import org.happysanta.gdtralive.game.storage.GDFile;
 import org.happysanta.gdtralive.game.storage.HighScoreManager;
-import org.happysanta.gdtralive.game.storage.LevelsManager;
-import org.happysanta.gdtralive.game.visual.FrameRender;
-import org.happysanta.gdtralive.game.visual.GdView;
-import org.happysanta.gdtralive.game.visual.LoadingState;
+import org.happysanta.gdtralive.game.visual.SplashScreen;
 import org.happysanta.gdtralive.game.visual.Sprite;
 
 import java.io.File;
@@ -83,7 +80,6 @@ public class GDActivity extends Activity implements GdApplication, Runnable {
     private GdUtils utils;
     private HighScoreManager highScoreManager;
 
-    private int m_longI = 0;
     public List<EditText> textInputs = new ArrayList<>();
 
     private boolean wasPaused = false;
@@ -115,13 +111,14 @@ public class GDActivity extends Activity implements GdApplication, Runnable {
 
         shared = this;
 
+        this.utils = new AndroidGdUtils();
         this.settings = new AndroidGdSettings();
         this.fileStorage = new AndroidFileStorage();
         this.dataSource = new AndroidDataSource(this);
         this.highScoreManager = new HighScoreManager(this, dataSource);
         this.menuFactory = new MenuFactory(this);
 
-        this.modManager = new ModManager(fileStorage);
+        this.modManager = new ModManager(fileStorage, utils);
 
         //todo
         modManager.getGameTheme().setProp("density", Helpers.getGDActivity().getResources().getDisplayMetrics().density);
@@ -341,30 +338,20 @@ public class GDActivity extends Activity implements GdApplication, Runnable {
             try {
                 MenuHelmetView.clearStaticFields();
 
-                final FrameRender frameRender = new FrameRender(modManager);
-                utils = new AndroidGdUtils();
-
-                final Engine engine = new Engine(utils);
-                engine.init(settings, modManager.loadLevel(0, 0));
-                final GdView gdView = new GdView(frameRender, engine, gameView.getGdWidth(), gameView.getGdHeight());
-                final LevelsManager levelsManager = new LevelsManager(settings, dataSource);
-                final Player player = new Player(engine);
-
-                game = new Game(
-                        this, gdView, levelsManager, engine,
-                        player, utils, settings, fileStorage
-                );
+                int width = gameView.getGdWidth();
+                int height = gameView.getGdHeight();
+                game = new Game(this, width, height);
 
 
-                gameView.setGdView(gdView);
+                gameView.setGdView(game.getView());
                 keyboardController.setKeyboardHandler(game.getKeyboardHandler());
 
                 menu = new Menu(this, menuFactory);
-                game.setMenu(menu);
-                trackEditor.init(game, engine, menu, gdView, settings);
+                game.init(menu);
+                trackEditor.init(game, settings);
                 menuFactory.init(menu);
 
-                showSplashScreens(gdView);
+                new SplashScreen().showSplashScreens(game.getView());
                 inited = true;
             } catch (Exception _ex) {
                 _ex.printStackTrace();
@@ -372,44 +359,9 @@ public class GDActivity extends Activity implements GdApplication, Runnable {
             }
         }
 
-        game.restart(false);
-        menu.showMenu(MenuData.mainMenu());
-        if (menu.canStartTrack())
-            game.restart(true);
-
         Helpers.logDebug("start main loop");
         game.gameLoop();
         destroyApp(false);
-    }
-
-    private void showSplashScreens(GdView gdView) {
-        long l2;
-        long imageDelay = Constants.IMAGES_DELAY;
-        for (; imageDelay > 0L; imageDelay -= l2)
-            l2 = _avJ();
-
-        imageDelay = Constants.IMAGES_DELAY;
-        gdView.setLoadingState(LoadingState.SPLASH2);
-        long l3;
-        for (long l4 = imageDelay; l4 > 0L; l4 -= l3)
-            l3 = _avJ();
-
-        while (m_longI < 10)
-            _avJ();
-        gdView.setLoadingState(null);
-    }
-
-    private long _avJ() {
-        m_longI++;
-        long l = System.currentTimeMillis();
-        if (m_longI < 1 || m_longI > 10) { // maybe < 1 not needed?
-            m_longI--;
-            try {
-                Thread.sleep(100L);
-            } catch (InterruptedException ignored) {
-            }
-        }
-        return System.currentTimeMillis() - l;
     }
 
     @Override
@@ -482,7 +434,7 @@ public class GDActivity extends Activity implements GdApplication, Runnable {
                         TrackReference track = fileStorage.read(inputStream);
                         //todo track screen
                         modManager.setTrackProperties(track);
-                        game.startTrack(track.getData(), true);
+                        game.startTrack(GameParams.of(GameMode.SINGLE_TRACK, track.getData()));
                         break;
                     case MRG:
                         final File file1 = new File(Objects.requireNonNull(uri.getPath()));
@@ -630,6 +582,11 @@ public class GDActivity extends Activity implements GdApplication, Runnable {
     @Override
     public GdFileStorage getFileStorage() {
         return fileStorage;
+    }
+
+    @Override
+    public GdDataSource getDataSource() {
+        return dataSource;
     }
 
     public MenuFactory getMenuFactory() {

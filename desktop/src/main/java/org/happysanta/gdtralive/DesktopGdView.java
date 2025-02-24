@@ -3,7 +3,6 @@ package org.happysanta.gdtralive;
 import org.happysanta.gdtralive.desktop.DesktopCanvas;
 import org.happysanta.gdtralive.desktop.DesktopFileStorage;
 import org.happysanta.gdtralive.desktop.DesktopGdApplication;
-import org.happysanta.gdtralive.desktop.DesktopGdDataSource;
 import org.happysanta.gdtralive.desktop.DesktopGdMenu;
 import org.happysanta.gdtralive.desktop.DesktopGdSettings;
 import org.happysanta.gdtralive.desktop.DesktopGdUtils;
@@ -11,15 +10,12 @@ import org.happysanta.gdtralive.desktop.DesktopKeyboardController;
 import org.happysanta.gdtralive.game.Game;
 import org.happysanta.gdtralive.game.engine.Engine;
 import org.happysanta.gdtralive.game.external.GdApplication;
-import org.happysanta.gdtralive.game.external.GdDataSource;
 import org.happysanta.gdtralive.game.external.GdFileStorage;
 import org.happysanta.gdtralive.game.external.GdMenu;
 import org.happysanta.gdtralive.game.external.GdSettings;
 import org.happysanta.gdtralive.game.external.GdUtils;
 import org.happysanta.gdtralive.game.mod.ModManager;
 import org.happysanta.gdtralive.game.modes.MenuData;
-import org.happysanta.gdtralive.game.recorder.Player;
-import org.happysanta.gdtralive.game.storage.LevelsManager;
 import org.happysanta.gdtralive.game.trainer.Trainer;
 import org.happysanta.gdtralive.game.visual.FrameRender;
 import org.happysanta.gdtralive.game.visual.GdView;
@@ -63,35 +59,28 @@ public class DesktopGdView extends JPanel implements ActionListener, KeyListener
 
 
         this.settings = new DesktopGdSettings();
-        modManager = new ModManager(fileStorage);
+        final GdUtils utils = new DesktopGdUtils();
+        modManager = new ModManager(fileStorage, utils);
         GdApplication gdApplication = new DesktopGdApplication();
         final FrameRender frameRender = new FrameRender(modManager);
-        final GdUtils utils = new DesktopGdUtils();
         final Engine engine = new Engine(utils);
         gdView = new GdView(frameRender, engine, width, height);
-        final GdDataSource levelsDataSource = new DesktopGdDataSource();
-        final LevelsManager levelsManager = new LevelsManager(settings, levelsDataSource);
-        final Player player = new Player(engine);
-
         menu = new DesktopGdMenu();
 
 
-        game = new Game(
-                gdApplication, gdView, levelsManager, engine,
-                player, utils, settings,
-                fileStorage);
+        game = new Game(gdApplication, 1920, 1080);
         desktopKeyboardController = new DesktopKeyboardController(game);
 
         gdView.setLoadingState(null);
         gdView.setDrawTimer(true);
 
-        game.setMenu(menu);
+        game.init(menu);
         game.restart(false);
         menu.showMenu(MenuData.mainMenu());
         if (menu.canStartTrack())
             game.restart(true);
 //        game.engine.unlockKeys();
-        game.startTrack(2, 2, 7, true);
+//        game.startTrack(2, 2, 7);
         game.restart(false);
 
 

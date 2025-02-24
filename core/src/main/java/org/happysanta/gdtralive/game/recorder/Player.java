@@ -1,21 +1,23 @@
 package org.happysanta.gdtralive.game.recorder;
 
+import org.happysanta.gdtralive.game.Utils;
 import org.happysanta.gdtralive.game.engine.Engine;
+import org.happysanta.gdtralive.game.modes.GameMode;
 
 public class Player {
     private final Engine engine;
 
     private int index;
-    private boolean replayMode = false;
     private TrackRecord trackRecord;
     private Runnable restartMethod;
 
-    public Player(Engine engine) {
+    public Player(Engine engine, Runnable restartMethod) {
         this.engine = engine;
+        this.restartMethod = restartMethod;
     }
 
-    public void replay() {
-        if (!replayMode) {
+    public void replay(GameMode mode) {
+        if (GameMode.REPLAY != mode) {
             return;
         }
         if (trackRecord != null && index < trackRecord.getStates().size()) {
@@ -29,40 +31,16 @@ public class Player {
             index++;
         } else {
             index = 0;
-            waitRestart(1000L, 1500L);
+            Utils.waitRestart(1000L, 1500L);
             if (restartMethod != null) {
                 restartMethod.run();
             }
         }
     }
 
-    public void setRestartMethod(Runnable restartMethod) {
-        this.restartMethod = restartMethod;
-    }
-
     public void reset() {
         index = 0;
-        replayMode = false;
         engine.setReplayMode(false);
-    }
-
-    public void waitRestart(long delayedRestartAtTime, long currentTimeMillis) {
-        try {
-            long l2 = 1000L;
-            if (delayedRestartAtTime > 0L)
-                l2 = Math.min(delayedRestartAtTime - currentTimeMillis, 1000L);
-            if (l2 > 0L)
-                Thread.sleep(l2);
-        } catch (InterruptedException ignored) {
-        }
-    }
-
-    public boolean isReplayMode() {
-        return replayMode;
-    }
-
-    public void setReplayMode(boolean replayMode) {
-        this.replayMode = replayMode; //todo GameMode.REPLAY
     }
 
     public void setTrackRecord(TrackRecord trackRecord) {

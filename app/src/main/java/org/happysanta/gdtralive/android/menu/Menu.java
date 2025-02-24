@@ -78,7 +78,7 @@ public class Menu implements GdMenu, MenuHandler {
 
     private void showMainMenu() {
         setCurrentMenu(menuFactory.get(MenuType.MAIN));
-        application.getGame().startAutoplay();
+        application.getGame().startAutoplay(false);
         m_SZ = true;
     }
 
@@ -99,7 +99,7 @@ public class Menu implements GdMenu, MenuHandler {
         } else {
             throw new IllegalStateException("FIX ME");
         }
-        application.getGame().startAutoplay(); //todo replay track
+        application.getGame().startAutoplay(false); //todo replay track
     }
 
     private void preShowMenu() {

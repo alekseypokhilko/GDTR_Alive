@@ -5,6 +5,7 @@ import org.happysanta.gdtralive.game.mod.ModManager;
 import org.happysanta.gdtralive.game.storage.HighScoreManager;
 
 public interface GdApplication {
+    GdDataSource getDataSource();
     GdFileStorage getFileStorage();
     GdUtils getUtils();
     ModManager getModManager();

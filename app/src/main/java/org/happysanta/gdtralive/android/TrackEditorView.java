@@ -2,8 +2,6 @@ package org.happysanta.gdtralive.android;
 
 import static org.happysanta.gdtralive.android.Helpers.s;
 
-import android.annotation.TargetApi;
-import android.os.Build;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.EditText;
@@ -11,31 +9,24 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.google.gson.Gson;
-
 import org.happysanta.gdtralive.R;
 import org.happysanta.gdtralive.android.menu.KeyboardController;
 import org.happysanta.gdtralive.android.menu.element.InputTextElement;
 import org.happysanta.gdtralive.android.menu.views.MenuImageView;
 import org.happysanta.gdtralive.android.menu.views.MenuLinearLayout;
 import org.happysanta.gdtralive.game.Game;
+import org.happysanta.gdtralive.game.Utils;
 import org.happysanta.gdtralive.game.editor.EditorMode;
 import org.happysanta.gdtralive.game.engine.Engine;
 import org.happysanta.gdtralive.game.external.GdApplication;
-import org.happysanta.gdtralive.game.external.GdMenu;
 import org.happysanta.gdtralive.game.external.GdSettings;
-import org.happysanta.gdtralive.game.external.GdUtils;
-import org.happysanta.gdtralive.game.levels.TrackParams;
 import org.happysanta.gdtralive.game.mod.ModManager;
 import org.happysanta.gdtralive.game.mod.Theme;
 import org.happysanta.gdtralive.game.mod.TrackReference;
 import org.happysanta.gdtralive.game.modes.GameMode;
+import org.happysanta.gdtralive.game.modes.GameParams;
 import org.happysanta.gdtralive.game.storage.GDFile;
 import org.happysanta.gdtralive.game.visual.Fmt;
-import org.happysanta.gdtralive.game.visual.GdView;
-
-import java.util.Arrays;
-import java.util.UUID;
 
 //todo separate view and controller
 public class TrackEditorView {
@@ -52,14 +43,12 @@ public class TrackEditorView {
     };
 
     private Game game;
-    private GdMenu menu;
-    private GdView view;
     private Engine engine;
     private GdSettings settings;
-    private ModManager modManager;
+    private final ModManager modManager;
     private final GdApplication application;
 
-    private int offset = GdUtils.unpackInt(DEFAULT_OFFSET);
+    private int offset = Utils.unpackInt(DEFAULT_OFFSET);
     private int currentEditMode = 0;
     public int selectedPointIndex = 0;
     private TrackReference currentTrack;
@@ -72,13 +61,6 @@ public class TrackEditorView {
     private final MenuImageView right;
     private final MenuImageView up;
     private final MenuImageView down;
-    private final MenuImageView add;
-    private final MenuImageView remove;
-    private final MenuImageView invisible;
-    private final MenuImageView cameraMoveMode;
-    private final MenuImageView pointModeSelection;
-    private final MenuImageView objectEditModeSelection;
-    private final InputTextElement offsetInput;
 
     public TrackEditorView(GDActivity gd) {
         this.application = gd;
@@ -88,34 +70,19 @@ public class TrackEditorView {
         right = button(R.drawable.c_arrow_right, null);
         up = button(R.drawable.c_arrow_up, null);
         down = button(R.drawable.c_arrow_down, null);
-        add = button(R.drawable.c_add, v -> handleAddButton());
-        remove = button(R.drawable.c_delete, v -> handleRemoveButton());
-        invisible = button(R.drawable.c_invisible, v -> handleInvisibleButton());
-        cameraMoveMode = button(R.drawable.c_camera, v -> handleCameraModeButton());
-        pointModeSelection = button(R.drawable.c_points, v -> handleTrackEditModeButton());
-        objectEditModeSelection = button(R.drawable.c_objects, v -> handleObjectEditMode());
-        offsetInput = new InputTextElement(s(R.string.offset) + ":", "" + DEFAULT_OFFSET, this::saveOffset);
+        MenuImageView add = button(R.drawable.c_add, v -> handleAddButton());
+        MenuImageView remove = button(R.drawable.c_delete, v -> handleRemoveButton());
+        MenuImageView invisible = button(R.drawable.c_invisible, v -> handleInvisibleButton());
+        MenuImageView cameraMoveMode = button(R.drawable.c_camera, v -> handleCameraModeButton());
+        MenuImageView pointModeSelection = button(R.drawable.c_points, v -> handleTrackEditModeButton());
+        MenuImageView objectEditModeSelection = button(R.drawable.c_objects, v -> handleObjectEditMode());
+        InputTextElement offsetInput = new InputTextElement(Fmt.colon(s(R.string.offset)), "" + DEFAULT_OFFSET, this::saveOffset);
 
         modeLayout = new MenuLinearLayout(gd, false);
         inputLayout = new MenuLinearLayout(gd, false);
         actionLayout = new MenuLinearLayout(gd, false);
         moveLayout = new MenuLinearLayout(gd, false);
-        initModeSelection(gd);
-        initOffsetInput(gd);
-        initTrackEditButtons(gd);
-        initArrows(gd);
-        hideLayout();
-    }
-
-    public void init(Game game, Engine engine, GdMenu menu, GdView view, GdSettings settings) {
-        this.game = game;
-        this.engine = engine;
-        this.menu = menu;
-        this.view = view;
-        this.settings = settings;
-    }
-
-    private void initModeSelection(GDActivity gd) {
+        //initModeSelection
         LinearLayout modeRow = new LinearLayout(gd);
         modeRow.setPadding(Helpers.getDp(KeyboardController.PADDING), Helpers.getDp(KeyboardController.PADDING), Helpers.getDp(KeyboardController.PADDING), 0);
         modeRow.setOrientation(LinearLayout.VERTICAL);
@@ -126,9 +93,7 @@ public class TrackEditorView {
         modeLayout.setGravity(Gravity.TOP);
         modeLayout.setPadding(0, 0, 0, Helpers.getDp(KeyboardController.PADDING));
         modeLayout.setLayoutParams(getFrameParams(Gravity.TOP));
-    }
-
-    private void initOffsetInput(GDActivity gd) {
+        //initOffsetInput
         LinearLayout inputRow = new LinearLayout(gd);
         inputRow.setPadding(Helpers.getDp(KeyboardController.PADDING), Helpers.getDp(KeyboardController.PADDING), Helpers.getDp(KeyboardController.PADDING), 0);
         inputRow.setOrientation(LinearLayout.VERTICAL);
@@ -138,9 +103,7 @@ public class TrackEditorView {
         inputLayout.setGravity(Gravity.TOP | Gravity.CENTER);
         inputLayout.setPadding(0, 0, 0, Helpers.getDp(KeyboardController.PADDING));
         inputLayout.setLayoutParams(getFrameParams(Gravity.TOP | Gravity.CENTER));
-    }
-
-    private void initTrackEditButtons(GDActivity gd) {
+        //initTrackEditButtons
         LinearLayout actionRow = new LinearLayout(gd);
         actionRow.setPadding(Helpers.getDp(KeyboardController.PADDING), Helpers.getDp(KeyboardController.PADDING), Helpers.getDp(KeyboardController.PADDING), 0);
         actionRow.setOrientation(LinearLayout.VERTICAL);
@@ -153,9 +116,7 @@ public class TrackEditorView {
         actionLayout.setGravity(Gravity.BOTTOM | Gravity.LEFT);
         actionLayout.setPadding(0, 0, 0, Helpers.getDp(KeyboardController.PADDING));
         actionLayout.setLayoutParams(getFrameParams(Gravity.BOTTOM | Gravity.LEFT));
-    }
-
-    private void initArrows(GDActivity gd) {
+        //initArrows
         LinearLayout moveRow1 = new LinearLayout(gd);
         moveRow1.setPadding(Helpers.getDp(KeyboardController.PADDING), 0, Helpers.getDp(KeyboardController.PADDING), 0);
         moveRow1.setOrientation(LinearLayout.HORIZONTAL);
@@ -172,6 +133,14 @@ public class TrackEditorView {
         moveLayout.setGravity(Gravity.RIGHT | Gravity.BOTTOM);
         moveLayout.setPadding(0, 0, 0, Helpers.getDp(KeyboardController.PADDING));
         moveLayout.setLayoutParams(getFrameParams(Gravity.RIGHT | Gravity.BOTTOM));
+
+        hideLayout();
+    }
+
+    public void init(Game game, GdSettings settings) {
+        this.game = game;
+        this.engine = game.getEngine();
+        this.settings = settings;
     }
 
     private static FrameLayout.LayoutParams getFrameParams(int gravity) {
@@ -310,14 +279,14 @@ public class TrackEditorView {
         try {
             String value = et.getText().toString();
             int i = Integer.parseInt(value);
-            offset = GdUtils.unpackInt(i);
+            offset = Utils.unpackInt(i);
         } catch (Exception e) {
-            Helpers.showToast(s(R.string.invalid_value));
+            application.notify(s(R.string.invalid_value));
         }
     }
 
     private void handleRemoveButton() {
-        engine.getTrackPhysic().getTrack().points = removeElement(engine.getTrackPhysic().getTrack().points, selectedPointIndex);
+        engine.getTrackPhysic().getTrack().points = Utils.removeElement(engine.getTrackPhysic().getTrack().points, selectedPointIndex);
         engine.getTrackPhysic().getTrack().pointsCount--;
     }
 
@@ -327,7 +296,7 @@ public class TrackEditorView {
                     engine.getTrackPhysic().getTrack().points[selectedPointIndex][0] + offset,
                     engine.getTrackPhysic().getTrack().points[selectedPointIndex][1] + offset
             };
-            engine.getTrackPhysic().getTrack().points = addPos(engine.getTrackPhysic().getTrack().points, selectedPointIndex, point);
+            engine.getTrackPhysic().getTrack().points = Utils.addPos(engine.getTrackPhysic().getTrack().points, selectedPointIndex, point);
             engine.getTrackPhysic().getTrack().pointsCount++;
             //todo add to the end
         } catch (Exception e) {
@@ -335,30 +304,13 @@ public class TrackEditorView {
         }
     }
 
-    public static int[][] addPos(int[][] a, int pos, int[] point) {
-        int[][] result = new int[a.length + 1][2];
-        for (int i = 0; i < pos; i++)
-            result[i] = a[i];
-        result[pos] = point;
-        for (int i = pos + 1; i < a.length + 1; i++)
-            result[i] = a[i - 1];
-        return result;
-    }
-
-    @TargetApi(Build.VERSION_CODES.GINGERBREAD)
-    public static int[][] removeElement(int[][] arr, int removedIdx) {
-        System.arraycopy(arr, removedIdx + 1, arr, removedIdx, arr.length - 1 - removedIdx);
-        return Arrays.copyOf(arr, arr.length - 1);
-    }
-
     private void showMode(int modeId) {
-        view.showInfoMessage(Fmt.colon(s(R.string.mode), s(modeId)), 5000000);
+        game.showInfoMessage(Fmt.colon(s(R.string.mode), s(modeId)), 5000000);
     }
 
-    public void createNew() {
+    public void createNew(String playerName) {
         try {
-            this.currentTrack = initTrackTemplate();
-            engine.loadTrack(currentTrack.getData());
+            this.currentTrack = Utils.initTrackTemplate(playerName);
             modManager.setTrackProperties(currentTrack);
         } catch (Exception e) {
             e.printStackTrace();//todo
@@ -367,14 +319,9 @@ public class TrackEditorView {
     }
 
     public void startEditing() {
-        game.restart(false);
-        game.setMode(GameMode.TRACK_EDIT);
-        game.getRecorder().setCapturingMode(false);
-        game.getRecorder().reset();
-        engine.setEditMode(true);
+        game.startTrack(GameParams.of(GameMode.TRACK_EDITOR, currentTrack.getData()));
         Helpers.getGDActivity().editMode();
-        showLayout();
-        game.setShowTimer(false); //todo fix
+        showLayout(); //todo fix timer
     }
 
     public void exitEditor() {
@@ -382,16 +329,13 @@ public class TrackEditorView {
         engine.setEditMode(false);
         currentTrack = null;
         modManager.setTrackProperties(null);
-        view.showInfoMessage("", 10);
+        game.showInfoMessage("", 10);
     }
 
     public void playTrack() {
-        engine.setEditMode(false);
         modManager.setTrackProperties(currentTrack);
-        engine.loadTrack(currentTrack.getData());
+        game.startTrack(GameParams.of(GameMode.TRACK_EDITOR_PLAY, currentTrack.getData()));
         Helpers.getGDActivity().exitEditMode();
-        game.getRecorder().setCapturingMode(true);
-        game.setShowTimer(true);
     }
 
     public void saveLeagueInput(int league) {
@@ -436,25 +380,4 @@ public class TrackEditorView {
         }
     }
 
-    private TrackReference initTrackTemplate() {
-        TrackParams track = getTrackDataTemplate();
-        TrackReference trackReference = new TrackReference();
-        trackReference.setData(track);
-        trackReference.setGuid(track.getGuid());
-        trackReference.setName(track.getName());
-
-        Theme theme = Theme.defaultTheme();
-        trackReference.setGameProperties(theme.getGameTheme().getProps());
-        trackReference.setLeagueProperties(theme.getLeagueThemes().get(track.getLeague()).getProps());
-        return trackReference;
-    }
-
-
-    private TrackParams getTrackDataTemplate() {
-        TrackParams track = new Gson().fromJson("{\"author\":\"unnamed\",\"checkBackwardCollision\":true,\"checkFinishCoordinates\":true,\"finishPointIndex\":2,\"finishX\":7323648,\"finishY\":0,\"guid\":\"123\",\"invisible\":[],\"league\":0,\"name\":\"Unnamed\",\"points\":[[-4710400,-286720],[-4087808,-278528],[-3645440,-278528],[-3104768,-270336]],\"pointsCount\":4,\"startPointIndex\":1,\"startX\":-4374528,\"startY\":81920}", TrackParams.class);
-        track.setAuthor(settings.getPlayerName());
-        track.setGuid(UUID.randomUUID().toString());
-        track.setName(track.getName());
-        return track;
-    }
 }

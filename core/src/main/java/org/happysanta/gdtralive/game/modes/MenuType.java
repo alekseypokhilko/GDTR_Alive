@@ -24,6 +24,7 @@ public enum MenuType {
     IN_GAME_TRACK_EDITOR,
     IN_GAME_SINGLE,
     IN_GAME_PLAY,
+    IN_GAME_REPLAY,
     PLAY_CLASSIC,
     OPTIONS,
     FINISHED_CLASSIC,

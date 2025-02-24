@@ -18,10 +18,12 @@ import org.happysanta.gdtralive.android.menu.element.MenuAction;
 import org.happysanta.gdtralive.android.menu.element.MenuItem;
 import org.happysanta.gdtralive.android.menu.element.OptionsMenuElement;
 import org.happysanta.gdtralive.android.menu.element.TextMenuElement;
+import org.happysanta.gdtralive.game.Utils;
 import org.happysanta.gdtralive.game.external.GdApplication;
-import org.happysanta.gdtralive.game.external.GdUtils;
+import org.happysanta.gdtralive.game.modes.GameMode;
 import org.happysanta.gdtralive.game.modes.MenuData;
 import org.happysanta.gdtralive.game.modes.MenuType;
+import org.happysanta.gdtralive.game.modes.GameParams;
 import org.happysanta.gdtralive.game.storage.ModEntity;
 import org.happysanta.gdtralive.game.visual.Fmt;
 
@@ -165,9 +167,9 @@ public class ClassicPlayMenuState {
                 showAlert("GD Classic", s(R.string.complete_to_unlock), null);
             } else {
                 int league = leagueSelector.getSelectedOption();
-                int level1 = levelSelector.getSelectedOption();
+                int level = levelSelector.getSelectedOption();
                 int track = trackSelector.getSelectedOption();
-                application.getGame().startTrack(league, level1, track, false);
+                application.getGame().startTrack(GameParams.of(GameMode.CLASSIC, application.getModManager().loadLevel(level, track), league, level, track));
             }
         }));
         s.addItem(levelSelector);
@@ -195,7 +197,8 @@ public class ClassicPlayMenuState {
 
     private MenuScreen showFinishMenu(MenuScreen finishedMenu, MenuData data) {
         finishedMenu.clear();
-        finishedMenu.addItem(new TextMenuElement(Html.fromHtml("<b>" + s(R.string.time) + "</b>: " + GdUtils.getDurationString(data.getLastTrackTime()))));
+        long millis = data.getLastTrackTime();
+        finishedMenu.addItem(new TextMenuElement(Html.fromHtml("<b>" + s(R.string.time) + "</b>: " + Utils.getDurationString(millis))));
         for (String s : application.getHighScoreManager().getFormattedScores(data.getTrackGuid(), data.getSelectedLeague())) {
             finishedMenu.addItem(new TextMenuElement(s));
         }
@@ -231,8 +234,9 @@ public class ClassicPlayMenuState {
             finishedMenu.addItem(new MenuAction(Fmt.colon(s(R.string.next), application.getModManager().getTrackName(data.getSelectedLevel(), data.getNewSelectedTrack())), MenuAction.NEXT, menu,
                     item -> {
                         int league = leagueSelector.getSelectedOption();
-                        int level1 = levelSelector.getSelectedOption();
-                        application.getGame().startTrack(league, level1, trackSelector.getSelectedOption(), false);
+                        int level = levelSelector.getSelectedOption();
+                        int track = trackSelector.getSelectedOption();
+                        application.getGame().startTrack(GameParams.of(GameMode.CLASSIC, application.getModManager().loadLevel(level, track), league, level, track));
                     }
             ));
         }
@@ -275,12 +279,13 @@ public class ClassicPlayMenuState {
     private MenuScreen buildClassicFinishedScreen(MenuScreen finishedMenu, MenuData data) {
         updateSelectors(data);
         int place = application.getHighScoreManager()
-                .getHighScores(application.getGame().getCurrentTrackGuid(), application.getGame().getSelectedLeague())
+                .getHighScores(data.getTrackGuid(), data.getSelectedLeague())
                 .getPlace(data.getSelectedLeague(), data.getLastTrackTime()); //todo npe?
         if (place >= 0 && place <= 2) {
             finishedMenu.clear();
             finishedMenu.addItem(new HighScoreTextMenuElement(getStringArray(R.array.finished_places)[place], place, false));
-            finishedMenu.addItem(new TextMenuElement(GdUtils.getDurationString(data.getLastTrackTime())));
+            long millis = data.getLastTrackTime();
+            finishedMenu.addItem(new TextMenuElement(Utils.getDurationString(millis)));
             finishedMenu.addItem(menu.createAction(MenuAction.OK, item -> showFinishMenu(finishedMenu, data)));
             menu.m_blZ = false;
             return finishedMenu;

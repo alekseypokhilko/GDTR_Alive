@@ -1,6 +1,6 @@
 package org.happysanta.gdtralive.game.levels;
 
-import org.happysanta.gdtralive.game.external.GdUtils;
+import org.happysanta.gdtralive.game.Utils;
 
 import java.io.DataInputStream;
 import java.io.Serializable;
@@ -69,8 +69,8 @@ public class TrackParams implements Serializable {
 	}
 
 	public void moveTrack(int j, int k) {
-		cameraX = GdUtils.unpackInt(j);
-		cameraY = GdUtils.unpackInt(k);
+        cameraX = Utils.unpackInt(j);
+        cameraY = Utils.unpackInt(k);
 	}
 
 	public void _aIIV(int j, int k) {
@@ -126,7 +126,7 @@ public class TrackParams implements Serializable {
 
 			//
 			if (unpacked) {
-				addPoint(GdUtils.unpackInt(pointX), GdUtils.unpackInt(pointY));
+                addPoint(Utils.unpackInt(pointX), Utils.unpackInt(pointY));
 			} else {
 				addPoint(pointX, pointY);
 			}
@@ -146,7 +146,7 @@ public class TrackParams implements Serializable {
 				pointX += x;
 				pointY += y;
 				if (unpacked) {
-					addPoint(GdUtils.unpackInt(pointX), GdUtils.unpackInt(pointY));
+                    addPoint(Utils.unpackInt(pointX), Utils.unpackInt(pointY));
 				} else {
 					addPoint(pointX, pointY);
 				}

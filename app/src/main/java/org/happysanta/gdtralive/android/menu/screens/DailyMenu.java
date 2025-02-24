@@ -17,11 +17,14 @@ import org.happysanta.gdtralive.android.menu.element.OptionsMenuElement;
 import org.happysanta.gdtralive.android.menu.element.TextMenuElement;
 import org.happysanta.gdtralive.game.Constants;
 import org.happysanta.gdtralive.game.Game;
+import org.happysanta.gdtralive.game.Utils;
 import org.happysanta.gdtralive.game.external.GdApplication;
-import org.happysanta.gdtralive.game.external.GdUtils;
+import org.happysanta.gdtralive.game.levels.InvalidTrackException;
 import org.happysanta.gdtralive.game.levels.PackTrackReference;
+import org.happysanta.gdtralive.game.levels.TrackParams;
 import org.happysanta.gdtralive.game.modes.GameMode;
 import org.happysanta.gdtralive.game.modes.MenuData;
+import org.happysanta.gdtralive.game.modes.GameParams;
 import org.happysanta.gdtralive.game.visual.Fmt;
 
 import java.util.ArrayList;
@@ -130,8 +133,10 @@ public class DailyMenu implements InGameScreenProvider {
         trackSelector.setText("Tracks(" + trackSelector.getUnlockedCount() + "/" + tracks.size() + ")");
 
         finishedScreen.clear();
-        finishedScreen.addItem(new TextMenuElement(Html.fromHtml("<b>" + s(R.string.time) + "</b>: " + GdUtils.getDurationString(game.getLastTrackTime()))));
-        for (String s : application.getHighScoreManager().getFormattedScores(game.getCurrentTrackGuid(), game.getSelectedLeague())) {
+        //TODO
+        finishedScreen.addItem(new TextMenuElement(Html.fromHtml("<b>" + s(R.string.time) + "</b>: " + Utils.getDurationString(100L))));
+        //TODO
+        for (String s : application.getHighScoreManager().getFormattedScores("data.getTrackGuid()", 0)) {
             finishedScreen.addItem(new TextMenuElement(s));
         }
         finishedScreen.addItem(new MenuAction(s(R.string.next), MenuAction.NEXT, menu,
@@ -151,8 +156,12 @@ public class DailyMenu implements InGameScreenProvider {
 
     private void startDailyTrack(int trackNumber) {
         PackTrackReference trackRef = tracks.get(trackNumber);
-        game.startTrack(trackRef.getPackGuid(), trackRef.getGuid(), true);
-        game.setMode(GameMode.DAILY);
+        try {
+            TrackParams track = application.getFileStorage().getLevelFromPack(trackRef.getPackGuid(), trackRef.getGuid());
+            game.startTrack(GameParams.of(GameMode.DAILY, track));
+        } catch (InvalidTrackException e) {
+            application.notify("File loading error: " + e.getMessage());
+        }
     }
 
     @Override

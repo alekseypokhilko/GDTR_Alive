@@ -1,6 +1,7 @@
 package org.happysanta.gdtralive.desktop;
 
 import org.happysanta.gdtralive.game.Game;
+import org.happysanta.gdtralive.game.engine.KeyboardHandler;
 
 import java.awt.event.KeyEvent;
 
@@ -13,18 +14,19 @@ public class DesktopKeyboardController {
     }
 
     public void keyPressed(KeyEvent e) {
+        KeyboardHandler keyboardHandler = game.getKeyboardHandler();
         switch (e.getKeyCode()) {
             case KeyEvent.VK_LEFT:
-                game.getKeyboardHandler().keyPressed(52);
+                keyboardHandler.keyPressed(52);
                 break;
             case KeyEvent.VK_UP:
-                game.getKeyboardHandler().keyPressed(50);
+                keyboardHandler.keyPressed(50);
                 break;
             case KeyEvent.VK_DOWN:
-                game.getKeyboardHandler().keyPressed(56);
+                keyboardHandler.keyPressed(56);
                 break;
             case KeyEvent.VK_RIGHT:
-                game.getKeyboardHandler().keyPressed(54);
+                keyboardHandler.keyPressed(54);
                 break;
             case KeyEvent.VK_0:
                 startTrack(0);
@@ -60,23 +62,24 @@ public class DesktopKeyboardController {
     }
 
     private void startTrack(int track) {
-        game.startTrack(2, 2, track, true);
+//        game.startTrack(2, 2, track);
         game.restart(true);
     }
 
     public void keyReleased(KeyEvent e) {
+        KeyboardHandler keyboardHandler = game.getKeyboardHandler();
         switch (e.getKeyCode()) {
             case KeyEvent.VK_LEFT:
-                game.getKeyboardHandler().keyReleased(52);
+                keyboardHandler.keyReleased(52);
                 break;
             case KeyEvent.VK_UP:
-                game.getKeyboardHandler().keyReleased(50);
+                keyboardHandler.keyReleased(50);
                 break;
             case KeyEvent.VK_DOWN:
-                game.getKeyboardHandler().keyReleased(56);
+                keyboardHandler.keyReleased(56);
                 break;
             case KeyEvent.VK_RIGHT:
-                game.getKeyboardHandler().keyReleased(54);
+                keyboardHandler.keyReleased(54);
                 break;
         }
     }
