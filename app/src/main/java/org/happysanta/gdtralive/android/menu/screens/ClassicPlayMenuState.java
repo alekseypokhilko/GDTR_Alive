@@ -18,14 +18,14 @@ import org.happysanta.gdtralive.android.menu.element.MenuAction;
 import org.happysanta.gdtralive.android.menu.element.MenuItem;
 import org.happysanta.gdtralive.android.menu.element.OptionsMenuElement;
 import org.happysanta.gdtralive.android.menu.element.TextMenuElement;
-import org.happysanta.gdtralive.game.util.Utils;
-import org.happysanta.gdtralive.game.api.external.GdApplication;
 import org.happysanta.gdtralive.game.api.GameMode;
-import org.happysanta.gdtralive.game.api.model.MenuData;
 import org.happysanta.gdtralive.game.api.MenuType;
+import org.happysanta.gdtralive.game.api.external.GdApplication;
 import org.happysanta.gdtralive.game.api.model.GameParams;
+import org.happysanta.gdtralive.game.api.model.MenuData;
 import org.happysanta.gdtralive.game.api.model.ModEntity;
 import org.happysanta.gdtralive.game.util.Fmt;
+import org.happysanta.gdtralive.game.util.Utils;
 
 import java.util.List;
 import java.util.Map;
@@ -104,7 +104,6 @@ public class ClassicPlayMenuState {
 
         levelSelector.setUnlockedCount(getLevel().getUnlockedLevels());
         leagueSelector.setUnlockedCount(getLevel().getUnlockedLeagues());
-        //playMenu.addItem(new ActionMenuElement(getString(R.string.random_track) + ">", this, item -> startRandomTrack()));
     }
 
     public MenuScreen createHighScore(Map<MenuType, MenuScreen> r) {
@@ -204,13 +203,14 @@ public class ClassicPlayMenuState {
             finishedMenu.addItem(new TextMenuElement(s));
         }
 
-        int completedCount = getLevel().getUnlockedTracksCount(data.getSelectedLevel()); // TODO test
+        int completedCount = getLevel().getUnlockedTracksCount(data.getSelectedLevel()) + 1; // TODO test
         finishedMenu.addItem(new TextMenuElement(Html.fromHtml(String.format(s(R.string.tracks_completed_tpl),
                 completedCount,
                 application.getModManager().getLevelTracksCount(data.getSelectedLevel()),  //todo just track counts
                 difficultyLevels[data.getSelectedLevel()]
         ))));
 
+        //todo fix that
         boolean leagueCompleted = data.getNewSelectedLeague() != data.getSelectedLeague();
         if (leagueCompleted) {
             boolean flag = true;

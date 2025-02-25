@@ -1,7 +1,6 @@
 package org.happysanta.gdtralive.game.api.model;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import org.happysanta.gdtralive.game.util.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +10,7 @@ public class ModEntity {
 	private long id = 0;
 	private String guid;
 	private String name;
-	private List<Integer> count = new ArrayList<>();
+	private List<Integer> trackCountsByLevel = new ArrayList<>();
 	private List<Integer> unlockedTracks = new ArrayList<>();
 	private int selectedTrack = 0;
 	private int selectedLevel = 0;
@@ -37,35 +36,37 @@ public class ModEntity {
 
 	public int getTracksCount(int level) {
 		//todo refactoring related methods
-		return this.count.get(level);
+		return this.trackCountsByLevel.get(level);
 	}
 
-	public void setCount(String counts) {
-		this.count = new Gson().fromJson(counts, new TypeToken<List<Integer>>() {});
+	public int getLevelsCount() {
+		return trackCountsByLevel.size();
+	}
+
+	public void setTrackCountsByLevel(String counts) {
+		this.trackCountsByLevel = Utils.parseIntList(counts);
 	}
 
 	public int getUnlockedTracksCount(int level) {
 		return unlockedTracks.get(level);
 	}
 
-	public String getUnlockedTracks() {
-		return new Gson().toJson(unlockedTracks);
+	public String getUnlockedTracksString() {
+		return Utils.toJson(unlockedTracks);
 	}
 
 	public void setUnlockedTracks(String counts) {
 		try {
-			this.unlockedTracks = new Gson().fromJson(counts, new TypeToken<List<Integer>>() {
-			});
+			this.unlockedTracks = Utils.parseIntList(counts);
 		} catch (Exception e) {
 			e.printStackTrace();
-			this.unlockedTracks = new Gson().fromJson("["+counts+"]", new TypeToken<List<Integer>>() {
-			});
+			this.unlockedTracks = Utils.parseIntList(String.format("[%s]", counts));
 		}
 	}
 
 	public void unlockAllTracks() {
-		for (int i = 0; i < count.size(); i++) {
-			unlockedTracks.set(i, count.get(i) - 1);
+		for (int i = 0; i < trackCountsByLevel.size(); i++) {
+			unlockedTracks.set(i, trackCountsByLevel.get(i) - 1);
 		}
 	}
 

@@ -1,6 +1,7 @@
 package org.happysanta.gdtralive.game.util;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.happysanta.gdtralive.game.api.Constants;
 import org.happysanta.gdtralive.game.api.exception.InvalidTrackException;
@@ -18,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 import java.util.regex.Pattern;
@@ -26,6 +28,9 @@ public class Utils {
     public static final Pattern UUID_REGEX =
             Pattern.compile("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
     public static final String TRACK_TEMPLATE = "{\"author\":\"unnamed\",\"checkBackwardCollision\":true,\"checkFinishCoordinates\":true,\"finishPointIndex\":2,\"finishX\":7323648,\"finishY\":0,\"guid\":\"123\",\"invisible\":[],\"league\":0,\"name\":\"Unnamed\",\"points\":[[-4710400,-286720],[-4087808,-278528],[-3645440,-278528],[-3104768,-270336]],\"pointsCount\":4,\"startPointIndex\":1,\"startX\":-4374528,\"startY\":81920}";
+    private static final Gson GSON = new Gson();
+    private static final TypeToken<List<Integer>> INT_LIST_TYPE = new TypeToken<List<Integer>>() {
+    };
 
     public static TrackReference initTrackTemplate(String playerName) {
         TrackParams track = Utils.trackTemplate(playerName);
@@ -135,13 +140,20 @@ public class Utils {
         String content = readContent(inputStream);
         GDFile fileType = GDFile.getType(content);
         String ims = GDFile.cutHeader(content);
-        return (T) new Gson().fromJson(ims, fileType.cls);
+        return (T) GSON.fromJson(ims, fileType.cls);
     }
 
     public static <T> T read(InputStream ims, Class<T> cls) {
-        Gson gson = new Gson();
         java.io.Reader reader = new InputStreamReader(ims);
-        return gson.fromJson(reader, cls);
+        return GSON.fromJson(reader, cls);
+    }
+
+    public static List<Integer> parseIntList(String counts) {
+        return GSON.fromJson(counts, INT_LIST_TYPE);
+    }
+
+    public static <T> String toJson(T obj) {
+        return GSON.toJson(obj);
     }
 
     public static String fixFileName(String fileName) {
@@ -149,10 +161,6 @@ public class Utils {
             fileName = fileName.replaceAll("[\u0001-\u001f<>\u202E:\"/\\\\|?*\u007f]+", "").trim();
         }
         return fileName;
-    }
-
-    public static <T> String toJson(T obj) {
-        return new Gson().toJson(obj);
     }
 
     public static void validateLevel(TrackParams track) throws InvalidTrackException {

@@ -94,7 +94,7 @@ public class AndroidDataSource implements GdDataSource {
 
     public synchronized void updateLevel(ModEntity level) {
         ContentValues values = new ContentValues();
-        values.put(LevelsSQLiteOpenHelper.LEVELS_COLUMN_TRACKS_UNLOCKED, level.getUnlockedTracks());
+        values.put(LevelsSQLiteOpenHelper.LEVELS_COLUMN_TRACKS_UNLOCKED, level.getUnlockedTracksString());
         values.put(LevelsSQLiteOpenHelper.LEVELS_COLUMN_SELECTED_LEAGUE, level.getSelectedLeague());
         values.put(LevelsSQLiteOpenHelper.LEVELS_COLUMN_SELECTED_LEVEL, level.getSelectedLevel());
         values.put(LevelsSQLiteOpenHelper.LEVELS_COLUMN_SELECTED_TRACK, level.getSelectedTrack());
@@ -254,7 +254,7 @@ public class AndroidDataSource implements GdDataSource {
         ModEntity level = new ModEntity();
         level.setId(cursor.getLong(cursor.getColumnIndex(LevelsSQLiteOpenHelper.LEVELS_COLUMN_ID)));
         level.setName(cursor.getString(cursor.getColumnIndex(LevelsSQLiteOpenHelper.LEVELS_COLUMN_NAME)));
-        level.setCount(cursor.getString(cursor.getColumnIndex(LevelsSQLiteOpenHelper.LEVELS_COLUMN_TRACKS_COUNT)));
+        level.setTrackCountsByLevel(cursor.getString(cursor.getColumnIndex(LevelsSQLiteOpenHelper.LEVELS_COLUMN_TRACKS_COUNT)));
         level.setUnlockedTracks(cursor.getString(cursor.getColumnIndex(LevelsSQLiteOpenHelper.LEVELS_COLUMN_TRACKS_UNLOCKED)));
         level.setSelectedLevel(cursor.getInt(cursor.getColumnIndex(LevelsSQLiteOpenHelper.LEVELS_COLUMN_SELECTED_LEVEL)));
         level.setSelectedTrack(cursor.getInt(cursor.getColumnIndex(LevelsSQLiteOpenHelper.LEVELS_COLUMN_SELECTED_TRACK)));

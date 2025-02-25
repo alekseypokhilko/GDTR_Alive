@@ -39,9 +39,9 @@ public class LevelsManager {
         //todo fix level loading
         currentLevel = new ModEntity();
         currentLevel.setName("GD FIX ME");
-        currentLevel.setUnlockedTracks("[100,100,100]");
-        currentLevel.setCount("[100,100,100]");
-        currentLevel.unlockAllTracks();
+        currentLevel.setUnlockedTracks("[0,0,-1]");
+        currentLevel.setTrackCountsByLevel("[4,4,4]");
+//        currentLevel.unlockAllTracks();
     }
 
     public ModEntity getCurrentLevel() {

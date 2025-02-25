@@ -146,8 +146,12 @@ public class Game {
                 trainer.stop();
                 goalLoop();
 
-                updateSelectors(params, getLevelsManager().getCurrentLevel()); //todo fix
-                MenuData finishedMenu = MenuMapper.getFinishedMenuData(params, lastTrackTime, levelsManager.getCurrentLevel());
+                ModEntity modEntity = levelsManager.getCurrentLevel();
+                if (GameMode.CLASSIC == params.getMode()) {
+                    updateProgress(modEntity, params);
+                    levelsManager.updateLevelSettings();
+                }
+                MenuData finishedMenu = MenuMapper.getFinishedMenuData(params, lastTrackTime, modEntity);
                 menu.showMenu(finishedMenu);
 
                 if (menu.canStartTrack()) {
@@ -208,40 +212,44 @@ public class Game {
         }
     }
 
-    //todo test and fix
-    private void updateSelectors(GameParams params, ModEntity level) {
-        if (GameMode.CLASSIC != params.getMode()) {
-            return;
-        }
-        if (params.getTrack() + 1 < level.getTracksCount(params.getLevel())) {
-            level.setUnlockedTracks(params.getLevel(),  params.getTrack() + 1);
-            level.setSelectedTrack(params.getTrack() + 1);
-        } else {
-            level.setUnlockedTracks(params.getLevel(),  params.getTrack() + 1);
-            level.setSelectedTrack(params.getTrack() + 1);
-            int newUnlocked = level.getUnlockedTracksCount(params.getLevel()) + 1;
-            int tracksCount = level.getTracksCount(params.getLevel());
-            if (newUnlocked > tracksCount)
-                newUnlocked = tracksCount;
-            int unlockedTrack = newUnlocked;
-            level.setUnlockedTracks(params.getLevel(),  unlockedTrack);
-            level.setSelectedTrack(unlockedTrack);
+    private void updateProgress(ModEntity entity, GameParams params) {
+        int currentTrack = params.getTrack();
+        int currentTrackNumber = currentTrack + 1;
+        int currentLevel = params.getLevel();
+        int currentLeague = params.getLeague();
 
-            int unlockedLevels = level.getUnlockedLevels();
-            int newSelectedLevel = params.getLevel() + 1;
-            if (newSelectedLevel < application.getModManager().getLevelsCount() && newSelectedLevel == unlockedLevels - 1) {
-                level.setUnlockedLevels(Math.min(newSelectedLevel,  application.getModManager().getLevelsCount()));
-                level.setSelectedLevel(newSelectedLevel);
-                level.setUnlockedTracks(newSelectedLevel,  Math.max(0, level.getUnlockedTracksCount(newSelectedLevel)));
-                level.setSelectedTrack(0);
+        int unlockedLevels = entity.getUnlockedLevels();
+        int currentLevelTacksCount = entity.getTracksCount(currentLevel);
+        int levelsCount = entity.getLevelsCount();
+        int leaguesCount = Engine.leagueProperties.size(); //todo refactor
+
+        //finished all tracks in selected level
+        if (currentTrackNumber == currentLevelTacksCount) {
+            int unlockedLevel = Math.min(currentLevel + 2, levelsCount);
+            entity.setUnlockedLevels(unlockedLevel);
+
+            int unlockedLeague = Math.min(currentLeague + 1, leaguesCount);
+            //unlock when finished at not completed level
+            if (currentLevel >= unlockedLevels - 1) {
+                entity.setUnlockedLeagues(unlockedLeague);
+                entity.setSelectedLeague(unlockedLeague);
             }
-            int newSelectedLeague = params.getLeague() + 1;
-            if (newSelectedLeague < Engine.leagueProperties.size() && newSelectedLeague == unlockedLevels - 1) {
-                level.setUnlockedLeagues(Math.min(level.getUnlockedLeagues() + 1, Engine.leagueProperties.size()));
-                level.setSelectedLeague(newSelectedLeague);
+
+            //skip the last level that was already unlocked
+            if (unlockedLevel < levelsCount) {
+                entity.setUnlockedTracks(unlockedLevel, 0);
             }
+
+            entity.setSelectedLevel(unlockedLevel - 1);
+            entity.setSelectedTrack(0);
         }
-        levelsManager.updateLevelSettings();
+
+        //finished non last track in selected level
+        if (currentTrackNumber < currentLevelTacksCount) {
+            int unlockedTrack = Math.min(currentTrack + 1, currentLevelTacksCount - 1);
+            entity.setUnlockedTracks(currentLeague, unlockedTrack);
+            entity.setSelectedTrack(unlockedTrack);
+        }
     }
 
     private void captureOrPlay() {
@@ -358,7 +366,7 @@ public class Game {
             try {
                 engine.loadTrack(params.getTrackParams());
             } catch (InvalidTrackException e) {
-                throw new RuntimeException(e);
+                throw new RuntimeException(e); //todo
             }
             engine.startAutoplay();
             menu.menuToGame();
@@ -381,7 +389,11 @@ public class Game {
         } catch (InvalidTrackException e) {
             throw new RuntimeException(e); //todo skip damaged track
         }
-        engine.setLeague(track.getLeague());
+        if (GameMode.CLASSIC == params.getMode()) {
+            engine.setLeague(params.getLeague());
+        } else {
+            engine.setLeague(track.getLeague());
+        }
         engine.unlockKeys();
         view.setDrawTimer(true);
         menu.menuToGame();
