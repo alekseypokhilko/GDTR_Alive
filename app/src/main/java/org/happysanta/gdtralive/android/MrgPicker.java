@@ -12,10 +12,10 @@ import android.widget.EditText;
 
 import org.happysanta.gdtralive.R;
 import org.happysanta.gdtralive.android.menu.FileDialog;
-import org.happysanta.gdtralive.game.levels.mrg.MrgUtils;
-import org.happysanta.gdtralive.game.mod.Mod;
-import org.happysanta.gdtralive.game.modes.MenuData;
-import org.happysanta.gdtralive.game.modes.MenuType;
+import org.happysanta.gdtralive.game.util.mrg.MrgUtils;
+import org.happysanta.gdtralive.game.api.model.Mod;
+import org.happysanta.gdtralive.game.api.model.MenuData;
+import org.happysanta.gdtralive.game.api.MenuType;
 import org.happysanta.gdtralive.game.util.Utils;
 
 import java.io.File;

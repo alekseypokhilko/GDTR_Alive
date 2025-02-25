@@ -13,12 +13,12 @@ import android.graphics.RectF;
 import android.os.Build;
 
 import org.happysanta.gdtralive.R;
-import org.happysanta.gdtralive.game.external.GdCanvas;
-import org.happysanta.gdtralive.game.mod.Color;
-import org.happysanta.gdtralive.game.mod.ModManager;
-import org.happysanta.gdtralive.game.recorder.EngineStateRecord;
-import org.happysanta.gdtralive.game.visual.Sprite;
-import org.happysanta.gdtralive.game.visual.ViewState;
+import org.happysanta.gdtralive.game.api.external.GdCanvas;
+import org.happysanta.gdtralive.game.api.model.Color;
+import org.happysanta.gdtralive.game.ModManager;
+import org.happysanta.gdtralive.game.api.model.EngineStateRecord;
+import org.happysanta.gdtralive.game.api.Sprite;
+import org.happysanta.gdtralive.game.api.model.ViewState;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Base64;

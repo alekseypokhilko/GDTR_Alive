@@ -12,7 +12,7 @@ import android.text.Spanned;
 import android.util.Log;
 
 import org.happysanta.gdtralive.R;
-import org.happysanta.gdtralive.game.mod.ModManager;
+import org.happysanta.gdtralive.game.ModManager;
 
 public class Helpers {
 

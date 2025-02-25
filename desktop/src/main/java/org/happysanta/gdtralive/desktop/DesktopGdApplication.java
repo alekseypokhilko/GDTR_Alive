@@ -1,14 +1,14 @@
 package org.happysanta.gdtralive.desktop;
 
 import org.happysanta.gdtralive.game.Game;
-import org.happysanta.gdtralive.game.external.GdApplication;
-import org.happysanta.gdtralive.game.external.GdDataSource;
-import org.happysanta.gdtralive.game.external.GdFileStorage;
-import org.happysanta.gdtralive.game.external.GdMenu;
-import org.happysanta.gdtralive.game.external.GdSettings;
-import org.happysanta.gdtralive.game.external.GdUtils;
-import org.happysanta.gdtralive.game.mod.ModManager;
-import org.happysanta.gdtralive.game.storage.HighScoreManager;
+import org.happysanta.gdtralive.game.api.external.GdApplication;
+import org.happysanta.gdtralive.game.api.external.GdDataSource;
+import org.happysanta.gdtralive.game.api.external.GdFileStorage;
+import org.happysanta.gdtralive.game.api.external.GdMenu;
+import org.happysanta.gdtralive.game.api.external.GdSettings;
+import org.happysanta.gdtralive.game.api.external.GdUtils;
+import org.happysanta.gdtralive.game.ModManager;
+import org.happysanta.gdtralive.game.HighScoreManager;
 
 public class DesktopGdApplication implements GdApplication {
     @Override

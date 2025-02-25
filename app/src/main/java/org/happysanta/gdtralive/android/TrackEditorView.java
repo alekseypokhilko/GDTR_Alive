@@ -16,17 +16,17 @@ import org.happysanta.gdtralive.android.menu.views.MenuImageView;
 import org.happysanta.gdtralive.android.menu.views.MenuLinearLayout;
 import org.happysanta.gdtralive.game.Game;
 import org.happysanta.gdtralive.game.util.Utils;
-import org.happysanta.gdtralive.game.editor.EditorMode;
+import org.happysanta.gdtralive.game.api.EditorMode;
 import org.happysanta.gdtralive.game.engine.Engine;
-import org.happysanta.gdtralive.game.external.GdApplication;
-import org.happysanta.gdtralive.game.external.GdSettings;
-import org.happysanta.gdtralive.game.mod.ModManager;
-import org.happysanta.gdtralive.game.mod.Theme;
-import org.happysanta.gdtralive.game.mod.TrackReference;
-import org.happysanta.gdtralive.game.modes.GameMode;
-import org.happysanta.gdtralive.game.modes.GameParams;
-import org.happysanta.gdtralive.game.storage.GDFile;
-import org.happysanta.gdtralive.game.visual.Fmt;
+import org.happysanta.gdtralive.game.api.external.GdApplication;
+import org.happysanta.gdtralive.game.api.external.GdSettings;
+import org.happysanta.gdtralive.game.ModManager;
+import org.happysanta.gdtralive.game.api.dto.Theme;
+import org.happysanta.gdtralive.game.api.dto.TrackReference;
+import org.happysanta.gdtralive.game.api.GameMode;
+import org.happysanta.gdtralive.game.api.model.GameParams;
+import org.happysanta.gdtralive.game.api.GDFile;
+import org.happysanta.gdtralive.game.util.Fmt;
 
 //todo separate view and controller
 public class TrackEditorView {

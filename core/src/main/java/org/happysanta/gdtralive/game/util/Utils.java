@@ -2,14 +2,14 @@ package org.happysanta.gdtralive.game.util;
 
 import com.google.gson.Gson;
 
-import org.happysanta.gdtralive.game.Constants;
-import org.happysanta.gdtralive.game.levels.InvalidTrackException;
-import org.happysanta.gdtralive.game.levels.TrackParams;
-import org.happysanta.gdtralive.game.mod.Mod;
-import org.happysanta.gdtralive.game.mod.PackLevel;
-import org.happysanta.gdtralive.game.mod.Theme;
-import org.happysanta.gdtralive.game.mod.TrackReference;
-import org.happysanta.gdtralive.game.storage.GDFile;
+import org.happysanta.gdtralive.game.api.Constants;
+import org.happysanta.gdtralive.game.api.exception.InvalidTrackException;
+import org.happysanta.gdtralive.game.api.model.TrackParams;
+import org.happysanta.gdtralive.game.api.model.Mod;
+import org.happysanta.gdtralive.game.api.dto.PackLevel;
+import org.happysanta.gdtralive.game.api.dto.Theme;
+import org.happysanta.gdtralive.game.api.dto.TrackReference;
+import org.happysanta.gdtralive.game.api.GDFile;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;

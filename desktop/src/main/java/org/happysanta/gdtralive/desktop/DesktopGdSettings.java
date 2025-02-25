@@ -1,6 +1,6 @@
 package org.happysanta.gdtralive.desktop;
 
-import org.happysanta.gdtralive.game.external.GdSettings;
+import org.happysanta.gdtralive.game.api.external.GdSettings;
 
 public class DesktopGdSettings implements GdSettings {
 

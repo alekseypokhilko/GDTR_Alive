@@ -1,7 +1,7 @@
 package org.happysanta.gdtralive.desktop;
 
-import org.happysanta.gdtralive.game.external.GdMenu;
-import org.happysanta.gdtralive.game.modes.MenuData;
+import org.happysanta.gdtralive.game.api.external.GdMenu;
+import org.happysanta.gdtralive.game.api.model.MenuData;
 
 public class DesktopGdMenu implements GdMenu {
     @Override

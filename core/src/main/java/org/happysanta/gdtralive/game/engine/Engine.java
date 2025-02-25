@@ -1,13 +1,16 @@
 package org.happysanta.gdtralive.game.engine;
 
-import org.happysanta.gdtralive.game.Constants;
-import org.happysanta.gdtralive.game.external.GdSettings;
-import org.happysanta.gdtralive.game.levels.InvalidTrackException;
-import org.happysanta.gdtralive.game.levels.TrackParams;
-import org.happysanta.gdtralive.game.levels.TrackPhysic;
-import org.happysanta.gdtralive.game.recorder.ElementRecord;
-import org.happysanta.gdtralive.game.recorder.EngineStateRecord;
-import org.happysanta.gdtralive.game.trainer.FullEngineState;
+import org.happysanta.gdtralive.game.api.Constants;
+import org.happysanta.gdtralive.game.api.LevelState;
+import org.happysanta.gdtralive.game.api.model.LeagueProperties;
+import org.happysanta.gdtralive.game.api.external.GdSettings;
+import org.happysanta.gdtralive.game.api.model.Element;
+import org.happysanta.gdtralive.game.api.exception.InvalidTrackException;
+import org.happysanta.gdtralive.game.api.model.TrackParams;
+import org.happysanta.gdtralive.game.api.model.ElementRecord;
+import org.happysanta.gdtralive.game.api.model.EngineStateRecord;
+import org.happysanta.gdtralive.game.api.model.FullEngineState;
+import org.happysanta.gdtralive.game.util.FPMath;
 import org.happysanta.gdtralive.game.util.Utils;
 
 import java.util.ArrayList;

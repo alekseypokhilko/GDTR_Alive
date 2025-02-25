@@ -9,10 +9,10 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.google.gson.Gson;
 
-import org.happysanta.gdtralive.game.external.GdDataSource;
-import org.happysanta.gdtralive.game.storage.HighScores;
-import org.happysanta.gdtralive.game.storage.ModEntity;
-import org.happysanta.gdtralive.game.storage.Score;
+import org.happysanta.gdtralive.game.api.external.GdDataSource;
+import org.happysanta.gdtralive.game.api.model.HighScores;
+import org.happysanta.gdtralive.game.api.model.ModEntity;
+import org.happysanta.gdtralive.game.api.model.Score;
 
 import java.sql.SQLException;
 import java.util.ArrayList;

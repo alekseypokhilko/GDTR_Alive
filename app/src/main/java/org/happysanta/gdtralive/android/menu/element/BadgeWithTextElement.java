@@ -10,11 +10,11 @@ import android.widget.LinearLayout;
 
 import org.happysanta.gdtralive.android.Global;
 import org.happysanta.gdtralive.android.Helpers;
-import org.happysanta.gdtralive.game.util.ActionHandler;
+import org.happysanta.gdtralive.game.api.util.ActionHandler;
 import org.happysanta.gdtralive.android.menu.MenuHandler;
 import org.happysanta.gdtralive.android.menu.views.MenuImageView;
 import org.happysanta.gdtralive.android.menu.views.MenuTextView;
-import org.happysanta.gdtralive.game.engine.KeyboardHandler;
+import org.happysanta.gdtralive.game.KeyboardHandler;
 
 public class BadgeWithTextElement implements MenuElement {
 

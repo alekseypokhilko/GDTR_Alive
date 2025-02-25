@@ -1,6 +1,6 @@
 package org.happysanta.gdtralive.android.menu.element;
 
-import org.happysanta.gdtralive.game.util.ActionHandler;
+import org.happysanta.gdtralive.game.api.util.ActionHandler;
 
 public class PropInput extends InputTextElement {
     private final String key;

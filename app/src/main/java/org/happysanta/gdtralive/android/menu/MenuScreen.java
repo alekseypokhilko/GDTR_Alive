@@ -15,9 +15,9 @@ import org.happysanta.gdtralive.android.menu.element.MenuElement;
 import org.happysanta.gdtralive.android.menu.element.OnMenuElementHighlightListener;
 import org.happysanta.gdtralive.android.menu.element.OptionsMenuElement;
 import org.happysanta.gdtralive.android.menu.views.MenuLinearLayout;
-import org.happysanta.gdtralive.game.engine.KeyboardHandler;
-import org.happysanta.gdtralive.game.modes.MenuData;
-import org.happysanta.gdtralive.game.util.BiFunction;
+import org.happysanta.gdtralive.game.KeyboardHandler;
+import org.happysanta.gdtralive.game.api.model.MenuData;
+import org.happysanta.gdtralive.game.api.util.BiFunction;
 
 import java.util.HashMap;
 import java.util.Map;

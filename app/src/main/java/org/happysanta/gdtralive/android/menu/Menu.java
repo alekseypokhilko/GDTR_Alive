@@ -8,14 +8,14 @@ import android.util.Log;
 
 import org.happysanta.gdtralive.android.GDActivity;
 import org.happysanta.gdtralive.android.menu.element.MenuAction;
-import org.happysanta.gdtralive.game.engine.KeyboardHandler;
-import org.happysanta.gdtralive.game.external.GdApplication;
-import org.happysanta.gdtralive.game.external.GdMenu;
-import org.happysanta.gdtralive.game.modes.GameMode;
-import org.happysanta.gdtralive.game.modes.MenuData;
-import org.happysanta.gdtralive.game.modes.MenuMode;
-import org.happysanta.gdtralive.game.modes.MenuType;
-import org.happysanta.gdtralive.game.util.ActionHandler;
+import org.happysanta.gdtralive.game.KeyboardHandler;
+import org.happysanta.gdtralive.game.api.external.GdApplication;
+import org.happysanta.gdtralive.game.api.external.GdMenu;
+import org.happysanta.gdtralive.game.api.GameMode;
+import org.happysanta.gdtralive.game.api.model.MenuData;
+import org.happysanta.gdtralive.game.api.MenuMode;
+import org.happysanta.gdtralive.game.api.MenuType;
+import org.happysanta.gdtralive.game.api.util.ActionHandler;
 
 public class Menu implements GdMenu, MenuHandler {
     private final GdApplication application;
@@ -89,7 +89,7 @@ public class Menu implements GdMenu, MenuHandler {
         if (screen != null) {
             setCurrentMenu(screen.build(data));
         } else {
-            throw new IllegalStateException("FIX ME");
+            throw new IllegalStateException("FIX ME: " + data.getGameMode().inGame);
         }
     }
 
@@ -98,7 +98,7 @@ public class Menu implements GdMenu, MenuHandler {
         if (screen != null) {
             setCurrentMenu(screen.build(data));
         } else {
-            throw new IllegalStateException("FIX ME");
+            throw new IllegalStateException("FIX ME: " + data.getGameMode().inGame);
         }
         application.getGame().startAutoplay(false); //todo replay track
     }

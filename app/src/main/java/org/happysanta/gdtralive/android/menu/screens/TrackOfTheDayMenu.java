@@ -12,12 +12,12 @@ import org.happysanta.gdtralive.android.menu.element.HighScoreTextMenuElement;
 import org.happysanta.gdtralive.android.menu.element.MenuAction;
 import org.happysanta.gdtralive.android.menu.element.TextMenuElement;
 import org.happysanta.gdtralive.game.Game;
-import org.happysanta.gdtralive.game.external.GdApplication;
-import org.happysanta.gdtralive.game.levels.InvalidTrackException;
-import org.happysanta.gdtralive.game.levels.TrackParams;
-import org.happysanta.gdtralive.game.modes.GameMode;
-import org.happysanta.gdtralive.game.modes.GameParams;
-import org.happysanta.gdtralive.game.visual.Fmt;
+import org.happysanta.gdtralive.game.api.external.GdApplication;
+import org.happysanta.gdtralive.game.api.exception.InvalidTrackException;
+import org.happysanta.gdtralive.game.api.model.TrackParams;
+import org.happysanta.gdtralive.game.api.GameMode;
+import org.happysanta.gdtralive.game.api.model.GameParams;
+import org.happysanta.gdtralive.game.util.Fmt;
 
 import java.util.List;
 

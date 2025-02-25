@@ -1,9 +1,9 @@
 package org.happysanta.gdtralive.desktop;
 
-import org.happysanta.gdtralive.game.external.GdDataSource;
-import org.happysanta.gdtralive.game.storage.HighScores;
-import org.happysanta.gdtralive.game.storage.ModEntity;
-import org.happysanta.gdtralive.game.storage.Score;
+import org.happysanta.gdtralive.game.api.external.GdDataSource;
+import org.happysanta.gdtralive.game.api.model.HighScores;
+import org.happysanta.gdtralive.game.api.model.ModEntity;
+import org.happysanta.gdtralive.game.api.model.Score;
 
 import java.util.ArrayList;
 import java.util.HashMap;

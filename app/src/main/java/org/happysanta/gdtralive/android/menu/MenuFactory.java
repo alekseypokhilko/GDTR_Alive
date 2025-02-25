@@ -23,22 +23,22 @@ import org.happysanta.gdtralive.android.menu.element.PropInput;
 import org.happysanta.gdtralive.android.menu.element.TextMenuElement;
 import org.happysanta.gdtralive.android.menu.screens.ClassicPlayMenuState;
 import org.happysanta.gdtralive.game.Achievement;
-import org.happysanta.gdtralive.game.Constants;
+import org.happysanta.gdtralive.game.api.Constants;
 import org.happysanta.gdtralive.game.Game;
-import org.happysanta.gdtralive.game.mod.Mod;
-import org.happysanta.gdtralive.game.mod.Theme;
-import org.happysanta.gdtralive.game.mod.ThemeHeader;
-import org.happysanta.gdtralive.game.mod.TrackReference;
-import org.happysanta.gdtralive.game.modes.GameMode;
-import org.happysanta.gdtralive.game.modes.GameParams;
-import org.happysanta.gdtralive.game.modes.MenuData;
-import org.happysanta.gdtralive.game.modes.MenuType;
-import org.happysanta.gdtralive.game.recorder.TrackRecord;
-import org.happysanta.gdtralive.game.storage.GDFile;
-import org.happysanta.gdtralive.game.util.Consumer;
-import org.happysanta.gdtralive.game.util.Function;
+import org.happysanta.gdtralive.game.api.model.Mod;
+import org.happysanta.gdtralive.game.api.dto.Theme;
+import org.happysanta.gdtralive.game.api.dto.ThemeHeader;
+import org.happysanta.gdtralive.game.api.dto.TrackReference;
+import org.happysanta.gdtralive.game.api.GameMode;
+import org.happysanta.gdtralive.game.api.model.GameParams;
+import org.happysanta.gdtralive.game.api.model.MenuData;
+import org.happysanta.gdtralive.game.api.MenuType;
+import org.happysanta.gdtralive.game.api.model.TrackRecord;
+import org.happysanta.gdtralive.game.api.GDFile;
+import org.happysanta.gdtralive.game.api.util.Consumer;
+import org.happysanta.gdtralive.game.api.util.Function;
 import org.happysanta.gdtralive.game.util.Utils;
-import org.happysanta.gdtralive.game.visual.Fmt;
+import org.happysanta.gdtralive.game.util.Fmt;
 
 import java.io.File;
 import java.io.IOException;
@@ -84,7 +84,7 @@ public class MenuFactory {
     public MenuScreen get(MenuType type) {
         MenuScreen screen = menus.get(type);
         if (screen == null) {
-            throw new IllegalStateException("FIX ME"); //todo remove
+            throw new IllegalStateException("FIX ME: no "+ type); //todo remove
         }
         return screen;
     }

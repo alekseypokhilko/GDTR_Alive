@@ -8,8 +8,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
 
-import org.happysanta.gdtralive.game.engine.KeyboardHandler;
-import org.happysanta.gdtralive.game.external.GdApplication;
+import org.happysanta.gdtralive.game.KeyboardHandler;
+import org.happysanta.gdtralive.game.api.external.GdApplication;
 
 public class KeyboardController implements View.OnTouchListener {
 

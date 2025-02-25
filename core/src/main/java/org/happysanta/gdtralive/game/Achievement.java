@@ -1,7 +1,7 @@
 package org.happysanta.gdtralive.game;
 
-import org.happysanta.gdtralive.game.visual.Fmt;
-import org.happysanta.gdtralive.game.visual.Strings;
+import org.happysanta.gdtralive.game.util.Fmt;
+import org.happysanta.gdtralive.game.api.Strings;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -13,7 +13,7 @@ import android.view.View;
 import org.happysanta.gdtralive.android.AndroidCanvas;
 import org.happysanta.gdtralive.android.Helpers;
 import org.happysanta.gdtralive.android.GdBitmap;
-import org.happysanta.gdtralive.game.visual.Sprite;
+import org.happysanta.gdtralive.game.api.Sprite;
 
 public class MenuHelmetView extends View {
 

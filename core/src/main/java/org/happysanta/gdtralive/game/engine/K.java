@@ -1,5 +1,7 @@
 package org.happysanta.gdtralive.game.engine;
 
+import org.happysanta.gdtralive.game.api.model.Element;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;

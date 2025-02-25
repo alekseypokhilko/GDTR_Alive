@@ -1,28 +1,22 @@
 package org.happysanta.gdtralive.game;
 
+import org.happysanta.gdtralive.game.api.Constants;
 import org.happysanta.gdtralive.game.engine.Engine;
-import org.happysanta.gdtralive.game.engine.KeyboardHandler;
-import org.happysanta.gdtralive.game.engine.LevelState;
-import org.happysanta.gdtralive.game.external.GdApplication;
-import org.happysanta.gdtralive.game.external.GdMenu;
-import org.happysanta.gdtralive.game.external.GdSettings;
-import org.happysanta.gdtralive.game.external.GdUtils;
-import org.happysanta.gdtralive.game.levels.InvalidTrackException;
-import org.happysanta.gdtralive.game.levels.TrackParams;
-import org.happysanta.gdtralive.game.modes.GameMode;
-import org.happysanta.gdtralive.game.modes.MenuData;
-import org.happysanta.gdtralive.game.modes.MenuMapper;
-import org.happysanta.gdtralive.game.modes.GameParams;
-import org.happysanta.gdtralive.game.recorder.Player;
-import org.happysanta.gdtralive.game.recorder.Recorder;
-import org.happysanta.gdtralive.game.storage.LevelsManager;
-import org.happysanta.gdtralive.game.storage.ModEntity;
-import org.happysanta.gdtralive.game.storage.Score;
-import org.happysanta.gdtralive.game.trainer.Trainer;
+import org.happysanta.gdtralive.game.api.LevelState;
+import org.happysanta.gdtralive.game.api.external.GdApplication;
+import org.happysanta.gdtralive.game.api.external.GdMenu;
+import org.happysanta.gdtralive.game.api.external.GdSettings;
+import org.happysanta.gdtralive.game.api.external.GdUtils;
+import org.happysanta.gdtralive.game.api.exception.InvalidTrackException;
+import org.happysanta.gdtralive.game.api.model.TrackParams;
+import org.happysanta.gdtralive.game.api.GameMode;
+import org.happysanta.gdtralive.game.api.model.MenuData;
+import org.happysanta.gdtralive.game.util.MenuMapper;
+import org.happysanta.gdtralive.game.api.model.GameParams;
+import org.happysanta.gdtralive.game.api.model.ModEntity;
+import org.happysanta.gdtralive.game.api.model.Score;
 import org.happysanta.gdtralive.game.util.Utils;
-import org.happysanta.gdtralive.game.visual.FrameRender;
-import org.happysanta.gdtralive.game.visual.GdView;
-import org.happysanta.gdtralive.game.visual.Strings;
+import org.happysanta.gdtralive.game.api.Strings;
 
 public class Game {
     private final Object menuLock = new Object();
@@ -41,8 +35,6 @@ public class Game {
     private final Player player;
     private final Trainer trainer;
     private final KeyboardHandler keyboardHandler;
-    private final MenuMapper menuMapper;
-
     private GameParams params;
     private long startedTime = 0;
     private long finishedTime = 0;
@@ -73,8 +65,6 @@ public class Game {
         this.keyboardHandler = new KeyboardHandler(application, engine, settings.getInputOption());
         this.utils = application.getUtils();
         this.settings = settings;
-        this.menuMapper = new MenuMapper();
-
 //        view.adjustDimensions(true); //todo move
     }
 
@@ -107,7 +97,7 @@ public class Game {
         long currentTimeMillis = System.currentTimeMillis();
 
         if (application.isMenuShown()) {
-            MenuData inGameMenu = menuMapper.mapInGameMenuData(params);
+            MenuData inGameMenu = MenuMapper.mapInGameMenuData(params);
             menu.showMenu(inGameMenu);
             if (menu.canStartTrack()) {
                 restart(true);
@@ -157,7 +147,7 @@ public class Game {
                 goalLoop();
 
                 updateSelectors(params, getLevelsManager().getCurrentLevel()); //todo fix
-                MenuData finishedMenu = menuMapper.getFinishedMenuData(params, lastTrackTime, levelsManager.getCurrentLevel());
+                MenuData finishedMenu = MenuMapper.getFinishedMenuData(params, lastTrackTime, levelsManager.getCurrentLevel());
                 menu.showMenu(finishedMenu);
 
                 if (menu.canStartTrack()) {
@@ -365,6 +355,14 @@ public class Game {
             player.reset(); //todo check
             player.setTrackRecord(params.getTrackRecord());
             Achievement.achievements.get(Achievement.Type.SERIES_LOVER).increment();
+            try {
+                engine.loadTrack(params.getTrackParams());
+            } catch (InvalidTrackException e) {
+                throw new RuntimeException(e);
+            }
+            engine.startAutoplay();
+            menu.menuToGame();
+            return;
         } else {
             recorder.setCapturingMode(true);
         }

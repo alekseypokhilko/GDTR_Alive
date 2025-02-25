@@ -6,7 +6,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
 
-import org.happysanta.gdtralive.game.external.GdSettings;
+import org.happysanta.gdtralive.game.api.external.GdSettings;
 
 public class AndroidGdSettings implements GdSettings {
 

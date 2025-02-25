@@ -3,8 +3,8 @@ package org.happysanta.gdtralive.android;
 import android.graphics.Canvas;
 import android.view.View;
 
-import org.happysanta.gdtralive.game.mod.ModManager;
-import org.happysanta.gdtralive.game.visual.GdView;
+import org.happysanta.gdtralive.game.ModManager;
+import org.happysanta.gdtralive.game.GdView;
 
 public class GameView extends View {
 

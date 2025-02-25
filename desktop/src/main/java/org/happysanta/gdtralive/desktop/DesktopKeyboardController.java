@@ -1,7 +1,7 @@
 package org.happysanta.gdtralive.desktop;
 
 import org.happysanta.gdtralive.game.Game;
-import org.happysanta.gdtralive.game.engine.KeyboardHandler;
+import org.happysanta.gdtralive.game.KeyboardHandler;
 
 import java.awt.event.KeyEvent;
 

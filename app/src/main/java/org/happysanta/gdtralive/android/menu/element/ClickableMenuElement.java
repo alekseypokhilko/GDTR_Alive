@@ -14,10 +14,9 @@ import android.widget.LinearLayout;
 import org.happysanta.gdtralive.android.Global;
 import org.happysanta.gdtralive.android.Helpers;
 import org.happysanta.gdtralive.R;
-import org.happysanta.gdtralive.android.menu.MenuScreen;
 import org.happysanta.gdtralive.android.menu.views.MenuHelmetView;
 import org.happysanta.gdtralive.android.menu.views.MenuTextView;
-import org.happysanta.gdtralive.game.engine.KeyboardHandler;
+import org.happysanta.gdtralive.game.KeyboardHandler;
 
 public class ClickableMenuElement
 		implements MenuElement {

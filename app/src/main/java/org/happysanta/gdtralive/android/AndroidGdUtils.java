@@ -1,8 +1,8 @@
 package org.happysanta.gdtralive.android;
 
 import org.happysanta.gdtralive.R;
-import org.happysanta.gdtralive.game.external.GdUtils;
-import org.happysanta.gdtralive.game.visual.Strings;
+import org.happysanta.gdtralive.game.api.external.GdUtils;
+import org.happysanta.gdtralive.game.api.Strings;
 
 import java.util.HashMap;
 import java.util.Map;
