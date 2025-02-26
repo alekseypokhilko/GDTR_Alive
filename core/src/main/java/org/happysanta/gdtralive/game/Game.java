@@ -216,9 +216,9 @@ public class Game {
         int currentTrack = params.getTrack();
         int currentTrackNumber = currentTrack + 1;
         int currentLevel = params.getLevel();
-        int currentLeague = params.getLeague();
 
         int unlockedLevels = entity.getUnlockedLevels();
+        int unlockedTracks = entity.getUnlockedTracksCount(currentLevel);
         int currentLevelTacksCount = entity.getTracksCount(currentLevel);
         int levelsCount = entity.getLevelsCount();
         int leaguesCount = Engine.leagueProperties.size(); //todo refactor
@@ -228,7 +228,7 @@ public class Game {
             int unlockedLevel = Math.min(currentLevel + 2, levelsCount);
             entity.setUnlockedLevels(unlockedLevel);
 
-            int unlockedLeague = Math.min(currentLeague + 1, leaguesCount);
+            int unlockedLeague = Math.min(currentLevel + 1, leaguesCount);
             //unlock when finished at not completed level
             if (currentLevel >= unlockedLevels - 1) {
                 entity.setUnlockedLeagues(unlockedLeague);
@@ -244,11 +244,13 @@ public class Game {
             entity.setSelectedTrack(0);
         }
 
-        //finished non last track in selected level
-        if (currentTrackNumber < currentLevelTacksCount) {
+        //finished non last track in selected level //todo handle last league
+        if (currentTrackNumber < currentLevelTacksCount && currentLevel < levelsCount) {
             int unlockedTrack = Math.min(currentTrack + 1, currentLevelTacksCount - 1);
-            entity.setUnlockedTracks(currentLeague, unlockedTrack);
-            entity.setSelectedTrack(unlockedTrack);
+            if (unlockedTrack > unlockedTracks) {
+                entity.setUnlockedTracks(currentLevel, unlockedTrack);
+                entity.setSelectedTrack(unlockedTrack);
+            }
         }
     }
 
@@ -336,6 +338,9 @@ public class Game {
     }
 
     private void saveScore(long lastTrackTime) {
+        if (trainer.isTrainingMode()) {
+            return;
+        }
         Score score = new Score();
         score.setLevelGuid(params.getTrackParams().getGuid());
         score.setLeague(params.getLeague());
@@ -372,7 +377,7 @@ public class Game {
             menu.menuToGame();
             return;
         } else {
-            recorder.setCapturingMode(true);
+            recorder.setCapturingMode(true); //todo toggle
         }
         if (GameMode.TRACK_EDITOR == params.getMode()) {
             restart(false);

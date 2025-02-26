@@ -11,6 +11,7 @@ public class Constants {
 
     public static final String APP_DIRECTORY = "GDTR_Alive";
     public static final String JSON = ".json";
+    public static int RECORD_COUNT = 5;
     public static final long WAIT_TIME = 30L;
     public static final long IMAGES_DELAY = 10L; //todo 1000L;
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy.MM.dd", Locale.US);

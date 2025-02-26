@@ -27,7 +27,8 @@
 		<activity
 				android:name="org.happysanta.gdtralive.android.GDActivity"
 				android:label="@string/app_name"
-				android:screenOrientation="portrait"
+				android:screenOrientation="sensor"
+			    android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
 				android:configChanges="keyboardHidden"
 				android:launchMode="singleInstance">
 <!--			<intent-filter>-->

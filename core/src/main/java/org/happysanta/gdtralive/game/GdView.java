@@ -76,8 +76,9 @@ public class GdView {
         }
 
         engine.updateElementPosition();
+        double yOffset = height > width ? 2 : 1.3;
         moveTrack(-engine.currentX_MAYBE() + width / 2,
-                engine.currentY_MAYBE() + height / 2, width);
+                (int) (engine.currentY_MAYBE() + height / yOffset), width);
 
         EngineStateRecord engineState = engine.getStateReference();
         ViewState viewState = getViewState(width, height);

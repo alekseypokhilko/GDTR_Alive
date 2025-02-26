@@ -55,4 +55,8 @@ public class Trainer {
         states.add(engine.getFullState());
         engine.setRespawn(null);
     }
+
+    public boolean isTrainingMode() {
+        return trainingMode;
+    }
 }

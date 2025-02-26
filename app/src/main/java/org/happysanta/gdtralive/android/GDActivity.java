@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewManager;
@@ -36,29 +37,29 @@ import org.happysanta.gdtralive.android.menu.views.MenuImageView;
 import org.happysanta.gdtralive.android.menu.views.MenuLinearLayout;
 import org.happysanta.gdtralive.android.menu.views.MenuTitleLinearLayout;
 import org.happysanta.gdtralive.android.menu.views.ObservableScrollView;
-import org.happysanta.gdtralive.game.api.Constants;
 import org.happysanta.gdtralive.game.Game;
+import org.happysanta.gdtralive.game.HighScoreManager;
+import org.happysanta.gdtralive.game.ModManager;
+import org.happysanta.gdtralive.game.SplashScreen;
+import org.happysanta.gdtralive.game.api.Constants;
+import org.happysanta.gdtralive.game.api.GDFile;
+import org.happysanta.gdtralive.game.api.GameMode;
+import org.happysanta.gdtralive.game.api.MenuType;
+import org.happysanta.gdtralive.game.api.Sprite;
+import org.happysanta.gdtralive.game.api.dto.Theme;
+import org.happysanta.gdtralive.game.api.dto.TrackReference;
 import org.happysanta.gdtralive.game.api.external.GdApplication;
 import org.happysanta.gdtralive.game.api.external.GdDataSource;
 import org.happysanta.gdtralive.game.api.external.GdFileStorage;
 import org.happysanta.gdtralive.game.api.external.GdMenu;
 import org.happysanta.gdtralive.game.api.external.GdSettings;
 import org.happysanta.gdtralive.game.api.external.GdUtils;
-import org.happysanta.gdtralive.game.util.mrg.MrgUtils;
-import org.happysanta.gdtralive.game.api.model.Mod;
-import org.happysanta.gdtralive.game.ModManager;
-import org.happysanta.gdtralive.game.api.dto.Theme;
-import org.happysanta.gdtralive.game.api.dto.TrackReference;
-import org.happysanta.gdtralive.game.api.GameMode;
 import org.happysanta.gdtralive.game.api.model.GameParams;
 import org.happysanta.gdtralive.game.api.model.MenuData;
-import org.happysanta.gdtralive.game.api.MenuType;
+import org.happysanta.gdtralive.game.api.model.Mod;
 import org.happysanta.gdtralive.game.api.model.TrackRecord;
-import org.happysanta.gdtralive.game.api.GDFile;
-import org.happysanta.gdtralive.game.HighScoreManager;
 import org.happysanta.gdtralive.game.util.Utils;
-import org.happysanta.gdtralive.game.SplashScreen;
-import org.happysanta.gdtralive.game.api.Sprite;
+import org.happysanta.gdtralive.game.util.mrg.MrgUtils;
 
 import java.io.File;
 import java.io.InputStream;
@@ -101,7 +102,7 @@ public class GDActivity extends Activity implements GdApplication, Runnable {
     public ObservableScrollView scrollView;
     public FrameLayout frame;
     public MenuLinearLayout menuLayout;
-    private KeyboardController keyboardController;
+    public KeyboardController keyboardController;
     public TextView menuTitleTextView;
     private MenuLinearLayout keyboardLayout;
     private int buttonHeight = 60;
@@ -397,6 +398,18 @@ public class GDActivity extends Activity implements GdApplication, Runnable {
     }
 
     @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        keyboardController.getKeyboardHandler().mappedKeyPressed(keyCode);
+        return true;
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        keyboardController.getKeyboardHandler().mappedKeyReleased(keyCode);
+        return true;
+    }
+
+    @Override
     protected void onNewIntent(Intent intent) {
         //https://stackoverflow.com/questions/73568525/why-starting-the-activity-by-an-intent-intent-action-view-doesnt-always-start
         //https://stackoverflow.com/questions/11068648/launching-an-intent-for-file-and-mime-type
@@ -686,7 +699,10 @@ public class GDActivity extends Activity implements GdApplication, Runnable {
         game.resume();
 
         menuShown = false;
-        showKeyboardLayout();
+        if (!settings.isKeyboardInMenuEnabled())
+            hideKeyboardLayout();
+        else
+            showKeyboardLayout();
 
         menuToGameUpdateUi();
 

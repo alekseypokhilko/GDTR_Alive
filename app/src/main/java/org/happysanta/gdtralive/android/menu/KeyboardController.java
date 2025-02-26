@@ -219,4 +219,7 @@ public class KeyboardController implements View.OnTouchListener {
 
 	}
 
+	public KeyboardHandler getKeyboardHandler() {
+		return keyboardHandler;
+	}
 }

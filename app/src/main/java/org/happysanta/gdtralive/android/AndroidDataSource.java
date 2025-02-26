@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.google.gson.Gson;
 
+import org.happysanta.gdtralive.game.api.Constants;
 import org.happysanta.gdtralive.game.api.external.GdDataSource;
 import org.happysanta.gdtralive.game.api.model.HighScores;
 import org.happysanta.gdtralive.game.api.model.ModEntity;
@@ -217,7 +218,7 @@ public class AndroidDataSource implements GdDataSource {
                 highScores.get(score.getLeague()).add(score); //todo
                 cursor.moveToNext();
                 i++;
-                if (i > 9) {
+                if (i > Constants.RECORD_COUNT - 1) {
                     break;
                 }
             }

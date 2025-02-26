@@ -4,6 +4,9 @@ import org.happysanta.gdtralive.game.api.external.GdApplication;
 import org.happysanta.gdtralive.game.api.external.GdMenu;
 import org.happysanta.gdtralive.game.engine.Engine;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class KeyboardHandler {
     public static final int KEY_FIRE = 5;
     public static final int KEY_UP = 2;
@@ -17,22 +20,37 @@ public class KeyboardHandler {
             {{0, 0}, {0, 0}, {0, 0}, {1, 0}, {0, -1}, {0, 1}, {-1, 0}, {0, 0}, {0, 0}, {0, 0}}
     };
 
+    private static final Map<Integer, Integer> keyMapping = new HashMap<>();
+
     private final Engine engine;
     private GdMenu menu;
     private final GdApplication application;
 
     private int inputOption;
     private final boolean[] buttons_m_aeaZ;
-    private final boolean[] buttons_m_LaZ;
+    private final boolean[] pressedButtons;
 
     public KeyboardHandler(GdApplication application, Engine engine, int selectedInputOption) {
         this.engine = engine;
         this.application = application;
 
-        inputOption = 2;
+        inputOption = 0;
         buttons_m_aeaZ = new boolean[7];
-        buttons_m_LaZ = new boolean[10];
+        pressedButtons = new boolean[10];
         setInputOption(selectedInputOption);
+
+        keyMapping.put(100, 50); //gamepad Y
+        keyMapping.put(99, 56); //gamepad X
+        keyMapping.put(102, 52); //gamepad LB
+        keyMapping.put(103, 54); //gamepad RB
+//        keyMapping.put(97, 4); //gamepad B
+        keyMapping.put(96, 53); //gamepad A
+
+        keyMapping.put(19, 50); //w
+        keyMapping.put(20, 56); //s
+        keyMapping.put(21, 52); //a
+        keyMapping.put(22, 54); //d
+        keyMapping.put(66, 53); //enter
     }
 
     public void setInputOption(int option) {
@@ -40,61 +58,96 @@ public class KeyboardHandler {
     }
 
     public void resetButtonsTouch() {
-        for (int j = 0; j < 10; j++)
-            buttons_m_LaZ[j] = false;
+        for (int j = 0; j < 10; j++) {
+            pressedButtons[j] = false;
+        }
 
         for (int k = 0; k < 7; k++)
             buttons_m_aeaZ[k] = false;
 
     }
+    public void mappedKeyPressed(int j) {
+        if (104 == j || 105 == j || 109 == j || 108 == j) {
+            if (j == 109) { //start
+                if (application.isMenuShown()) {
+                    application.menuToGame();
+                } else {
+                    application.gameToMenu();
+                }
+            }
+            if (j == 108) {
+                application.getGame().restart(true);
+            }
+            if (j == 104) {
+                pressedButtons[1] = true;
+            }
+            if (j == 105) {
+                pressedButtons[3] = true;
+            }
+            processKeyPressed();
+        } else {
+            Integer code = keyMapping.get(j);
+            keyPressed(code == null ? 0 : code);
+        }
+    }
 
-    public synchronized void keyPressed(int j) {
+    public  void mappedKeyReleased(int j) {
+        if (104 == j || 105 == j) {
+            if (j == 104) {
+                pressedButtons[1] = false;
+            }
+            if (j == 105) {
+                pressedButtons[3] = false;
+            }
+            processKeyPressed();
+        } else {
+            Integer code = keyMapping.get(j);
+            keyReleased(code == null ? 0 : code);
+        }
+    }
+
+    public  void keyPressed(int j) {
         if (application.isMenuShown() && menu != null)
             menu.keyPressed(j);
-        processKeyPressed(j);
-    }
 
-    public synchronized void keyReleased(int j) {
-        processKeyReleased(j);
-    }
-
-    private void processKeyPressed(int j) {
         int k = getGameAction(j);
-        int l;
-        if ((l = j - 48) >= 0 && l < 10)
-            buttons_m_LaZ[l] = true;
-        else if (k >= 0 && k < 7)
+        int buttonNumber;
+        if ((buttonNumber = j - 48) >= 0 && buttonNumber < 10) {
+            pressedButtons[buttonNumber] = true;
+        } else if (k >= 0 && k < 7) {
             buttons_m_aeaZ[k] = true;
+        }
+        processKeyPressed();
+    }
+
+    public  void keyReleased(int j) {
+        int k = getGameAction(j);
+        int buttonNumber;
+        if ((buttonNumber = j - 48) >= 0 && buttonNumber < 10) {
+            pressedButtons[buttonNumber] = false;
+        } else if (k >= 0 && k < 7) {
+            buttons_m_aeaZ[k] = false;
+        }
         processKeyPressed();
     }
 
     private void processKeyPressed() {
-        int j = 0;
-        int k = 0;
+        int gaz = 0;
+        int tilt = 0;
         int l = inputOption;
-        for (int i1 = 0; i1 < 10; i1++)
-            if (buttons_m_LaZ[i1]) {
-                j += m_maaaB[l][i1][0];
-                k += m_maaaB[l][i1][1];
+        for (int buttonNumber = 0; buttonNumber < 10; buttonNumber++) {
+            if (pressedButtons[buttonNumber]) {
+                gaz += m_maaaB[l][buttonNumber][0];
+                tilt += m_maaaB[l][buttonNumber][1];
             }
-
-        for (int j1 = 0; j1 < 7; j1++)
+        }
+        for (int j1 = 0; j1 < 7; j1++) {
             if (buttons_m_aeaZ[j1]) {
-                j += m_DaaB[j1][0];
-                k += m_DaaB[j1][1];
+                gaz += m_DaaB[j1][0];
+                tilt += m_DaaB[j1][1];
             }
-
-        engine.processKeyPressed(j, k);
-    }
-
-    private void processKeyReleased(int j) {
-        int k = getGameAction(j);
-        int l;
-        if ((l = j - 48) >= 0 && l < 10)
-            buttons_m_LaZ[l] = false;
-        else if (k >= 0 && k < 7)
-            buttons_m_aeaZ[k] = false;
-        processKeyPressed();
+        }
+        engine.processKeyPressed(gaz, tilt);
     }
 
     public static int getGameAction(int key) {
