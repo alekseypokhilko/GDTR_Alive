@@ -184,7 +184,7 @@ public class ClassicPlayMenuState {
                         leagueSelector.setOptions(leagues);
                         leagueSelector.setUnlockedCount(getLevel().getUnlockedLeagues());
                         levelSelector.setUnlockedCount(getLevel().getUnlockedLevels());
-                        application.getGame().levelsManager.setTemporallyUnlocked(true);
+                        application.getModManager().setTemporallyUnlockedAll(true);
                         application.notify("Unlocked all tracks, leagues and difficulties");
                     }, () -> {
                     });
@@ -246,7 +246,7 @@ public class ClassicPlayMenuState {
     }
 
     private ModEntity getLevel() {
-        return application.getGame().getLevelsManager().getCurrentLevel();
+        return application.getModManager().getModState();
     }
 
     public void showHighScoreMenu() {

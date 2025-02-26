@@ -7,13 +7,12 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.google.gson.Gson;
-
 import org.happysanta.gdtralive.game.api.Constants;
 import org.happysanta.gdtralive.game.api.external.GdDataSource;
 import org.happysanta.gdtralive.game.api.model.HighScores;
 import org.happysanta.gdtralive.game.api.model.ModEntity;
 import org.happysanta.gdtralive.game.api.model.Score;
+import org.happysanta.gdtralive.game.util.Utils;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -39,13 +38,13 @@ public class AndroidDataSource implements GdDataSource {
         dbHelper.close();
     }
 
-    public synchronized ModEntity createLevel(String name, String author, List<Integer> tracksCount, long addedTs, long installedTs, boolean isDefault, long apiId) {
+    public synchronized ModEntity createLevel(String guid, String name, String author, List<Integer> tracksCount, long addedTs, long installedTs, boolean isDefault, long apiId) {
         ContentValues values = new ContentValues();
         values.put(LevelsSQLiteOpenHelper.LEVELS_COLUMN_NAME, name);
-        values.put(LevelsSQLiteOpenHelper.LEVELS_COLUMN_GUID, name);
+        values.put(LevelsSQLiteOpenHelper.LEVELS_COLUMN_GUID, guid);
         values.put(LevelsSQLiteOpenHelper.LEVELS_COLUMN_AUTHOR, author);
-        values.put(LevelsSQLiteOpenHelper.LEVELS_COLUMN_TRACKS_COUNT, new Gson().toJson(tracksCount));
-        values.put(LevelsSQLiteOpenHelper.LEVELS_COLUMN_TRACKS_UNLOCKED, resetToZero(tracksCount));
+        values.put(LevelsSQLiteOpenHelper.LEVELS_COLUMN_TRACKS_COUNT, Utils.toJson(tracksCount));
+        values.put(LevelsSQLiteOpenHelper.LEVELS_COLUMN_TRACKS_UNLOCKED, resetToDefault(tracksCount));
         values.put(LevelsSQLiteOpenHelper.LEVELS_COLUMN_ADDED, addedTs);
         values.put(LevelsSQLiteOpenHelper.LEVELS_COLUMN_INSTALLED, installedTs);
         values.put(LevelsSQLiteOpenHelper.LEVELS_COLUMN_IS_DEFAULT, isDefault ? 1 : 0);
@@ -279,10 +278,15 @@ public class AndroidDataSource implements GdDataSource {
         }
     }
 
-    public static String resetToZero(List<Integer> counts) {
+    public static String resetToDefault(List<Integer> counts) {
         for (int i = 0; i < counts.size(); i++) {
-            counts.set(i, 0);
+            counts.set(i, -1);
         }
-        return new Gson().toJson(counts);
+        try {
+            counts.set(0, 0);
+            counts.set(1, 0);
+        } catch (Exception ignore) { //if levels count > 1
+        }
+        return Utils.toJson(counts);
     }
 }

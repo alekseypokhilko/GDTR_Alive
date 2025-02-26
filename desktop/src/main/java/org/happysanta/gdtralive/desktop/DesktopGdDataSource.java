@@ -20,7 +20,7 @@ public class DesktopGdDataSource implements GdDataSource {
     }
 
     @Override
-    public ModEntity createLevel(String name, String author, java.util.List<Integer> tracksCount, long addedTs, long installedTs, boolean isDefault, long apiId) {
+    public ModEntity createLevel(String guid, String name, String author, java.util.List<Integer> tracksCount, long addedTs, long installedTs, boolean isDefault, long apiId) {
         return null;
     }
 

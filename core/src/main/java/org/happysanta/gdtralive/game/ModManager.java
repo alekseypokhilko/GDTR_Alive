@@ -6,11 +6,14 @@ import org.happysanta.gdtralive.game.api.dto.InterfaceTheme;
 import org.happysanta.gdtralive.game.api.dto.LeaguePropertiesTheme;
 import org.happysanta.gdtralive.game.api.dto.Theme;
 import org.happysanta.gdtralive.game.api.dto.TrackReference;
+import org.happysanta.gdtralive.game.api.exception.InvalidTrackException;
 import org.happysanta.gdtralive.game.api.external.GdApplication;
+import org.happysanta.gdtralive.game.api.external.GdDataSource;
 import org.happysanta.gdtralive.game.api.external.GdFileStorage;
 import org.happysanta.gdtralive.game.api.model.Mod;
-import org.happysanta.gdtralive.game.api.model.TrackProperties;
+import org.happysanta.gdtralive.game.api.model.ModEntity;
 import org.happysanta.gdtralive.game.api.model.TrackParams;
+import org.happysanta.gdtralive.game.api.model.TrackProperties;
 import org.happysanta.gdtralive.game.util.Utils;
 
 import java.util.ArrayList;
@@ -25,17 +28,38 @@ public class ModManager {
 
     private Theme theme;
     private Mod currentMod;
+    private ModEntity modState;
+    boolean temporallyUnlockedAll = false;
     private TrackReference currentTrack;
     private TrackProperties currentTrackProperties;
     private final float defaultDensity;
     private final GdApplication application;
+    private final GdDataSource dataSource;
 
     public ModManager(GdApplication application, GdFileStorage fileStorage, float defaultDensity) {
         this.application = application;
         this.defaultDensity = defaultDensity;
+        this.dataSource = application.getDataSource();
         this.theme = loadTheme();
         try {
-            currentMod = fileStorage.loadMod(Constants.PACK_NAME); //todo handle pack not found
+            dataSource.open();
+            if (!dataSource.isDefaultLevelCreated()) {
+                this.currentMod = getDefaultMod(fileStorage);
+                List<Integer> counts = this.currentMod.getTrackCounts();
+                long now = System.currentTimeMillis();
+                this.modState = dataSource.createLevel(
+                        currentMod.getGuid(), currentMod.getName(), currentMod.getAuthor(),
+                        counts, now, now, true, 1
+                );
+                application.getSettings().setLevelId(modState.getId());
+            }
+            this.modState = dataSource.getLevel(application.getSettings().getLevelId());
+        } catch (Exception ignore) {
+        }
+        try {
+            if (currentMod == null) {
+                currentMod = getDefaultMod(fileStorage);
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -50,7 +74,6 @@ public class ModManager {
 //            leagueThemes.add(new LeagueTheme(leagueTheme.getProps()));
 //        }
 //        theme.leagueThemes = leagueThemes;
-
     }
 
     public Mod getMod() {
@@ -77,11 +100,27 @@ public class ModManager {
     }
 
     public void setMod(Mod mod) {
+        temporallyUnlockedAll = true; //todo switch between mods
         currentMod = mod;
     }
 
     public List<LeaguePropertiesTheme> getLeagueThemes() {
         return theme.getLeagueThemes();
+    }
+
+    public ModEntity getModState() {
+        return modState;
+    }
+
+    public void saveModState() {
+        if (temporallyUnlockedAll) {
+            return;
+        }
+        dataSource.updateLevel(modState);
+    }
+
+    public void setTemporallyUnlockedAll(boolean temporallyUnlockedAll) {
+        this.temporallyUnlockedAll = temporallyUnlockedAll;
     }
 
     public LeaguePropertiesTheme getLeagueTheme(int league) {
@@ -106,29 +145,12 @@ public class ModManager {
         return theme.getInterfaceTheme();
     }
 
-    public List<LeaguePropertiesTheme> getLeaguesProperties() {
-        return getLeagueThemes();
-    }
-
-    public LeaguePropertiesTheme getLeagueProperties(int league) {
-        return getLeagueThemes().get(league);
-    }
-
     public String[] getLeagueNames() {
-        List<LeaguePropertiesTheme> leagueProperties = getLeaguesProperties();
-        String[] names = new String[leagueProperties.size()];
-        for (int i = 0; i < leagueProperties.size(); i++) {
-            names[i] = leagueProperties.get(i).getName();
-        }
-        return names;
+        return theme.getLeagueNames();
     }
 
     public String[] getLeagueTrackNames(int league) {
-        List<String> names = new ArrayList<>();
-        for (TrackReference track : currentMod.getLevels().get(league).getTracks()) {
-            names.add(track.getName());
-        }
-        return names.toArray(new String[0]);
+        return currentMod.getLevelTrackNames(league);
     }
 
     public void installTheme(Theme theme) {
@@ -158,8 +180,7 @@ public class ModManager {
             if (handler != null) {
                 try {
                     handler.run();
-                } catch (Exception e) {
-                    e.printStackTrace(); //todo
+                } catch (Exception ignore) {
                 }
             }
         }
@@ -227,5 +248,9 @@ public class ModManager {
 
     public int getLevelTracksCount(int level) {
         return currentMod.getLevels().get(level).getTracks().size();
+    }
+
+    private Mod getDefaultMod(GdFileStorage fileStorage) throws InvalidTrackException {
+        return fileStorage.loadMod(Constants.DEFAULT_MOD);
     }
 }

@@ -4,11 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 public class Constants {
-//    public static final String PACK_NAME = "be632fab-ea67-4189-8116-8f53ab1f60c9_Gravity Defied Classic [10.10.10]";
-    public static final String PACK_NAME = "be732fab-ea67-4189-8116-8f53ab1f60c9_Gravity Defied Old Tracks[10.10.10]";
-//    public static final String PACK_NAME = "aa732fab-ea67-4189-8116-8f53ab1f60c9_Gravity Defied Old Tracks[10.10.10]";
-//    public static final String PACK_NAME = "69fc9be2-de23-40b7-b90a-13efe80e5812_Gravity Defied MultiGOD [323.263.452]";
-
+    public static final String DEFAULT_MOD = "be732fab-ea67-4189-8116-8f53ab1f60c9_GDTR_Alive[10.10.10]";
     public static final String APP_DIRECTORY = "GDTR_Alive";
     public static final String JSON = ".json";
     public static int RECORD_COUNT = 5;

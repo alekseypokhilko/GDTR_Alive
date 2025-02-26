@@ -59,6 +59,15 @@ public class Theme {
         this.interfaceTheme = interfaceTheme;
     }
 
+    public String[] getLeagueNames() {
+        List<LeaguePropertiesTheme> leagueProperties = getLeagueThemes();
+        String[] names = new String[leagueProperties.size()];
+        for (int i = 0; i < leagueProperties.size(); i++) {
+            names[i] = leagueProperties.get(i).getName();
+        }
+        return names;
+    }
+
     private static List<String> initDefaultLevelNames() {
         List<String> levelNames = new ArrayList<>();
         levelNames.add("Easy");

@@ -29,8 +29,6 @@ public class Game {
     private final GdView view;
     private GdMenu menu;
 
-    public final LevelsManager levelsManager;
-
     private final Recorder recorder;
     private final Player player;
     private final Trainer trainer;
@@ -48,7 +46,6 @@ public class Game {
 
         final FrameRender frameRender = new FrameRender(application.getModManager());
         this.application = application;
-        this.levelsManager = new LevelsManager(settings, application.getDataSource());
         this.engine = new Engine();
         try {
             engine.init(settings, application.getModManager().loadLevel(0, 0));
@@ -146,10 +143,10 @@ public class Game {
                 trainer.stop();
                 goalLoop();
 
-                ModEntity modEntity = levelsManager.getCurrentLevel();
+                ModEntity modEntity = application.getModManager().getModState();
                 if (GameMode.CLASSIC == params.getMode()) {
                     updateProgress(modEntity, params);
-                    levelsManager.updateLevelSettings();
+                    application.getModManager().saveModState();
                 }
                 MenuData finishedMenu = MenuMapper.getFinishedMenuData(params, lastTrackTime, modEntity);
                 menu.showMenu(finishedMenu);
@@ -350,10 +347,6 @@ public class Game {
         score.setName(settings.getPlayerName());
         application.getHighScoreManager().saveHighScore(score);
         Achievement.achievements.get(Achievement.Type.TRIAL_MASTER).increment();
-    }
-
-    public LevelsManager getLevelsManager() {
-        return levelsManager;
     }
 
     public GdView getView() {

@@ -2,6 +2,7 @@ package org.happysanta.gdtralive.game.api.model;
 
 import org.happysanta.gdtralive.game.api.dto.GameProperties;
 import org.happysanta.gdtralive.game.api.dto.PackLevel;
+import org.happysanta.gdtralive.game.api.dto.TrackReference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,5 +50,21 @@ public class Mod {
 
 	public void setAuthor(String author) {
 		this.author = author;
+	}
+
+	public String[] getLevelTrackNames(int level) {
+		List<String> names = new ArrayList<>();
+		for (TrackReference track : levels.get(level).getTracks()) {
+			names.add(track.getName());
+		}
+		return names.toArray(new String[0]);
+	}
+
+	public List<Integer> getTrackCounts() {
+		List<Integer> counts = new ArrayList<>();
+		for (PackLevel level : levels) {
+			counts.add(level.getTracks().size());
+		}
+		return counts;
 	}
 }

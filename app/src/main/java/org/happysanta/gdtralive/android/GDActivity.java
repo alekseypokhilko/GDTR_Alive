@@ -388,7 +388,7 @@ public class GDActivity extends Activity implements GdApplication, Runnable {
             gameToMenu();
 
         try {
-            game.levelsManager.updateLevelSettings();
+            modManager.saveModState();
         } catch (Exception e) {
             e.printStackTrace(); //todo
         }

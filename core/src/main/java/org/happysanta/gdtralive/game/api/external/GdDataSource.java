@@ -14,7 +14,7 @@ public interface GdDataSource {
 
     void close();
 
-    ModEntity createLevel(String name, String author, List<Integer> tracksCount, long addedTs, long installedTs, boolean isDefault, long apiId);
+    ModEntity createLevel(String guid, String name, String author, List<Integer> tracksCount, long addedTs, long installedTs, boolean isDefault, long apiId);
 
     void resetAllLevelsSettings();
 
