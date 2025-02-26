@@ -121,11 +121,8 @@ public class GDActivity extends Activity implements GdApplication, Runnable {
         this.highScoreManager = new HighScoreManager(this, dataSource);
         this.menuFactory = new MenuFactory(this);
 
-        this.modManager = new ModManager(fileStorage);
-
-        //todo
-        modManager.getGameTheme().setProp("density", Helpers.getGDActivity().getResources().getDisplayMetrics().density);
-        modManager.getGameTheme().setProp("spriteDensity", Helpers.getGDActivity().getResources().getDisplayMetrics().density);
+        float density = Helpers.getGDActivity().getResources().getDisplayMetrics().density;
+        this.modManager = new ModManager(this, fileStorage, density);
 
         this.gameView = new GameView(this, modManager);
 

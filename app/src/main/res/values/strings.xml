@@ -57,6 +57,7 @@
 	<string name="_continue">Continue</string>
 	<string name="name">Name</string>
 	<string name="time">Time</string>
+	<string name="scale">Scale</string>
 
 	<string name="guid">Guid</string>
 	<string name="date">Date</string>

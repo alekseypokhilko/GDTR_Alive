@@ -6,6 +6,7 @@ import org.happysanta.gdtralive.game.api.dto.InterfaceTheme;
 import org.happysanta.gdtralive.game.api.dto.LeaguePropertiesTheme;
 import org.happysanta.gdtralive.game.api.dto.Theme;
 import org.happysanta.gdtralive.game.api.dto.TrackReference;
+import org.happysanta.gdtralive.game.api.external.GdApplication;
 import org.happysanta.gdtralive.game.api.external.GdFileStorage;
 import org.happysanta.gdtralive.game.api.model.Mod;
 import org.happysanta.gdtralive.game.api.model.TrackProperties;
@@ -26,9 +27,13 @@ public class ModManager {
     private Mod currentMod;
     private TrackReference currentTrack;
     private TrackProperties currentTrackProperties;
+    private final float defaultDensity;
+    private final GdApplication application;
 
-    public ModManager(GdFileStorage fileStorage) {
-        theme = loadTheme();
+    public ModManager(GdApplication application, GdFileStorage fileStorage, float defaultDensity) {
+        this.application = application;
+        this.defaultDensity = defaultDensity;
+        this.theme = loadTheme();
         try {
             currentMod = fileStorage.loadMod(Constants.PACK_NAME); //todo handle pack not found
         } catch (Exception e) {
@@ -128,8 +133,18 @@ public class ModManager {
 
     public void installTheme(Theme theme) {
         this.theme = theme;
-        //Settings.setSelectedThemeGuid(theme.getHeader().getGuid());
+        adjustScale(this.theme);
+        application.getSettings().setSelectedThemeGuid(theme.getHeader().getGuid());
         reloadTheme();
+    }
+
+    public void adjustScale(Theme theme) {
+        if (theme == null) {
+            theme = this.theme;
+        }
+        int scale = application.getSettings().getScale();
+        theme.getGameTheme().setProp(GameTheme.density, defaultDensity * scale / 100);
+        theme.getGameTheme().setProp(GameTheme.spriteDensity, defaultDensity);
     }
 
     public void registerThemeReloadHandler(Runnable handler) {
@@ -151,14 +166,12 @@ public class ModManager {
     }
 
     public Theme loadTheme() {
-//        if (true) {
-//            return Theme.amoledMod(); //todo
-//        }
-        String themeGuid = "e46a37c0-69e1-4646-8f9c-b47247586635"; //Helpers.getGDActivity().settings.getSelectedThemeGuid();
+        String themeGuid = application.getSettings().getSelectedThemeGuid();
+        Theme theme;
         if ("e46a37c0-69e1-4646-8f9c-b47247586635".equals(themeGuid)) {
-            return Theme.defaultTheme();
+            theme = Theme.defaultTheme();
         } else if ("b5221ae2-c4ea-4225-9d51-818fdfad34a9".equals(themeGuid)) {
-            return Theme.amoledMod(); //todo
+            theme = Theme.amoledMod(); //todo
         } else {
             try {
 //            theme = Theme.amoledMod();
@@ -170,12 +183,14 @@ public class ModManager {
 //                    Environment.getExternalStorageDirectory(), "GDAlive/record.json"));
 //            ObjectOutputStream oos = new ObjectOutputStream(fout);
 //            oos.writeObject(rec);
-                return Theme.defaultTheme();
+                theme = Theme.defaultTheme();
             } catch (Exception e) {
 //                Helpers.showToast("Mod activation failed");
-                return Theme.defaultTheme();
+                theme = Theme.defaultTheme();
             }
         }
+        adjustScale(theme);
+        return theme;
     }
 
     public TrackParams loadLevel(int levelIndex, int trackIndex) {

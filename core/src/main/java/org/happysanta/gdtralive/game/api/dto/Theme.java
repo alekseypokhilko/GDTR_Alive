@@ -71,10 +71,10 @@ public class Theme {
 
         ThemeHeader header = new ThemeHeader();
         header.setGuid("e46a37c0-69e1-4646-8f9c-b47247586635");
-        header.setName( "Gravity Defied Original");
-        header.setDescription( "Default game parameters. No changes.");
-        header.setAuthor( "GD Alive");
-        header.setDate( "2024-04-09");
+        header.setName("GDTR Original");
+        header.setDescription("Default game parameters. No changes.");
+        header.setAuthor("GD Alive");
+        header.setDate("2024-04-09");
 
         Theme theme = new Theme();
         theme.setHeader(header);
@@ -89,11 +89,11 @@ public class Theme {
         Theme theme = defaultTheme();
 
         ThemeHeader header = new ThemeHeader();
-        header.setGuid( "b5221ae2-c4ea-4225-9d51-818fdfad34a9");
-        header.setName( "Gravity Defied Original Dark");
-        header.setDescription( "Based on Gravity Defied Original. Dark theme adapted for AMOLED displays");
-        header.setAuthor( "GD Alive");
-        header.setDate( "2024-04-09");
+        header.setGuid("b5221ae2-c4ea-4225-9d51-818fdfad34a9");
+        header.setName("GDTR Black");
+        header.setDescription("Based on Gravity Defied Original. Dark theme adapted for AMOLED displays");
+        header.setAuthor("GD Alive");
+        header.setDate("2024-04-09");
         theme.setHeader(header);
 
         GameTheme game = theme.getGameTheme();

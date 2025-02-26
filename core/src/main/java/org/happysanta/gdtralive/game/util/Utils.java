@@ -226,4 +226,8 @@ public class Utils {
         }
         return subDirectory;
     }
+
+    public static boolean isEmpty(String text) {
+        return text.isEmpty();
+    }
 }

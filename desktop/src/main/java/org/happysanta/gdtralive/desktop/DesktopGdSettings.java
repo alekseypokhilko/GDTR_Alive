@@ -161,4 +161,13 @@ public class DesktopGdSettings implements GdSettings {
     private static void setString(String key, String value) {
     }
 
+    @Override
+    public int getScale() {
+        return 100;
+    }
+
+    @Override
+    public void setScale(int value) {
+
+    }
 }

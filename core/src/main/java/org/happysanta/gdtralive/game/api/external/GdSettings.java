@@ -23,6 +23,8 @@ public interface GdSettings {
     void setVibrateOnTouchEnabled(boolean enabled);
     int getInputOption();
     void setInputOption(int value);
+    int getScale();
+    void setScale(int value);
     void setLevelsSort(int type);
     String getPlayerName();
     void setPlayerName(String name);

@@ -23,22 +23,22 @@ import org.happysanta.gdtralive.android.menu.element.PropInput;
 import org.happysanta.gdtralive.android.menu.element.TextMenuElement;
 import org.happysanta.gdtralive.android.menu.screens.ClassicPlayMenuState;
 import org.happysanta.gdtralive.game.Achievement;
-import org.happysanta.gdtralive.game.api.Constants;
 import org.happysanta.gdtralive.game.Game;
-import org.happysanta.gdtralive.game.api.model.Mod;
+import org.happysanta.gdtralive.game.api.Constants;
+import org.happysanta.gdtralive.game.api.GDFile;
+import org.happysanta.gdtralive.game.api.GameMode;
+import org.happysanta.gdtralive.game.api.MenuType;
 import org.happysanta.gdtralive.game.api.dto.Theme;
 import org.happysanta.gdtralive.game.api.dto.ThemeHeader;
 import org.happysanta.gdtralive.game.api.dto.TrackReference;
-import org.happysanta.gdtralive.game.api.GameMode;
 import org.happysanta.gdtralive.game.api.model.GameParams;
 import org.happysanta.gdtralive.game.api.model.MenuData;
-import org.happysanta.gdtralive.game.api.MenuType;
+import org.happysanta.gdtralive.game.api.model.Mod;
 import org.happysanta.gdtralive.game.api.model.TrackRecord;
-import org.happysanta.gdtralive.game.api.GDFile;
 import org.happysanta.gdtralive.game.api.util.Consumer;
 import org.happysanta.gdtralive.game.api.util.Function;
-import org.happysanta.gdtralive.game.util.Utils;
 import org.happysanta.gdtralive.game.util.Fmt;
+import org.happysanta.gdtralive.game.util.Utils;
 
 import java.io.File;
 import java.io.IOException;
@@ -84,7 +84,7 @@ public class MenuFactory {
     public MenuScreen get(MenuType type) {
         MenuScreen screen = menus.get(type);
         if (screen == null) {
-            throw new IllegalStateException("FIX ME: no "+ type); //todo remove
+            throw new IllegalStateException("FIX ME: no " + type); //todo remove
         }
         return screen;
     }
@@ -522,6 +522,14 @@ public class MenuFactory {
         String[] onOffStrings = getStringArray(R.array.on_off);
         String[] keySetStrings = getStringArray(R.array.keyset);
 
+        InputTextElement nameInput = new InputTextElement(Fmt.colon(s(R.string.scale), ""), "" + application.getSettings().getScale(),
+                item -> {
+                    String text = item.getText().toString();
+                    int option = Utils.isEmpty(text) ? 100 : Integer.parseInt(text);
+                    application.getSettings().setScale(option);
+                    application.getModManager().adjustScale(null);
+                });
+        screen.addItem(nameInput);
         screen.addItem(new OptionsMenuElement(s(R.string.perspective), application.getSettings().isPerspectiveEnabled() ? 0 : 1, menu, onOffStrings, true, screen,
                 item -> {
                     int option = ((OptionsMenuElement) item).getSelectedOption();

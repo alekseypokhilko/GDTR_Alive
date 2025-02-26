@@ -28,6 +28,9 @@ public class AndroidGdSettings implements GdSettings {
     private static final String INPUT_OPTION = "input_option";
     private static final int INPUT_OPTION_DEFAULT = 0;
 
+    private static final String SCALE_OPTION = "scale_option";
+    private static final int SCALE_OPTION_DEFAULT = 100;
+
     private static final String LOOK_AHEAD_ENABLED = "look_ahead_enabled";
     private static final boolean LOOK_AHEAD_ENABLED_DEFAULT = true;
 
@@ -60,6 +63,7 @@ public class AndroidGdSettings implements GdSettings {
         setVibrateOnTouchEnabled(VIBRATE_ENABLED_DEFAULT);
         setKeyboardInMenuEnabled(KEYBOARD_IN_MENU_ENABLED_DEFAULT);
         setInputOption(INPUT_OPTION_DEFAULT);
+        setScale(SCALE_OPTION_DEFAULT);
         setLevelsSort(LEVELS_SORT_DEFAULT);
         setPlayerName(NAME_DEFAULT);
     }
@@ -139,9 +143,16 @@ public class AndroidGdSettings implements GdSettings {
     public int getInputOption() {
         return preferences.getInt(INPUT_OPTION, INPUT_OPTION_DEFAULT);
     }
-
     public void setInputOption(int value) {
         setInt(INPUT_OPTION, value);
+    }
+
+    public int getScale() {
+        return preferences.getInt(SCALE_OPTION, SCALE_OPTION_DEFAULT);
+    }
+
+    public void setScale(int value) {
+        setInt(SCALE_OPTION, value);
     }
 
     public void setLevelsSort(int type) {

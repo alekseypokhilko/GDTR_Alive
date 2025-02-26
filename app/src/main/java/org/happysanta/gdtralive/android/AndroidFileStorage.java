@@ -133,8 +133,8 @@ public class AndroidFileStorage implements GdFileStorage {
         File file = Utils.createFileInDirectory(baseDirectory, fileType.folder, sanitizedName);
         if (file != null) {
             try (PrintStream out = new PrintStream(file)) {
-                String levelContent = Fmt.colonNoSpace(fileType.extension, Utils.toJson(obj));
-                out.print(levelContent);
+                String content = Fmt.colonNoSpace(fileType.extension, Utils.toJson(obj));
+                out.print(content);
                 application.notify("Saved"); //todo string
             } catch (Exception e) {
                 //todo request permission
