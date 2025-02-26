@@ -67,7 +67,7 @@ public class KeyboardHandler {
 
     }
     public void mappedKeyPressed(int j) {
-        if (104 == j || 105 == j || 109 == j || 108 == j) {
+        if (104 == j || 105 == j || 109 == j || 108 == j || 107 == j) {
             if (j == 109) { //start
                 if (application.isMenuShown()) {
                     application.menuToGame();
@@ -77,6 +77,9 @@ public class KeyboardHandler {
             }
             if (j == 108) {
                 application.getGame().restart(true);
+            }
+            if (j == 107) {
+                application.getGame().handleSetSavepointAction();
             }
             if (j == 104) {
                 pressedButtons[1] = true;

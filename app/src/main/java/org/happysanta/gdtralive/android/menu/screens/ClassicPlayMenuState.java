@@ -6,10 +6,8 @@ import static org.happysanta.gdtralive.android.Helpers.showAlert;
 import static org.happysanta.gdtralive.android.Helpers.showConfirm;
 
 import android.text.Html;
-import android.view.View;
 
 import org.happysanta.gdtralive.R;
-import org.happysanta.gdtralive.android.Helpers;
 import org.happysanta.gdtralive.android.menu.Menu;
 import org.happysanta.gdtralive.android.menu.MenuFactory;
 import org.happysanta.gdtralive.android.menu.MenuScreen;
@@ -135,8 +133,7 @@ public class ClassicPlayMenuState {
         inGame.addItem(new MenuAction(s(R.string._continue), MenuAction.CONTINUE, menu, item -> application.menuToGame()));
         inGame.addItem(new MenuAction(Fmt.colon(s(R.string.restart), ""), MenuAction.RESTART, menu, item -> menu.menuToGame()));
         inGame.addItem(new MenuAction(s(R.string.training_mode), menu, item -> {
-            //todo remove Helpers.getGDActivity()
-            Helpers.getGDActivity().actionButton.setVisibility(View.VISIBLE);
+            application.trainingMode();
             application.menuToGame();
         }));
         inGame.addItem(menu.createAction(MenuAction.LIKE, item -> application.notify("Coming soon")));

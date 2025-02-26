@@ -721,6 +721,11 @@ public class GDActivity extends Activity implements GdApplication, Runnable {
         trackEditor.hideLayout();
     }
 
+    @Override
+    public void trainingMode() {
+        actionButton.setVisibility(View.VISIBLE);
+    }
+
     public void editMode() {
         menuToGame();
         hideKeyboardLayout();

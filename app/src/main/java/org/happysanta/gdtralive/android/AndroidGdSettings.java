@@ -16,6 +16,9 @@ public class AndroidGdSettings implements GdSettings {
     private static final String PERSPECTIVE_ENABLED = "perspective_enabled";
     private static final boolean PERSPECTIVE_ENABLED_DEFAULT = true;
 
+    private static final String RECORDING_ENABLED = "perspective_enabled";
+    private static final boolean RECORDING_ENABLED_DEFAULT = false;
+
     private static final String SHADOWS_ENABLED = "shadows_enabled";
     private static final boolean SHADOWS_ENABLED_DEFAULT = true;
 
@@ -55,6 +58,7 @@ public class AndroidGdSettings implements GdSettings {
     }
 
     public void resetAll() {
+        setRecordingEnabled(RECORDING_ENABLED_DEFAULT);
         setPerspectiveEnabled(PERSPECTIVE_ENABLED_DEFAULT);
         setShadowsEnabled(SHADOWS_ENABLED_DEFAULT);
         setDriverSpriteEnabled(DRIVER_SPRITE_ENABLED_DEFAULT);
@@ -82,6 +86,14 @@ public class AndroidGdSettings implements GdSettings {
 
     public void setPerspectiveEnabled(boolean enabled) {
         setBoolean(PERSPECTIVE_ENABLED, enabled);
+    }
+
+    public boolean isRecordingEnabled() {
+        return preferences.getBoolean(RECORDING_ENABLED, RECORDING_ENABLED_DEFAULT);
+    }
+
+    public void setRecordingEnabled(boolean enabled) {
+        setBoolean(RECORDING_ENABLED, enabled);
     }
 
     public boolean isShadowsEnabled() {

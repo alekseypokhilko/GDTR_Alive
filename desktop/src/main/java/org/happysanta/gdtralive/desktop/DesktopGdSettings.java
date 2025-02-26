@@ -170,4 +170,14 @@ public class DesktopGdSettings implements GdSettings {
     public void setScale(int value) {
 
     }
+
+    @Override
+    public boolean isRecordingEnabled() {
+        return false;
+    }
+
+    @Override
+    public void setRecordingEnabled(boolean enabled) {
+
+    }
 }

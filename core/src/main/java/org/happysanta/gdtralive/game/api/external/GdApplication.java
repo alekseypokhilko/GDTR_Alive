@@ -19,6 +19,7 @@ public interface GdApplication {
     boolean isOnPause();
     void gameToMenu();
     void menuToGame();
+    void trainingMode();
     void exit();
     void notify(String message);
 }

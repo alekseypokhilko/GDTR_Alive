@@ -5,6 +5,8 @@ public interface GdSettings {
     void resetAll();
     long getLevelId() ;
     void setLevelId(long levelId);
+    boolean isRecordingEnabled();
+    void setRecordingEnabled(boolean enabled);
     boolean isPerspectiveEnabled();
     void setPerspectiveEnabled(boolean enabled);
     boolean isShadowsEnabled();

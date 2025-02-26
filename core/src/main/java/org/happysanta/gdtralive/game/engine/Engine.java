@@ -486,7 +486,7 @@ public class Engine {
     }
 
     public int currentX_MAYBE() {
-        if (replay) {
+        if (replay && replayState != null) {
             //todo BUG when replay on other device?
             return (replayState.elements()[0].x() + replayState.X << 2) >> 16;
         }
@@ -503,7 +503,7 @@ public class Engine {
     }
 
     public int currentY_MAYBE() {
-        if (replay) {
+        if (replay && replayState != null) {
             return (replayState.elements()[0].y() + replayState.Y << 2) >> 16;
         }
         if (edit) {
@@ -817,7 +817,7 @@ public class Engine {
     }
 
     public int getProgress() {
-        if (replay) {
+        if (replay && replayState != null) {
             return replayState.p;
         }
         int j = Math.max(frontWheel().x, backWheel().x);
@@ -987,7 +987,7 @@ public class Engine {
 
 
     public EngineStateRecord getState() {
-        if (replay) {
+        if (replay && replayState != null) {
             replayState.replay = true;
             return replayState;
         }
@@ -1025,7 +1025,7 @@ public class Engine {
     }
 
     public EngineStateRecord getStateReference() {
-        if (replay) {
+        if (replay && replayState != null) {
             replayState.replay = true;
             return replayState;
         }

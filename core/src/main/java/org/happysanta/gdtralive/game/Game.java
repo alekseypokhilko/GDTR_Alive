@@ -140,7 +140,7 @@ public class Game {
                 if (GameMode.RANDOM.equals(params.getMode())) {
                     Achievement.achievements.get(Achievement.Type.GAMBLER).increment();
                 }
-                if (recorder.isCapturingMode()) {
+                if (settings.isRecordingEnabled() && recorder.isCapturingMode()) {
                     recorder.saveCapture(lastTrackTime);
                 }
                 trainer.stop();
@@ -244,13 +244,13 @@ public class Game {
             entity.setSelectedTrack(0);
         }
 
-        //finished non last track in selected level //todo handle last league
+        //finished non last track in selected level
         if (currentTrackNumber < currentLevelTacksCount && currentLevel < levelsCount) {
             int unlockedTrack = Math.min(currentTrack + 1, currentLevelTacksCount - 1);
             if (unlockedTrack > unlockedTracks) {
                 entity.setUnlockedTracks(currentLevel, unlockedTrack);
-                entity.setSelectedTrack(unlockedTrack);
             }
+            entity.setSelectedTrack(unlockedTrack);
         }
     }
 
@@ -259,8 +259,10 @@ public class Game {
             if (recorder.isCapturing()) {
                 recorder.captureState();
             } else {
-                recorder.startCapture();
-                recorder.captureState();
+                if (settings.isRecordingEnabled()) {
+                    recorder.startCapture();
+                    recorder.captureState();
+                }
             }
         } else {
             recorder.setCapturingMode(false);
@@ -270,13 +272,13 @@ public class Game {
     }
 
     public void restart(boolean showLevelName) {
-        view.setDrawTimer(true);
+        view.setDrawTimer(params != null && params.getMode() != GameMode.TRACK_EDITOR && !application.isMenuShown());
         engine.resetToStart_MAYBE();
         startedTime = 0;
         finishedTime = 0;
         pausedTime = 0;
         delayedRestartAtTime = 0;
-        if (showLevelName)
+        if (showLevelName && !application.isMenuShown())
             view.showInfoMessage(engine.getTrackPhysic().getTrack().name, 3000);
         engine.resetControls();
         keyboardHandler.resetButtonsTouch();
@@ -330,7 +332,7 @@ public class Game {
     }
 
     public void resume() {
-        view.setDrawTimer(true);
+        view.setDrawTimer(params != null && params.getMode() != GameMode.TRACK_EDITOR);
         if (pausedTimeStarted > 0 && startedTime > 0) {
             pausedTime += (System.currentTimeMillis() - pausedTimeStarted);
             pausedTimeStarted = 0;
@@ -365,7 +367,7 @@ public class Game {
     public void startTrack(GameParams params) {
         this.params = params;
         if (GameMode.REPLAY == params.getMode()) {
-            player.reset(); //todo check
+            player.reset();
             player.setTrackRecord(params.getTrackRecord());
             Achievement.achievements.get(Achievement.Type.SERIES_LOVER).increment();
             try {
@@ -373,11 +375,12 @@ public class Game {
             } catch (InvalidTrackException e) {
                 throw new RuntimeException(e); //todo
             }
+            engine.setReplayMode(true);
             engine.startAutoplay();
             menu.menuToGame();
             return;
         } else {
-            recorder.setCapturingMode(true); //todo toggle
+            recorder.setCapturingMode(settings.isRecordingEnabled());
         }
         if (GameMode.TRACK_EDITOR == params.getMode()) {
             restart(false);
@@ -419,6 +422,16 @@ public class Game {
     public void setPerspectiveEnabled(boolean flag) {
         settings.setPerspectiveEnabled(flag);
         engine.setPerspectiveEnabled(flag);
+    }
+
+    public void setRecordingEnabled(boolean flag) {
+        settings.setRecordingEnabled(flag);
+        if (!flag) {
+            recorder.setCapturingMode(false);
+            recorder.reset();
+        } else {
+            recorder.setCapturingMode(true);
+        }
     }
 
     public void setShadowsEnabled(boolean enabled) {

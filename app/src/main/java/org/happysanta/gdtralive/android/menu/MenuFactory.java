@@ -120,6 +120,7 @@ public class MenuFactory {
 
         add(MenuType.RECORDINGS, this::createRecordings);
         add(MenuType.RECORDING_OPTIONS, this::createRecordingOptions);
+        add(MenuType.IN_GAME_REPLAY, this::createInGameReplay);
         add(MenuType.ACHIEVEMENTS, this::createAchievements);
         transform(MenuType.PLAY, this::fillPlay);
 
@@ -135,6 +136,22 @@ public class MenuFactory {
     private MenuScreen createTEMPLATE(Map<MenuType, MenuScreen> r) {
         MenuScreen screen = new MenuScreen(s(R.string.main), r.get(MenuType.MAIN));
         screen.setBuilder((s, data) -> {
+            return s;
+        });
+        return screen;
+    }
+
+    private MenuScreen createInGameReplay(Map<MenuType, MenuScreen> r) {
+        MenuScreen screen = new MenuScreen(s(R.string.replay), r.get(MenuType.RECORDING_OPTIONS));
+        screen.setBuilder((s, data) -> {
+            s.clear();
+            s.addItem(new MenuAction(s(R.string._continue), MenuAction.CONTINUE, menu, __ -> application.menuToGame()));
+            s.addItem(new MenuItem(s(R.string.options), this.get(MenuType.OPTIONS), menu, null));
+            s.addItem(new MenuAction(s(R.string.back), menu, it -> {
+                application.getGame().resetState();
+                menu.menuBack();
+            }));
+            s.resetHighlighted();
             return s;
         });
         return screen;
@@ -442,9 +459,6 @@ public class MenuFactory {
                 this.get(MenuType.RECORDINGS).build();
                 application.getGame().startAutoplay(true);
             }));
-
-
-            application.getGame().startTrack(GameParams.of(rec));
             return s;
         });
         return screen;
@@ -522,14 +536,18 @@ public class MenuFactory {
         String[] onOffStrings = getStringArray(R.array.on_off);
         String[] keySetStrings = getStringArray(R.array.keyset);
 
-        InputTextElement nameInput = new InputTextElement(Fmt.colon(s(R.string.scale), ""), "" + application.getSettings().getScale(),
-                item -> {
-                    String text = item.getText().toString();
-                    int option = Utils.isEmpty(text) ? 100 : Integer.parseInt(text);
-                    application.getSettings().setScale(option);
+        screen.addItem(new InputTextElement(Fmt.colon(s(R.string.scale), ""), "" + application.getSettings().getScale(),
+                item2 -> {
+                    String text = item2.getText().toString();
+                    int option1 = Utils.isEmpty(text) ? 100 : Integer.parseInt(text);
+                    application.getSettings().setScale(option1);
                     application.getModManager().adjustScale(null);
-                });
-        screen.addItem(nameInput);
+                }));
+        screen.addItem(new OptionsMenuElement(s(R.string.recording_enabled), application.getSettings().isRecordingEnabled() ? 0 : 1, menu, onOffStrings, true, screen,
+                item -> {
+                    int option = ((OptionsMenuElement) item).getSelectedOption();
+                    application.getGame().setRecordingEnabled(option == 0);
+                }));
         screen.addItem(new OptionsMenuElement(s(R.string.perspective), application.getSettings().isPerspectiveEnabled() ? 0 : 1, menu, onOffStrings, true, screen,
                 item -> {
                     int option = ((OptionsMenuElement) item).getSelectedOption();
@@ -566,7 +584,7 @@ public class MenuFactory {
         screen.addItem(new OptionsMenuElement(s(R.string.vibrate_on_touch), application.getSettings().isVibrateOnTouchEnabled() ? 0 : 1, menu, onOffStrings, true, screen,
                 item -> application.getSettings().setVibrateOnTouchEnabled(((OptionsMenuElement) item).getSelectedOption() == 0)
         ));
-        screen.addItem(new OptionsMenuElement(s(R.string.keyboard_in_menu), application.getSettings().isKeyboardInMenuEnabled() ? 0 : 1, menu, onOffStrings, true, screen,
+        screen.addItem(new OptionsMenuElement(s(R.string.show_keyboard), application.getSettings().isKeyboardInMenuEnabled() ? 0 : 1, menu, onOffStrings, true, screen,
                 item -> {
                     boolean enabled = ((OptionsMenuElement) item).getSelectedOption() == 0;
                     application.getSettings().setKeyboardInMenuEnabled(enabled);
