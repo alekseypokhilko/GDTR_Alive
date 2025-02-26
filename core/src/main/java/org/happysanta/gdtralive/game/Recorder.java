@@ -54,7 +54,7 @@ public class Recorder {
         try {
             TrackRecord trackRecord = new TrackRecord(engine.getTrackPhysic().getTrack(), time, engine.league, settings.getPlayerName());
             trackRecord.setStates(states);
-            fileStorage.addRecord(trackRecord);
+            fileStorage.addRecord(trackRecord); //todo
         } catch (Exception ignore) {
         }
 

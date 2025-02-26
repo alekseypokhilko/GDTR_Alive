@@ -5,13 +5,14 @@ configurations {
 }
 
 android {
-    compileSdkVersion 29
-    buildToolsVersion "31.0.0"
+    namespace "org.happysanta.gdtralive"
+    compileSdkVersion 35
+//    buildToolsVersion "31.0.0"
 
     defaultConfig {
         applicationId "org.happysanta.gdtralive"
         minSdkVersion 9
-        targetSdkVersion 29
+        targetSdkVersion 35
     }
 
     buildTypes {

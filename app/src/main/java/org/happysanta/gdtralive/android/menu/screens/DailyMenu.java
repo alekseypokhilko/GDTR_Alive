@@ -2,6 +2,8 @@ package org.happysanta.gdtralive.android.menu.screens;
 
 import static org.happysanta.gdtralive.android.Helpers.s;
 
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.text.Html;
 
 import org.happysanta.gdtralive.R;
@@ -14,20 +16,25 @@ import org.happysanta.gdtralive.android.menu.element.MenuAction;
 import org.happysanta.gdtralive.android.menu.element.MenuItem;
 import org.happysanta.gdtralive.android.menu.element.OptionsMenuElement;
 import org.happysanta.gdtralive.android.menu.element.TextMenuElement;
-import org.happysanta.gdtralive.game.api.Constants;
 import org.happysanta.gdtralive.game.Game;
-import org.happysanta.gdtralive.game.util.Utils;
-import org.happysanta.gdtralive.game.api.external.GdApplication;
-import org.happysanta.gdtralive.game.api.exception.InvalidTrackException;
-import org.happysanta.gdtralive.game.api.dto.PackTrackReference;
-import org.happysanta.gdtralive.game.api.model.TrackParams;
+import org.happysanta.gdtralive.game.api.Constants;
 import org.happysanta.gdtralive.game.api.GameMode;
+import org.happysanta.gdtralive.game.api.dto.PackLevel;
+import org.happysanta.gdtralive.game.api.dto.PackTrackReference;
+import org.happysanta.gdtralive.game.api.dto.TrackReference;
+import org.happysanta.gdtralive.game.api.exception.InvalidTrackException;
+import org.happysanta.gdtralive.game.api.external.GdApplication;
 import org.happysanta.gdtralive.game.api.model.GameParams;
+import org.happysanta.gdtralive.game.api.model.Mod;
+import org.happysanta.gdtralive.game.api.model.TrackParams;
 import org.happysanta.gdtralive.game.util.Fmt;
+import org.happysanta.gdtralive.game.util.Utils;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class DailyMenu {
     private final GdApplication application;
@@ -87,7 +94,7 @@ public class DailyMenu {
         try {
             //todo determine current daily pack
             String packName = "62feb1e5-b00d-45a1-8bad-6316a4e28e7e_Track 450 (Yaskevich Igor) [150.150.150]";
-            tracks = application.getFileStorage().getDailyTracksReferences(packName);
+            tracks = new ArrayList<>();// application.getFileStorage().getDailyTracksReferences(packName);
         } catch (Exception e) {
             application.notify("File loading error: " + e.getMessage());
         }
@@ -155,11 +162,35 @@ public class DailyMenu {
     private void startDailyTrack(int trackNumber) {
         PackTrackReference trackRef = tracks.get(trackNumber);
         try {
-            TrackParams track = application.getFileStorage().getLevelFromPack(trackRef.getPackGuid(), trackRef.getGuid());
+            TrackParams track = null; //application.getFileStorage().getLevelFromPack(trackRef.getPackGuid(), trackRef.getGuid());
             game.startTrack(GameParams.of(GameMode.DAILY, track));
-        } catch (InvalidTrackException e) {
+        } catch (Exception e) {
             application.notify("File loading error: " + e.getMessage());
         }
     }
 
+    public List<PackTrackReference> getDailyTracksReferences(String packName) throws InvalidTrackException {
+        Mod mod = new Mod();// loadMod(packName);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) { //todo
+            return mod.getLevels().stream()
+                    .map(PackLevel::getTracks)
+                    .flatMap(Collection::stream)
+                    .map(ref -> new PackTrackReference(ref.getGuid(), ref.getName(), packName))
+                    .collect(Collectors.toList());
+        } else {
+            return null;
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.N) //todo lower version
+    public TrackParams getLevelFromPack(String packName, String trackGuid) throws InvalidTrackException {
+        Mod mod = new Mod();// loadMod(packName);
+        return mod.getLevels().stream()
+                .map(PackLevel::getTracks)
+                .flatMap(Collection::stream)
+                .filter(tRef -> tRef.getGuid().equals(trackGuid))
+                .findAny()
+                .map(TrackReference::getData)
+                .orElseThrow(() -> new InvalidTrackException("Level not found"));
+    }
 }

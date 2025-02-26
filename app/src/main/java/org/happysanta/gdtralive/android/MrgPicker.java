@@ -6,6 +6,7 @@ import static org.happysanta.gdtralive.android.Helpers.showAlert;
 
 import android.app.AlertDialog;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.text.InputType;
 import android.widget.EditText;
@@ -45,7 +46,7 @@ public class MrgPicker {
                             final File file1 = new File(Objects.requireNonNull(Uri.fromFile(file).getPath()));
                             try (InputStream in = Helpers.getGDActivity().getContentResolver().openInputStream(Uri.fromFile(file))) {
                                 Mod mod = MrgUtils.convertMrg(name, file1.getName(), Utils.readAllBytes(in));
-                                gd.menu.setCurrentMenu(gd.getMenuFactory().get(MenuType.MOD_OPTIONS).build(new MenuData(mod)));
+                                gd.menu.setCurrentMenu(gd.getMenuFactory().get(MenuType.MOD_OPTIONS).build(new MenuData(mod, name)));
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -59,10 +60,11 @@ public class MrgPicker {
     }
 
     public static boolean isExternalStorageReadable() {
-        String state = Environment.getExternalStorageState();
-        if (Environment.MEDIA_MOUNTED.equals(state) ||
-                Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
-            return true;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            String state = Environment.getExternalStorageState(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS));
+
+            return Environment.MEDIA_MOUNTED.equals(state) ||
+                    Environment.MEDIA_MOUNTED_READ_ONLY.equals(state);
         }
         return false;
     }

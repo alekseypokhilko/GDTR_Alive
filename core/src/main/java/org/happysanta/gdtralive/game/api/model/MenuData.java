@@ -1,9 +1,8 @@
 package org.happysanta.gdtralive.game.api.model;
 
 import org.happysanta.gdtralive.game.api.GameMode;
-import org.happysanta.gdtralive.game.api.dto.Theme;
-import org.happysanta.gdtralive.game.api.dto.TrackReference;
 import org.happysanta.gdtralive.game.api.MenuMode;
+import org.happysanta.gdtralive.game.api.dto.TrackReference;
 
 public class MenuData {
     private MenuMode menuMode;
@@ -22,7 +21,7 @@ public class MenuData {
     private int newUnlockedLeagueCount;
     private TrackRecord recording;
     private Mod mod;
-    private Theme theme;
+    private String fileName;
     private TrackReference trackRef;
 
     public MenuData() {
@@ -32,12 +31,13 @@ public class MenuData {
         this.recording = trackRecord;
     }
 
-    public MenuData(Mod mod) {
+    public MenuData(Mod mod, String name) {
         this.mod = mod;
+        this.fileName = name;
     }
 
-    public MenuData(Theme theme) {
-        this.theme = theme;
+    public MenuData(String name) {
+        this.fileName = name;
     }
 
     public MenuData(TrackReference track) {
@@ -170,12 +170,12 @@ public class MenuData {
         return recording;
     }
 
-    public Theme getTheme() {
-        return theme;
-    }
-
     public Mod getMod() {
         return mod;
+    }
+
+    public String getFileName() {
+        return fileName;
     }
 
     @Override

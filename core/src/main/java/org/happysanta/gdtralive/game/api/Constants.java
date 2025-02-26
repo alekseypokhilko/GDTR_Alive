@@ -4,9 +4,8 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 public class Constants {
-    public static final String DEFAULT_MOD = "be732fab-ea67-4189-8116-8f53ab1f60c9_GDTR_Alive[10.10.10]";
+    public static final String DEFAULT_MOD = "GDTR_Alive";
     public static final String APP_DIRECTORY = "GDTR_Alive";
-    public static final String JSON = ".json";
     public static int RECORD_COUNT = 5;
     public static final long WAIT_TIME = 30L;
     public static final long IMAGES_DELAY = 10L; //todo 1000L;

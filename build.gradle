@@ -7,7 +7,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.0.3' //todo to android
+        classpath 'com.android.tools.build:gradle:8.8.1' //todo to android
     }
 }
 

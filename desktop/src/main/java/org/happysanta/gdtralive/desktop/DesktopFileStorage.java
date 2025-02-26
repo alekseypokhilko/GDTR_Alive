@@ -2,15 +2,15 @@ package org.happysanta.gdtralive.desktop;
 
 import com.google.gson.Gson;
 
-import org.happysanta.gdtralive.game.api.external.GdFileStorage;
-import org.happysanta.gdtralive.game.api.exception.InvalidTrackException;
-import org.happysanta.gdtralive.game.api.dto.PackTrackReference;
-import org.happysanta.gdtralive.game.api.model.TrackParams;
-import org.happysanta.gdtralive.game.api.model.Mod;
-import org.happysanta.gdtralive.game.api.dto.PackLevel;
-import org.happysanta.gdtralive.game.api.dto.TrackReference;
-import org.happysanta.gdtralive.game.api.model.TrackRecord;
 import org.happysanta.gdtralive.game.api.GDFile;
+import org.happysanta.gdtralive.game.api.dto.PackLevel;
+import org.happysanta.gdtralive.game.api.dto.Theme;
+import org.happysanta.gdtralive.game.api.dto.TrackReference;
+import org.happysanta.gdtralive.game.api.exception.InvalidTrackException;
+import org.happysanta.gdtralive.game.api.external.GdFileStorage;
+import org.happysanta.gdtralive.game.api.model.Mod;
+import org.happysanta.gdtralive.game.api.model.TrackParams;
+import org.happysanta.gdtralive.game.api.model.TrackRecord;
 import org.happysanta.gdtralive.game.util.Utils;
 
 import java.io.IOException;
@@ -26,25 +26,6 @@ public class DesktopFileStorage implements GdFileStorage {
     public static final String ASSETS_MODS_FOLDER = "mods/";
 
     public static final String APP_DIRECTORY = "GDAlive";
-
-    @Override
-    public TrackParams loadLevel(String guid) throws InvalidTrackException {
-        return new TrackParams();
-    }
-
-    @Override
-    public Mod loadMod(String filename) throws InvalidTrackException {
-        ClassLoader classloader = Thread.currentThread().getContextClassLoader();
-        try (InputStream inputStream = classloader.getResourceAsStream("mod.json")) {
-            String content = Utils.readContent(inputStream);
-            String ims = content.substring(content.indexOf(":") + 1);
-            Mod mod = new Gson().fromJson(ims, Mod.class);
-            validatePack(mod);
-            return mod;
-        } catch (IOException e) {
-            throw new InvalidTrackException(e);
-        }
-    }
 
     private static void validateLevel(TrackParams track) throws InvalidTrackException {
         validateGuid(track.getGuid());
@@ -65,9 +46,8 @@ public class DesktopFileStorage implements GdFileStorage {
         }
     }
 
-    @Override
     public TrackParams getLevelFromPack(String packName, String trackGuid) throws InvalidTrackException {
-        Mod mod = loadMod(packName);
+        Mod mod = new Mod();// loadMod(packName);
         return mod.getLevels().stream()
                 .map(PackLevel::getTracks)
                 .flatMap(Collection::stream)
@@ -93,17 +73,40 @@ public class DesktopFileStorage implements GdFileStorage {
     }
 
     @Override
-    public List<PackTrackReference> getDailyTracksReferences(String packName) throws InvalidTrackException {
+    public Mod readMod(String name) {
+        ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+        try (InputStream inputStream = classloader.getResourceAsStream("mod.json")) {
+            String content = Utils.readContent(inputStream);
+            String ims = content.substring(content.indexOf(":") + 1);
+            Mod mod = new Gson().fromJson(ims, Mod.class);
+            return mod;
+        } catch (IOException e) {
+            return null;
+        }
+    }
+
+    @Override
+    public Theme readTheme(String name) {
         return null;
     }
 
     @Override
-    public String getModsFolder() {
+    public List<String> listFiles(GDFile fileType) {
+        return List.of();
+    }
+
+    @Override
+    public void deleteFile(GDFile gdFile, String name) {
+
+    }
+
+    @Override
+    public TrackRecord readRecord(String name) {
         return null;
     }
 
     @Override
-    public String getTracksFolder() {
+    public TrackRecord readTrack(String name) {
         return null;
     }
 }

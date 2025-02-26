@@ -2,12 +2,14 @@ package org.happysanta.gdtralive.android;
 
 import static org.happysanta.gdtralive.game.api.GDFile.MRG;
 
+import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
@@ -310,6 +312,7 @@ public class GDActivity extends Activity implements GdApplication, Runnable {
                 return true;
             }
         });
+        verifyStoragePermissions();
     }
 //    MediaPlayer mp;
 
@@ -451,19 +454,18 @@ public class GDActivity extends Activity implements GdApplication, Runnable {
                     case MRG:
                         final File file1 = new File(Objects.requireNonNull(uri.getPath()));
                         Mod mrg = MrgUtils.convertMrg(file1.getName(), Utils.readAllBytes(inputStream));
-                        menu.setCurrentMenu(menuFactory.get(MenuType.MOD_OPTIONS).build(new MenuData(mrg)));
+                        menu.setCurrentMenu(menuFactory.get(MenuType.MOD_OPTIONS).build(new MenuData(mrg, file1.getName())));
                         break;
                     case MOD:
                         Mod mod = Utils.read(inputStream);
-                        modManager.setMod(mod);
-                        MenuScreen packMenu = menuFactory.get(MenuType.MOD_OPTIONS).build(new MenuData(mod));
+                        MenuScreen packMenu = menuFactory.get(MenuType.MOD_OPTIONS).build(new MenuData(mod, mod.getName()));
                         menu.setCurrentMenu(packMenu);
                         break;
                     case THEME:
-                        Theme theme = Utils.read(inputStream);
+//                        Theme theme = Utils.read(inputStream);
 //                        menu.mods.getThemes().themes.add(theme);//todo
-                        MenuScreen themeMenu = menuFactory.get(MenuType.THEME_OPTIONS).build(new MenuData(theme));
-                        menu.setCurrentMenu(themeMenu);
+//                        MenuScreen themeMenu = menuFactory.get(MenuType.THEME_OPTIONS).build(new MenuData(theme));
+//                        menu.setCurrentMenu(themeMenu);
                         break;
                     case UNDEFINED:
                     default: //noop just launch the game \-_o/
@@ -806,5 +808,33 @@ public class GDActivity extends Activity implements GdApplication, Runnable {
             return 55;
         }
         return 60;
+    }
+
+    // Storage Permissions
+    private static final int REQUEST_EXTERNAL_STORAGE = 1;
+    private static String[] PERMISSIONS_STORAGE = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
+
+    /**
+     * Checks if the app has permission to write to device storage
+     * <p>
+     * If the app does not has permission then the user will be prompted to grant permissions
+     */
+    public void verifyStoragePermissions() {
+        // Check if we have write permission
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            int REQUEST_EXTERNAL_STORAGE = 1;
+            String[] PERMISSIONS_STORAGE = {
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+            };
+            int permission = checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+            if (permission != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(PERMISSIONS_STORAGE, REQUEST_EXTERNAL_STORAGE);
+            }
+        }
     }
 }

@@ -1,6 +1,7 @@
 package org.happysanta.gdtralive.game;
 
 import org.happysanta.gdtralive.game.api.Constants;
+import org.happysanta.gdtralive.game.api.GDFile;
 import org.happysanta.gdtralive.game.api.dto.GameTheme;
 import org.happysanta.gdtralive.game.api.dto.InterfaceTheme;
 import org.happysanta.gdtralive.game.api.dto.LeaguePropertiesTheme;
@@ -14,6 +15,7 @@ import org.happysanta.gdtralive.game.api.model.Mod;
 import org.happysanta.gdtralive.game.api.model.ModEntity;
 import org.happysanta.gdtralive.game.api.model.TrackParams;
 import org.happysanta.gdtralive.game.api.model.TrackProperties;
+import org.happysanta.gdtralive.game.util.Fmt;
 import org.happysanta.gdtralive.game.util.Utils;
 
 import java.util.ArrayList;
@@ -30,21 +32,22 @@ public class ModManager {
     private Mod currentMod;
     private ModEntity modState;
     boolean temporallyUnlockedAll = false;
-    private TrackReference currentTrack;
     private TrackProperties currentTrackProperties;
     private final float defaultDensity;
     private final GdApplication application;
     private final GdDataSource dataSource;
+    private final GdFileStorage fileStorage;
 
     public ModManager(GdApplication application, GdFileStorage fileStorage, float defaultDensity) {
         this.application = application;
         this.defaultDensity = defaultDensity;
+        this.fileStorage = fileStorage;
         this.dataSource = application.getDataSource();
-        this.theme = loadTheme();
+        this.theme = loadTheme(application.getSettings().getSelectedTheme());
         try {
             dataSource.open();
             if (!dataSource.isDefaultLevelCreated()) {
-                this.currentMod = getDefaultMod(fileStorage);
+                this.currentMod = loadMod(Constants.DEFAULT_MOD);
                 List<Integer> counts = this.currentMod.getTrackCounts();
                 long now = System.currentTimeMillis();
                 this.modState = dataSource.createLevel(
@@ -58,22 +61,11 @@ public class ModManager {
         }
         try {
             if (currentMod == null) {
-                currentMod = getDefaultMod(fileStorage);
+                currentMod = loadMod(Constants.DEFAULT_MOD);
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
-//        //todo delete/move
-//        String s = FileStorage.toJson(theme);
-//        Theme read = FileStorage.read(s, Theme.class);
-//        theme.gameTheme = new GameTheme(read.getGameTheme().getProps());
-//        theme.interfaceTheme = new InterfaceTheme(read.getInterfaceTheme().getProps());
-//        List<LeagueTheme> leagueThemes = new ArrayList<>();
-//        for (LeagueTheme leagueTheme :read.getLeagueThemes()) {
-//            leagueThemes.add(new LeagueTheme(leagueTheme.getProps()));
-//        }
-//        theme.leagueThemes = leagueThemes;
     }
 
     public Mod getMod() {
@@ -81,7 +73,6 @@ public class ModManager {
     }
 
     public void setTrackProperties(TrackReference track) {
-        this.currentTrack = track;
         if (track == null) {
             this.currentTrackProperties = null;
             return;
@@ -99,7 +90,7 @@ public class ModManager {
         }
     }
 
-    public void setMod(Mod mod) {
+    public void activateMod(Mod mod) {
         temporallyUnlockedAll = true; //todo switch between mods
         currentMod = mod;
     }
@@ -153,10 +144,10 @@ public class ModManager {
         return currentMod.getLevelTrackNames(league);
     }
 
-    public void installTheme(Theme theme) {
-        this.theme = theme;
+    public void installTheme(String name) {
+        this.theme = loadTheme(name);
         adjustScale(this.theme);
-        application.getSettings().setSelectedThemeGuid(theme.getHeader().getGuid());
+        application.getSettings().setSelectedTheme(theme.getHeader().getName());
         reloadTheme();
     }
 
@@ -186,29 +177,15 @@ public class ModManager {
         }
     }
 
-    public Theme loadTheme() {
-        String themeGuid = application.getSettings().getSelectedThemeGuid();
+    public Theme loadTheme(String name) {
         Theme theme;
-        if ("e46a37c0-69e1-4646-8f9c-b47247586635".equals(themeGuid)) {
+        if ("GDTR Original".equals(name)) {
             theme = Theme.defaultTheme();
-        } else if ("b5221ae2-c4ea-4225-9d51-818fdfad34a9".equals(themeGuid)) {
-            theme = Theme.amoledMod(); //todo
+        } else if ("GDTR Black".equals(name)) {
+            theme = Theme.amoledMod();
         } else {
-            try {
-//            theme = Theme.amoledMod();
-//            Helpers.showToast("Active mod: " + (mod.name == null ? "Unnamed" : mod.name));
-
-//            TrackRecord rec = FileLoader.read(FileLoader.fromAssets(ASSETS_MODS_FOLDER, "one minute"), TrackRecord.class);
-//            FileLoader.toJson(new Object());
-//            FileOutputStream fout = new FileOutputStream(new File(
-//                    Environment.getExternalStorageDirectory(), "GDAlive/record.json"));
-//            ObjectOutputStream oos = new ObjectOutputStream(fout);
-//            oos.writeObject(rec);
-                theme = Theme.defaultTheme();
-            } catch (Exception e) {
-//                Helpers.showToast("Mod activation failed");
-                theme = Theme.defaultTheme();
-            }
+            Theme fromStorage = fileStorage.readTheme(name);
+            theme = fromStorage == null ? Theme.defaultTheme() : fromStorage;
         }
         adjustScale(theme);
         return theme;
@@ -234,10 +211,6 @@ public class ModManager {
         return trackReference.getData();
     }
 
-    public int getLevelsCount() {
-        return currentMod.getLevels().size();
-    }
-
     public String getTrackGuid(int level, int track) {
         return currentMod.getLevels().get(level).getTracks().get(track).getGuid();
     }
@@ -250,7 +223,10 @@ public class ModManager {
         return currentMod.getLevels().get(level).getTracks().size();
     }
 
-    private Mod getDefaultMod(GdFileStorage fileStorage) throws InvalidTrackException {
-        return fileStorage.loadMod(Constants.DEFAULT_MOD);
+    public Mod loadMod(String filename) throws InvalidTrackException {
+        String name = Fmt.dot(filename, GDFile.MOD.extension);
+        Mod mod = fileStorage.readMod(name);
+        Utils.validatePack(mod);
+        return mod;
     }
 }

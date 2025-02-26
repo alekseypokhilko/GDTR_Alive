@@ -12,11 +12,10 @@ import org.happysanta.gdtralive.android.menu.element.HighScoreTextMenuElement;
 import org.happysanta.gdtralive.android.menu.element.MenuAction;
 import org.happysanta.gdtralive.android.menu.element.TextMenuElement;
 import org.happysanta.gdtralive.game.Game;
-import org.happysanta.gdtralive.game.api.external.GdApplication;
-import org.happysanta.gdtralive.game.api.exception.InvalidTrackException;
-import org.happysanta.gdtralive.game.api.model.TrackParams;
 import org.happysanta.gdtralive.game.api.GameMode;
+import org.happysanta.gdtralive.game.api.external.GdApplication;
 import org.happysanta.gdtralive.game.api.model.GameParams;
+import org.happysanta.gdtralive.game.api.model.TrackParams;
 import org.happysanta.gdtralive.game.util.Fmt;
 
 import java.util.List;
@@ -57,10 +56,10 @@ public class TrackOfTheDayMenu {
         String author = "???";
         TrackParams track = null;
         try {
-            track = application.getFileStorage().getLevelFromPack(packName, trackGuid);
+            track = null; //application.getFileStorage().getLevelFromPack(packName, trackGuid);
             trackName = track.getName();
             author = track.getAuthor();
-        } catch (InvalidTrackException e) {
+        } catch (Exception e) {
             application.notify("File loading error: " + e.getMessage());
         }
         screen.clear();

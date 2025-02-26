@@ -19,8 +19,8 @@ public interface GdSettings {
     void setLookAheadEnabled(boolean enabled);
     boolean isKeyboardInMenuEnabled();
     void setKeyboardInMenuEnabled(boolean enabled);
-    String getSelectedThemeGuid();
-    void setSelectedThemeGuid(String guid);
+    String getSelectedTheme();
+    void setSelectedTheme(String guid);
     boolean isVibrateOnTouchEnabled();
     void setVibrateOnTouchEnabled(boolean enabled);
     int getInputOption();

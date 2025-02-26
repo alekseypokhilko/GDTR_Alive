@@ -43,8 +43,8 @@ public class AndroidGdSettings implements GdSettings {
     private static final String KEYBOARD_IN_MENU_ENABLED = "keyboard_enabled";
     private static final boolean KEYBOARD_IN_MENU_ENABLED_DEFAULT = true;
 
-    private static final String SELECTED_THEME_GUID = "theme_guid";
-    private static final String SELECTED_THEME_GUID_DEFAULT = "e46a37c0-69e1-4646-8f9c-b47247586635";
+    private static final String SELECTED_THEME = "theme_guid";
+    private static final String SELECTED_THEME_DEFAULT = "e46a37c0-69e1-4646-8f9c-b47247586635";
 
     private static final String NAME = "name";
     public static final String NAME_DEFAULT = "Player";
@@ -136,12 +136,12 @@ public class AndroidGdSettings implements GdSettings {
         setBoolean(KEYBOARD_IN_MENU_ENABLED, enabled);
     }
 
-    public String getSelectedThemeGuid() {
-        return preferences.getString(SELECTED_THEME_GUID, SELECTED_THEME_GUID_DEFAULT);
+    public String getSelectedTheme() {
+        return preferences.getString(SELECTED_THEME, SELECTED_THEME_DEFAULT);
     }
 
-    public void setSelectedThemeGuid(String guid) {
-        setString(SELECTED_THEME_GUID, guid);
+    public void setSelectedTheme(String guid) {
+        setString(SELECTED_THEME, guid);
     }
 
     public boolean isVibrateOnTouchEnabled() {

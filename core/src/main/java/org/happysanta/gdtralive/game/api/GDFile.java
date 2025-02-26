@@ -4,22 +4,26 @@ import org.happysanta.gdtralive.game.api.model.Mod;
 import org.happysanta.gdtralive.game.api.dto.Theme;
 import org.happysanta.gdtralive.game.api.dto.TrackReference;
 import org.happysanta.gdtralive.game.api.model.TrackRecord;
+import org.happysanta.gdtralive.game.util.Fmt;
+import org.happysanta.gdtralive.game.util.Utils;
 
 public enum GDFile {
-    UNDEFINED("", "", Object.class),
-    THEME("gdtheme", "themes", Theme.class),
-    MOD("gdmod", "mods", Mod.class),
-    MRG("mrg", "mrg", Object.class),
-    TRACK("gdtrack", "tracks", TrackReference.class),
-    RECORD("gdrecord", "recordings", TrackRecord.class);
+    UNDEFINED("", "", null, Object.class),
+    THEME("gdtheme", "themes", Fmt.slash(Constants.APP_DIRECTORY, "themes"), Theme.class),
+    MOD("gdmod", "mods", Fmt.slash(Constants.APP_DIRECTORY, "mods"), Mod.class),
+    MRG("mrg", "mrg", Fmt.slash(Constants.APP_DIRECTORY, "mrg"), Object.class),
+    TRACK("gdtrack", "tracks", Fmt.slash(Constants.APP_DIRECTORY, "tracks"), TrackReference.class),
+    RECORD("gdrecord", "recordings", Fmt.slash(Constants.APP_DIRECTORY, "recordings"), TrackRecord.class);
 
     public final String extension;
     public final String folder;
+    public final String appFolder;
     public final Class cls;
 
-    GDFile(String extension, String folder, Class cls) {
+    GDFile(String extension, String folder, String appFolder, Class cls) {
         this.extension = extension;
         this.folder = folder;
+        this.appFolder = appFolder;
         this.cls = cls;
     }
 
@@ -44,5 +48,13 @@ public enum GDFile {
 
     public static String cutHeader(String content) {
         return content.substring(content.indexOf(":") + 1);
+    }
+
+    public static <T> String addHeader(T obj, GDFile fileType) {
+        return Fmt.colonNoSpace(fileType.extension, Utils.toJson(obj));
+    }
+
+    public String addExtension(String name) {
+        return Fmt.dot(name, this.extension);
     }
 }

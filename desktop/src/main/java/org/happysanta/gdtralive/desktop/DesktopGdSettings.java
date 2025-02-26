@@ -108,11 +108,11 @@ public class DesktopGdSettings implements GdSettings {
         setBoolean(KEYBOARD_IN_MENU_ENABLED, enabled);
     }
 
-    public String getSelectedThemeGuid() {
+    public String getSelectedTheme() {
         return "preferences.getString(SELECTED_THEME_GUID, SELECTED_THEME_GUID_DEFAULT)";
     }
 
-    public void setSelectedThemeGuid(String guid) {
+    public void setSelectedTheme(String guid) {
         setString(SELECTED_THEME_GUID, guid);
     }
 

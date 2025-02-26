@@ -4,20 +4,19 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import org.happysanta.gdtralive.game.api.Constants;
-import org.happysanta.gdtralive.game.api.exception.InvalidTrackException;
-import org.happysanta.gdtralive.game.api.model.TrackParams;
-import org.happysanta.gdtralive.game.api.model.Mod;
+import org.happysanta.gdtralive.game.api.GDFile;
 import org.happysanta.gdtralive.game.api.dto.PackLevel;
 import org.happysanta.gdtralive.game.api.dto.Theme;
 import org.happysanta.gdtralive.game.api.dto.TrackReference;
-import org.happysanta.gdtralive.game.api.GDFile;
+import org.happysanta.gdtralive.game.api.exception.InvalidTrackException;
+import org.happysanta.gdtralive.game.api.model.Mod;
+import org.happysanta.gdtralive.game.api.model.TrackParams;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
@@ -143,17 +142,19 @@ public class Utils {
         return (T) GSON.fromJson(ims, fileType.cls);
     }
 
-    public static <T> T read(InputStream ims, Class<T> cls) {
-        java.io.Reader reader = new InputStreamReader(ims);
-        return GSON.fromJson(reader, cls);
-    }
-
     public static List<Integer> parseIntList(String counts) {
         return GSON.fromJson(counts, INT_LIST_TYPE);
     }
 
     public static <T> String toJson(T obj) {
         return GSON.toJson(obj);
+    }
+    public static <T> T fromJson(String ims, Class<T> classOfT) {
+        return GSON.fromJson(ims, classOfT);
+    }
+
+    public static <T> T fromJson(String ims, GDFile gdFile) {
+        return (T) GSON.fromJson(ims, gdFile.cls);
     }
 
     public static String fixFileName(String fileName) {
@@ -168,6 +169,9 @@ public class Utils {
     }
 
     public static void validatePack(Mod mod) throws InvalidTrackException {
+        if (mod == null) {
+            throw new InvalidTrackException("Mod not found");
+        }
         validateGuid(mod.getGuid());
         for (PackLevel packLevel : mod.getLevels()) {
             for (TrackReference track : packLevel.getTracks()) {

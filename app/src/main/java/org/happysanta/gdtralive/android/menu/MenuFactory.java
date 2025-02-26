@@ -10,7 +10,6 @@ import android.text.Html;
 import android.view.View;
 
 import org.happysanta.gdtralive.R;
-import org.happysanta.gdtralive.android.AndroidFileStorage;
 import org.happysanta.gdtralive.android.GDActivity;
 import org.happysanta.gdtralive.android.MrgPicker;
 import org.happysanta.gdtralive.android.TrackEditorView;
@@ -24,7 +23,6 @@ import org.happysanta.gdtralive.android.menu.element.TextMenuElement;
 import org.happysanta.gdtralive.android.menu.screens.ClassicPlayMenuState;
 import org.happysanta.gdtralive.game.Achievement;
 import org.happysanta.gdtralive.game.Game;
-import org.happysanta.gdtralive.game.api.Constants;
 import org.happysanta.gdtralive.game.api.GDFile;
 import org.happysanta.gdtralive.game.api.GameMode;
 import org.happysanta.gdtralive.game.api.MenuType;
@@ -40,13 +38,10 @@ import org.happysanta.gdtralive.game.api.util.Function;
 import org.happysanta.gdtralive.game.util.Fmt;
 import org.happysanta.gdtralive.game.util.Utils;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public class MenuFactory {
     public static int[] ACHIEVEMENT_ICONS = {
@@ -62,8 +57,8 @@ public class MenuFactory {
 
     private ClassicPlayMenuState classicPlayMenu;
     private TrackEditorView trackEditor;
-    private List<String> packNames = new ArrayList<>(); //todo remove
-    public List<Theme> themes = new ArrayList<>(); //todo remove
+    private List<String> modNames = new ArrayList<>(); //todo remove
+    public List<String> themeNames = new ArrayList<>(); //todo remove
 
     public MenuFactory(GDActivity application) {
         this.application = application;
@@ -243,15 +238,15 @@ public class MenuFactory {
 
             s.addItem(new MenuAction(s(R.string.install), -1, menu, item -> {
                 String packName = mod.getName();
-                application.getModManager().setMod(mod);
-                //game.levelsManager.activateMod(mod);
+                application.getModManager().activateMod(mod);
                 application.notify(Fmt.colon(s(R.string.mod_activated), packName));
-                // todo game.getLevelsManager().install(file, name, "", 0);
                 classicPlayMenu.getScreen().setTitle(Fmt.sp(s(R.string.play), packName));
                 classicPlayMenu.resetSelectors();
             }));
             s.addItem(new MenuAction(s(R.string.save), -1, menu,
-                    __ -> this.application.getFileStorage().writeToFile(mod, GDFile.MOD, Fmt.us(mod.getGuid(), mod.getName()))));
+                    __ -> this.application.getFileStorage().writeToFile(mod, GDFile.MOD, mod.getName())));
+            s.addItem(new MenuAction(s(R.string.delete), -1, menu,
+                    __ -> this.application.getFileStorage().deleteFile(GDFile.MOD, data.getFileName())));
             s.addItem(menu.backAction(() -> this.get(MenuType.MODS).build()));
             return s;
         });
@@ -259,19 +254,20 @@ public class MenuFactory {
     }
 
     private MenuScreen createThemes(Map<MenuType, MenuScreen> r) {
-        themes.add(Theme.defaultTheme());
-        themes.add(Theme.amoledMod());
+        themeNames.add(Theme.defaultTheme().getHeader().getName());
+        themeNames.add(Theme.amoledMod().getHeader().getName());
+        themeNames.addAll(application.getFileStorage().listFiles(GDFile.THEME));
         MenuScreen screen = new MenuScreen(s(R.string.themes), r.get(MenuType.WORKSHOP));
         screen.setBuilder((s, data) -> {
             s.clear();
             s.addItem(menu.backAction());
             s.addItem(MenuUtils.emptyLine(true));
             s.addItem(MenuUtils.emptyLine(true));
-            for (int i = 0; i < themes.size(); i++) {
+            for (int i = 0; i < themeNames.size(); i++) { //todo
                 try {
-                    Theme theme = themes.get(i);
-                    MenuItem options = new MenuItem(theme.getHeader().getName(), this.get(MenuType.THEME_OPTIONS), menu,
-                            item -> this.get(MenuType.THEME_OPTIONS).build(new MenuData(themes.get(((MenuItem) item).getValue()))));
+                    String theme = themeNames.get(i);
+                    MenuItem options = new MenuItem(theme, this.get(MenuType.THEME_OPTIONS), menu,
+                            item -> this.get(MenuType.THEME_OPTIONS).build(new MenuData(themeNames.get(((MenuItem) item).getValue()))));
                     options.setValue(i);
                     screen.addItem(options);
                 } catch (Exception e) {
@@ -286,7 +282,8 @@ public class MenuFactory {
     private MenuScreen createThemeOptions(Map<MenuType, MenuScreen> r) {
         MenuScreen screen = new MenuScreen(s(R.string.theme), r.get(MenuType.WORKSHOP));
         screen.setBuilder((s, data) -> {
-            Theme theme = data.getTheme();
+            String name = data.getFileName();
+            Theme theme = application.getModManager().loadTheme(name);
             s.clear();
             ThemeHeader header = theme.getHeader();
             s.addItem(new TextMenuElement(boldAttr(R.string.name, header.getName())));
@@ -297,12 +294,11 @@ public class MenuFactory {
             s.addItem(MenuUtils.emptyLine(true));
 
             s.addItem(new MenuAction(s(R.string.install), -1, menu, item -> {
-                application.getModManager().installTheme(theme);
+                application.getModManager().installTheme(name);
                 Achievement.achievements.get(Achievement.Type.ESTHETE).increment();
             }));
             s.addItem(new MenuAction(s(R.string.save), -1, menu, item -> {
-                String fileName = Fmt.us(theme.getHeader().getName(), theme.getHeader().getAuthor());
-                application.getFileStorage().writeToFile(theme, GDFile.THEME, fileName);
+                application.getFileStorage().writeToFile(theme, GDFile.THEME, name);
             }));
             s.addItem(menu.backAction(() -> this.get(MenuType.THEMES).build()));
             return s;
@@ -314,66 +310,28 @@ public class MenuFactory {
         MenuScreen screen = new MenuScreen(s(R.string.mod_packs), r.get(MenuType.WORKSHOP));
         screen.setBuilder((s, data) -> {
             s.clear();
-            packNames.clear();
+            modNames.clear();
             s.addItem(menu.backAction());
             s.addItem(new MenuAction(s(R.string.convert_mrg), MenuAction.SELECT_FILE, menu, it -> MrgPicker.convertMrgFromFileBrowse()));
             int i = 0;
-            //todo refactoring
-            try {
-                for (File file : new File(application.getFileStorage().getModsFolder()).listFiles()) {
-                    try {
-                        String name = file.getName();
-                        packNames.add(name);
-                        String packName = name.substring(name.indexOf("_") + 1);
-                        MenuItem options = new MenuItem(packName, this.get(MenuType.MOD_OPTIONS), menu,
-                                item -> {
-                                    int value = ((MenuItem) item).getValue();
-                                    try {
-                                        String rec = packNames.get(value);
-                                        Mod mod = this.application.getFileStorage().loadMod(rec);
-                                        this.get(MenuType.MOD_OPTIONS).build(new MenuData(mod));
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                });
-                        options.setValue(i);
-                        s.addItem(options);
-                        i++;
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                application.notify(e.getMessage());
-            }
-            try {
-                for (String filename : Objects.requireNonNull(GDActivity.shared.getAssets().list(AndroidFileStorage.ASSETS_MODS_FOLDER))) {
-                    try {
-                        String name = filename.replace(Constants.JSON, "");
-                        packNames.add(name);
-                        String packName = name.substring(name.indexOf("_") + 1);
-                        MenuItem options = new MenuItem(packName, this.get(MenuType.MOD_OPTIONS), menu,
-                                item -> {
-                                    int value = ((MenuItem) item).getValue();
-                                    try {
-                                        String rec = packNames.get(value);
-                                        Mod mod = this.application.getFileStorage().loadMod(rec);
-                                        this.get(MenuType.MOD_OPTIONS).build(new MenuData(mod));
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                });
-                        options.setValue(i);
-                        s.addItem(options);
-                        i++;
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-                application.notify(e.getMessage());
+            List<String> list = application.getFileStorage().listFiles(GDFile.MOD);
+            for (String filename : list) {
+                String name = filename.replace("." + GDFile.MOD.extension, "");
+                modNames.add(name);
+                MenuItem options = new MenuItem(name, this.get(MenuType.MOD_OPTIONS), menu,
+                        item -> {
+                            int value = ((MenuItem) item).getValue();
+                            try {
+                                String rec = modNames.get(value);
+                                Mod mod = this.application.getModManager().loadMod(rec);
+                                this.get(MenuType.MOD_OPTIONS).build(new MenuData(mod, name));
+                            } catch (Exception e) {
+                                menu.back();
+                            }
+                        });
+                options.setValue(i);
+                s.addItem(options);
+                i++;
             }
             return s;
         });
@@ -416,6 +374,7 @@ public class MenuFactory {
                     s.addItem(menu.backAction());
                     s.addItem(MenuUtils.emptyLine(false));
                     int i = 0;
+                    //todo
                     for (TrackRecord rec : application.getFileStorage().getAllRecords()) {
                         try {
                             long millis = rec.getTime();

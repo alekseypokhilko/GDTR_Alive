@@ -1,29 +1,30 @@
 package org.happysanta.gdtralive.game.api.external;
 
-import org.happysanta.gdtralive.game.api.exception.InvalidTrackException;
-import org.happysanta.gdtralive.game.api.dto.PackTrackReference;
-import org.happysanta.gdtralive.game.api.model.TrackParams;
+import org.happysanta.gdtralive.game.api.GDFile;
+import org.happysanta.gdtralive.game.api.dto.Theme;
 import org.happysanta.gdtralive.game.api.model.Mod;
 import org.happysanta.gdtralive.game.api.model.TrackRecord;
-import org.happysanta.gdtralive.game.api.GDFile;
 
 import java.util.List;
 
 public interface GdFileStorage {
-    String getModsFolder();
+    Mod readMod(String name);
 
-    String getTracksFolder();
+    Theme readTheme(String name);
 
-    TrackParams loadLevel(String guid) throws InvalidTrackException;
+    TrackRecord readRecord(String name);
 
-    Mod loadMod(String filename) throws InvalidTrackException;
+    TrackRecord readTrack(String name);
 
-    TrackParams getLevelFromPack(String packName, String trackGuid) throws InvalidTrackException;
+    List<String> listFiles(GDFile fileType);
+
+    void deleteFile(GDFile gdFile, String name);
 
     <T> void writeToFile(T obj, GDFile fileType, String fileName);
 
-    void addRecord(TrackRecord rec);
-    List<TrackRecord> getAllRecords();
 
-    List<PackTrackReference> getDailyTracksReferences(String packName) throws InvalidTrackException;
+    //todo remove
+    void addRecord(TrackRecord rec);
+
+    List<TrackRecord> getAllRecords();
 }
