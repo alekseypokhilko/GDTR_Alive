@@ -3,9 +3,10 @@ package org.happysanta.gdtralive.game.util;
 import org.happysanta.gdtralive.game.api.MenuMode;
 import org.happysanta.gdtralive.game.api.model.MenuData;
 import org.happysanta.gdtralive.game.api.model.GameParams;
+import org.happysanta.gdtralive.game.api.model.Mod;
 import org.happysanta.gdtralive.game.api.model.ModEntity;
 
-public class MenuMapper {
+public class Mapper {
     public static MenuData mapInGameMenuData(GameParams params) {
         MenuData inGameMenu = new MenuData();
         inGameMenu.setMenuMode(MenuMode.IN_GAME);
@@ -31,5 +32,20 @@ public class MenuMapper {
         data.setNewUnlockedLevelCount(level.getUnlockedLevels());
         data.setNewUnlockedTrackCount(level.getUnlockedTracksCount(level.getSelectedLevel()));
         return data;
+    }
+
+    public static ModEntity mapModToEntity(Mod mod, boolean isDefault) {
+        long now = System.currentTimeMillis();
+        ModEntity entity = new ModEntity();
+        entity.setGuid(mod.getGuid());
+        entity.setName(mod.getName());
+        entity.setAuthor(mod.getAuthor());
+        entity.setAddedTs(now);
+        entity.setInstalledTs(now);
+        entity.setApiId(1L);
+        entity.setDefault(isDefault);
+        entity.setTrackCountsByLevel(mod.getTrackCounts());
+        entity.initIfClear();
+        return entity;
     }
 }

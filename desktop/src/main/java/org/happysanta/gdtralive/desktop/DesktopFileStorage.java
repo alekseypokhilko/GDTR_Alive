@@ -58,7 +58,7 @@ public class DesktopFileStorage implements GdFileStorage {
     }
 
     @Override
-    public <T> void writeToFile(T obj, GDFile fileType, String fileName) {
+    public <T> void save(T obj, GDFile fileType, String fileName) {
         ///todo
     }
 
@@ -96,7 +96,7 @@ public class DesktopFileStorage implements GdFileStorage {
     }
 
     @Override
-    public void deleteFile(GDFile gdFile, String name) {
+    public void delete(GDFile gdFile, String name) {
 
     }
 

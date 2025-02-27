@@ -352,7 +352,7 @@ public class TrackEditorView {
     public void saveTrack() {
         //todo pack level props and unpack on loading
         //copy level object
-        application.getFileStorage().writeToFile(currentTrack, GDFile.TRACK, Fmt.us(currentTrack.getGuid(), currentTrack.getName()));
+        application.getFileStorage().save(currentTrack, GDFile.TRACK, Fmt.us(currentTrack.getGuid(), currentTrack.getName()));
     }
 
     public TrackReference getCurrentTrack() {

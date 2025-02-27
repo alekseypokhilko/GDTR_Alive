@@ -18,9 +18,9 @@ public interface GdFileStorage {
 
     List<String> listFiles(GDFile fileType);
 
-    void deleteFile(GDFile gdFile, String name);
+    <T> void save(T obj, GDFile fileType, String fileName);
 
-    <T> void writeToFile(T obj, GDFile fileType, String fileName);
+    void delete(GDFile gdFile, String name);
 
 
     //todo remove

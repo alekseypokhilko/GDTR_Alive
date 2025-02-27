@@ -106,7 +106,7 @@ public class Theme {
         theme.setHeader(header);
 
         GameTheme game = theme.getGameTheme();
-        game.setProp(GameTheme.density, 5f);
+        game.setProp(GameTheme.scaledDensity, 5f);
         game.setProp(GameTheme.spriteDensity, 3.8f); //todo check null
         game.setProp(GameTheme.gameBackgroundColor, new Color(0, 0, 0));
         game.setProp(GameTheme.trackLineColor, new Color(255, 255, 255));

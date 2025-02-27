@@ -25,11 +25,11 @@ public class Helpers {
     }
 
     public static int getDp(int px) {
-        return Math.round(px * Helpers.getModManager().getGameTheme().getDensity());
+        return Math.round(px * Helpers.getModManager().getInterfaceTheme().getDensity());
     }
 
     public static int getDp(float px) {
-        return Math.round(px * Helpers.getModManager().getGameTheme().getDensity());
+        return Math.round(px * Helpers.getModManager().getInterfaceTheme().getDensity());
     }
 
     public static Bitmap loadBitmapFromDrawable(int id) {

@@ -30,7 +30,7 @@ public class MenuUtils {
                 break;
 
             case MenuAction.PLAY_MENU:
-                r = R.string.play_menu;
+                r = R.string.campaign;
                 break;
 
             case MenuAction.GO_TO_MAIN:

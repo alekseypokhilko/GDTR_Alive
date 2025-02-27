@@ -62,7 +62,7 @@ public class GameView extends View {
     @Override
     public void onDraw(Canvas g) {
         g.save();
-        float density = modManager.getGameTheme().getDensity();
+        float density = modManager.getGameTheme().getScaledDensity();
         g.scale(density, density);
         if (height1 != getHeight()) {
             adjustDimensions();
@@ -76,11 +76,11 @@ public class GameView extends View {
     }
 
     public int getScaledWidth() {
-        return Math.round(getWidth() / modManager.getGameTheme().getDensity());
+        return Math.round(getWidth() / modManager.getGameTheme().getScaledDensity());
     }
 
     public int getScaledHeight() {
-        return Math.round(getHeight() / modManager.getGameTheme().getDensity());
+        return Math.round(getHeight() / modManager.getGameTheme().getScaledDensity());
     }
 
     @Override

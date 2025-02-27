@@ -4,7 +4,8 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 public class Constants {
-    public static final String DEFAULT_MOD = "GDTR_Alive";
+    public static final String DEFAULT_MOD = "GDTR Alive";
+    public static final String ORIGINAL_MOD = "GDTR Original";
     public static final String APP_DIRECTORY = "GDTR_Alive";
     public static int RECORD_COUNT = 5;
     public static final long WAIT_TIME = 30L;

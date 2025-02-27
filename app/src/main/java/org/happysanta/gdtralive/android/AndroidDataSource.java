@@ -38,22 +38,23 @@ public class AndroidDataSource implements GdDataSource {
         dbHelper.close();
     }
 
-    public synchronized ModEntity createLevel(String guid, String name, String author, List<Integer> tracksCount, long addedTs, long installedTs, boolean isDefault, long apiId) {
+    @Override
+    public ModEntity createMod(ModEntity mod) {
         ContentValues values = new ContentValues();
-        values.put(LevelsSQLiteOpenHelper.LEVELS_COLUMN_NAME, name);
-        values.put(LevelsSQLiteOpenHelper.LEVELS_COLUMN_GUID, guid);
-        values.put(LevelsSQLiteOpenHelper.LEVELS_COLUMN_AUTHOR, author);
-        values.put(LevelsSQLiteOpenHelper.LEVELS_COLUMN_TRACKS_COUNT, Utils.toJson(tracksCount));
-        values.put(LevelsSQLiteOpenHelper.LEVELS_COLUMN_TRACKS_UNLOCKED, resetToDefault(tracksCount));
-        values.put(LevelsSQLiteOpenHelper.LEVELS_COLUMN_ADDED, addedTs);
-        values.put(LevelsSQLiteOpenHelper.LEVELS_COLUMN_INSTALLED, installedTs);
-        values.put(LevelsSQLiteOpenHelper.LEVELS_COLUMN_IS_DEFAULT, isDefault ? 1 : 0);
-        values.put(LevelsSQLiteOpenHelper.LEVELS_COLUMN_API_ID, apiId);
-        values.put(LevelsSQLiteOpenHelper.LEVELS_COLUMN_SELECTED_TRACK, 0);
-        values.put(LevelsSQLiteOpenHelper.LEVELS_COLUMN_SELECTED_LEVEL, 0);
-        values.put(LevelsSQLiteOpenHelper.LEVELS_COLUMN_SELECTED_LEAGUE, 0);
-        values.put(LevelsSQLiteOpenHelper.LEVELS_COLUMN_UNLOCKED_LEVELS, 0);
-        values.put(LevelsSQLiteOpenHelper.LEVELS_COLUMN_UNLOCKED_LEAGUES, 0);
+        values.put(LevelsSQLiteOpenHelper.LEVELS_COLUMN_NAME, mod.getName());
+        values.put(LevelsSQLiteOpenHelper.LEVELS_COLUMN_GUID, mod.getGuid());
+        values.put(LevelsSQLiteOpenHelper.LEVELS_COLUMN_AUTHOR, mod.getAuthor());
+        values.put(LevelsSQLiteOpenHelper.LEVELS_COLUMN_TRACKS_COUNT, mod.getLevelTrackCounts());
+        values.put(LevelsSQLiteOpenHelper.LEVELS_COLUMN_ADDED, mod.getAddedTs());
+        values.put(LevelsSQLiteOpenHelper.LEVELS_COLUMN_INSTALLED, mod.getInstalledTs());
+        values.put(LevelsSQLiteOpenHelper.LEVELS_COLUMN_IS_DEFAULT, mod.isDefault() ? 1 : 0);
+        values.put(LevelsSQLiteOpenHelper.LEVELS_COLUMN_API_ID, mod.getApiId());
+        values.put(LevelsSQLiteOpenHelper.LEVELS_COLUMN_SELECTED_TRACK, mod.getSelectedTrack());
+        values.put(LevelsSQLiteOpenHelper.LEVELS_COLUMN_SELECTED_LEVEL, mod.getSelectedLevel());
+        values.put(LevelsSQLiteOpenHelper.LEVELS_COLUMN_SELECTED_LEAGUE, mod.getSelectedLeague());
+        values.put(LevelsSQLiteOpenHelper.LEVELS_COLUMN_UNLOCKED_LEVELS, mod.getUnlockedLevels());
+        values.put(LevelsSQLiteOpenHelper.LEVELS_COLUMN_UNLOCKED_LEAGUES, mod.getUnlockedLeagues());
+        values.put(LevelsSQLiteOpenHelper.LEVELS_COLUMN_TRACKS_UNLOCKED, mod.getUnlockedTracksString());
 
         long insertId = db.insert(LevelsSQLiteOpenHelper.TABLE_LEVELS, null, values);
         Cursor cursor = db.query(LevelsSQLiteOpenHelper.TABLE_LEVELS, null,
@@ -81,7 +82,6 @@ public class AndroidDataSource implements GdDataSource {
     public synchronized void resetAllLevelsSettings() {
         ContentValues values = new ContentValues();
         values.put(LevelsSQLiteOpenHelper.LEVELS_COLUMN_TRACKS_UNLOCKED, "[0,0,0]"); //todo
-//        values.put(LevelsSQLiteOpenHelper.LEVELS_COLUMN_TRACKS_COUNT, "[2,2,2]"); //todo
         values.put(LevelsSQLiteOpenHelper.LEVELS_COLUMN_SELECTED_LEAGUE, 0);
         values.put(LevelsSQLiteOpenHelper.LEVELS_COLUMN_SELECTED_LEVEL, 0);
         values.put(LevelsSQLiteOpenHelper.LEVELS_COLUMN_SELECTED_TRACK, 0);
@@ -92,7 +92,7 @@ public class AndroidDataSource implements GdDataSource {
         logDebug("LevelsDataSource.resetAllLevelsSettings: result = " + result);
     }
 
-    public synchronized void updateLevel(ModEntity level) {
+    public synchronized void updateMod(ModEntity level) {
         ContentValues values = new ContentValues();
         values.put(LevelsSQLiteOpenHelper.LEVELS_COLUMN_TRACKS_UNLOCKED, level.getUnlockedTracksString());
         values.put(LevelsSQLiteOpenHelper.LEVELS_COLUMN_SELECTED_LEAGUE, level.getSelectedLeague());
@@ -146,7 +146,7 @@ public class AndroidDataSource implements GdDataSource {
         return levels;
     }
 
-    public synchronized ModEntity getLevel(long id) {
+    public synchronized ModEntity getMod(long id) {
         Cursor cursor = db.query(LevelsSQLiteOpenHelper.TABLE_LEVELS, null, LevelsSQLiteOpenHelper.LEVELS_COLUMN_ID + " = " + id, null, null, null, null);
         cursor.moveToFirst();
 
@@ -159,8 +159,8 @@ public class AndroidDataSource implements GdDataSource {
         return level;
     }
 
-    public synchronized ModEntity getLevel(String guid) {
-        Cursor cursor = db.query(LevelsSQLiteOpenHelper.TABLE_LEVELS, null, LevelsSQLiteOpenHelper.LEVELS_COLUMN_GUID + " = '" + guid +"'", null, null, null, null);
+    public synchronized ModEntity getMod(String guid) {
+        Cursor cursor = db.query(LevelsSQLiteOpenHelper.TABLE_LEVELS, null, LevelsSQLiteOpenHelper.LEVELS_COLUMN_GUID + " = '" + guid + "'", null, null, null, null);
         cursor.moveToFirst();
 
         ModEntity level = null;
@@ -183,7 +183,7 @@ public class AndroidDataSource implements GdDataSource {
         return levels;
     }
 
-    public synchronized boolean isDefaultLevelCreated() {
+    public synchronized boolean isDefaultModCreated() {
         Cursor cursor = db.query(LevelsSQLiteOpenHelper.TABLE_LEVELS, new String[]{LevelsSQLiteOpenHelper.LEVELS_COLUMN_ID}, LevelsSQLiteOpenHelper.LEVELS_COLUMN_IS_DEFAULT + " = 1", null, null, null, null);
         boolean created = cursor.getCount() > 0;
         cursor.close();
@@ -200,7 +200,7 @@ public class AndroidDataSource implements GdDataSource {
     public synchronized HighScores getHighScores(String levelGuid, int league) {
         Cursor cursor = db.query(LevelsSQLiteOpenHelper.TABLE_SCORES, null,
                 LevelsSQLiteOpenHelper.SCORES_COLUMN_LEVEL_GUID + " = '" + levelGuid + "' AND "
-                        + LevelsSQLiteOpenHelper.SCORES_COLUMN_LEAGUE  + " = " + league,
+                        + LevelsSQLiteOpenHelper.SCORES_COLUMN_LEAGUE + " = " + league,
                 null, null, null, LevelsSQLiteOpenHelper.SCORES_COLUMN_TIME);
         cursor.moveToFirst();
 

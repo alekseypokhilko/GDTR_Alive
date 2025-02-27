@@ -11,7 +11,7 @@ import org.happysanta.gdtralive.game.api.exception.InvalidTrackException;
 import org.happysanta.gdtralive.game.api.model.TrackParams;
 import org.happysanta.gdtralive.game.api.GameMode;
 import org.happysanta.gdtralive.game.api.model.MenuData;
-import org.happysanta.gdtralive.game.util.MenuMapper;
+import org.happysanta.gdtralive.game.util.Mapper;
 import org.happysanta.gdtralive.game.api.model.GameParams;
 import org.happysanta.gdtralive.game.api.model.ModEntity;
 import org.happysanta.gdtralive.game.api.model.Score;
@@ -94,7 +94,7 @@ public class Game {
         long currentTimeMillis = System.currentTimeMillis();
 
         if (application.isMenuShown()) {
-            MenuData inGameMenu = MenuMapper.mapInGameMenuData(params);
+            MenuData inGameMenu = Mapper.mapInGameMenuData(params);
             menu.showMenu(inGameMenu);
             if (menu.canStartTrack()) {
                 restart(true);
@@ -148,7 +148,7 @@ public class Game {
                     updateProgress(modEntity, params);
                     application.getModManager().saveModState();
                 }
-                MenuData finishedMenu = MenuMapper.getFinishedMenuData(params, lastTrackTime, modEntity);
+                MenuData finishedMenu = Mapper.getFinishedMenuData(params, lastTrackTime, modEntity);
                 menu.showMenu(finishedMenu);
 
                 if (menu.canStartTrack()) {

@@ -30,7 +30,7 @@ public class DesktopGdDataSource implements GdDataSource {
     }
 
     @Override
-    public void updateLevel(ModEntity level) {
+    public void updateMod(ModEntity level) {
 
     }
 
@@ -40,12 +40,12 @@ public class DesktopGdDataSource implements GdDataSource {
     }
 
     @Override
-    public ModEntity getLevel(long id) {
+    public ModEntity getMod(long id) {
         return null;
     }
 
     @Override
-    public boolean isDefaultLevelCreated() {
+    public boolean isDefaultModCreated() {
         return false;
     }
 
@@ -80,7 +80,7 @@ public class DesktopGdDataSource implements GdDataSource {
     }
 
     @Override
-    public ModEntity getLevel(String guid) {
+    public ModEntity getMod(String guid) {
         return null;
     }
 

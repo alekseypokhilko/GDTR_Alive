@@ -14,7 +14,7 @@
 	<string name="action_settings">Settings</string>
 	<string name="exit">Exit Game</string>
 	<string name="main">Main</string>
-	<string name="play_menu">Classic mode</string>
+	<string name="campaign">Campaign</string>
 	<string name="competition">Play</string>
 	<string name="workshop">Workshop</string>
 	<string name="profile">Profile</string>

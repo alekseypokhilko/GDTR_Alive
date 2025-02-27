@@ -8,14 +8,15 @@ import org.happysanta.gdtralive.game.api.dto.LeaguePropertiesTheme;
 import org.happysanta.gdtralive.game.api.dto.Theme;
 import org.happysanta.gdtralive.game.api.dto.TrackReference;
 import org.happysanta.gdtralive.game.api.exception.InvalidTrackException;
-import org.happysanta.gdtralive.game.api.external.GdApplication;
 import org.happysanta.gdtralive.game.api.external.GdDataSource;
 import org.happysanta.gdtralive.game.api.external.GdFileStorage;
+import org.happysanta.gdtralive.game.api.external.GdSettings;
 import org.happysanta.gdtralive.game.api.model.Mod;
 import org.happysanta.gdtralive.game.api.model.ModEntity;
 import org.happysanta.gdtralive.game.api.model.TrackParams;
 import org.happysanta.gdtralive.game.api.model.TrackProperties;
 import org.happysanta.gdtralive.game.util.Fmt;
+import org.happysanta.gdtralive.game.util.Mapper;
 import org.happysanta.gdtralive.game.util.Utils;
 
 import java.util.ArrayList;
@@ -33,30 +34,34 @@ public class ModManager {
     private ModEntity modState;
     boolean temporallyUnlockedAll = false;
     private TrackProperties currentTrackProperties;
-    private final float defaultDensity;
-    private final GdApplication application;
+    private final float defaultDensity; //todo move to settings (not editable)
     private final GdDataSource dataSource;
     private final GdFileStorage fileStorage;
+    private final GdSettings settings;
 
-    public ModManager(GdApplication application, GdFileStorage fileStorage, float defaultDensity) {
-        this.application = application;
+    public ModManager(GdFileStorage fileStorage, GdSettings settings, GdDataSource dataSource, float defaultDensity) {
         this.defaultDensity = defaultDensity;
         this.fileStorage = fileStorage;
-        this.dataSource = application.getDataSource();
-        this.theme = loadTheme(application.getSettings().getSelectedTheme());
+        this.dataSource = dataSource;
+        this.settings = settings;
+        this.theme = loadTheme(settings.getSelectedTheme());
+
+        initMod();
+    }
+
+    private void initMod() {
         try {
             dataSource.open();
-            if (!dataSource.isDefaultLevelCreated()) {
-                this.currentMod = loadMod(Constants.DEFAULT_MOD);
-                List<Integer> counts = this.currentMod.getTrackCounts();
-                long now = System.currentTimeMillis();
-                this.modState = dataSource.createLevel(
-                        currentMod.getGuid(), currentMod.getName(), currentMod.getAuthor(),
-                        counts, now, now, true, 1
-                );
-                application.getSettings().setLevelId(modState.getId());
+            if (!dataSource.isDefaultModCreated()) {
+                initDefaultModsState();
+            } else {
+                modState = dataSource.getMod(settings.getLevelId());
+                currentMod = loadMod(modState.getName());
+                if (currentMod == null) {
+                    currentMod = loadMod(Constants.DEFAULT_MOD);
+                    modState = dataSource.getMod(1); //default
+                }
             }
-            this.modState = dataSource.getLevel(application.getSettings().getLevelId());
         } catch (Exception ignore) {
         }
         try {
@@ -64,8 +69,17 @@ public class ModManager {
                 currentMod = loadMod(Constants.DEFAULT_MOD);
             }
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException(e); //this is possible will not happen due to default mod in assets folder
         }
+    }
+
+    private void initDefaultModsState() throws InvalidTrackException {
+        Mod defaultMod = loadMod(Constants.DEFAULT_MOD);
+        ModEntity entity = Mapper.mapModToEntity(defaultMod, true);
+        ModEntity state = dataSource.createMod(entity);
+        setCurrentMod(defaultMod, state);
+
+        dataSource.createMod(Mapper.mapModToEntity(loadMod(Constants.ORIGINAL_MOD), false));
     }
 
     public Mod getMod() {
@@ -91,8 +105,20 @@ public class ModManager {
     }
 
     public void activateMod(Mod mod) {
-        temporallyUnlockedAll = true; //todo switch between mods
+        ModEntity state = dataSource.getMod(mod.getGuid());
+        if (state != null) {
+            setCurrentMod(mod, state);
+        } else {
+            fileStorage.save(mod, GDFile.MOD, mod.getName());
+            ModEntity modEntity = Mapper.mapModToEntity(currentMod, false);
+            setCurrentMod(mod, dataSource.createMod(modEntity));
+        }
+    }
+
+    private void setCurrentMod(Mod mod, ModEntity state) {
+        modState = state;
         currentMod = mod;
+        settings.setLevelId(modState.getId());
     }
 
     public List<LeaguePropertiesTheme> getLeagueThemes() {
@@ -107,7 +133,7 @@ public class ModManager {
         if (temporallyUnlockedAll) {
             return;
         }
-        dataSource.updateLevel(modState);
+        dataSource.updateMod(modState);
     }
 
     public void setTemporallyUnlockedAll(boolean temporallyUnlockedAll) {
@@ -147,7 +173,7 @@ public class ModManager {
     public void installTheme(String name) {
         this.theme = loadTheme(name);
         adjustScale(this.theme);
-        application.getSettings().setSelectedTheme(theme.getHeader().getName());
+        settings.setSelectedTheme(theme.getHeader().getName());
         reloadTheme();
     }
 
@@ -155,8 +181,9 @@ public class ModManager {
         if (theme == null) {
             theme = this.theme;
         }
-        int scale = application.getSettings().getScale();
-        theme.getGameTheme().setProp(GameTheme.density, defaultDensity * scale / 100);
+        int scale = settings.getScale();
+        theme.getInterfaceTheme().setProp(InterfaceTheme.density, defaultDensity);
+        theme.getGameTheme().setProp(GameTheme.scaledDensity, defaultDensity * scale / 100);
         theme.getGameTheme().setProp(GameTheme.spriteDensity, defaultDensity);
     }
 

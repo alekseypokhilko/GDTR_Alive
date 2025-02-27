@@ -6,7 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class GameTheme implements ITheme {
-    public static String density = "density"; // Helpers.getGDActivity().getResources().getDisplayMetrics().density; //todo getter with calculation
+    public static String scaledDensity = "scaledDensity"; // Helpers.getGDActivity().getResources().getDisplayMetrics().density; //todo getter with calculation
     public static String spriteDensity = "spriteDensity"; // Helpers.getGDActivity().getResources().getDisplayMetrics().density; //todo getter with calculation
     public static String gameBackgroundColor = "gameBackgroundColor"; // new Color(255, 255, 255);
     public static String trackLineColor = "trackLineColor"; // new Color(0, 255, 0);
@@ -26,8 +26,6 @@ public class GameTheme implements ITheme {
     }
 
     private void initDefaults() {
-        this.props.put("density", 3.5f); //Helpers.getGDActivity().getResources().getDisplayMetrics().density);
-        this.props.put("spriteDensity",3.5f); //Helpers.getGDActivity().getResources().getDisplayMetrics().density);
         this.props.put("gameBackgroundColor", new Color(255, 255, 255));
         this.props.put("trackLineColor", new Color(0, 255, 0));
         this.props.put("perspectiveColor", new Color(0, 170, 0));
@@ -45,8 +43,8 @@ public class GameTheme implements ITheme {
         props.put(key, prop);
     }
 
-    public float getDensity() {
-        return (Float) props.get(density);
+    public float getScaledDensity() {
+        return (Float) props.get(scaledDensity);
     }
 
     public float getSpriteDensity() {

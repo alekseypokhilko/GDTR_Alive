@@ -58,7 +58,7 @@ public class DesktopGdView extends JPanel implements ActionListener, KeyListener
 
         this.settings = new DesktopGdSettings();
         GdApplication gdApplication = new DesktopGdApplication();
-        modManager = new ModManager(gdApplication, fileStorage, 2.5f);
+        modManager = new ModManager(fileStorage, gdApplication.getSettings(), gdApplication.getDataSource(), 2.5f);
         final FrameRender frameRender = new FrameRender(modManager);
         final Engine engine = new Engine();
         gdView = new GdView(frameRender, engine, width, height);

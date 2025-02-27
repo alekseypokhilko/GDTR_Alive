@@ -237,16 +237,16 @@ public class MenuFactory {
             s.addItem(MenuUtils.emptyLine(false));
 
             s.addItem(new MenuAction(s(R.string.install), -1, menu, item -> {
-                String packName = mod.getName();
+                String modName = mod.getName();
                 application.getModManager().activateMod(mod);
-                application.notify(Fmt.colon(s(R.string.mod_activated), packName));
-                classicPlayMenu.getScreen().setTitle(Fmt.sp(s(R.string.play), packName));
+                application.notify(Fmt.colon(s(R.string.mod_activated), modName));
+                this.get(MenuType.PLAY_CLASSIC).setTitle(Fmt.sp(s(R.string.play), modName));
                 classicPlayMenu.resetSelectors();
             }));
             s.addItem(new MenuAction(s(R.string.save), -1, menu,
-                    __ -> this.application.getFileStorage().writeToFile(mod, GDFile.MOD, mod.getName())));
+                    __ -> this.application.getFileStorage().save(mod, GDFile.MOD, mod.getName())));
             s.addItem(new MenuAction(s(R.string.delete), -1, menu,
-                    __ -> this.application.getFileStorage().deleteFile(GDFile.MOD, data.getFileName())));
+                    __ -> this.application.getFileStorage().delete(GDFile.MOD, data.getFileName())));
             s.addItem(menu.backAction(() -> this.get(MenuType.MODS).build()));
             return s;
         });
@@ -298,7 +298,7 @@ public class MenuFactory {
                 Achievement.achievements.get(Achievement.Type.ESTHETE).increment();
             }));
             s.addItem(new MenuAction(s(R.string.save), -1, menu, item -> {
-                application.getFileStorage().writeToFile(theme, GDFile.THEME, name);
+                application.getFileStorage().save(theme, GDFile.THEME, name);
             }));
             s.addItem(menu.backAction(() -> this.get(MenuType.THEMES).build()));
             return s;
@@ -342,7 +342,7 @@ public class MenuFactory {
         Game game = application.getGame();
         s.setBeforeShowAction(() -> game.startAutoplay(false));
 //        s.addItem(new MenuItem(s(R.string.daily_challenge), this.get(MenuType.DAILY), menu, __ -> this.get(MenuType.DAILY).build())); //todo
-        s.addItem(new MenuItem(s(R.string.play_menu), this.get(MenuType.PLAY_CLASSIC), menu, null));
+        s.addItem(new MenuItem(s(R.string.campaign), this.get(MenuType.PLAY_CLASSIC), menu, null));
         s.addItem(new MenuAction(Fmt.ra(s(R.string.random_track)), menu, __ -> game.startTrack(GameParams.of(GameMode.RANDOM, application.getModManager().getRandomTrack()))));
         s.addItem(new MenuAction(Fmt.ra(s(R.string.tracks)), menu, __ -> application.notify("Coming soon")));
         s.addItem(new MenuItem(s(R.string.achievements), this.get(MenuType.ACHIEVEMENTS), menu, __ -> this.get(MenuType.ACHIEVEMENTS).build()));
@@ -413,7 +413,7 @@ public class MenuFactory {
 
             s.addItem(new MenuAction(s(R.string.replay), -1, menu, item -> application.getGame().startTrack(GameParams.of(rec))));
             s.addItem(new MenuAction(s(R.string.save), -1, menu,
-                    item -> application.getFileStorage().writeToFile(rec, GDFile.RECORD, Fmt.us(rec.getTrackName(), rec.getDate()))));
+                    item -> application.getFileStorage().save(rec, GDFile.RECORD, Fmt.us(rec.getTrackName(), rec.getDate()))));
             s.addItem(menu.backAction(() -> {
                 this.get(MenuType.RECORDINGS).build();
                 application.getGame().startAutoplay(true);
@@ -486,7 +486,10 @@ public class MenuFactory {
 
     private MenuScreen createPlayClassic(Map<MenuType, MenuScreen> r) {
         MenuScreen screen = new MenuScreen(s(R.string.play), r.get(MenuType.PLAY));
-        screen.setBeforeShowAction(() -> application.getGame().startAutoplay(false));
+        screen.setBeforeShowAction(() -> {
+            screen.setTitle(application.getModManager().getMod().getName());
+            application.getGame().startAutoplay(false);
+        });
         return screen;
     }
 

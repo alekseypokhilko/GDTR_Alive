@@ -73,7 +73,7 @@ public class AndroidFileStorage implements GdFileStorage {
     }
 
     @Override
-    public <T> void writeToFile(T obj, GDFile fileType, String fileName) {
+    public <T> void save(T obj, GDFile fileType, String fileName) {
         String sanitizedName = Utils.fixFileName(Fmt.dot(fileName, fileType.extension));
         File file = new File(Fmt.slash(appFolder.getAbsolutePath(), fileType.folder), sanitizedName);
         if (file != null) {
@@ -86,7 +86,7 @@ public class AndroidFileStorage implements GdFileStorage {
     }
 
     @Override
-    public void deleteFile(GDFile gdFile, String name) {
+    public void delete(GDFile gdFile, String name) {
         try {
             new File(Fmt.slash(appFolder.getAbsolutePath(), gdFile.folder), gdFile.addExtension(name)).delete();
         } catch (Exception ignore) {

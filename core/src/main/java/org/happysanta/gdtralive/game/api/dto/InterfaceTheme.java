@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class InterfaceTheme implements ITheme {
+    public static String density = "density";
     public static String matteMenu = "matteMenu"; // true;
     public static String infoMessageColor = "infoMessageColor"; // new Color(0, 0, 0);
     public static String progressBackgroundColor = "progressBackgroundColor"; // new Color(196, 196, 196);
@@ -66,6 +67,10 @@ public class InterfaceTheme implements ITheme {
     @Override
     public void setProp(String key, Object prop) {
         props.put(key, prop);
+    }
+
+    public float getDensity() {
+        return (Float) props.get(density);
     }
 
     public boolean isMatteMenu() {

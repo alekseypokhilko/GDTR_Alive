@@ -47,7 +47,8 @@ public class MenuHelmetView extends View {
 	@Override
 	public void onDraw(Canvas canvas) {
 		canvas.save();
-		canvas.scale(Helpers.getModManager().getGameTheme().getDensity(), Helpers.getModManager().getGameTheme().getDensity());
+		float density = Helpers.getModManager().getInterfaceTheme().getDensity();
+		canvas.scale(density, density);
 
 		drawHelmet(canvas);
 
@@ -64,11 +65,17 @@ public class MenuHelmetView extends View {
 				angleLastMs = ms;
 			}
 
-			int y = getScaledHeight() / 2 - helmet.getHeightDp(Helpers.getModManager().getGameTheme().getSpriteDensity()) / 2;
+			float spriteDensity = Helpers.getModManager().getInterfaceTheme().getDensity();
+			int y = getScaledHeight() / 2 - helmet.getHeightDp(spriteDensity) / 2;
 
 			canvas.save();
-			canvas.rotate(angle, helmet.getWidthDp(Helpers.getModManager().getGameTheme().getSpriteDensity()) / 2, y + helmet.getHeightDp(Helpers.getModManager().getGameTheme().getSpriteDensity()) / 2);
-			canvas.drawBitmap(helmet.bitmap, new Rect(0, 0, helmet.getWidth(), helmet.getHeight()), new RectF(0, y, helmet.getWidthDp(Helpers.getModManager().getGameTheme().getSpriteDensity()), y + helmet.getHeightDp(Helpers.getModManager().getGameTheme().getSpriteDensity())), null);
+			canvas.rotate(angle, helmet.getWidthDp(spriteDensity) / 2, y + helmet.getHeightDp(spriteDensity) / 2);
+			canvas.drawBitmap(
+					helmet.bitmap,
+					new Rect(0, 0, helmet.getWidth(), helmet.getHeight()),
+					new RectF(0, y, helmet.getWidthDp(spriteDensity), y + helmet.getHeightDp(spriteDensity)),
+					null
+			);
 			canvas.restore();
 		}
 	}
@@ -99,11 +106,6 @@ public class MenuHelmetView extends View {
 	}
 
 	protected int getScaledHeight() {
-		return Math.round(getHeight() / Helpers.getModManager().getGameTheme().getDensity());
+		return Math.round(getHeight() / Helpers.getModManager().getInterfaceTheme().getDensity());
 	}
-
-	public void setMeasuredHeight(boolean setMeasuredHeight) {
-		this._setMeasuredHeight = setMeasuredHeight;
-	}
-
 }

@@ -14,17 +14,19 @@ public interface GdDataSource {
 
     void close();
 
-    ModEntity createLevel(String guid, String name, String author, List<Integer> tracksCount, long addedTs, long installedTs, boolean isDefault, long apiId);
+    ModEntity createMod(ModEntity mod);
+
+    ModEntity getMod(String guid);
 
     void resetAllLevelsSettings();
 
-    void updateLevel(ModEntity level);
+    void updateMod(ModEntity mod);
 
     List<ModEntity> getAllLevels();
 
-    ModEntity getLevel(long id);
+    ModEntity getMod(long id);
 
-    boolean isDefaultLevelCreated();
+    boolean isDefaultModCreated();
 
     HighScores getHighScores(String levelGuid, int league);
 
@@ -37,8 +39,6 @@ public interface GdDataSource {
     void deleteAllLevels();
 
     HashMap<Long, Long> findInstalledLevels(ArrayList<Long> apiIds);
-
-    ModEntity getLevel(String guid);
 
     List<ModEntity> getLevels(int offset, int count);
 

@@ -50,7 +50,6 @@ public class ClassicPlayMenuState {
 
         //init
         difficultyLevels = application.getModManager().getLevelNames().toArray(new String[0]);
-        getLevel().initIfClear();
 
         try {
             selectedTrack[getLevel().getSelectedLevel()] = getLevel().getSelectedTrack();
@@ -269,11 +268,6 @@ public class ClassicPlayMenuState {
     private void actionGoToPlayMenu() {
         application.getGame().resetState();
         menu.menuBack();
-    }
-
-    public MenuScreen getScreen() {
-        //todo remove
-        return menuFactory.get(MenuType.PLAY_CLASSIC);
     }
 
     private MenuScreen buildClassicFinishedScreen(MenuScreen finishedMenu, MenuData data) {
