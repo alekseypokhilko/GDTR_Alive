@@ -1,12 +1,12 @@
 package org.happysanta.gdtralive.desktop;
 
 import org.happysanta.gdtralive.game.Game;
-import org.happysanta.gdtralive.game.api.external.GdApplication;
+import org.happysanta.gdtralive.game.api.GdApplication;
 import org.happysanta.gdtralive.game.api.external.GdDataSource;
 import org.happysanta.gdtralive.game.api.external.GdFileStorage;
 import org.happysanta.gdtralive.game.api.external.GdMenu;
 import org.happysanta.gdtralive.game.api.external.GdSettings;
-import org.happysanta.gdtralive.game.api.external.GdUtils;
+import org.happysanta.gdtralive.game.api.external.GdStr;
 import org.happysanta.gdtralive.game.ModManager;
 import org.happysanta.gdtralive.game.HighScoreManager;
 
@@ -67,7 +67,7 @@ public class DesktopGdApplication implements GdApplication {
     }
 
     @Override
-    public GdUtils getUtils() {
+    public GdStr getStr() {
         return null;
     }
 
@@ -77,12 +77,62 @@ public class DesktopGdApplication implements GdApplication {
     }
 
     @Override
-    public GdDataSource getDataSource() {
-        return null;
+    public void notify(String message) {
+        System.out.println(message);
     }
 
     @Override
-    public void notify(String message) {
-        System.out.println(message);
+    public void doStart() {
+
+    }
+
+    @Override
+    public void showMenu() {
+
+    }
+
+    @Override
+    public void onPause() {
+
+    }
+
+    @Override
+    public void onResume() {
+
+    }
+
+    @Override
+    public void onBackPressed() {
+
+    }
+
+    @Override
+    public boolean isInited() {
+        return false;
+    }
+
+    @Override
+    public void setFullResetting(boolean fullResetting) {
+
+    }
+
+    @Override
+    public void destroyApp(boolean restart) {
+
+    }
+
+    @Override
+    public void trainingMode() {
+
+    }
+
+    @Override
+    public void setMenu(GdMenu menu) {
+
+    }
+
+    @Override
+    public void editMode() {
+
     }
 }

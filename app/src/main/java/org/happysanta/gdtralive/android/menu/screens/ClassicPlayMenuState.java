@@ -8,7 +8,7 @@ import static org.happysanta.gdtralive.android.Helpers.showConfirm;
 import android.text.Html;
 
 import org.happysanta.gdtralive.R;
-import org.happysanta.gdtralive.android.menu.Menu;
+import org.happysanta.gdtralive.android.menu.AMenu;
 import org.happysanta.gdtralive.android.menu.MenuFactory;
 import org.happysanta.gdtralive.android.menu.MenuScreen;
 import org.happysanta.gdtralive.android.menu.element.HighScoreTextMenuElement;
@@ -18,7 +18,7 @@ import org.happysanta.gdtralive.android.menu.element.OptionsMenuElement;
 import org.happysanta.gdtralive.android.menu.element.TextMenuElement;
 import org.happysanta.gdtralive.game.api.GameMode;
 import org.happysanta.gdtralive.game.api.MenuType;
-import org.happysanta.gdtralive.game.api.external.GdApplication;
+import org.happysanta.gdtralive.game.api.GdApplication;
 import org.happysanta.gdtralive.game.api.model.GameParams;
 import org.happysanta.gdtralive.game.api.model.MenuData;
 import org.happysanta.gdtralive.game.api.model.ModEntity;
@@ -31,7 +31,7 @@ import java.util.Map;
 public class ClassicPlayMenuState {
     private final MenuFactory menuFactory;
     private final GdApplication application;
-    private final Menu menu;
+    private final AMenu menu;
 
     public OptionsMenuElement levelSelector;
     private final OptionsMenuElement leagueSelector;
@@ -43,7 +43,7 @@ public class ClassicPlayMenuState {
     private final int[] selectedTrack = new int[100];
 
     //todo extract common parts / split view and logic
-    public ClassicPlayMenuState(Menu menu, GdApplication application, MenuFactory menuFactory) {
+    public ClassicPlayMenuState(AMenu menu, GdApplication application, MenuFactory menuFactory) {
         this.menu = menu;
         this.menuFactory = menuFactory;
         this.application = application;

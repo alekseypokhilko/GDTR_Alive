@@ -1,6 +1,6 @@
 package org.happysanta.gdtralive.game;
 
-import org.happysanta.gdtralive.game.api.external.GdApplication;
+import org.happysanta.gdtralive.game.api.GdApplication;
 import org.happysanta.gdtralive.game.api.external.GdDataSource;
 import org.happysanta.gdtralive.game.api.model.HighScores;
 import org.happysanta.gdtralive.game.api.model.Score;

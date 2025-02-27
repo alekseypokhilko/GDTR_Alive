@@ -1,17 +1,17 @@
 package org.happysanta.gdtralive.android;
 
 import org.happysanta.gdtralive.R;
-import org.happysanta.gdtralive.game.api.external.GdUtils;
+import org.happysanta.gdtralive.game.api.external.GdStr;
 import org.happysanta.gdtralive.game.api.Strings;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class AndroidGdUtils implements GdUtils {
+public class AStr implements GdStr {
 
     private final Map<Strings, Integer> strings = new HashMap<>();
 
-    public AndroidGdUtils() {
+    public AStr() {
         strings.put(Strings.CRASHED, R.string.crashed);
         strings.put(Strings.FINISHED, R.string.finished1);
         strings.put(Strings.WHEELIE, R.string.wheelie);

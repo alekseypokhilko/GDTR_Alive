@@ -9,7 +9,7 @@ import android.util.Log;
 import org.happysanta.gdtralive.android.GDActivity;
 import org.happysanta.gdtralive.android.menu.element.MenuAction;
 import org.happysanta.gdtralive.game.KeyboardHandler;
-import org.happysanta.gdtralive.game.api.external.GdApplication;
+import org.happysanta.gdtralive.game.api.GdApplication;
 import org.happysanta.gdtralive.game.api.external.GdMenu;
 import org.happysanta.gdtralive.game.api.GameMode;
 import org.happysanta.gdtralive.game.api.model.MenuData;
@@ -17,7 +17,9 @@ import org.happysanta.gdtralive.game.api.MenuMode;
 import org.happysanta.gdtralive.game.api.MenuType;
 import org.happysanta.gdtralive.game.api.util.ActionHandler;
 
-public class Menu implements GdMenu, MenuHandler {
+import java.io.Serializable;
+
+public class AMenu implements GdMenu, MenuHandler {
     private final GdApplication application;
     private final MenuFactory menuFactory;
 
@@ -25,7 +27,7 @@ public class Menu implements GdMenu, MenuHandler {
     public boolean m_blZ = false;
     public boolean menuDisabled = false;
     private boolean m_SZ = false;
-    public Menu(GdApplication application, MenuFactory menuFactory) {
+    public AMenu(GdApplication application, MenuFactory menuFactory) {
         this.application = application;
         this.menuFactory = menuFactory;
     }
@@ -78,7 +80,7 @@ public class Menu implements GdMenu, MenuHandler {
     }
 
     private void showMainMenu() {
-        setCurrentMenu(menuFactory.get(MenuType.MAIN));
+        this.setCurrentMenu(menuFactory.get(MenuType.MAIN));
         application.getGame().startAutoplay(false);
         m_SZ = true;
     }
@@ -87,7 +89,7 @@ public class Menu implements GdMenu, MenuHandler {
         m_SZ = false;
         MenuScreen screen = menuFactory.get(data.getGameMode().inGame);
         if (screen != null) {
-            setCurrentMenu(screen.build(data));
+            this.setCurrentMenu(screen.build(data));
         } else {
             throw new IllegalStateException("FIX ME: " + data.getGameMode().inGame);
         }
@@ -96,7 +98,7 @@ public class Menu implements GdMenu, MenuHandler {
     private void showFinishedMenu(MenuData data) {
         MenuScreen screen = menuFactory.get(data.getGameMode().finished);
         if (screen != null) {
-            setCurrentMenu(screen.build(data));
+            this.setCurrentMenu(screen.build(data));
         } else {
             throw new IllegalStateException("FIX ME: " + data.getGameMode().inGame);
         }
@@ -127,7 +129,7 @@ public class Menu implements GdMenu, MenuHandler {
             return;
         }
         if (!isCurrentMenuEmpty())
-            setCurrentMenu(currentMenu.getParent());
+            this.setCurrentMenu(currentMenu.getParent());
     }
 
     @Override
@@ -139,16 +141,36 @@ public class Menu implements GdMenu, MenuHandler {
         return currentMenu;
     }
 
+    @Override
+    public void setM_blZ(boolean flag) {
+        m_blZ = flag;
+    }
+
+    public void onCurrentMenuScroll(double p) {
+        currentMenu.onScroll(p);
+    }
+
+    public void setMenuDisabled(boolean menuDisabled) {
+        this.menuDisabled = menuDisabled;
+    }
+
+    @Override
     public void menuBack() {
-        setCurrentMenu(currentMenu.getParent());
+        this.setCurrentMenu(currentMenu.getParent());
+    }
+
+    @Override
+    public void setCurrentMenu(MenuScreen menuScreen) { //todo ======HACK=====
+        this.setCurrentMenu((Serializable) menuScreen);
     }
 
     //this is magic
     //I am unable to understand and refactor this
-    public void setCurrentMenu(MenuScreen newMenu) {
+    @Override
+    public void setCurrentMenu(Serializable newMenu) {
         menuDisabled = false;
         GDActivity gd = getGDActivity();
-        currentMenu = newMenu;
+        currentMenu = newMenu == null ? null : (MenuScreen) newMenu; //todo ======HACK=====
         if (!isCurrentMenuEmpty()) {
             currentMenu.performBeforeShowAction();
             gd.setMenu(currentMenu.getLayout());

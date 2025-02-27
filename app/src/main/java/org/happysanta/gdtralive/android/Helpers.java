@@ -21,7 +21,7 @@ public class Helpers {
     }
 
     public static ModManager getModManager() {
-        return GDActivity.shared.modManager;
+        return GDActivity.shared.getGdApplication().getModManager();
     }
 
     public static int getDp(int px) {

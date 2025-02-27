@@ -19,12 +19,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class AndroidDataSource implements GdDataSource {
+public class ADataSource implements GdDataSource {
 
     private SQLiteDatabase db;
     private LevelsSQLiteOpenHelper dbHelper;
 
-    public AndroidDataSource(Context context) {
+    public ADataSource(Context context) {
         dbHelper = new LevelsSQLiteOpenHelper(context);
     }
 

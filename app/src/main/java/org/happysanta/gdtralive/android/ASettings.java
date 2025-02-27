@@ -8,7 +8,7 @@ import android.os.Build;
 
 import org.happysanta.gdtralive.game.api.external.GdSettings;
 
-public class AndroidGdSettings implements GdSettings {
+public class ASettings implements GdSettings {
 
     private static final String LEVEL_ID = "level_id";
     private static final int LEVEL_ID_DEFAULT = 0;

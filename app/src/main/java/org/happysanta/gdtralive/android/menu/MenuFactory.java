@@ -7,10 +7,8 @@ import static org.happysanta.gdtralive.android.Helpers.s;
 import static org.happysanta.gdtralive.android.Helpers.showAlert;
 
 import android.text.Html;
-import android.view.View;
 
 import org.happysanta.gdtralive.R;
-import org.happysanta.gdtralive.android.GDActivity;
 import org.happysanta.gdtralive.android.MrgPicker;
 import org.happysanta.gdtralive.android.TrackEditorView;
 import org.happysanta.gdtralive.android.menu.element.BadgeWithTextElement;
@@ -29,6 +27,8 @@ import org.happysanta.gdtralive.game.api.MenuType;
 import org.happysanta.gdtralive.game.api.dto.Theme;
 import org.happysanta.gdtralive.game.api.dto.ThemeHeader;
 import org.happysanta.gdtralive.game.api.dto.TrackReference;
+import org.happysanta.gdtralive.game.api.GdApplication;
+import org.happysanta.gdtralive.game.api.external.GdPlatform;
 import org.happysanta.gdtralive.game.api.model.GameParams;
 import org.happysanta.gdtralive.game.api.model.MenuData;
 import org.happysanta.gdtralive.game.api.model.Mod;
@@ -52,16 +52,19 @@ public class MenuFactory {
     };
 
     private final Map<MenuType, MenuScreen> menus = new HashMap<>();
-    private final GDActivity application;
-    private Menu menu;
+    private final GdApplication application;
+    private final GdPlatform platform;
+
+    private AMenu menu;
 
     private ClassicPlayMenuState classicPlayMenu;
     private TrackEditorView trackEditor;
     private List<String> modNames = new ArrayList<>(); //todo remove
     public List<String> themeNames = new ArrayList<>(); //todo remove
 
-    public MenuFactory(GDActivity application) {
+    public MenuFactory(GdApplication application, GdPlatform platform) {
         this.application = application;
+        this.platform = platform;
     }
 
     public MenuScreen add(MenuType type, Function<Map<MenuType, MenuScreen>, MenuScreen> builder) {
@@ -87,9 +90,9 @@ public class MenuFactory {
     //Все переплетено
     //Потяни за нить
     //За ней потянется клубок
-    public void init(Menu menu) {
+    public void init(AMenu menu) {
         this.menu = menu;
-        this.trackEditor = application.trackEditor;
+        this.trackEditor = null; //todo
         add(MenuType.MAIN, r -> new MenuScreen(s(R.string.main), null));
         add(MenuType.PLAY, r -> new MenuScreen(s(R.string.play), r.get(MenuType.MAIN)));
         add(MenuType.PROFILE, this::createProfileScreen);
@@ -217,7 +220,7 @@ public class MenuFactory {
                     application.getModManager().setTrackProperties(trackEditor.getCurrentTrack());
                 }));
             }
-            application.hideKeyboardLayout();
+            platform.hideKeyboardLayout();
             System.gc(); //hopefully
             return s;
         });
@@ -355,10 +358,10 @@ public class MenuFactory {
         screen.setBuilder((s, data) -> {
             s.clear();
             for (Achievement achievement : Achievement.achievements.values()) {
-                String title = Fmt.sp(application.getUtils().s(achievement.getName()), achievement.getProgressFormatted());
+                String title = Fmt.sp(application.getStr().s(achievement.getName()), achievement.getProgressFormatted());
                 s.addItem(new BadgeWithTextElement(ACHIEVEMENT_ICONS[achievement.getLevel()], title, menu, item -> {
                 }));
-                s.addItem(new TextMenuElement(Html.fromHtml(application.getUtils().s(achievement.getDescription()))));
+                s.addItem(new TextMenuElement(Html.fromHtml(application.getStr().s(achievement.getDescription()))));
                 s.addItem(MenuUtils.emptyLine(false));
             }
             s.addItem(menu.backAction());
@@ -424,7 +427,10 @@ public class MenuFactory {
     }
 
     private void transformWorkshop(MenuScreen s) {
-        s.addItem(new MenuAction(Fmt.ra(s(R.string.create_new_track)), menu, item -> trackEditor.createNew(application.getSettings().getPlayerName())));
+        s.addItem(new MenuAction(Fmt.ra(s(R.string.create_new_track)), menu, item -> {
+            application.notify("Coming soon");
+//            trackEditor.createNew(application.getSettings().getPlayerName());
+        }));
         s.addItem(new MenuItem(s(R.string.mod_packs), this.get(MenuType.MODS), menu, __ -> this.get(MenuType.MODS).build()));
         s.addItem(new MenuItem(s(R.string.themes), this.get(MenuType.THEMES), menu, __ -> this.get(MenuType.THEMES).build()));
 //        TrackEditorMenu trackEditor = new TrackEditorMenu(menu, s, application);
@@ -457,11 +463,11 @@ public class MenuFactory {
         MenuScreen ig = new MenuScreen(s(R.string.ingame), r.get(MenuType.PLAY));
         ig.addItem(new MenuAction(s(R.string._continue), MenuAction.CONTINUE, menu, __ -> application.menuToGame()));
         ig.addItem(new MenuAction(s(R.string.training_mode), menu, __ -> {
-            application.actionButton.setVisibility(View.VISIBLE);
+            application.trainingMode();
             application.menuToGame();
         }));
         ig.addItem(new MenuAction(Fmt.colon(s(R.string.restart), "Name"), MenuAction.RESTART, menu, __ -> game.restart()));
-//        ig.addItem(createAction(ActionMenuElement.LIKE, item -> { }));
+        ig.addItem(menu.createAction(MenuAction.LIKE, item -> application.notify("Coming soon")));
         ig.addItem(menu.backAction(game::resetState));
         ig.setBuilder((s, data) -> {
             if (data != null) {
@@ -550,8 +556,8 @@ public class MenuFactory {
                 item -> {
                     boolean enabled = ((OptionsMenuElement) item).getSelectedOption() == 0;
                     application.getSettings().setKeyboardInMenuEnabled(enabled);
-                    if (enabled) application.showKeyboardLayout();
-                    else application.hideKeyboardLayout();
+                    if (enabled) platform.showKeyboardLayout();
+                    else platform.hideKeyboardLayout();
                 }));
 
         MenuScreen eraseScreen = new MenuScreen(s(R.string.confirm_clear), screen);
@@ -579,7 +585,7 @@ public class MenuFactory {
                 application.getHighScoreManager().resetAllLevelsSettings();
                 application.getHighScoreManager().clearAllHighScores();
 
-                application.fullResetting = true;
+                application.setFullResetting(true);
                 application.destroyApp(true);
             });
             menu.menuBack();

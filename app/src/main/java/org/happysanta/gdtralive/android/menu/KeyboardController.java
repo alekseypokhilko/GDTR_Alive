@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import org.happysanta.gdtralive.game.KeyboardHandler;
-import org.happysanta.gdtralive.game.api.external.GdApplication;
+import org.happysanta.gdtralive.game.api.GdApplication;
 
 public class KeyboardController implements View.OnTouchListener {
 
@@ -24,7 +24,6 @@ public class KeyboardController implements View.OnTouchListener {
 	private final GdApplication application;
 	private final LinearLayout[] btns;
 	private final PointerInfo[] pointers;
-	private StringBuffer logBuffer;
 
 	static {
 		PADDING_DP = getDp(PADDING);
@@ -38,7 +37,6 @@ public class KeyboardController implements View.OnTouchListener {
 			pointers[i] = new PointerInfo(i);
 		}
 
-		logBuffer = new StringBuffer();
 		this.application = application;
 	}
 
@@ -139,15 +137,6 @@ public class KeyboardController implements View.OnTouchListener {
 		}
 
 		return true;
-	}
-
-	public synchronized void clearLogBuffer() {
-		logBuffer = null;
-		logBuffer = new StringBuffer();
-	}
-
-	public String getLog() {
-		return logBuffer.toString();
 	}
 
 

@@ -21,14 +21,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public class AndroidFileStorage implements GdFileStorage {
+public class AFileStorage implements GdFileStorage {
     public List<TrackRecord> records = new ArrayList<>();
 
     // /storage/emulated/0/Android/data/org.happysanta.gdtralive/files/GDTR_Alive
     private final File appFolder;
     Map<GDFile, File> folders = new HashMap<>();
 
-    public AndroidFileStorage(GDActivity application) {
+    public AFileStorage(GDActivity application) {
         folders.put(GDFile.MOD, application.getExternalFilesDir(GDFile.MOD.appFolder));
         folders.put(GDFile.THEME, application.getExternalFilesDir(GDFile.THEME.appFolder));
         folders.put(GDFile.TRACK, application.getExternalFilesDir(GDFile.TRACK.appFolder));

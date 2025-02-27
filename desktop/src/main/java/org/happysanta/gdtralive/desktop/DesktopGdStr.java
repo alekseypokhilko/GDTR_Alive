@@ -1,16 +1,16 @@
 package org.happysanta.gdtralive.desktop;
 
-import org.happysanta.gdtralive.game.api.external.GdUtils;
+import org.happysanta.gdtralive.game.api.external.GdStr;
 import org.happysanta.gdtralive.game.api.Strings;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class DesktopGdUtils implements GdUtils {
+public class DesktopGdStr implements GdStr {
 
     private final Map<Strings, Integer> strings = new HashMap<>();
 
-    public DesktopGdUtils() {
+    public DesktopGdStr() {
         strings.put(Strings.CRASHED, 1);
         strings.put(Strings.FINISHED, 1);
         strings.put(Strings.WHEELIE, 1);

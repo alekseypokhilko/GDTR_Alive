@@ -3,10 +3,10 @@ package org.happysanta.gdtralive.game;
 import org.happysanta.gdtralive.game.api.Constants;
 import org.happysanta.gdtralive.game.engine.Engine;
 import org.happysanta.gdtralive.game.api.LevelState;
-import org.happysanta.gdtralive.game.api.external.GdApplication;
+import org.happysanta.gdtralive.game.api.GdApplication;
 import org.happysanta.gdtralive.game.api.external.GdMenu;
 import org.happysanta.gdtralive.game.api.external.GdSettings;
-import org.happysanta.gdtralive.game.api.external.GdUtils;
+import org.happysanta.gdtralive.game.api.external.GdStr;
 import org.happysanta.gdtralive.game.api.exception.InvalidTrackException;
 import org.happysanta.gdtralive.game.api.model.TrackParams;
 import org.happysanta.gdtralive.game.api.GameMode;
@@ -18,6 +18,9 @@ import org.happysanta.gdtralive.game.api.model.Score;
 import org.happysanta.gdtralive.game.util.Utils;
 import org.happysanta.gdtralive.game.api.Strings;
 
+/**
+ * Core game logic
+ */
 public class Game {
     private final Object menuLock = new Object();
     private final Object gameLock = new Object();
@@ -25,7 +28,7 @@ public class Game {
     private final Engine engine;
     private final GdApplication application;
     private final GdSettings settings;
-    private final GdUtils utils;
+    private final GdStr str;
     private final GdView view;
     private GdMenu menu;
 
@@ -58,9 +61,9 @@ public class Game {
         this.view = new GdView(frameRender, engine, width, height);
         this.recorder = new Recorder(engine, application.getFileStorage(), settings);
         this.player = new Player(engine, () -> restart(true));
-        this.trainer = new Trainer(engine, view, application.getUtils());
+        this.trainer = new Trainer(engine, view, application.getStr());
         this.keyboardHandler = new KeyboardHandler(application, engine, settings.getInputOption());
-        this.utils = application.getUtils();
+        this.str = application.getStr();
         this.settings = settings;
 //        view.adjustDimensions(true); //todo move
     }
@@ -109,7 +112,7 @@ public class Game {
                 trainer.onCrash(() -> {
                     recorder.stopCapture();
                     delayedRestartAtTime = currentTimeMillis + 3000L;
-                    view.showInfoMessage(utils.s(Strings.CRASHED), 3000);
+                    view.showInfoMessage(str.s(Strings.CRASHED), 3000);
                 });
             }
             if (delayedRestartAtTime != 0L && delayedRestartAtTime < currentTimeMillis) {
@@ -122,7 +125,7 @@ public class Game {
                 trainer.onCrash(() -> {
                     recorder.stopCapture();
                     finishedTime = currentTimeMillis;
-                    view.showInfoMessage(utils.s(Strings.CRASHED), 3000);
+                    view.showInfoMessage(str.s(Strings.CRASHED), 3000);
                     Utils.waitRestart(delayedRestartAtTime, currentTimeMillis);
                     restart(true);
                 });
@@ -168,6 +171,9 @@ public class Game {
         engine.updateState();
         application.gameToMenu();
 
+//        boolean menuShown = application.isMenuShown();
+//        boolean alive = application.isAlive();
+//        boolean menuNotEmpty = !menu.isCurrentMenuEmpty();
         while (application.isMenuShown() && application.isAlive() && !menu.isCurrentMenuEmpty()) {
             if (application.isOnPause()) {
                 while (application.isOnPause()) {
@@ -292,9 +298,9 @@ public class Game {
     public void goalLoop() {
         long l1 = 0L;
         if (!engine.frontWheelTouchedGround)
-            view.showInfoMessage(utils.s(Strings.WHEELIE), 1000);
+            view.showInfoMessage(str.s(Strings.WHEELIE), 1000);
         else
-            view.showInfoMessage(utils.s(Strings.FINISHED), 1000);
+            view.showInfoMessage(str.s(Strings.FINISHED), 1000);
         for (long l2 = System.currentTimeMillis() + 1000L; l2 > System.currentTimeMillis(); /*view.postInvalidate()*/) {
             if (application.isMenuShown()) {
                 //m_di.postInvalidate();

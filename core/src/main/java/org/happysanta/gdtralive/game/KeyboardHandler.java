@@ -1,6 +1,6 @@
 package org.happysanta.gdtralive.game;
 
-import org.happysanta.gdtralive.game.api.external.GdApplication;
+import org.happysanta.gdtralive.game.api.GdApplication;
 import org.happysanta.gdtralive.game.api.external.GdMenu;
 import org.happysanta.gdtralive.game.engine.Engine;
 
@@ -14,7 +14,13 @@ public class KeyboardHandler {
     public static final int KEY_LEFT = 4;
     public static final int KEY_RIGHT = 6;
     private static final byte[][] m_DaaB = {{0, 0}, {1, 0}, {0, -1}, {0, 0}, {0, 0}, {0, 1}, {-1, 0}};
-    private static final byte[][][] m_maaaB = {
+    /**
+     * [buttons 0 - 9][keySet][{gaz, clockwiseRotation}]
+     *  1 = applied force (forward)
+     *  0 = no force
+     * -1 = negative force (backward)
+     */
+    private static final byte[][][] keySetMapping = {
             {{0, 0}, {1, -1}, {1, 0}, {1, 1}, {0, -1}, {-1, 0}, {0, 1}, {-1, -1}, {-1, 0}, {-1, 1}},
             {{0, 0}, {1, 0}, {0, 0}, {0, 0}, {-1, 0}, {0, -1}, {0, 1}, {0, 0}, {0, 0}, {0, 0}},
             {{0, 0}, {0, 0}, {0, 0}, {1, 0}, {0, -1}, {0, 1}, {-1, 0}, {0, 0}, {0, 0}, {0, 0}}
@@ -140,8 +146,8 @@ public class KeyboardHandler {
         int l = inputOption;
         for (int buttonNumber = 0; buttonNumber < 10; buttonNumber++) {
             if (pressedButtons[buttonNumber]) {
-                gaz += m_maaaB[l][buttonNumber][0];
-                tilt += m_maaaB[l][buttonNumber][1];
+                gaz += keySetMapping[l][buttonNumber][0];
+                tilt += keySetMapping[l][buttonNumber][1];
             }
         }
         for (int j1 = 0; j1 < 7; j1++) {

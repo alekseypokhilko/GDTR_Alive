@@ -26,7 +26,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class AndroidCanvas implements GdCanvas {
+public class ACanvas implements GdCanvas {
     private final ModManager modManager;
     private final Paint paint;
     private final Paint infoFont;
@@ -36,7 +36,7 @@ public class AndroidCanvas implements GdCanvas {
     private final LinkedHashMap<String, Object> props = new LinkedHashMap<>();
     private Canvas canvas;
 
-    public AndroidCanvas(ModManager modManager) {
+    public ACanvas(ModManager modManager) {
         this.modManager = modManager;
         paint = new Paint();
         paint.setAntiAlias(true);
@@ -59,15 +59,15 @@ public class AndroidCanvas implements GdCanvas {
         this.props.put(Sprite.FINISH_FLAG_1.name(), fromDrawable(R.drawable.s_flag_finish1));
         this.props.put(Sprite.FINISH_FLAG_2.name(), fromDrawable(R.drawable.s_flag_finish2));
 
-        props.put(Sprite.STEERING.name(), AndroidCanvas.fromDrawable(R.drawable.s_steering));
-        props.put(Sprite.ENGINE.name(), AndroidCanvas.fromDrawable(R.drawable.s_engine));
-        props.put(Sprite.FENDER.name(), AndroidCanvas.fromDrawable(R.drawable.s_fender));
-        props.put(Sprite.WHEEL_SMALL.name(), AndroidCanvas.fromDrawable(R.drawable.s_wheel1));
-        props.put(Sprite.WHEEL_BIG.name(), AndroidCanvas.fromDrawable(R.drawable.s_wheel2));
-        props.put(Sprite.HELMET.name(), AndroidCanvas.fromDrawable(R.drawable.s_helmet));
-        props.put(Sprite.ARM.name(), AndroidCanvas.fromDrawable(R.drawable.s_bluearm));
-        props.put(Sprite.LEG.name(), AndroidCanvas.fromDrawable(R.drawable.s_blueleg));
-        props.put(Sprite.BODY.name(), AndroidCanvas.fromDrawable(R.drawable.s_bluebody));
+        props.put(Sprite.STEERING.name(), ACanvas.fromDrawable(R.drawable.s_steering));
+        props.put(Sprite.ENGINE.name(), ACanvas.fromDrawable(R.drawable.s_engine));
+        props.put(Sprite.FENDER.name(), ACanvas.fromDrawable(R.drawable.s_fender));
+        props.put(Sprite.WHEEL_SMALL.name(), ACanvas.fromDrawable(R.drawable.s_wheel1));
+        props.put(Sprite.WHEEL_BIG.name(), ACanvas.fromDrawable(R.drawable.s_wheel2));
+        props.put(Sprite.HELMET.name(), ACanvas.fromDrawable(R.drawable.s_helmet));
+        props.put(Sprite.ARM.name(), ACanvas.fromDrawable(R.drawable.s_bluearm));
+        props.put(Sprite.LEG.name(), ACanvas.fromDrawable(R.drawable.s_blueleg));
+        props.put(Sprite.BODY.name(), ACanvas.fromDrawable(R.drawable.s_bluebody));
 
     }
 

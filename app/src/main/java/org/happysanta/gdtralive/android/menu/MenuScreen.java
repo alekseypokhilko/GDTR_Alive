@@ -19,11 +19,12 @@ import org.happysanta.gdtralive.game.KeyboardHandler;
 import org.happysanta.gdtralive.game.api.model.MenuData;
 import org.happysanta.gdtralive.game.api.util.BiFunction;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
 
-public class MenuScreen implements OnMenuElementHighlightListener {
+public class MenuScreen implements OnMenuElementHighlightListener, Serializable {
 
 	protected static final int LAYOUT_LEFT_PADDING = 30;
 	protected static final int LAYOUT_TOP_PADDING = 0;

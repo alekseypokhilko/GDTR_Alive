@@ -15,18 +15,17 @@ import org.happysanta.gdtralive.android.menu.element.InputTextElement;
 import org.happysanta.gdtralive.android.menu.views.MenuImageView;
 import org.happysanta.gdtralive.android.menu.views.MenuLinearLayout;
 import org.happysanta.gdtralive.game.Game;
-import org.happysanta.gdtralive.game.util.Utils;
-import org.happysanta.gdtralive.game.api.EditorMode;
-import org.happysanta.gdtralive.game.engine.Engine;
-import org.happysanta.gdtralive.game.api.external.GdApplication;
-import org.happysanta.gdtralive.game.api.external.GdSettings;
 import org.happysanta.gdtralive.game.ModManager;
+import org.happysanta.gdtralive.game.api.EditorMode;
+import org.happysanta.gdtralive.game.api.GDFile;
+import org.happysanta.gdtralive.game.api.GameMode;
 import org.happysanta.gdtralive.game.api.dto.Theme;
 import org.happysanta.gdtralive.game.api.dto.TrackReference;
-import org.happysanta.gdtralive.game.api.GameMode;
+import org.happysanta.gdtralive.game.api.GdApplication;
 import org.happysanta.gdtralive.game.api.model.GameParams;
-import org.happysanta.gdtralive.game.api.GDFile;
+import org.happysanta.gdtralive.game.engine.Engine;
 import org.happysanta.gdtralive.game.util.Fmt;
+import org.happysanta.gdtralive.game.util.Utils;
 
 //todo separate view and controller
 public class TrackEditorView {
@@ -44,7 +43,6 @@ public class TrackEditorView {
 
     private Game game;
     private Engine engine;
-    private GdSettings settings;
     private final ModManager modManager;
     private final GdApplication application;
 
@@ -62,9 +60,9 @@ public class TrackEditorView {
     private final MenuImageView up;
     private final MenuImageView down;
 
-    public TrackEditorView(GDActivity gd) {
-        this.application = gd;
-        this.modManager = gd.getModManager();
+    public TrackEditorView(GDActivity gd, GdApplication application, ModManager modManager) {
+        this.application = application;
+        this.modManager = modManager;
         //https://www.flaticon.com/packs/bigmug-line
         left = button(R.drawable.c_arrow_left, null);
         right = button(R.drawable.c_arrow_right, null);
@@ -137,10 +135,9 @@ public class TrackEditorView {
         hideLayout();
     }
 
-    public void init(Game game, GdSettings settings) {
+    public void init(Game game) {
         this.game = game;
         this.engine = game.getEngine();
-        this.settings = settings;
     }
 
     private static FrameLayout.LayoutParams getFrameParams(int gravity) {
@@ -320,7 +317,7 @@ public class TrackEditorView {
 
     public void startEditing() {
         game.startTrack(GameParams.of(GameMode.TRACK_EDITOR, currentTrack.getData()));
-        Helpers.getGDActivity().editMode();
+        application.editMode();
         showLayout(); //todo fix timer
     }
 
@@ -335,7 +332,7 @@ public class TrackEditorView {
     public void playTrack() {
         modManager.setTrackProperties(currentTrack);
         game.startTrack(GameParams.of(GameMode.TRACK_EDITOR_PLAY, currentTrack.getData()));
-        Helpers.getGDActivity().exitEditMode();
+        Helpers.getGDActivity().exitEditMode(); //todo
     }
 
     public void saveLeagueInput(int league) {

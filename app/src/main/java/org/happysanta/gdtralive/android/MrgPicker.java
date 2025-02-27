@@ -46,7 +46,7 @@ public class MrgPicker {
                             final File file1 = new File(Objects.requireNonNull(Uri.fromFile(file).getPath()));
                             try (InputStream in = Helpers.getGDActivity().getContentResolver().openInputStream(Uri.fromFile(file))) {
                                 Mod mod = MrgUtils.convertMrg(name, file1.getName(), Utils.readAllBytes(in));
-                                gd.menu.setCurrentMenu(gd.getMenuFactory().get(MenuType.MOD_OPTIONS).build(new MenuData(mod, name)));
+                                gd.getMenu().setCurrentMenu(gd.getMenuFactory().get(MenuType.MOD_OPTIONS).build(new MenuData(mod, name)));
                             }
                         } catch (Exception e) {
                             e.printStackTrace();

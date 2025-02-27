@@ -10,7 +10,7 @@ import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.View;
 
-import org.happysanta.gdtralive.android.AndroidCanvas;
+import org.happysanta.gdtralive.android.ACanvas;
 import org.happysanta.gdtralive.android.Helpers;
 import org.happysanta.gdtralive.android.GdBitmap;
 import org.happysanta.gdtralive.game.api.Sprite;
@@ -27,7 +27,7 @@ public class MenuHelmetView extends View {
 
 	protected boolean show = false;
 	protected boolean _setMeasuredHeight = false;
-	protected GdBitmap helmet = AndroidCanvas.getInterfaceSprite(Sprite.HELMET);
+	protected GdBitmap helmet = ACanvas.getInterfaceSprite(Sprite.HELMET);
 	protected static MenuHelmetView lastActive = null;
 
 	public static void clearStaticFields() {

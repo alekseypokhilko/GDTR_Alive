@@ -7,8 +7,7 @@ import android.os.Build;
 import android.text.Html;
 
 import org.happysanta.gdtralive.R;
-import org.happysanta.gdtralive.android.Helpers;
-import org.happysanta.gdtralive.android.menu.Menu;
+import org.happysanta.gdtralive.android.menu.AMenu;
 import org.happysanta.gdtralive.android.menu.MenuFactory;
 import org.happysanta.gdtralive.android.menu.MenuScreen;
 import org.happysanta.gdtralive.android.menu.MenuUtils;
@@ -23,7 +22,7 @@ import org.happysanta.gdtralive.game.api.dto.PackLevel;
 import org.happysanta.gdtralive.game.api.dto.PackTrackReference;
 import org.happysanta.gdtralive.game.api.dto.TrackReference;
 import org.happysanta.gdtralive.game.api.exception.InvalidTrackException;
-import org.happysanta.gdtralive.game.api.external.GdApplication;
+import org.happysanta.gdtralive.game.api.GdApplication;
 import org.happysanta.gdtralive.game.api.model.GameParams;
 import org.happysanta.gdtralive.game.api.model.Mod;
 import org.happysanta.gdtralive.game.api.model.TrackParams;
@@ -38,7 +37,7 @@ import java.util.stream.Collectors;
 
 public class DailyMenu {
     private final GdApplication application;
-    private final Menu menu;
+    private final AMenu menu;
     private final Game game;
     private final MenuScreen screen;
     private final MenuScreen finishedScreen;
@@ -53,7 +52,7 @@ public class DailyMenu {
 
     MenuFactory menuFactory;
 
-    public DailyMenu(Menu menu, MenuScreen parent, GdApplication application, MenuFactory menuFactory) {
+    public DailyMenu(AMenu menu, MenuScreen parent, GdApplication application, MenuFactory menuFactory) {
         this.menu = menu;
         this.game = application.getGame();
         this.application = application;
@@ -62,7 +61,7 @@ public class DailyMenu {
         this.trackOfTheDay = new TrackOfTheDayMenu(menu, screen, application);
         this.inGameScreen = new MenuScreen(Fmt.sp(s(R.string.ingame), s(R.string.daily_challenge)), screen);
         inGameScreen.addItem(new MenuAction(s(R.string._continue), MenuAction.CONTINUE, menu,
-                item -> Helpers.getGDActivity().menuToGame()));
+                item -> application.menuToGame()));
         inGameScreen.addItem(new MenuAction(s(R.string.restart), MenuAction.RESTART, menu,
                 item -> {
                     game.restart(true);

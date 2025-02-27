@@ -3,14 +3,15 @@ package org.happysanta.gdtralive.android;
 import android.graphics.Canvas;
 import android.view.View;
 
-import org.happysanta.gdtralive.game.ModManager;
 import org.happysanta.gdtralive.game.GdView;
+import org.happysanta.gdtralive.game.ModManager;
+import org.happysanta.gdtralive.game.api.external.GdGameView;
 
-public class GameView extends View {
+public class AGameView extends View implements GdGameView {
 
     public GdView gdView;
-    private final AndroidCanvas canvas;
-    private final ModManager modManager;
+    private ACanvas canvas;
+    private ModManager modManager;
 
     //timer
     public int width;
@@ -21,10 +22,8 @@ public class GameView extends View {
     int m_uI;
     private boolean m_AZ;
 
-    public GameView(GDActivity micro, ModManager modManager) {
+    public AGameView(GDActivity micro) {
         super(micro);
-        this.modManager = modManager;
-        canvas = new AndroidCanvas(modManager);
         m_uI = 0;
         m_AZ = true;
         m_rJ = -1L;
@@ -33,12 +32,20 @@ public class GameView extends View {
         adjustDimensions();
     }
 
+    public void setModManager(ModManager modManager) {
+        this.modManager = modManager;
+        this.canvas = new ACanvas(modManager);
+    }
+
     public void adjustDimensions(boolean flag) {
         m_AZ = flag;
         adjustDimensions();
     }
 
     public void adjustDimensions() {
+        if (modManager == null) {
+            return;
+        }
         width = getScaledWidth();
         height1 = height = getScaledHeight();
         if (m_KZ && m_AZ)
@@ -56,6 +63,10 @@ public class GameView extends View {
 
     public int getGdHeight() {
         return height;
+    }
+
+    public GdView getGdView() {
+        return gdView;
     }
 
     // Draw boot logos and "something else"
