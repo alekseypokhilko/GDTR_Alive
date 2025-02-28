@@ -47,7 +47,6 @@ import org.happysanta.gdtralive.game.api.external.GdDataSource;
 import org.happysanta.gdtralive.game.api.external.GdFileStorage;
 import org.happysanta.gdtralive.game.api.external.GdMenu;
 import org.happysanta.gdtralive.game.api.external.GdPlatform;
-import org.happysanta.gdtralive.game.api.external.GdSettings;
 import org.happysanta.gdtralive.game.api.external.GdStr;
 import org.happysanta.gdtralive.game.api.model.GameParams;
 import org.happysanta.gdtralive.game.api.model.MenuData;
@@ -88,12 +87,11 @@ public class GDActivity extends Activity implements GdPlatform {
         shared = this;
 
         GdStr str = new AStr();
-        GdSettings settings = new ASettings();
         GdFileStorage fileStorage = new AFileStorage(this);
         GdDataSource dataSource = new ADataSource(this);
         AGameView gameView = new AGameView(this);
 
-        this.application = new GdApplicationImpl(this, settings, str, fileStorage, dataSource, gameView);
+        this.application = new GdApplicationImpl(this, new ASettingsStorage(), str, fileStorage, dataSource, gameView);
         this.menuFactory = new MenuFactory(application, this);
 
         ModManager modManager = application.getModManager();

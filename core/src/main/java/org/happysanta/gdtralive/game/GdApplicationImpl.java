@@ -5,9 +5,10 @@ import org.happysanta.gdtralive.game.api.external.GdDataSource;
 import org.happysanta.gdtralive.game.api.external.GdFileStorage;
 import org.happysanta.gdtralive.game.api.external.GdGameView;
 import org.happysanta.gdtralive.game.api.external.GdMenu;
-import org.happysanta.gdtralive.game.api.external.GdSettings;
-import org.happysanta.gdtralive.game.api.external.GdStr;
 import org.happysanta.gdtralive.game.api.external.GdPlatform;
+import org.happysanta.gdtralive.game.api.external.GdSettings;
+import org.happysanta.gdtralive.game.api.external.GdSettingsStorage;
+import org.happysanta.gdtralive.game.api.external.GdStr;
 
 /**
  * Core application logic
@@ -37,13 +38,13 @@ public class GdApplicationImpl implements GdApplication {
     private boolean inited = false;
     private Thread thread;
 
-    public GdApplicationImpl(GdPlatform platform, GdSettings settings, GdStr str,
+    public GdApplicationImpl(GdPlatform platform, GdSettingsStorage settingsStorage, GdStr str,
                              GdFileStorage fileStorage, GdDataSource dataSource, GdGameView gdGameView) {
         this.platform = platform;
         this.highScoreManager = new HighScoreManager(this, dataSource);
+        this.settings = new GdSettingsImpl(settingsStorage);
         this.modManager = new ModManager(fileStorage, settings, dataSource, platform.getDensity());
         this.gameView = gdGameView;
-        this.settings = settings;
         this.str = str;
         this.fileStorage = fileStorage;
         this.dataSource = dataSource;

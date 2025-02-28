@@ -1,14 +1,9 @@
-package org.happysanta.gdtralive.android;
-
-import static org.happysanta.gdtralive.android.Helpers.getGDActivity;
-
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.os.Build;
+package org.happysanta.gdtralive.game;
 
 import org.happysanta.gdtralive.game.api.external.GdSettings;
+import org.happysanta.gdtralive.game.api.external.GdSettingsStorage;
 
-public class ASettings implements GdSettings {
+public class GdSettingsImpl implements GdSettings {
 
     private static final String LEVEL_ID = "level_id";
     private static final int LEVEL_ID_DEFAULT = 0;
@@ -51,10 +46,10 @@ public class ASettings implements GdSettings {
     private static final String LEVELS_SORT = "level_sort"; // in download list
     private static final int LEVELS_SORT_DEFAULT = 0;
 
-    private static SharedPreferences preferences;
+    private final GdSettingsStorage storage;
 
-    static {
-        preferences = getGDActivity().getSharedPreferences("GDSettings", Context.MODE_PRIVATE);
+    public GdSettingsImpl(GdSettingsStorage storage) {
+        this.storage = storage;
     }
 
     public void resetAll() {
@@ -73,146 +68,114 @@ public class ASettings implements GdSettings {
     }
 
     public long getLevelId() {
-        return preferences.getLong(LEVEL_ID, LEVEL_ID_DEFAULT);
+        return storage.getLong(LEVEL_ID, LEVEL_ID_DEFAULT);
     }
 
     public void setLevelId(long levelId) {
-        setLong(LEVEL_ID, levelId);
+        storage.setLong(LEVEL_ID, levelId);
     }
 
     public boolean isPerspectiveEnabled() {
-        return preferences.getBoolean(PERSPECTIVE_ENABLED, PERSPECTIVE_ENABLED_DEFAULT);
+        return storage.getBoolean(PERSPECTIVE_ENABLED, PERSPECTIVE_ENABLED_DEFAULT);
     }
 
     public void setPerspectiveEnabled(boolean enabled) {
-        setBoolean(PERSPECTIVE_ENABLED, enabled);
+        storage.setBoolean(PERSPECTIVE_ENABLED, enabled);
     }
 
     public boolean isRecordingEnabled() {
-        return preferences.getBoolean(RECORDING_ENABLED, RECORDING_ENABLED_DEFAULT);
+        return storage.getBoolean(RECORDING_ENABLED, RECORDING_ENABLED_DEFAULT);
     }
 
     public void setRecordingEnabled(boolean enabled) {
-        setBoolean(RECORDING_ENABLED, enabled);
+        storage.setBoolean(RECORDING_ENABLED, enabled);
     }
 
     public boolean isShadowsEnabled() {
-        return preferences.getBoolean(SHADOWS_ENABLED, SHADOWS_ENABLED_DEFAULT);
+        return storage.getBoolean(SHADOWS_ENABLED, SHADOWS_ENABLED_DEFAULT);
     }
 
     public void setShadowsEnabled(boolean enabled) {
-        setBoolean(SHADOWS_ENABLED, enabled);
+        storage.setBoolean(SHADOWS_ENABLED, enabled);
     }
 
     public boolean isDriverSpriteEnabled() {
-        return preferences.getBoolean(DRIVER_SPRITE_ENABLED, DRIVER_SPRITE_ENABLED_DEFAULT);
+        return storage.getBoolean(DRIVER_SPRITE_ENABLED, DRIVER_SPRITE_ENABLED_DEFAULT);
     }
 
     public void setDriverSpriteEnabled(boolean enabled) {
-        setBoolean(DRIVER_SPRITE_ENABLED, enabled);
+        storage.setBoolean(DRIVER_SPRITE_ENABLED, enabled);
     }
 
     public boolean isBikeSpriteEnabled() {
-        return preferences.getBoolean(BIKE_SPRITE_ENABLED, BIKE_SPRITE_ENABLED_DEFAULT);
+        return storage.getBoolean(BIKE_SPRITE_ENABLED, BIKE_SPRITE_ENABLED_DEFAULT);
     }
 
     public void setBikeSpriteEnabled(boolean enabled) {
-        setBoolean(BIKE_SPRITE_ENABLED, enabled);
+        storage.setBoolean(BIKE_SPRITE_ENABLED, enabled);
     }
 
     public boolean isLookAheadEnabled() {
-        return preferences.getBoolean(LOOK_AHEAD_ENABLED, LOOK_AHEAD_ENABLED_DEFAULT);
+        return storage.getBoolean(LOOK_AHEAD_ENABLED, LOOK_AHEAD_ENABLED_DEFAULT);
     }
 
     public void setLookAheadEnabled(boolean enabled) {
-        setBoolean(LOOK_AHEAD_ENABLED, enabled);
+        storage.setBoolean(LOOK_AHEAD_ENABLED, enabled);
     }
 
     public boolean isKeyboardInMenuEnabled() {
-        return preferences.getBoolean(KEYBOARD_IN_MENU_ENABLED, KEYBOARD_IN_MENU_ENABLED_DEFAULT);
+        return storage.getBoolean(KEYBOARD_IN_MENU_ENABLED, KEYBOARD_IN_MENU_ENABLED_DEFAULT);
     }
 
     public void setKeyboardInMenuEnabled(boolean enabled) {
-        setBoolean(KEYBOARD_IN_MENU_ENABLED, enabled);
+        storage.setBoolean(KEYBOARD_IN_MENU_ENABLED, enabled);
     }
 
     public String getSelectedTheme() {
-        return preferences.getString(SELECTED_THEME, SELECTED_THEME_DEFAULT);
+        return storage.getString(SELECTED_THEME, SELECTED_THEME_DEFAULT);
     }
 
     public void setSelectedTheme(String guid) {
-        setString(SELECTED_THEME, guid);
+        storage.setString(SELECTED_THEME, guid);
     }
 
     public boolean isVibrateOnTouchEnabled() {
-        return preferences.getBoolean(VIBRATE_ENABLED, VIBRATE_ENABLED_DEFAULT);
+        return storage.getBoolean(VIBRATE_ENABLED, VIBRATE_ENABLED_DEFAULT);
     }
 
     public void setVibrateOnTouchEnabled(boolean enabled) {
-        setBoolean(VIBRATE_ENABLED, enabled);
+        storage.setBoolean(VIBRATE_ENABLED, enabled);
     }
 
     public int getInputOption() {
-        return preferences.getInt(INPUT_OPTION, INPUT_OPTION_DEFAULT);
+        return storage.getInt(INPUT_OPTION, INPUT_OPTION_DEFAULT);
     }
     public void setInputOption(int value) {
-        setInt(INPUT_OPTION, value);
+        storage.setInt(INPUT_OPTION, value);
     }
 
     public int getScale() {
-        return preferences.getInt(SCALE_OPTION, SCALE_OPTION_DEFAULT);
+        return storage.getInt(SCALE_OPTION, SCALE_OPTION_DEFAULT);
     }
 
     public void setScale(int value) {
-        setInt(SCALE_OPTION, value);
+        storage.setInt(SCALE_OPTION, value);
     }
 
     public void setLevelsSort(int type) {
-        setInt(LEVELS_SORT, type);
+        storage.setInt(LEVELS_SORT, type);
     }
 
     public String getPlayerName() {
-        return preferences.getString(NAME, NAME_DEFAULT);
+        return storage.getString(NAME, NAME_DEFAULT);
     }
 
     public void setPlayerName(String name) {
-        setString(NAME, name);
+        storage.setString(NAME, name);
     }
 
     @Override
     public int getGameSpeed() {
         return 2;
     }
-
-    private static void setLong(String key, long value) {
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putLong(key, value);
-        editorApply(editor);
-    }
-
-    private static void setInt(String key, int value) {
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putInt(key, value);
-        editorApply(editor);
-    }
-
-    private static void setBoolean(String key, boolean value) {
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putBoolean(key, value);
-        editorApply(editor);
-    }
-
-    private static void setString(String key, String value) {
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString(key, value);
-        editorApply(editor);
-    }
-
-    private static void editorApply(SharedPreferences.Editor editor) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD)
-            editor.apply();
-        else
-            editor.commit();
-    }
-
 }
