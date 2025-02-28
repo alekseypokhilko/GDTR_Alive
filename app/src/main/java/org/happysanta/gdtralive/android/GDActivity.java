@@ -313,16 +313,29 @@ public class GDActivity extends Activity implements GdPlatform {
         application.onPause();
     }
 
+    //todo refactor
+    private static final int[] ignore = new int[] {4, 24, 25};
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         application.onKeyDown(keyCode);
-        return super.onKeyDown(keyCode, event);
+        for (int i : ignore) {
+            if (i == keyCode) {
+                return super.onKeyDown(keyCode, event);
+            }
+        }
+        return true;
     }
 
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         application.onKeyUp(keyCode);
-        return super.onKeyUp(keyCode, event);
+        for (int i : ignore) {
+            if (i == keyCode) {
+                return super.onKeyDown(keyCode, event);
+            }
+        }
+        return true;
     }
 
     @Override

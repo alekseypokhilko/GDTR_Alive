@@ -7,6 +7,7 @@ import org.happysanta.gdtralive.android.menu.AMenu;
 import org.happysanta.gdtralive.android.menu.MenuFactory;
 import org.happysanta.gdtralive.android.menu.MenuScreen;
 import org.happysanta.gdtralive.android.menu.element.OptionsMenuElement;
+import org.happysanta.gdtralive.game.ModManager;
 import org.happysanta.gdtralive.game.api.GdApplication;
 import org.happysanta.gdtralive.game.api.MenuType;
 import org.happysanta.gdtralive.game.api.model.MenuData;
@@ -119,23 +120,30 @@ public class CampaignSelectors {
     }
 
     public void resetSelectors() {
-        trackSelector.setOptions(application.getModManager().getLeagueTrackNames(levelSelector.getSelectedOption()), false);
+        ModManager modManager = application.getModManager();
+        ModEntity modEntity = getLevel();
+        leagueSelector.setUnlockedCount(modEntity.getUnlockedLeagues());
+        leagueSelector.setSelectedOption(modEntity.getSelectedLeague());
+        levelSelector.setUnlockedCount(modEntity.getUnlockedLevels());
+        levelSelector.setSelectedOption(modEntity.getSelectedLevel());
+        trackSelector.setUnlockedCount(modEntity.getUnlockedTracksCount(modEntity.getSelectedLevel()));
+        trackSelector.setSelectedOption(modEntity.getSelectedTrack());
+        trackSelector.setOptions(modManager.getLeagueTrackNames(modEntity.getSelectedLevel()), true);
         if (menu.currentMenu == trackSelectorCurrentMenu) {
-            selectedTrack[levelSelector.getSelectedOption()] = trackSelector.getSelectedOption();
+            selectedTrack[modEntity.getSelectedLevel()] = modEntity.getSelectedTrack();
         }
-        trackSelector.setUnlockedCount(getLevel().getUnlockedTracksCount(levelSelector.getSelectedOption()));
-        trackSelector.setSelectedOption(selectedTrack[levelSelector.getSelectedOption()]);
     }
 
     public void updateSelectors(MenuData data) {
-        trackSelector.setUnlockedCount(data.getNewUnlockedTrackCount());
-        trackSelector.setSelectedOption(data.getNewSelectedTrack());
-        if (data.getNewSelectedLevel() != data.getSelectedLevel()) {
-            trackSelector.setOptions(application.getModManager().getLeagueTrackNames(data.getNewSelectedLevel()), true);
-        }
-        leagueSelector.setUnlockedCount(data.getNewUnlockedLeagueCount());
-        leagueSelector.setSelectedOption(data.getNewSelectedLeague());
-        levelSelector.setUnlockedCount(data.getNewUnlockedLevelCount());
-        levelSelector.setSelectedOption(data.getNewSelectedLevel());
+        resetSelectors();
+//        trackSelector.setUnlockedCount(data.getNewUnlockedTrackCount());
+//        trackSelector.setSelectedOption(data.getNewSelectedTrack());
+//        if (data.getNewSelectedLevel() != data.getSelectedLevel()) {
+//            trackSelector.setOptions(application.getModManager().getLeagueTrackNames(data.getNewSelectedLevel()), true);
+//        }
+//        leagueSelector.setUnlockedCount(data.getNewUnlockedLeagueCount());
+//        leagueSelector.setSelectedOption(data.getNewSelectedLeague());
+//        levelSelector.setUnlockedCount(data.getNewUnlockedLevelCount());
+//        levelSelector.setSelectedOption(data.getNewSelectedLevel());
     }
 }

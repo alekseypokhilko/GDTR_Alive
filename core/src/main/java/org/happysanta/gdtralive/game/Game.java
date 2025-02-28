@@ -254,6 +254,8 @@ public class Game {
                 entity.setUnlockedTracks(currentLevel, unlockedTrack);
             }
             entity.setSelectedTrack(unlockedTrack);
+            entity.setSelectedLevel(currentLevel);
+            entity.setSelectedLeague(params.getLeague());
         }
     }
 

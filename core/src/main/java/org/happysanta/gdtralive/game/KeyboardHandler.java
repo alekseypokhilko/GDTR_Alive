@@ -73,7 +73,7 @@ public class KeyboardHandler {
 
     }
     public void mappedKeyPressed(int j) {
-        if (104 == j || 105 == j || 109 == j || 108 == j || 107 == j) {
+        if (97 == j || 96 == j || 100 == j|| 104 == j || 105 == j || 109 == j || 108 == j || 107 == j) {
             if (j == 109) { //start
                 if (application.isMenuShown()) {
                     application.menuToGame();
@@ -81,11 +81,25 @@ public class KeyboardHandler {
                     application.gameToMenu();
                 }
             }
+            if (97 == j){
+                application.onBackPressed();
+            }
             if (j == 108) {
                 application.getGame().restart(true);
             }
             if (j == 107) {
                 application.getGame().handleSetSavepointAction();
+            }
+            if (j == 96) {
+                if (application.isMenuShown()) {
+                    Integer code = keyMapping.get(j);
+                    keyPressed(code == null ? 0 : code);
+                } else {
+                    pressedButtons[5] = true;
+                }
+            }
+            if (j == 100) {
+                pressedButtons[2] = true;
             }
             if (j == 104) {
                 pressedButtons[1] = true;
