@@ -1,7 +1,7 @@
 package org.happysanta.gdtralive.game.api;
 
 public enum GameMode {
-    CLASSIC(MenuType.IN_GAME_CLASSIC, MenuType.FINISHED_CLASSIC),
+    CAMPAIGN(MenuType.IN_GAME_CAMPAIGN, MenuType.FINISHED_CAMPAIGN),
     REPLAY(MenuType.IN_GAME_REPLAY, MenuType.FINISHED_SINGLE),
     TRACK_OF_THE_DAY(MenuType.IN_GAME_TOD, MenuType.FINISHED_TOD),
     DAILY(MenuType.IN_GAME_DAILY, MenuType.FINISHED_DAILY),

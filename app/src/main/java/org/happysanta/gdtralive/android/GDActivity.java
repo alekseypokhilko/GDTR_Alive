@@ -471,7 +471,7 @@ public class GDActivity extends Activity implements GdPlatform {
     public void pickFile(int requestCode) {
         Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
         chooseFile.setType("*/*");
-        chooseFile = Intent.createChooser(chooseFile, "Choose a file");
+        chooseFile = Intent.createChooser(chooseFile, "Select a file");
         startActivityForResult(chooseFile, requestCode);
     }
 

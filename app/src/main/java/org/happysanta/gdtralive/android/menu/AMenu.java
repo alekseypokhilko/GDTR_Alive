@@ -126,7 +126,7 @@ public class AMenu implements GdMenu, MenuHandler {
     }
 
     public void back() {
-        if (currentMenu == menuFactory.get(GameMode.CLASSIC.inGame)) {
+        if (currentMenu == menuFactory.get(GameMode.CAMPAIGN.inGame)) {
             application.menuToGame();
             return;
         }

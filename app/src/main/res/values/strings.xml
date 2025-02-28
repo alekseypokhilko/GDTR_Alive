@@ -96,13 +96,13 @@
 	<string name="esthete_description">Create themes</string>
 
 
-	<string name="recording_enabled">Recorder enabled</string>
+	<string name="recording_enabled">Recorder</string>
 	<string name="perspective">Perspective</string>
 	<string name="shadows">Shadows</string>
 	<string name="driver_sprite">Driver sprite</string>
 	<string name="bike_sprite">Bike sprite</string>
 	<string name="input">Input</string>
-	<string name="look_ahead">Look ahead</string>
+	<string name="active_camera">Active caera</string>
 	<string name="vibrate_on_touch">Vibrate on touch</string>
 	<string name="show_keyboard">Show keyboard</string>
 	<string name="clear_highscore">Clear highscore</string>

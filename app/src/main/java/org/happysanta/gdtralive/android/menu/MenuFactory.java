@@ -5,21 +5,24 @@ import static org.happysanta.gdtralive.android.Helpers.getAppVersion;
 import static org.happysanta.gdtralive.android.Helpers.getStringArray;
 import static org.happysanta.gdtralive.android.Helpers.s;
 import static org.happysanta.gdtralive.android.Helpers.showAlert;
+import static org.happysanta.gdtralive.android.Helpers.showConfirm;
 
 import android.text.Html;
 
 import org.happysanta.gdtralive.R;
 import org.happysanta.gdtralive.android.TrackEditorView;
 import org.happysanta.gdtralive.android.menu.element.BadgeWithTextElement;
+import org.happysanta.gdtralive.android.menu.element.HighScoreTextMenuElement;
 import org.happysanta.gdtralive.android.menu.element.InputTextElement;
 import org.happysanta.gdtralive.android.menu.element.MenuAction;
 import org.happysanta.gdtralive.android.menu.element.MenuItem;
 import org.happysanta.gdtralive.android.menu.element.OptionsMenuElement;
 import org.happysanta.gdtralive.android.menu.element.PropInput;
 import org.happysanta.gdtralive.android.menu.element.TextMenuElement;
-import org.happysanta.gdtralive.android.menu.screens.ClassicPlayMenuState;
+import org.happysanta.gdtralive.android.menu.screens.CampaignSelectors;
 import org.happysanta.gdtralive.game.Achievement;
 import org.happysanta.gdtralive.game.Game;
+import org.happysanta.gdtralive.game.ModManager;
 import org.happysanta.gdtralive.game.api.Constants;
 import org.happysanta.gdtralive.game.api.GDFile;
 import org.happysanta.gdtralive.game.api.GameMode;
@@ -32,6 +35,7 @@ import org.happysanta.gdtralive.game.api.external.GdPlatform;
 import org.happysanta.gdtralive.game.api.model.GameParams;
 import org.happysanta.gdtralive.game.api.model.MenuData;
 import org.happysanta.gdtralive.game.api.model.Mod;
+import org.happysanta.gdtralive.game.api.model.ModEntity;
 import org.happysanta.gdtralive.game.api.model.TrackRecord;
 import org.happysanta.gdtralive.game.api.util.Consumer;
 import org.happysanta.gdtralive.game.api.util.Function;
@@ -57,7 +61,7 @@ public class MenuFactory {
 
     private AMenu menu;
 
-    private ClassicPlayMenuState classicPlayMenu;
+    private CampaignSelectors campaignSelectors;
     private TrackEditorView trackEditor;
     private List<String> modNames = new ArrayList<>(); //todo remove
     public List<String> themeNames = new ArrayList<>(); //todo remove
@@ -99,7 +103,7 @@ public class MenuFactory {
         add(MenuType.ABOUT, this::createAboutScreen);
         add(MenuType.HELP, this::createHelpScreen);
         add(MenuType.OPTIONS, this::createOptionsScreen);
-        add(MenuType.PLAY_CLASSIC, this::createPlayClassic);
+        add(MenuType.PLAY_CAMPAIGN, this::createPlayClassic);
 
         add(MenuType.FINISHED_PLAY, this::createFinishedPlay);
         add(MenuType.IN_GAME_PLAY, this::createInGamePlay);
@@ -122,11 +126,11 @@ public class MenuFactory {
         add(MenuType.ACHIEVEMENTS, this::createAchievements);
         transform(MenuType.PLAY, this::fillPlay);
 
-        this.classicPlayMenu = new ClassicPlayMenuState(menu, application, this);
-        add(MenuType.HIGH_SCORE, classicPlayMenu::createHighScore);
-        add(MenuType.IN_GAME_CLASSIC, classicPlayMenu::createInGameClassic);
-        add(MenuType.FINISHED_CLASSIC, classicPlayMenu::createFinishedClassic);
-        transform(MenuType.PLAY_CLASSIC, classicPlayMenu::transformPlayClassic);
+        this.campaignSelectors = new CampaignSelectors(menu, application, this);
+        add(MenuType.HIGH_SCORE, this::createHighScore);
+        add(MenuType.IN_GAME_CAMPAIGN, this::createInGameCampaign);
+        add(MenuType.FINISHED_CAMPAIGN, this::createFinishedCampaign);
+        transform(MenuType.PLAY_CAMPAIGN, this::transformPlayCampaign);
 
         transform(MenuType.MAIN, this::fillMainScreen);
     }
@@ -305,8 +309,8 @@ public class MenuFactory {
                 application.getFileStorage().save(mod, GDFile.MOD, modName); //todo move to method
                 application.getModManager().activateMod(mod);
                 application.notify(Fmt.colon(s(R.string.mod_activated), modName));
-                this.get(MenuType.PLAY_CLASSIC).setTitle(Fmt.sp(s(R.string.play), modName));
-                classicPlayMenu.resetSelectors();
+                this.get(MenuType.PLAY_CAMPAIGN).setTitle(Fmt.sp(s(R.string.play), modName));
+                campaignSelectors.resetSelectors();
             }));
 //            s.addItem(new MenuAction(s(R.string.save), -1, menu,
 //                    __ -> this.application.getFileStorage().save(mod, GDFile.MOD, mod.getName())));
@@ -366,7 +370,7 @@ public class MenuFactory {
         Game game = application.getGame();
         s.setBeforeShowAction(() -> game.startAutoplay(false));
 //        s.addItem(new MenuItem(s(R.string.daily_challenge), this.get(MenuType.DAILY), menu, __ -> this.get(MenuType.DAILY).build())); //todo
-        s.addItem(new MenuItem(s(R.string.campaign), this.get(MenuType.PLAY_CLASSIC), menu, null));
+        s.addItem(new MenuItem(s(R.string.campaign), this.get(MenuType.PLAY_CAMPAIGN), menu, null));
         s.addItem(new MenuAction(Fmt.ra(s(R.string.random_track)), menu, __ -> game.startTrack(GameParams.of(GameMode.RANDOM, application.getModManager().getRandomTrack()))));
         s.addItem(new MenuAction(Fmt.ra(s(R.string.tracks)), menu, __ -> application.notify("Coming soon")));
         s.addItem(new MenuItem(s(R.string.achievements), this.get(MenuType.ACHIEVEMENTS), menu, __ -> this.get(MenuType.ACHIEVEMENTS).build()));
@@ -516,7 +520,7 @@ public class MenuFactory {
         MenuScreen screen = new MenuScreen(s(R.string.play), r.get(MenuType.PLAY));
         screen.setBeforeShowAction(() -> {
             screen.setTitle(application.getModManager().getMod().getName());
-            application.getGame().startAutoplay(false);
+            application.getGame().startAutoplay(true);
         });
         return screen;
     }
@@ -566,7 +570,7 @@ public class MenuFactory {
                     if (it._charvZ()) it.setSelectedOption(it.getSelectedOption() + 1);
                     application.getGame().setInputOption(it.getSelectedOption());
                 }));
-        screen.addItem(new OptionsMenuElement(s(R.string.look_ahead), application.getSettings().isLookAheadEnabled() ? 0 : 1, menu, onOffStrings, true, screen,
+        screen.addItem(new OptionsMenuElement(s(R.string.active_camera), application.getSettings().isLookAheadEnabled() ? 0 : 1, menu, onOffStrings, true, screen,
                 item -> {
                     OptionsMenuElement it = (OptionsMenuElement) item;
                     application.getGame().setLookAhead(it.getSelectedOption() == 0);
@@ -588,10 +592,7 @@ public class MenuFactory {
         eraseScreen.addItem(MenuUtils.emptyLine(true));
         eraseScreen.addItem(menu.createAction(MenuAction.NO, item -> menu.menuBack()));
         eraseScreen.addItem(menu.createAction(MenuAction.YES, item -> {
-            application.getHighScoreManager().clearHighScores(application.getModManager().getTrackGuid(
-                    classicPlayMenu.levelSelector.getSelectedOption(),
-                    classicPlayMenu.trackSelector.getSelectedOption() //todo get dto from state
-            ));
+            application.getHighScoreManager().clearAllHighScores();
             showAlert(s(R.string.cleared), s(R.string.cleared_text), null);
             menu.menuBack();
         }));
@@ -674,5 +675,181 @@ public class MenuFactory {
         }));
         screen.addItem(menu.backAction());
         return screen;
+    }
+
+    public MenuScreen createInGameCampaign(Map<MenuType, MenuScreen> r) {
+        MenuScreen inGame = new MenuScreen(s(R.string.ingame), r.get(MenuType.PLAY_CAMPAIGN));
+        inGame.addItem(new MenuAction(s(R.string._continue), MenuAction.CONTINUE, menu, item -> application.menuToGame()));
+        inGame.addItem(new MenuAction(Fmt.colon(s(R.string.restart), ""), MenuAction.RESTART, menu, item -> menu.menuToGame()));
+        inGame.addItem(new MenuAction(s(R.string.training_mode), menu, item -> {
+            application.trainingMode();
+            application.menuToGame();
+        }));
+        inGame.addItem(menu.createAction(MenuAction.LIKE, item -> application.notify("Coming soon")));
+        inGame.addItem(new MenuItem(s(R.string.options), r.get(MenuType.OPTIONS), menu, null));
+        inGame.addItem(new MenuItem(s(R.string.help), r.get(MenuType.HELP), menu, null));
+        inGame.addItem(menu.createAction(MenuAction.PLAY_MENU, item -> actionGoToPlayMenu()));
+        inGame.setBuilder((s, data) -> {
+            if (data != null) {
+                s.getActions(MenuAction.RESTART).setText(Fmt.colon(s(R.string.restart), data.getTrackName()));
+            }
+            s.resetHighlighted();
+            return s;
+        });
+        return inGame;
+    }
+
+    public MenuScreen createFinishedCampaign(Map<MenuType, MenuScreen> r) {
+        MenuScreen finished = new MenuScreen(s(R.string.finished), r.get(MenuType.PLAY_CAMPAIGN));
+        finished.setBuilder((finishedMenu, data) -> {
+            campaignSelectors.updateSelectors(data);
+            int place = application.getHighScoreManager()
+                    .getHighScores(data.getTrackGuid(), data.getSelectedLeague())
+                    .getPlace(data.getSelectedLeague(), data.getLastTrackTime()); //todo npe?
+            if (place >= 0 && place <= 2) {
+                finishedMenu.clear();
+                finishedMenu.addItem(new HighScoreTextMenuElement(getStringArray(R.array.finished_places)[place], place, false));
+                long millis = data.getLastTrackTime();
+                finishedMenu.addItem(new TextMenuElement(Utils.getDurationString(millis)));
+                finishedMenu.addItem(menu.createAction(MenuAction.OK, item -> showFinishMenu(finishedMenu, data)));
+                menu.m_blZ = false;
+                return finishedMenu;
+            } else {
+                return showFinishMenu(finishedMenu, data);
+            }
+        });
+        return finished;
+    }
+
+    private MenuScreen showFinishMenu(MenuScreen finishedMenu, MenuData data) {
+        finishedMenu.clear();
+        long millis = data.getLastTrackTime();
+        finishedMenu.addItem(new TextMenuElement(Html.fromHtml("<b>" + s(R.string.time) + "</b>: " + Utils.getDurationString(millis))));
+        for (String s : application.getHighScoreManager().getFormattedScores(data.getTrackGuid(), data.getSelectedLeague())) {
+            finishedMenu.addItem(new TextMenuElement(s));
+        }
+
+        ModManager modManager = application.getModManager();
+        int completedCount = modManager.getModState().getUnlockedTracksCount(data.getSelectedLevel()) + 1;
+        finishedMenu.addItem(new TextMenuElement(Html.fromHtml(String.format(s(R.string.tracks_completed_tpl),
+                completedCount,
+                modManager.getLevelTracksCount(data.getSelectedLevel()),
+                campaignSelectors.getDifficultyLevels()[data.getSelectedLevel()]
+        ))));
+
+        //todo fix that
+        boolean leagueCompleted = data.getNewSelectedLeague() != data.getSelectedLeague();
+        if (leagueCompleted) {
+            boolean flag = true;
+            for (int i1 = 0; i1 < 3; i1++)
+                if (modManager.getModState().getUnlockedTracksCount(i1) != modManager.getLevelTracksCount(i1) - 1)
+                    flag = false;
+
+            if (!flag)
+                finishedMenu.addItem(new TextMenuElement(s(R.string.level_completed_text)));
+            finishedMenu.addItem(new TextMenuElement(s(R.string.congratulations) + campaignSelectors.getLeagueNames()[data.getNewSelectedLeague()]));
+            try {
+                //todo crashed on league unlock
+                showAlert(s(R.string.league_unlocked), s(R.string.league_unlocked_text) + campaignSelectors.getLeagueNames()[data.getNewSelectedLeague()], null);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            this.get(MenuType.IN_GAME_CAMPAIGN)
+                    .getActions(MenuAction.RESTART)
+                    .setText(Fmt.colon(s(R.string.restart), data.getTrackName()));
+
+            finishedMenu.addItem(new MenuAction(Fmt.colon(s(R.string.next), modManager.getTrackName(data.getSelectedLevel(), data.getNewSelectedTrack())), MenuAction.NEXT, menu,
+                    item -> {
+                        int league = campaignSelectors.getLeagueSelector().getSelectedOption();
+                        int level = campaignSelectors.getLevelSelector().getSelectedOption();
+                        int track = campaignSelectors.getTrackSelector().getSelectedOption();
+                        application.getGame().startTrack(GameParams.of(GameMode.CAMPAIGN, modManager.loadLevel(level, track), league, level, track));
+                    }
+            ));
+        }
+        finishedMenu.addItem(new MenuAction(Fmt.colon(s(R.string.restart), data.getTrackName()), MenuAction.RESTART, menu, item -> menu.menuToGame()));
+        finishedMenu.addItem(menu.createAction(MenuAction.PLAY_MENU, item -> actionGoToPlayMenu()));
+        finishedMenu.resetHighlighted();
+        finishedMenu.highlightElement();
+        return finishedMenu;
+    }
+
+    public MenuScreen createHighScore(Map<MenuType, MenuScreen> r) {
+        MenuScreen hs = new MenuScreen(s(R.string.highscores), r.get(MenuType.PLAY_CAMPAIGN));
+        hs.setBeforeShowAction(() -> {
+            MenuData data = new MenuData();
+            data.setSelectedLevel(campaignSelectors.getLevelSelector().getSelectedOption());
+            data.setSelectedTrack(campaignSelectors.getTrackSelector().getSelectedOption());
+            data.setSelectedLeague(campaignSelectors.getLeagueSelector().getSelectedOption());
+            this.get(MenuType.HIGH_SCORE).build(data);
+        });
+        hs.addItem(menu.backAction());
+        hs.setBuilder((s, data) -> {
+            s.clear();
+            s.setTitle(Fmt.colon(s(R.string.highscores), application.getModManager().getTrackName(data.getSelectedLevel(), data.getSelectedTrack())));
+            s.addItem(new HighScoreTextMenuElement(Html.fromHtml(Fmt.colon(s(R.string.league), application.getModManager().getLeagueNames()[data.getSelectedLeague()])), true));
+
+            List<String> scores = application.getHighScoreManager()
+                    .getFormattedScores(data.getSelectedLeague(), data.getSelectedLevel(), data.getSelectedTrack());
+            for (int place = 0; place < scores.size(); place++) {
+                s.addItem(new HighScoreTextMenuElement(scores.get(place), place, true));
+            }
+            if (scores.isEmpty())
+                s.addItem(new TextMenuElement(s(R.string.no_highscores)));
+
+            s.addItem(menu.backAction());
+            s.highlightElement();
+            return s;
+        });
+        return hs;
+    }
+
+    public void transformPlayCampaign(MenuScreen s) {
+        OptionsMenuElement trackSelector = campaignSelectors.getTrackSelector();
+        OptionsMenuElement levelSelector = campaignSelectors.getLevelSelector();
+        OptionsMenuElement leagueSelector = campaignSelectors.getLeagueSelector();
+        s.addItem(new MenuAction(Fmt.ra(s(R.string.start)), menu, item -> {
+            if (levelSelector.getSelectedOption() > levelSelector.getUnlockedCount()
+                    || trackSelector.getSelectedOption() > trackSelector.getUnlockedCount()
+                    || leagueSelector.getSelectedOption() > leagueSelector.getUnlockedCount()) {
+                showAlert("GD Classic", s(R.string.complete_to_unlock), null);
+            } else {
+                int league = leagueSelector.getSelectedOption();
+                int level = levelSelector.getSelectedOption();
+                int track = trackSelector.getSelectedOption();
+                application.getGame().startTrack(GameParams.of(GameMode.CAMPAIGN, application.getModManager().loadLevel(level, track), league, level, track));
+            }
+        }));
+        s.addItem(levelSelector);
+        s.addItem(trackSelector);
+        s.addItem(leagueSelector);
+        s.addItem(new MenuItem(s(R.string.highscores), this.get(MenuType.HIGH_SCORE), menu, null));
+        s.addItem(new MenuAction(Fmt.ra(s(R.string.unlock_all)), -1, menu,
+                item -> {
+                    application.notify("Coming soon");
+                    if (true) { //todo
+                        return;
+                    }
+                    showConfirm(s(R.string.unlock_all), s(R.string.unlock_all_text), () -> {
+                        int leaguesCount = application.getModManager().getLeagueThemes().size();
+                        ModEntity modState = application.getModManager().getModState();
+                        modState.setUnlockedLeagues(leaguesCount);
+                        modState.setUnlockedLevels(leaguesCount);
+                        modState.unlockAllTracks();
+                        campaignSelectors.setLeagueNames(application.getModManager().getLeagueNames());
+                        leagueSelector.setUnlockedCount(modState.getUnlockedLeagues());
+                        levelSelector.setUnlockedCount(modState.getUnlockedLevels());
+                        application.getModManager().setTemporallyUnlockedAll(true);
+                        application.notify("Unlocked all tracks, leagues and difficulties");
+                    }, () -> {
+                    });
+                }));
+        s.addItem(menu.backAction());
+    }
+
+    private void actionGoToPlayMenu() {
+        application.getGame().resetState();
+        menu.menuBack();
     }
 }

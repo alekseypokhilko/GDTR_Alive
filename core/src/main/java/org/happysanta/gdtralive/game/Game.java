@@ -147,7 +147,7 @@ public class Game {
                 goalLoop();
 
                 ModEntity modEntity = application.getModManager().getModState();
-                if (GameMode.CLASSIC == params.getMode()) {
+                if (GameMode.CAMPAIGN == params.getMode()) {
                     updateProgress(modEntity, params);
                     application.getModManager().saveModState();
                 }
@@ -379,6 +379,7 @@ public class Game {
             menu.menuToGame();
             return;
         } else {
+            engine.setReplayMode(false);
             recorder.setCapturingMode(settings.isRecordingEnabled());
         }
         if (GameMode.TRACK_EDITOR == params.getMode()) {
@@ -396,7 +397,7 @@ public class Game {
         } catch (InvalidTrackException e) {
             throw new RuntimeException(e); //todo skip damaged track
         }
-        if (GameMode.CLASSIC == params.getMode()) {
+        if (GameMode.CAMPAIGN == params.getMode()) {
             engine.setLeague(params.getLeague());
         } else {
             engine.setLeague(track.getLeague());
