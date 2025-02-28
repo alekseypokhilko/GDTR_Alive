@@ -3,7 +3,7 @@ package org.happysanta.gdtralive.game.util.mrg;
 import org.happysanta.gdtralive.game.api.Constants;
 import org.happysanta.gdtralive.game.api.model.TrackParams;
 import org.happysanta.gdtralive.game.api.model.Mod;
-import org.happysanta.gdtralive.game.api.dto.PackLevel;
+import org.happysanta.gdtralive.game.api.dto.LevelPack;
 import org.happysanta.gdtralive.game.api.dto.TrackReference;
 
 import java.io.ByteArrayInputStream;
@@ -29,7 +29,7 @@ public class MrgUtils {
 
         LevelHeader header = Reader.readHeader(bytes);
         for (int league = 0; league < 3; league++) {
-            PackLevel packLevelObj = new PackLevel();
+            LevelPack levelPackObj = new LevelPack();
 
             for (int track = 0; track < header.getPointers()[league].length; track++) {
                 try (ByteArrayInputStream in = new ByteArrayInputStream(bytes);
@@ -53,12 +53,12 @@ public class MrgUtils {
                     trackReference.setName(level.getName());
                     trackReference.setData(level);
 
-                    packLevelObj.getTracks().add(trackReference);
+                    levelPackObj.getTracks().add(trackReference);
                 } catch (Exception _ex) {
                     throw new RuntimeException(_ex);
                 }
             }
-            mod.getLevels().add(packLevelObj);
+            mod.getLevels().add(levelPackObj);
         }
         return mod;
     }

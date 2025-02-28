@@ -15,7 +15,7 @@ public class Theme {
 
     private ThemeHeader header;
     private List<String> levelNames;
-    private List<LeaguePropertiesTheme> leagueProperties;
+    private List<LeagueTheme> leagueProperties;
     private GameTheme gameTheme;
     private InterfaceTheme interfaceTheme;
 
@@ -23,7 +23,7 @@ public class Theme {
         return header;
     }
 
-    public List<LeaguePropertiesTheme> getLeagueThemes() {
+    public List<LeagueTheme> getLeagueThemes() {
         return leagueProperties;
     }
 
@@ -47,7 +47,7 @@ public class Theme {
         this.levelNames = levelNames;
     }
 
-    public void setLeagueThemes(List<LeaguePropertiesTheme> leagueProperties) {
+    public void setLeagueThemes(List<LeagueTheme> leagueProperties) {
         this.leagueProperties = leagueProperties;
     }
 
@@ -57,15 +57,6 @@ public class Theme {
 
     public void setInterfaceTheme(InterfaceTheme interfaceTheme) {
         this.interfaceTheme = interfaceTheme;
-    }
-
-    public String[] getLeagueNames() {
-        List<LeaguePropertiesTheme> leagueProperties = getLeagueThemes();
-        String[] names = new String[leagueProperties.size()];
-        for (int i = 0; i < leagueProperties.size(); i++) {
-            names[i] = leagueProperties.get(i).getName();
-        }
-        return names;
     }
 
     private static List<String> initDefaultLevelNames() {
@@ -89,7 +80,7 @@ public class Theme {
         theme.setHeader(header);
         theme.setInterfaceTheme(new InterfaceTheme());
         theme.setLevelNames(initDefaultLevelNames());
-        theme.setLeagueThemes(LeaguePropertiesTheme.getDefaultLeagueProperties());
+        theme.setLeagueThemes(LeagueTheme.getDefaultLeagueProperties());
         theme.setGameTheme(new GameTheme());
         return theme;
     }
@@ -106,85 +97,82 @@ public class Theme {
         theme.setHeader(header);
 
         GameTheme game = theme.getGameTheme();
-        game.setProp(GameTheme.scaledDensity, 5f);
-        game.setProp(GameTheme.spriteDensity, 3.8f); //todo check null
-        game.setProp(GameTheme.gameBackgroundColor, new Color(0, 0, 0));
-        game.setProp(GameTheme.trackLineColor, new Color(255, 255, 255));
-        game.setProp(GameTheme.perspectiveColor, new Color(150, 150, 150));
-        game.setProp(GameTheme.startFlagColor, new Color(0, 255, 0));
-        game.setProp(GameTheme.finishFlagColor, new Color(100, 100, 255));
+        game.setGameBackgroundColor(new Color(0, 0, 0));
+        game.setTrackLineColor(new Color(255, 255, 255));
+        game.setPerspectiveColor(new Color(150, 150, 150));
+        game.setStartFlagColor(new Color(0, 255, 0));
+        game.setFinishFlagColor(new Color(100, 100, 255));
 
         InterfaceTheme itheme = theme.getInterfaceTheme();
-        itheme.setProp(InterfaceTheme.infoMessageColor, new Color(255, 255, 255));
-        itheme.setProp(InterfaceTheme.progressBackgroundColor, new Color(0, 0, 0));
-        itheme.setProp(InterfaceTheme.progressColor, new Color(41, 170, 39));
-        itheme.setProp(InterfaceTheme.menuBackgroundColor, 0x00ffffff);
-        itheme.setProp(InterfaceTheme.matteMenu, false);
-        itheme.setProp(InterfaceTheme.keyboardBackgroundColor, 0x00ffffff);
-        itheme.setProp(InterfaceTheme.keyboardTextColor, 0xffffffff);
-        itheme.setProp(InterfaceTheme.menuTitleTextColor, 0xffffffff);
-        itheme.setProp(InterfaceTheme.menuTitleBackgroundColor, 0x00ffffff);
-        itheme.setProp(InterfaceTheme.frameBackgroundColor, 0x00ffffff);
-        itheme.setProp(InterfaceTheme.mainMenuBackgroundColor, 0x00ffffff);
-        itheme.setProp(InterfaceTheme.textColor, 0xffffffff);
-        itheme.setProp(InterfaceTheme.splashColor, new Color(255, 255, 255));
-        itheme.setProp(InterfaceTheme.lockSkinIndex, 2);
+        itheme.setInfoMessageColor(new Color(255, 255, 255));
+        itheme.setProgressBackgroundColor(new Color(0, 0, 0));
+        itheme.setProgressColor(new Color(41, 170, 39));
+        itheme.setMenuBackgroundColor(0x00ffffff);
+        itheme.setKeyboardBackgroundColor(0x00ffffff);
+        itheme.setKeyboardTextColor(0xffffffff);
+        itheme.setMenuTitleTextColor(0xffffffff);
+        itheme.setMenuTitleBackgroundColor(0x00ffffff);
+        itheme.setFrameBackgroundColor(0x00ffffff);
+        itheme.setMainMenuBackgroundColor(0x00ffffff);
+        itheme.setTextColor(0xffffffff);
+        itheme.setSplashColor(new Color(255, 255, 255));
+        itheme.setLockSkinIndex(2);
 
-        LeaguePropertiesTheme league100 = theme.getLeagueThemes().get(0);
-        league100.setProp(LeaguePropertiesTheme.backWheelsColor, new Color(255, 255, 255));
-        league100.setProp(LeaguePropertiesTheme.backWheelsSpokeColor, new Color(255, 255, 255));
-        league100.setProp(LeaguePropertiesTheme.frontWheelsColor, new Color(255, 255, 255));
-        league100.setProp(LeaguePropertiesTheme.forkColor, new Color(228, 228, 228));
-        league100.setProp(LeaguePropertiesTheme.drawWheelLines, true);
-        league100.setProp(LeaguePropertiesTheme.bikeLinesColor, new Color(255, 255, 255));
-        league100.setProp(LeaguePropertiesTheme.bikerHeadColor, new Color(156, 0, 0));
-        league100.setProp(LeaguePropertiesTheme.bikerLegColor, new Color(0, 0, 0));
-        league100.setProp(LeaguePropertiesTheme.bikerBodyColor, new Color(0, 0, 128));
-        league100.setProp(LeaguePropertiesTheme.steeringColor, new Color(0, 0, 0));
-        league100.setProp(LeaguePropertiesTheme.bikeColor, new Color(255, 255, 255));
-        league100.setProp(LeaguePropertiesTheme.frontWheelsSpokeColor, new Color(255, 255, 255));
+        LeagueTheme league100 = theme.getLeagueThemes().get(0);
+        league100.setBackWheelsColor(new Color(255, 255, 255));
+        league100.setBackWheelsSpokeColor(new Color(255, 255, 255));
+        league100.setFrontWheelsColor(new Color(255, 255, 255));
+        league100.setForkColor(new Color(228, 228, 228));
+        league100.setDrawWheelLines(true);
+        league100.setBikeLinesColor(new Color(255, 255, 255));
+        league100.setBikerHeadColor(new Color(156, 0, 0));
+        league100.setBikerLegColor(new Color(0, 0, 0));
+        league100.setBikerBodyColor(new Color(0, 0, 128));
+        league100.setSteeringColor(new Color(0, 0, 0));
+        league100.setBikeColor(new Color(255, 255, 255));
+        league100.setFrontWheelsSpokeColor(new Color(255, 255, 255));
 
-        LeaguePropertiesTheme league175 = theme.getLeagueThemes().get(1);
-        league175.setProp(LeaguePropertiesTheme.backWheelsColor, new Color(255, 255, 255));
-        league175.setProp(LeaguePropertiesTheme.backWheelsSpokeColor, new Color(255, 255, 255));
-        league175.setProp(LeaguePropertiesTheme.frontWheelsColor, new Color(255, 255, 255));
-        league175.setProp(LeaguePropertiesTheme.frontWheelsSpokeColor, new Color(255, 255, 255));
-        league175.setProp(LeaguePropertiesTheme.forkColor, new Color(228, 228, 228));
-        league175.setProp(LeaguePropertiesTheme.drawWheelLines, true);
-        league175.setProp(LeaguePropertiesTheme.bikeLinesColor, new Color(255, 255, 255));
-        league175.setProp(LeaguePropertiesTheme.bikerHeadColor, new Color(156, 0, 0));
-        league175.setProp(LeaguePropertiesTheme.bikerLegColor, new Color(0, 0, 0));
-        league175.setProp(LeaguePropertiesTheme.bikerBodyColor, new Color(0, 0, 128));
-        league175.setProp(LeaguePropertiesTheme.steeringColor, new Color(0, 0, 0));
-        league175.setProp(LeaguePropertiesTheme.bikeColor, new Color(255, 255, 255));
+        LeagueTheme league175 = theme.getLeagueThemes().get(1);
+        league175.setBackWheelsColor(new Color(255, 255, 255));
+        league175.setBackWheelsSpokeColor(new Color(255, 255, 255));
+        league175.setFrontWheelsColor(new Color(255, 255, 255));
+        league175.setFrontWheelsSpokeColor(new Color(255, 255, 255));
+        league175.setForkColor(new Color(228, 228, 228));
+        league175.setDrawWheelLines(true);
+        league175.setBikeLinesColor(new Color(255, 255, 255));
+        league175.setBikerHeadColor(new Color(156, 0, 0));
+        league175.setBikerLegColor(new Color(0, 0, 0));
+        league175.setBikerBodyColor(new Color(0, 0, 128));
+        league175.setSteeringColor(new Color(0, 0, 0));
+        league175.setBikeColor(new Color(255, 255, 255));
 
-        LeaguePropertiesTheme league220 = theme.getLeagueThemes().get(2);
-        league220.setProp(LeaguePropertiesTheme.backWheelsColor, new Color(255, 255, 255));
-        league220.setProp(LeaguePropertiesTheme.backWheelsSpokeColor, new Color(255, 255, 255));
-        league220.setProp(LeaguePropertiesTheme.frontWheelsColor, new Color(255, 255, 255));
-        league220.setProp(LeaguePropertiesTheme.frontWheelsSpokeColor, new Color(255, 255, 255));
-        league220.setProp(LeaguePropertiesTheme.forkColor, new Color(228, 228, 228));
-        league220.setProp(LeaguePropertiesTheme.drawWheelLines, true);
-        league220.setProp(LeaguePropertiesTheme.bikeLinesColor, new Color(255, 255, 255));
-        league220.setProp(LeaguePropertiesTheme.bikerHeadColor, new Color(156, 0, 0));
-        league220.setProp(LeaguePropertiesTheme.bikerLegColor, new Color(0, 0, 0));
-        league220.setProp(LeaguePropertiesTheme.bikerBodyColor, new Color(0, 0, 128));
-        league220.setProp(LeaguePropertiesTheme.steeringColor, new Color(0, 0, 0));
-        league220.setProp(LeaguePropertiesTheme.bikeColor, new Color(255, 255, 255));
+        LeagueTheme league220 = theme.getLeagueThemes().get(2);
+        league220.setBackWheelsColor(new Color(255, 255, 255));
+        league220.setBackWheelsSpokeColor(new Color(255, 255, 255));
+        league220.setFrontWheelsColor(new Color(255, 255, 255));
+        league220.setFrontWheelsSpokeColor(new Color(255, 255, 255));
+        league220.setForkColor(new Color(228, 228, 228));
+        league220.setDrawWheelLines(true);
+        league220.setBikeLinesColor(new Color(255, 255, 255));
+        league220.setBikerHeadColor(new Color(156, 0, 0));
+        league220.setBikerLegColor(new Color(0, 0, 0));
+        league220.setBikerBodyColor(new Color(0, 0, 128));
+        league220.setSteeringColor(new Color(0, 0, 0));
+        league220.setBikeColor(new Color(255, 255, 255));
 
-        LeaguePropertiesTheme league325 = theme.getLeagueThemes().get(3);
-        league325.setProp(LeaguePropertiesTheme.backWheelsColor, new Color(255, 255, 255));
-        league325.setProp(LeaguePropertiesTheme.backWheelsSpokeColor, new Color(255, 255, 255));
-        league325.setProp(LeaguePropertiesTheme.frontWheelsColor, new Color(255, 255, 255));
-        league325.setProp(LeaguePropertiesTheme.frontWheelsSpokeColor, new Color(255, 255, 255));
-        league325.setProp(LeaguePropertiesTheme.forkColor, new Color(228, 228, 228));
-        league325.setProp(LeaguePropertiesTheme.drawWheelLines, true);
-        league325.setProp(LeaguePropertiesTheme.bikeLinesColor, new Color(255, 255, 255));
-        league325.setProp(LeaguePropertiesTheme.bikerHeadColor, new Color(156, 0, 0));
-        league325.setProp(LeaguePropertiesTheme.bikerLegColor, new Color(0, 0, 0));
-        league325.setProp(LeaguePropertiesTheme.bikerBodyColor, new Color(0, 0, 128));
-        league325.setProp(LeaguePropertiesTheme.steeringColor, new Color(0, 0, 0));
-        league325.setProp(LeaguePropertiesTheme.bikeColor, new Color(255, 255, 255));
+        LeagueTheme league325 = theme.getLeagueThemes().get(3);
+        league325.setBackWheelsColor(new Color(255, 255, 255));
+        league325.setBackWheelsSpokeColor(new Color(255, 255, 255));
+        league325.setFrontWheelsColor(new Color(255, 255, 255));
+        league325.setFrontWheelsSpokeColor(new Color(255, 255, 255));
+        league325.setForkColor(new Color(228, 228, 228));
+        league325.setDrawWheelLines(true);
+        league325.setBikeLinesColor(new Color(255, 255, 255));
+        league325.setBikerHeadColor(new Color(156, 0, 0));
+        league325.setBikerLegColor(new Color(0, 0, 0));
+        league325.setBikerBodyColor(new Color(0, 0, 128));
+        league325.setSteeringColor(new Color(0, 0, 0));
+        league325.setBikeColor(new Color(255, 255, 255));
 
         return theme;
     }

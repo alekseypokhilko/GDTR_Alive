@@ -1,11 +1,10 @@
 package org.happysanta.gdtralive.game.api;
 
-import org.happysanta.gdtralive.game.api.model.Mod;
 import org.happysanta.gdtralive.game.api.dto.Theme;
 import org.happysanta.gdtralive.game.api.dto.TrackReference;
+import org.happysanta.gdtralive.game.api.model.Mod;
 import org.happysanta.gdtralive.game.api.model.TrackRecord;
 import org.happysanta.gdtralive.game.util.Fmt;
-import org.happysanta.gdtralive.game.util.Utils;
 
 public enum GDFile {
     UNDEFINED("", "", null, Object.class),
@@ -48,10 +47,6 @@ public enum GDFile {
 
     public static String cutHeader(String content) {
         return content.substring(content.indexOf(":") + 1);
-    }
-
-    public static <T> String addHeader(T obj, GDFile fileType) {
-        return Fmt.colonNoSpace(fileType.extension, Utils.toJson(obj));
     }
 
     public String addExtension(String name) {

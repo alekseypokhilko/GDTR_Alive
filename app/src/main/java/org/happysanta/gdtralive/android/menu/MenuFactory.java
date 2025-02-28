@@ -17,7 +17,6 @@ import org.happysanta.gdtralive.android.menu.element.InputTextElement;
 import org.happysanta.gdtralive.android.menu.element.MenuAction;
 import org.happysanta.gdtralive.android.menu.element.MenuItem;
 import org.happysanta.gdtralive.android.menu.element.OptionsMenuElement;
-import org.happysanta.gdtralive.android.menu.element.PropInput;
 import org.happysanta.gdtralive.android.menu.element.TextMenuElement;
 import org.happysanta.gdtralive.android.menu.screens.CampaignSelectors;
 import org.happysanta.gdtralive.game.Achievement;
@@ -209,21 +208,21 @@ public class MenuFactory {
                             this.get(MenuType.TRACK_EDITOR_OPTIONS).build(new MenuData(trackEditor.getCurrentTrack()));
                         }
                     }));
-            for (Map.Entry<String, String> entry : track.getLeagueProperties().entrySet()) {
-                s.addItem(new PropInput(Fmt.colon(entry.getKey()), entry.getValue(), entry.getKey(), item -> {
-                    trackEditor.getCurrentTrack().getLeagueProperties().put(item.getKey(), item.getText());
-                    application.getModManager().setTrackProperties(trackEditor.getCurrentTrack());
-                }));
-            }
+//            for (Map.Entry<String, String> entry : track.getLeagueProperties().entrySet()) {
+//                s.addItem(new PropInput(Fmt.colon(entry.getKey()), entry.getValue(), entry.getKey(), item -> {
+//                    trackEditor.getCurrentTrack().getLeagueProperties().put(item.getKey(), item.getText());
+//                    application.getModManager().setTrackProperties(trackEditor.getCurrentTrack());
+//                }));
+//            }
 
             s.addItem(MenuUtils.emptyLine(false));
             s.addItem(new TextMenuElement(boldAttr(R.string.track_properties, null)));
-            for (Map.Entry<String, String> entry : track.getGameProperties().entrySet()) {
-                s.addItem(new PropInput(Fmt.colon(entry.getKey()), entry.getValue(), entry.getKey(), item -> {
-                    trackEditor.getCurrentTrack().getGameProperties().put(item.getKey(), item.getText());
-                    application.getModManager().setTrackProperties(trackEditor.getCurrentTrack());
-                }));
-            }
+//            for (Map.Entry<String, String> entry : track.getGameProperties().entrySet()) {
+//                s.addItem(new PropInput(Fmt.colon(entry.getKey()), entry.getValue(), entry.getKey(), item -> {
+//                    trackEditor.getCurrentTrack().getGameProperties().put(item.getKey(), item.getText());
+//                    application.getModManager().setTrackProperties(trackEditor.getCurrentTrack());
+//                }));
+//            }
             platform.hideKeyboardLayout();
             System.gc(); //hopefully
             return s;
@@ -232,12 +231,17 @@ public class MenuFactory {
     }
 
     private MenuScreen createThemes(Map<MenuType, MenuScreen> r) {
-        themeNames.add(Theme.defaultTheme().getHeader().getName());
-        themeNames.add(Theme.amoledMod().getHeader().getName());
-        themeNames.addAll(application.getFileStorage().listFiles(GDFile.THEME));
         MenuScreen screen = new MenuScreen(s(R.string.themes), r.get(MenuType.WORKSHOP));
+        screen.setBeforeShowAction(()-> this.get(MenuType.THEMES).build());
         screen.setBuilder((s, data) -> {
             s.clear();
+            themeNames.clear();
+            themeNames.add(Theme.defaultTheme().getHeader().getName());
+            themeNames.add(Theme.amoledMod().getHeader().getName());
+            List<String> filenames = application.getFileStorage().listFiles(GDFile.THEME);
+            for (String filename : filenames) {
+                themeNames.add(GDFile.THEME.cutExtension(filename));
+            }
             s.addItem(menu.backAction());
             s.addItem(new MenuAction(s(R.string.import_theme), MenuAction.SELECT_FILE, menu, it -> {
                 platform.pickFile(Constants.PICKFILE_THEME_RESULT_CODE);
@@ -277,15 +281,15 @@ public class MenuFactory {
             s.addItem(MenuUtils.emptyLine(true));
 
             s.addItem(new MenuAction(s(R.string.install), -1, menu, item -> {
-                application.getFileStorage().save(theme, GDFile.THEME, name); //todo move to method
-                application.getModManager().installTheme(name);
+                application.getFileStorage().save(theme, GDFile.THEME, theme.getHeader().getName()); //todo move to method
+                application.getModManager().installTheme(theme.getHeader().getName());
                 Achievement.achievements.get(Achievement.Type.ESTHETE).increment();
             }));
-//            s.addItem(new MenuAction(s(R.string.save), -1, menu, item -> {
-//                application.getFileStorage().save(theme, GDFile.THEME, name);
-//            }));
+            s.addItem(new MenuAction(s(R.string.save), -1, menu, item -> {
+                application.getFileStorage().save(theme, GDFile.THEME, theme.getHeader().getName());
+            }));
             s.addItem(new MenuAction(s(R.string.delete), -1, menu,
-                    __ -> this.application.getFileStorage().delete(GDFile.MOD, data.getFileName())));
+                    __ -> this.application.getFileStorage().delete(GDFile.THEME, theme.getHeader().getName())));
             s.addItem(menu.backAction(() -> this.get(MenuType.THEMES).build()));
             return s;
         });
@@ -306,16 +310,14 @@ public class MenuFactory {
 
             s.addItem(new MenuAction(s(R.string.install), -1, menu, item -> {
                 String modName = mod.getName();
-                application.getFileStorage().save(mod, GDFile.MOD, modName); //todo move to method
                 application.getModManager().activateMod(mod);
-                application.notify(Fmt.colon(s(R.string.mod_activated), modName));
                 this.get(MenuType.CAMPAIGN).setTitle(Fmt.sp(s(R.string.play), modName));
                 campaignSelectors.resetSelectors();
             }));
 //            s.addItem(new MenuAction(s(R.string.save), -1, menu,
 //                    __ -> this.application.getFileStorage().save(mod, GDFile.MOD, mod.getName())));
             s.addItem(new MenuAction(s(R.string.delete), -1, menu,
-                    __ -> this.application.getFileStorage().delete(GDFile.MOD, data.getFileName())));
+                    __ -> this.application.getModManager().deleteMod(mod.getName())));
             s.addItem(menu.backAction(() -> this.get(MenuType.MODS).build()));
             return s;
         });
@@ -394,6 +396,8 @@ public class MenuFactory {
             s.addItem(new MenuItem(s(R.string.campaign), this.get(MenuType.CAMPAIGN), menu, __ -> {
                 String modName = modNames[campaignSelector.getSelectedOption()];
                 modManager.activateMod(modName);
+                campaignSelectors.setDifficultyLevels(application.getModManager().getLevelNames().toArray(new String[0]));
+//                campaignSelectors.setLeagueNames();
                 campaignSelectors.resetSelectors();
             }));
             s.addItem(campaignSelector);
@@ -557,7 +561,7 @@ public class MenuFactory {
                 item -> {
                     int option = ((OptionsMenuElement) item).getSelectedOption();
                     application.getSettings().setScale(option);
-                    application.getModManager().adjustScale(null);
+                    application.getModManager().adjustScale();
                 }));
         screen.addItem(new OptionsMenuElement(s(R.string.recording_enabled), application.getSettings().isRecordingEnabled() ? 0 : 1, menu, onOffStrings, true, screen,
                 item -> {

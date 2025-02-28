@@ -73,7 +73,7 @@ public class AGameView extends View implements GdGameView {
     @Override
     public void onDraw(Canvas g) {
         g.save();
-        float density = modManager.getGameTheme().getScaledDensity();
+        float density = modManager.getGameDensity();
         g.scale(density, density);
         if (height1 != getHeight()) {
             adjustDimensions();
@@ -87,11 +87,11 @@ public class AGameView extends View implements GdGameView {
     }
 
     public int getScaledWidth() {
-        return Math.round(getWidth() / modManager.getGameTheme().getScaledDensity());
+        return Math.round(getWidth() / modManager.getGameDensity());
     }
 
     public int getScaledHeight() {
-        return Math.round(getHeight() / modManager.getGameTheme().getScaledDensity());
+        return Math.round(getHeight() / modManager.getGameDensity());
     }
 
     @Override

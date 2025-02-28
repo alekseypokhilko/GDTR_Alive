@@ -81,7 +81,7 @@ public class ADataSource implements GdDataSource {
 
     public synchronized void resetAllLevelsSettings() {
         ContentValues values = new ContentValues();
-        values.put(Sql.LEVELS_COLUMN_TRACKS_UNLOCKED, "[0,0,0]"); //todo
+        values.put(Sql.LEVELS_COLUMN_TRACKS_UNLOCKED, "[]");
         values.put(Sql.LEVELS_COLUMN_SELECTED_LEAGUE, 0);
         values.put(Sql.LEVELS_COLUMN_SELECTED_LEVEL, 0);
         values.put(Sql.LEVELS_COLUMN_SELECTED_TRACK, 0);
@@ -254,6 +254,7 @@ public class ADataSource implements GdDataSource {
     private ModEntity cursorToLevel(Cursor cursor) {
         ModEntity level = new ModEntity();
         level.setId(cursor.getLong(cursor.getColumnIndex(Sql.LEVELS_COLUMN_ID)));
+        level.setGuid(cursor.getString(cursor.getColumnIndex(Sql.LEVELS_COLUMN_GUID)));
         level.setName(cursor.getString(cursor.getColumnIndex(Sql.LEVELS_COLUMN_NAME)));
         level.setTrackCountsByLevel(cursor.getString(cursor.getColumnIndex(Sql.LEVELS_COLUMN_TRACKS_COUNT)));
         level.setUnlockedTracks(cursor.getString(cursor.getColumnIndex(Sql.LEVELS_COLUMN_TRACKS_UNLOCKED)));

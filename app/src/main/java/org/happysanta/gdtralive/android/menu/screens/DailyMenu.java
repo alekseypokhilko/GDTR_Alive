@@ -18,7 +18,7 @@ import org.happysanta.gdtralive.android.menu.element.TextMenuElement;
 import org.happysanta.gdtralive.game.Game;
 import org.happysanta.gdtralive.game.api.Constants;
 import org.happysanta.gdtralive.game.api.GameMode;
-import org.happysanta.gdtralive.game.api.dto.PackLevel;
+import org.happysanta.gdtralive.game.api.dto.LevelPack;
 import org.happysanta.gdtralive.game.api.dto.PackTrackReference;
 import org.happysanta.gdtralive.game.api.dto.TrackReference;
 import org.happysanta.gdtralive.game.api.exception.InvalidTrackException;
@@ -172,7 +172,7 @@ public class DailyMenu {
         Mod mod = new Mod();// loadMod(packName);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) { //todo
             return mod.getLevels().stream()
-                    .map(PackLevel::getTracks)
+                    .map(LevelPack::getTracks)
                     .flatMap(Collection::stream)
                     .map(ref -> new PackTrackReference(ref.getGuid(), ref.getName(), packName))
                     .collect(Collectors.toList());
@@ -185,7 +185,7 @@ public class DailyMenu {
     public TrackParams getLevelFromPack(String packName, String trackGuid) throws InvalidTrackException {
         Mod mod = new Mod();// loadMod(packName);
         return mod.getLevels().stream()
-                .map(PackLevel::getTracks)
+                .map(LevelPack::getTracks)
                 .flatMap(Collection::stream)
                 .filter(tRef -> tRef.getGuid().equals(trackGuid))
                 .findAny()

@@ -90,24 +90,24 @@ public class ACanvas implements GdCanvas {
     public void drawSpriteWithRotation(Float j, Float k, ViewState view, EngineStateRecord state, Float fAngleDeg, Sprite sprite) {
         GdBitmap bitmap = getSprite(sprite);
         if (bitmap != null) {
-            float x = offsetX(j, view.offsetX) - bitmap.getWidthDp(modManager.getGameTheme().getSpriteDensity()) / 2;
-            float y = offsetY(k, view.offsetY) - bitmap.getHeightDp(modManager.getGameTheme().getSpriteDensity()) / 2;
+            float x = offsetX(j, view.offsetX) - bitmap.getWidthDp(modManager.getSpriteDensity()) / 2;
+            float y = offsetY(k, view.offsetY) - bitmap.getHeightDp(modManager.getSpriteDensity()) / 2;
             drawBitmapWithRotation(bitmap, fAngleDeg, x, y);
         }
     }
 
     public void drawSprite2(Float j, Float k, ViewState view, EngineStateRecord state, Sprite sprite) {
         GdBitmap bitmap = getSprite(sprite);
-        float x = offsetX(j - bitmap.getWidthDp(modManager.getGameTheme().getSpriteDensity()) / 2, view.offsetX);
-        float y = offsetY(k + bitmap.getHeightDp(modManager.getGameTheme().getSpriteDensity()) / 2, view.offsetY);
+        float x = offsetX(j - bitmap.getWidthDp(modManager.getSpriteDensity()) / 2, view.offsetX);
+        float y = offsetY(k + bitmap.getHeightDp(modManager.getSpriteDensity()) / 2, view.offsetY);
         drawBitmap(bitmap, x, y);
     }
 
     public void drawBodySprite(Sprite sprite, Float l1, Float i2, Float fAngleDeg, int league) {
         GdBitmap bikerSprite = getSprite(sprite);
         if (bikerSprite != null) {
-            float x = l1 - bikerSprite.getWidthDp(modManager.getGameTheme().getSpriteDensity()) / 2;
-            float y = i2 - bikerSprite.getHeightDp(modManager.getGameTheme().getSpriteDensity()) / 2;
+            float x = l1 - bikerSprite.getWidthDp(modManager.getSpriteDensity()) / 2;
+            float y = i2 - bikerSprite.getHeightDp(modManager.getSpriteDensity()) / 2;
             drawBitmapWithRotation(bikerSprite, fAngleDeg, x, y);
         }
     }
@@ -115,8 +115,8 @@ public class ACanvas implements GdCanvas {
     public void drawLogoSprite(Sprite sprite, ViewState view) {
         GdBitmap bitmap = getInterfaceSprite(sprite);
         if (bitmap != null) {
-            drawBitmap(bitmap, (float) view.width / 2 - bitmap.getWidthDp(modManager.getGameTheme().getSpriteDensity()) / 2,
-                    (float) (view.height / 2 - bitmap.getHeightDp(modManager.getGameTheme().getSpriteDensity()) / 1.6));
+            drawBitmap(bitmap, (float) view.width / 2 - bitmap.getWidthDp(modManager.getSpriteDensity()) / 2,
+                    (float) (view.height / 2 - bitmap.getHeightDp(modManager.getSpriteDensity()) / 1.6));
         }
     }
 
@@ -171,7 +171,7 @@ public class ACanvas implements GdCanvas {
 
     private void drawBitmapWithRotation(GdBitmap bitmap, Float fAngleDeg, Float x, Float y) {
         canvas.save();
-        canvas.rotate(fAngleDeg, x + bitmap.getWidthDp(modManager.getGameTheme().getSpriteDensity()) / 2, y + bitmap.getHeightDp(modManager.getGameTheme().getSpriteDensity()) / 2);
+        canvas.rotate(fAngleDeg, x + bitmap.getWidthDp(modManager.getSpriteDensity()) / 2, y + bitmap.getHeightDp(modManager.getSpriteDensity()) / 2);
         drawBitmap(bitmap, x, y);
         canvas.restore();
     }
@@ -182,7 +182,7 @@ public class ACanvas implements GdCanvas {
         paint.setFilterBitmap(true);
         canvas.drawBitmap(b.bitmap,
                 new Rect(0, 0, b.getWidth(), b.getHeight()),
-                new RectF(x, y, x + b.getWidthDp(modManager.getGameTheme().getSpriteDensity()), y + b.getHeightDp(modManager.getGameTheme().getSpriteDensity())),
+                new RectF(x, y, x + b.getWidthDp(modManager.getSpriteDensity()), y + b.getHeightDp(modManager.getSpriteDensity())),
                 paint);
     }
 

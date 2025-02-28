@@ -5,7 +5,8 @@ import com.google.gson.reflect.TypeToken;
 
 import org.happysanta.gdtralive.game.api.Constants;
 import org.happysanta.gdtralive.game.api.GDFile;
-import org.happysanta.gdtralive.game.api.dto.PackLevel;
+import org.happysanta.gdtralive.game.api.dto.LeagueTheme;
+import org.happysanta.gdtralive.game.api.dto.LevelPack;
 import org.happysanta.gdtralive.game.api.dto.Theme;
 import org.happysanta.gdtralive.game.api.dto.TrackReference;
 import org.happysanta.gdtralive.game.api.exception.InvalidTrackException;
@@ -17,6 +18,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
@@ -39,8 +41,8 @@ public class Utils {
         trackReference.setName(track.getName());
 
         Theme theme = Theme.defaultTheme();
-        trackReference.setGameProperties(theme.getGameTheme().getProps());
-        trackReference.setLeagueProperties(theme.getLeagueThemes().get(track.getLeague()).getProps());
+        trackReference.setGameTheme(theme.getGameTheme());
+        trackReference.setLeagueTheme(theme.getLeagueThemes().get(track.getLeague()));
         return trackReference;
     }
 
@@ -135,11 +137,9 @@ public class Utils {
         }
     }
 
-    public static <T> T read(InputStream inputStream) {
+    public static <T> T read(InputStream inputStream, GDFile fileType) {
         String content = readContent(inputStream);
-        GDFile fileType = GDFile.getType(content);
-        String ims = GDFile.cutHeader(content);
-        return (T) GSON.fromJson(ims, fileType.cls);
+        return (T) GSON.fromJson(content, fileType.cls);
     }
 
     public static List<Integer> parseIntList(String counts) {
@@ -173,8 +173,8 @@ public class Utils {
             throw new InvalidTrackException("Mod not found");
         }
         validateGuid(mod.getGuid());
-        for (PackLevel packLevel : mod.getLevels()) {
-            for (TrackReference track : packLevel.getTracks()) {
+        for (LevelPack levelPack : mod.getLevels()) {
+            for (TrackReference track : levelPack.getTracks()) {
                 validateGuid(track.getGuid());
             }
         }
@@ -182,7 +182,7 @@ public class Utils {
 
     public static void validateGuid(String guid) throws InvalidTrackException {
         if (!UUID_REGEX.matcher(guid).matches()) {
-            throw new InvalidTrackException("Invalid track guid");
+            throw new InvalidTrackException("Invalid guid");
         }
     }
 
@@ -231,7 +231,19 @@ public class Utils {
         return subDirectory;
     }
 
-    public static boolean isEmpty(String text) {
-        return text.isEmpty();
+    public static String[] getLeagueNames(List<LeagueTheme> leagueThemes) {
+        String[] names = new String[leagueThemes.size()];
+        for (int i = 0; i < leagueThemes.size(); i++) {
+            names[i] = leagueThemes.get(i).getName();
+        }
+        return names;
+    }
+
+    public static String[] getLevelTrackNames(List<TrackReference> tracks) {
+        List<String> names = new ArrayList<>();
+        for (TrackReference track : tracks) {
+            names.add(track.getName());
+        }
+        return names.toArray(new String[0]);
     }
 }

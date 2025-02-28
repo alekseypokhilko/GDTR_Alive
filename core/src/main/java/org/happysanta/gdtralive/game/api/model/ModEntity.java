@@ -88,9 +88,15 @@ public class ModEntity {
     public void setUnlockedTracks(String counts) {
         try {
             this.unlockedTracksByLevel = Utils.parseIntList(counts);
+            if (unlockedTracksByLevel.isEmpty()) {
+                resetUnlockedTracksToDefaults(trackCountsByLevel);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             this.unlockedTracksByLevel = Utils.parseIntList(String.format("[%s]", counts));
+            if (unlockedTracksByLevel.isEmpty()) {
+                resetUnlockedTracksToDefaults(trackCountsByLevel);
+            }
         }
     }
 

@@ -47,7 +47,7 @@ public class MenuHelmetView extends View {
 	@Override
 	public void onDraw(Canvas canvas) {
 		canvas.save();
-		float density = Helpers.getModManager().getInterfaceTheme().getDensity();
+		float density = Helpers.getModManager().getInterfaceDensity();
 		canvas.scale(density, density);
 
 		drawHelmet(canvas);
@@ -65,7 +65,7 @@ public class MenuHelmetView extends View {
 				angleLastMs = ms;
 			}
 
-			float spriteDensity = Helpers.getModManager().getInterfaceTheme().getDensity();
+			float spriteDensity = Helpers.getModManager().getInterfaceDensity();
 			int y = getScaledHeight() / 2 - helmet.getHeightDp(spriteDensity) / 2;
 
 			canvas.save();
@@ -106,6 +106,6 @@ public class MenuHelmetView extends View {
 	}
 
 	protected int getScaledHeight() {
-		return Math.round(getHeight() / Helpers.getModManager().getInterfaceTheme().getDensity());
+		return Math.round(getHeight() / Helpers.getModManager().getInterfaceDensity());
 	}
 }

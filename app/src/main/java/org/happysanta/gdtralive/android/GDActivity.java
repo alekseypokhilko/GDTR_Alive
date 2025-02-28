@@ -36,6 +36,7 @@ import org.happysanta.gdtralive.android.menu.views.ObservableScrollView;
 import org.happysanta.gdtralive.game.GdApplicationImpl;
 import org.happysanta.gdtralive.game.ModManager;
 import org.happysanta.gdtralive.game.api.Constants;
+import org.happysanta.gdtralive.game.api.GDFile;
 import org.happysanta.gdtralive.game.api.GameMode;
 import org.happysanta.gdtralive.game.api.GdApplication;
 import org.happysanta.gdtralive.game.api.MenuType;
@@ -505,7 +506,7 @@ public class GDActivity extends Activity implements GdPlatform {
         if (requestCode == Constants.PICKFILE_MOD_RESULT_CODE && resultCode == Activity.RESULT_OK) {
             Uri uri = data.getData();
             try (InputStream inputStream = Helpers.getGDActivity().getContentResolver().openInputStream(uri)) {
-                Mod mod = Utils.read(inputStream);
+                Mod mod = Utils.read(inputStream, GDFile.MOD);
                 MenuScreen modMenu = menuFactory.get(MenuType.MOD_OPTIONS).build(new MenuData(mod, mod.getName()));
                 menu.setCurrentMenu(modMenu);
             } catch (Exception e) {
@@ -516,7 +517,7 @@ public class GDActivity extends Activity implements GdPlatform {
         if (requestCode == Constants.PICKFILE_THEME_RESULT_CODE && resultCode == Activity.RESULT_OK) {
             Uri uri = data.getData();
             try (InputStream inputStream = Helpers.getGDActivity().getContentResolver().openInputStream(uri)) {
-                Theme theme = Utils.read(inputStream);
+                Theme theme = Utils.read(inputStream, GDFile.THEME);
                 MenuScreen themeMenu = menuFactory.get(MenuType.THEME_OPTIONS).build(new MenuData(theme, theme.getHeader().getName()));
                 menu.setCurrentMenu(themeMenu);
             } catch (Exception e) {
@@ -527,7 +528,7 @@ public class GDActivity extends Activity implements GdPlatform {
         if (requestCode == Constants.PICKFILE_RECORD_RESULT_CODE && resultCode == Activity.RESULT_OK) {
             Uri uri = data.getData();
             try (InputStream inputStream = Helpers.getGDActivity().getContentResolver().openInputStream(uri)) {
-                TrackRecord trackRecord = Utils.read(inputStream);
+                TrackRecord trackRecord = Utils.read(inputStream, GDFile.RECORD);
                 MenuScreen recordMenu = menuFactory.get(MenuType.RECORDING_OPTIONS).build(new MenuData(trackRecord));
                 menu.setCurrentMenu(recordMenu);
             } catch (Exception e) {
@@ -538,9 +539,9 @@ public class GDActivity extends Activity implements GdPlatform {
         if (requestCode == Constants.PICKFILE_TRACK_RESULT_CODE && resultCode == Activity.RESULT_OK) {
             Uri uri = data.getData();
             try (InputStream inputStream = Helpers.getGDActivity().getContentResolver().openInputStream(uri)) {
-                TrackReference track = Utils.read(inputStream);
+                TrackReference track = Utils.read(inputStream, GDFile.TRACK);
                 //todo track screen
-                application.getModManager().setTrackProperties(track);
+                application.getModManager().setTrackTheme(track);
                 application.getGame().startTrack(GameParams.of(GameMode.SINGLE_TRACK, track.getData()));
             } catch (Exception e) {
                 e.printStackTrace();
@@ -552,7 +553,7 @@ public class GDActivity extends Activity implements GdPlatform {
     private int getButtonHeight() {
         if (getString(R.string.screen_type).equals("tablet")) {
             return 85;
-        } else if (Helpers.getModManager().getGameTheme().getScaledDensity() < 1.5) {
+        } else if (Helpers.getModManager().getGameDensity() < 1.5) {
             return 55;
         }
         return 60;

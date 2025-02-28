@@ -3,7 +3,7 @@ package org.happysanta.gdtralive.desktop;
 import com.google.gson.Gson;
 
 import org.happysanta.gdtralive.game.api.GDFile;
-import org.happysanta.gdtralive.game.api.dto.PackLevel;
+import org.happysanta.gdtralive.game.api.dto.LevelPack;
 import org.happysanta.gdtralive.game.api.dto.Theme;
 import org.happysanta.gdtralive.game.api.dto.TrackReference;
 import org.happysanta.gdtralive.game.api.exception.InvalidTrackException;
@@ -33,8 +33,8 @@ public class DesktopFileStorage implements GdFileStorage {
 
     private static void validatePack(Mod mod) throws InvalidTrackException {
         validateGuid(mod.getGuid());
-        for (PackLevel packLevel : mod.getLevels()) {
-            for (TrackReference track : packLevel.getTracks()) {
+        for (LevelPack levelPack : mod.getLevels()) {
+            for (TrackReference track : levelPack.getTracks()) {
                 validateGuid(track.getGuid());
             }
         }
@@ -49,7 +49,7 @@ public class DesktopFileStorage implements GdFileStorage {
     public TrackParams getLevelFromPack(String packName, String trackGuid) throws InvalidTrackException {
         Mod mod = new Mod();// loadMod(packName);
         return mod.getLevels().stream()
-                .map(PackLevel::getTracks)
+                .map(LevelPack::getTracks)
                 .flatMap(Collection::stream)
                 .filter(tRef -> tRef.getGuid().equals(trackGuid))
                 .findAny()

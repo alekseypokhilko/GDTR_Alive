@@ -1,8 +1,8 @@
 package org.happysanta.gdtralive.game.api.model;
 
-import org.happysanta.gdtralive.game.api.dto.GameProperties;
-import org.happysanta.gdtralive.game.api.dto.PackLevel;
-import org.happysanta.gdtralive.game.api.dto.TrackReference;
+import org.happysanta.gdtralive.game.api.dto.GameTheme;
+import org.happysanta.gdtralive.game.api.dto.LeagueTheme;
+import org.happysanta.gdtralive.game.api.dto.LevelPack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,9 +12,10 @@ public class Mod {
 	private String name;
 	private String author;
 	private String date;
-	private GameProperties properties;
-	private List<PackLevel> levels = new ArrayList<>();
-
+	private GameTheme gameTheme;
+	private List<String> levelNames;
+	private List<LeagueTheme> leagueThemes;
+	private List<LevelPack> levels = new ArrayList<>();
 
 	public String getGuid() {
 		return guid;
@@ -32,7 +33,7 @@ public class Mod {
 		this.name = name;
 	}
 
-	public List<PackLevel> getLevels() {
+	public List<LevelPack> getLevels() {
 		return levels;
 	}
 
@@ -52,19 +53,39 @@ public class Mod {
 		this.author = author;
 	}
 
-	public String[] getLevelTrackNames(int level) {
-		List<String> names = new ArrayList<>();
-		for (TrackReference track : levels.get(level).getTracks()) {
-			names.add(track.getName());
-		}
-		return names.toArray(new String[0]);
+	public GameTheme getGameTheme() {
+		return gameTheme;
+	}
+
+	public void setGameTheme(GameTheme gameTheme) {
+		this.gameTheme = gameTheme;
+	}
+
+	public List<String> getLevelNames() {
+		return levelNames;
+	}
+
+	public void setLevelNames(List<String> levelNames) {
+		this.levelNames = levelNames;
+	}
+
+	public List<LeagueTheme> getLeagueThemes() {
+		return leagueThemes;
+	}
+
+	public void setLeagueThemes(List<LeagueTheme> leagueThemes) {
+		this.leagueThemes = leagueThemes;
 	}
 
 	public List<Integer> getTrackCounts() {
 		List<Integer> counts = new ArrayList<>();
-		for (PackLevel level : levels) {
+		for (LevelPack level : levels) {
 			counts.add(level.getTracks().size());
 		}
 		return counts;
+	}
+
+	public LeagueTheme getLeagueThemes(int league) {
+		return leagueThemes.get(league);
 	}
 }

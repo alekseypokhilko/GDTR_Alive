@@ -2,13 +2,11 @@ package org.happysanta.gdtralive.game.api.dto;
 
 import org.happysanta.gdtralive.game.api.model.TrackParams;
 
-import java.util.LinkedHashMap;
-
 public class TrackReference {
     private String name;
     private String guid;
-    private LinkedHashMap<String, String> gameProperties;
-    private LinkedHashMap<String, String> leagueProperties;
+    private GameTheme gameTheme;
+    private LeagueTheme leagueTheme;
     private TrackParams data;
 
     public TrackParams getData() {
@@ -35,19 +33,19 @@ public class TrackReference {
         this.guid = guid;
     }
 
-    public LinkedHashMap<String, String> getGameProperties() {
-        return gameProperties;
+    public GameTheme getGameTheme() {
+        return gameTheme;
     }
 
-    public void setGameProperties(LinkedHashMap<String, String> gameProperties) {
-        this.gameProperties = gameProperties;
+    public void setGameTheme(GameTheme gameTheme) {
+        this.gameTheme = gameTheme;
     }
 
-    public LinkedHashMap<String, String> getLeagueProperties() {
-        return leagueProperties;
+    public LeagueTheme getLeagueTheme() {
+        return leagueTheme;
     }
 
-    public void setLeagueProperties(LinkedHashMap<String, String> leagueProperties) {
-        this.leagueProperties = leagueProperties;
+    public void setLeagueTheme(LeagueTheme leagueTheme) {
+        this.leagueTheme = leagueTheme;
     }
 }

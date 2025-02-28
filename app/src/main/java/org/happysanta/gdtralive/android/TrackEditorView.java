@@ -308,7 +308,7 @@ public class TrackEditorView {
     public void createNew(String playerName) {
         try {
             this.currentTrack = Utils.initTrackTemplate(playerName);
-            modManager.setTrackProperties(currentTrack);
+            modManager.setTrackTheme(currentTrack);
         } catch (Exception e) {
             e.printStackTrace();//todo
         }
@@ -325,12 +325,12 @@ public class TrackEditorView {
         game.resetState();
         engine.setEditMode(false);
         currentTrack = null;
-        modManager.setTrackProperties(null);
+        modManager.setTrackTheme(null);
         game.showInfoMessage("", 10);
     }
 
     public void playTrack() {
-        modManager.setTrackProperties(currentTrack);
+        modManager.setTrackTheme(currentTrack);
         game.startTrack(GameParams.of(GameMode.TRACK_EDITOR_PLAY, currentTrack.getData()));
         Helpers.getGDActivity().exitEditMode(); //todo
     }
@@ -340,7 +340,7 @@ public class TrackEditorView {
             currentTrack.getData().league = league;
             engine.getTrackPhysic().getTrack().league = league;
             engine.setLeague(league);
-            currentTrack.setLeagueProperties(Theme.defaultTheme().getLeagueThemes().get(league).getProps());
+            currentTrack.setLeagueTheme(Theme.defaultTheme().getLeagueThemes().get(league));
         } catch (Exception e) {
             e.printStackTrace();
         }

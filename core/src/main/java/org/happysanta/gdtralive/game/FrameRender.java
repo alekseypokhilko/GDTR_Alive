@@ -96,7 +96,7 @@ public class FrameRender {
     }
 
     public void fillBackground(ViewState view) {
-        setColor(mm().getGameTheme().getGameBackgroundColor());
+        setColor(mm().getTheme().getGameTheme().getGameBackgroundColor());
         canvas.drawRect(0, 0, view.width, view.height, view);
     }
 
@@ -415,14 +415,14 @@ public class FrameRender {
         int j1 = (int) ((long) (i1 = 114688/*state.aI*/) * 58982L >> 16);
         int k1 = (int) ((long) i1 * 45875L >> 16);
 
-        if (mm().getLeagueTheme(state.L).isDrawWheelLines()) {
-            Color frontWheelsColor = mm().getLeagueTheme(state.L).getFrontWheelsColor();
+        if (mm().getTheme().getLeagueThemes().get(state.L).isDrawWheelLines()) {
+            Color frontWheelsColor = mm().getTheme().getLeagueThemes().get(state.L).getFrontWheelsColor();
             if (frontWheelsColor != null) {
                 setColor(frontWheelsColor);
                 drawLineWheel((state.frontWheel().x() << 2) >> 16, (state.frontWheel().y() << 2) >> 16, (i1 + i1 << 2) >> 16, view);
                 drawLineWheel((state.frontWheel().x() << 2) >> 16, (state.frontWheel().y() << 2) >> 16, (j1 + j1 << 2) >> 16, view);
             }
-            Color backWheelsColor = mm().getLeagueTheme(state.L).getBackWheelsColor();
+            Color backWheelsColor = mm().getTheme().getLeagueThemes().get(state.L).getBackWheelsColor();
             if (backWheelsColor != null) {
                 setColor(backWheelsColor);
                 drawLineWheel((state.backWheel().x() << 2) >> 16, (state.backWheel().y() << 2) >> 16, (i1 + i1 << 2) >> 16, view);
@@ -443,7 +443,7 @@ public class FrameRender {
         l2 = FPMath.sin(j2);
         for (int k3 = 0; k3 < 5; k3++) {
             //spokes
-            setColor(mm().getLeagueTheme(state.L).getBackWheelsSpokeColor());
+            setColor(mm().getTheme().getLeagueThemes().get(state.L).getBackWheelsSpokeColor());
             canvas.drawLine(state.frontWheel().x(), state.frontWheel().y(), state.frontWheel().x() + l1, state.frontWheel().y() + i2, view);
             i3 = l1;
             l1 = (int) ((long) k2 * (long) l1 >> 16) + (int) ((long) (-l2) * (long) i2 >> 16);
@@ -471,7 +471,7 @@ public class FrameRender {
                 l[l3][2] = state.backWheel().x() + l1;
                 l[l3][3] = state.backWheel().y() + i2;
             }
-            setColor(mm().getLeagueTheme(state.L).getFrontWheelsSpokeColor());
+            setColor(mm().getTheme().getLeagueThemes().get(state.L).getFrontWheelsSpokeColor());
             canvas.drawLine(l[l3][0], l[l3][1], l[l3][2], l[l3][3], view);
             int j3 = l1;
             l1 = (int) ((long) k2 * (long) l1 >> 16) + (int) ((long) (-l2) * (long) i2 >> 16);

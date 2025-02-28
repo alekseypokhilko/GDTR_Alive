@@ -4,17 +4,18 @@ import org.happysanta.gdtralive.game.api.Constants;
 import org.happysanta.gdtralive.game.api.GDFile;
 import org.happysanta.gdtralive.game.api.dto.GameTheme;
 import org.happysanta.gdtralive.game.api.dto.InterfaceTheme;
-import org.happysanta.gdtralive.game.api.dto.LeaguePropertiesTheme;
+import org.happysanta.gdtralive.game.api.dto.LeagueTheme;
 import org.happysanta.gdtralive.game.api.dto.Theme;
 import org.happysanta.gdtralive.game.api.dto.TrackReference;
 import org.happysanta.gdtralive.game.api.exception.InvalidTrackException;
 import org.happysanta.gdtralive.game.api.external.GdDataSource;
 import org.happysanta.gdtralive.game.api.external.GdFileStorage;
 import org.happysanta.gdtralive.game.api.external.GdSettings;
+import org.happysanta.gdtralive.game.api.model.Color;
 import org.happysanta.gdtralive.game.api.model.Mod;
 import org.happysanta.gdtralive.game.api.model.ModEntity;
 import org.happysanta.gdtralive.game.api.model.TrackParams;
-import org.happysanta.gdtralive.game.api.model.TrackProperties;
+import org.happysanta.gdtralive.game.api.model.TrackTheme;
 import org.happysanta.gdtralive.game.util.Mapper;
 import org.happysanta.gdtralive.game.util.Utils;
 
@@ -32,8 +33,9 @@ public class ModManager {
     private Mod currentMod;
     private ModEntity modState;
     boolean temporallyUnlockedAll = false;
-    private TrackProperties currentTrackProperties;
-    private final float defaultDensity; //todo move to settings (not editable)
+    private TrackTheme currentTrackTheme;
+    private final float defaultDensity;
+    private float gameDensity;
     private final GdDataSource dataSource;
     private final GdFileStorage fileStorage;
     private final GdSettings settings;
@@ -46,6 +48,7 @@ public class ModManager {
         this.theme = loadTheme(settings.getSelectedTheme());
 
         initMod();
+        adjustScale();
     }
 
     private void initMod() {
@@ -61,7 +64,8 @@ public class ModManager {
                     modState = dataSource.getMod(1); //default
                 }
             }
-        } catch (Exception ignore) {
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         try {
             if (currentMod == null) {
@@ -91,33 +95,30 @@ public class ModManager {
 
     public String[] getAllInstalledModNames() {
         List<String> names = new ArrayList<>();
-        for (ModEntity mod: getAllInstalledMods()) {
+        for (ModEntity mod : getAllInstalledMods()) {
             names.add(mod.getName());
         }
         return names.toArray(new String[]{});
     }
 
-    public void setTrackProperties(TrackReference track) {
-        if (track == null) {
-            this.currentTrackProperties = null;
-            return;
-        }
-
-        TrackProperties trackProperties = new TrackProperties();
-        if (track.getGameProperties() != null) {
-            trackProperties.setGameProperties(new GameTheme(track.getGameProperties()));
-        }
-        if (track.getLeagueProperties() != null) {
-            trackProperties.setLeagueProperties(new LeaguePropertiesTheme(track.getLeagueProperties()));
-        }
-        if (trackProperties.getGameProperties() != null || trackProperties.getLeagueProperties() != null) {
-            this.currentTrackProperties = trackProperties;
-        }
-    }
-
     public void activateMod(String modName) {
         Mod mod = fileStorage.readMod(modName);
         activateMod(mod);
+    }
+
+    public void deleteMod(String modName) {
+        if (Constants.DEFAULT_MOD.equals(modName) || Constants.ORIGINAL_MOD.equals(modName)) {
+            return;
+        }
+        Mod mod = fileStorage.readMod(modName);
+        fileStorage.delete(GDFile.MOD, modName);
+        ModEntity saved = dataSource.getMod(mod.getGuid());
+        dataSource.deleteLevel(saved);
+        long modId = settings.getLevelId();
+        if (saved.getId() == modId) {
+            ModEntity newActive = dataSource.getMod(1);
+            activateMod(newActive.getName());
+        }
     }
 
     public void activateMod(Mod mod) {
@@ -126,19 +127,52 @@ public class ModManager {
             setCurrentMod(mod, state);
         } else {
             fileStorage.save(mod, GDFile.MOD, mod.getName());
-            ModEntity modEntity = Mapper.mapModToEntity(currentMod, false);
-            setCurrentMod(mod, dataSource.createMod(modEntity));
+            ModEntity modEntity = Mapper.mapModToEntity(mod, false);
+            ModEntity saved = dataSource.createMod(modEntity);
+            setCurrentMod(mod, saved);
         }
     }
 
     private void setCurrentMod(Mod mod, ModEntity state) {
         modState = state;
-        currentMod = mod;
+        currentMod = mod;//testTheme(mod);
         settings.setLevelId(modState.getId());
     }
 
-    public List<LeaguePropertiesTheme> getLeagueThemes() {
-        return theme.getLeagueThemes();
+    private Mod testTheme(Mod mod) {
+        List<String> levelNames = new ArrayList<>();
+        levelNames.add("Легко");
+        levelNames.add("Средне");
+        levelNames.add("Тяжело");
+        levelNames.add("Экстрим");
+        mod.setLevelNames(levelNames);
+
+        List<LeagueTheme> leagueThemes = Theme.defaultTheme().getLeagueThemes();
+        leagueThemes.get(1).setBackWheelDotColor(new Color(0, 255, 255));
+        leagueThemes.get(1).setName("Дырчик");
+        mod.setLeagueThemes(leagueThemes);
+
+        GameTheme track1Theme = new GameTheme();
+        track1Theme.setTrackLineColor(new Color(255, 0, 0));
+        track1Theme.setPerspectiveColor(new Color(170, 0, 0));
+        mod.getLevels().get(0).getTracks().get(0).setGameTheme(track1Theme);
+        GameTheme track2Theme = new GameTheme();
+        track2Theme.setTrackLineColor(new Color(255, 0, 255));
+        track2Theme.setPerspectiveColor(new Color(170, 0, 170));
+        mod.getLevels().get(0).getTracks().get(1).setGameTheme(track2Theme);
+        GameTheme track3Theme = new GameTheme();
+        track3Theme.setTrackLineColor(new Color(0, 255, 255));
+        track3Theme.setPerspectiveColor(new Color(0, 170, 170));
+        mod.getLevels().get(0).getTracks().get(2).setGameTheme(track3Theme);
+        GameTheme track4Theme = new GameTheme();
+        track4Theme.setTrackLineColor(new Color(0, 0, 255));
+        track4Theme.setGameBackgroundColor(new Color(215, 215, 215));
+        track4Theme.setPerspectiveColor(new Color(0, 0, 170));
+        mod.getLevels().get(0).getTracks().get(3).setGameTheme(track4Theme);
+
+        mod.getLevels().add(mod.getLevels().get(2));
+        String json = Utils.toJson(mod);
+        return mod;
     }
 
     public ModEntity getModState() {
@@ -156,51 +190,97 @@ public class ModManager {
         this.temporallyUnlockedAll = temporallyUnlockedAll;
     }
 
-    public LeaguePropertiesTheme getLeagueTheme(int league) {
-        if (currentTrackProperties != null && currentTrackProperties.getLeagueProperties() != null) {
-            return currentTrackProperties.getLeagueProperties();
+    public void setTrackTheme(TrackReference track) {
+        if (track == null) {
+            return;
+        }
+        this.currentTrackTheme = null;
+
+        TrackTheme trackTheme = new TrackTheme();
+        if (track.getGameTheme() != null) {
+            trackTheme.setGameTheme(track.getGameTheme());
+        }
+        if (track.getLeagueTheme() != null) {
+            trackTheme.setLeagueTheme(track.getLeagueTheme());
+        }
+        if (trackTheme.getGameTheme() != null || trackTheme.getLeagueTheme() != null) {
+            this.currentTrackTheme = trackTheme;
+        }
+    }
+
+    public LeagueTheme getLeagueTheme(int league) {
+        if (currentTrackTheme != null && currentTrackTheme.getLeagueTheme() != null) {
+            return currentTrackTheme.getLeagueTheme();
+        }
+        if (currentMod.getLeagueThemes() != null) {
+            return currentMod.getLeagueThemes(league);
         }
         return getLeagueThemes().get(league);
     }
 
-    public List<String> getLevelNames() {
-        return theme.getLevelNames();
+    public Theme getTheme() {
+        return theme;
     }
 
     public GameTheme getGameTheme() {
-        if (currentTrackProperties != null && currentTrackProperties.getGameProperties() != null) {
-            return currentTrackProperties.getGameProperties();
+        if (currentTrackTheme != null && currentTrackTheme.getGameTheme() != null) {
+            return currentTrackTheme.getGameTheme();
+        }
+        if (currentMod.getGameTheme() != null) {
+            return currentMod.getGameTheme();
         }
         return theme.getGameTheme();
+    }
+
+    public List<LeagueTheme> getLeagueThemes() {
+        if (currentMod.getLeagueThemes() != null) {
+            return currentMod.getLeagueThemes();
+        }
+        return theme.getLeagueThemes();
     }
 
     public InterfaceTheme getInterfaceTheme() {
         return theme.getInterfaceTheme();
     }
 
+    public List<String> getLevelNames() {
+        if (currentMod.getLevelNames() != null) {
+            return currentMod.getLevelNames();
+        }
+        return theme.getLevelNames();
+    }
+
     public String[] getLeagueNames() {
-        return theme.getLeagueNames();
+        if (currentMod.getLeagueThemes() != null) {
+            Utils.getLeagueNames(currentMod.getLeagueThemes());
+        }
+        return Utils.getLeagueNames(theme.getLeagueThemes());
     }
 
     public String[] getLeagueTrackNames(int league) {
-        return currentMod.getLevelTrackNames(league);
+        return Utils.getLevelTrackNames(currentMod.getLevels().get(league).getTracks());
     }
 
     public void installTheme(String name) {
         this.theme = loadTheme(name);
-        adjustScale(this.theme);
         settings.setSelectedTheme(theme.getHeader().getName());
         reloadTheme();
     }
 
-    public void adjustScale(Theme theme) {
-        if (theme == null) {
-            theme = this.theme;
-        }
-        int scale = settings.getScale();
-        theme.getInterfaceTheme().setProp(InterfaceTheme.density, defaultDensity);
-        theme.getGameTheme().setProp(GameTheme.scaledDensity, defaultDensity * scale / 100);
-        theme.getGameTheme().setProp(GameTheme.spriteDensity, defaultDensity);
+    public float getInterfaceDensity() {
+        return defaultDensity;
+    }
+
+    public float getGameDensity() {
+        return gameDensity;
+    }
+
+    public float getSpriteDensity() {
+        return defaultDensity;
+    }
+
+    public void adjustScale() {
+        this.gameDensity = defaultDensity * settings.getScale() / 100;
     }
 
     public void registerThemeReloadHandler(Runnable handler) {
@@ -230,7 +310,6 @@ public class ModManager {
             Theme fromStorage = fileStorage.readTheme(name);
             theme = fromStorage == null ? Theme.defaultTheme() : fromStorage;
         }
-        adjustScale(theme);
         return theme;
     }
 
@@ -244,6 +323,7 @@ public class ModManager {
         }
 
         TrackReference trackReference = currentMod.getLevels().get(levelIndex).getTracks().get(index);
+        setTrackTheme(trackReference);
         return trackReference.getData();
     }
 
@@ -251,6 +331,7 @@ public class ModManager {
         int level = Utils.getRandom(currentMod.getLevels().size());
         int track = Utils.getRandom(currentMod.getLevels().get(level).getTracks().size());
         TrackReference trackReference = currentMod.getLevels().get(level).getTracks().get(track);
+        setTrackTheme(trackReference);
         return trackReference.getData();
     }
 

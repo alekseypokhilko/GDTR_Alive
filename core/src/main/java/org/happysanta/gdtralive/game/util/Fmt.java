@@ -1,7 +1,7 @@
 package org.happysanta.gdtralive.game.util;
 
 import org.happysanta.gdtralive.game.api.model.Mod;
-import org.happysanta.gdtralive.game.api.dto.PackLevel;
+import org.happysanta.gdtralive.game.api.dto.LevelPack;
 
 public class Fmt {
     public static String colon(String label, String name) {
@@ -38,7 +38,7 @@ public class Fmt {
 
     public static String formatLevelsCount(Mod mod) {
         StringBuilder s = new StringBuilder();
-        for (PackLevel level : mod.getLevels()) {
+        for (LevelPack level : mod.getLevels()) {
             s.append(level.getTracks().size()).append(" ");
         }
         return s.toString().trim();
