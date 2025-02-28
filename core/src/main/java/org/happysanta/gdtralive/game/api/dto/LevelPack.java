@@ -4,9 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LevelPack {
-    private final List<TrackReference> tracks = new ArrayList<>();
+    private List<TrackParams> tracks = new ArrayList<>();
 
-    public List<TrackReference> getTracks() {
+    public List<TrackParams> getTracks() {
         return tracks;
+    }
+
+    public void setTracks(List<TrackParams> tracks) {
+        this.tracks = tracks;
     }
 }

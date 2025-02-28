@@ -10,7 +10,7 @@ import java.util.List;
 public class TrackRecord implements Serializable {
     private final String trackGuid;
     private final String trackName;
-    private final TrackParams track;
+    private final TrackData track;
     private final long time;
     private final int league;
     private final String date;
@@ -18,7 +18,7 @@ public class TrackRecord implements Serializable {
 
     private List<EngineStateRecord> states = new ArrayList<>();
 
-    public TrackRecord(TrackParams track, long time, int league, String author) {
+    public TrackRecord(TrackData track, long time, int league, String author) {
         this.track = track;
         this.trackGuid = track.getGuid();
         this.trackName = track.getName();
@@ -48,7 +48,7 @@ public class TrackRecord implements Serializable {
         return trackName;
     }
 
-    public TrackParams getTrack() {
+    public TrackData getTrack() {
         return track;
     }
 

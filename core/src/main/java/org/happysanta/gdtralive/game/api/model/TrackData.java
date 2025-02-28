@@ -10,15 +10,15 @@ import java.util.Set;
 /**
  * Track related properties
  */
-public class TrackParams implements Serializable {
+public class TrackData implements Serializable {
 
 	public int league;
 	public int startX;
 	public int startY;
 	public int finishX;
+	public int finishY;
 	public int startPointIndex;
 	public int finishPointIndex;
-	public int finishY;
 	public int pointsCount;
 	public int[][] points;
 	public transient int cameraX;
@@ -38,7 +38,7 @@ public class TrackParams implements Serializable {
 	public boolean checkBackwardCollision = true;
 	public Integer deadlineY;
 
-	public TrackParams() {
+	public TrackData() {
 		cameraX = 0;
 		cameraY = 0;
 		shadowX = 0;
@@ -101,7 +101,7 @@ public class TrackParams implements Serializable {
 		}
 	}
 
-	public synchronized void readTrackData(DataInputStream in, boolean unpacked) {
+	public synchronized void readTrackData(DataInputStream in, boolean unpack) {
 		try {
 			clear();
 			if (in.readByte() == 50) {
@@ -125,7 +125,7 @@ public class TrackParams implements Serializable {
 //			int[] packed = new int[] {(startX << 3) >> 16, (startY << 3) >> 16, (finishX << 3) >> 16};
 
 			//
-			if (unpacked) {
+			if (unpack) {
                 addPoint(Utils.unpackInt(pointX), Utils.unpackInt(pointY));
 			} else {
 				addPoint(pointX, pointY);
@@ -145,7 +145,7 @@ public class TrackParams implements Serializable {
 				}
 				pointX += x;
 				pointY += y;
-				if (unpacked) {
+				if (unpack) {
                     addPoint(Utils.unpackInt(pointX), Utils.unpackInt(pointY));
 				} else {
 					addPoint(pointX, pointY);
@@ -186,5 +186,149 @@ public class TrackParams implements Serializable {
 
 	public void setAuthor(String author) {
 		this.author = author;
+	}
+
+	public int getStartX() {
+		return startX;
+	}
+
+	public void setStartX(int startX) {
+		this.startX = startX;
+	}
+
+	public int getStartY() {
+		return startY;
+	}
+
+	public void setStartY(int startY) {
+		this.startY = startY;
+	}
+
+	public int getFinishX() {
+		return finishX;
+	}
+
+	public void setFinishX(int finishX) {
+		this.finishX = finishX;
+	}
+
+	public int getStartPointIndex() {
+		return startPointIndex;
+	}
+
+	public void setStartPointIndex(int startPointIndex) {
+		this.startPointIndex = startPointIndex;
+	}
+
+	public int getFinishPointIndex() {
+		return finishPointIndex;
+	}
+
+	public void setFinishPointIndex(int finishPointIndex) {
+		this.finishPointIndex = finishPointIndex;
+	}
+
+	public int getFinishY() {
+		return finishY;
+	}
+
+	public void setFinishY(int finishY) {
+		this.finishY = finishY;
+	}
+
+	public int getPointsCount() {
+		return pointsCount;
+	}
+
+	public void setPointsCount(int pointsCount) {
+		this.pointsCount = pointsCount;
+	}
+
+	public int[][] getPoints() {
+		return points;
+	}
+
+	public void setPoints(int[][] points) {
+		this.points = points;
+	}
+
+	public int getCameraX() {
+		return cameraX;
+	}
+
+	public void setCameraX(int cameraX) {
+		this.cameraX = cameraX;
+	}
+
+	public int getCameraY() {
+		return cameraY;
+	}
+
+	public void setCameraY(int cameraY) {
+		this.cameraY = cameraY;
+	}
+
+	public int getShadowX() {
+		return shadowX;
+	}
+
+	public void setShadowX(int shadowX) {
+		this.shadowX = shadowX;
+	}
+
+	public int getShadowY() {
+		return shadowY;
+	}
+
+	public void setShadowY(int shadowY) {
+		this.shadowY = shadowY;
+	}
+
+	public int getShadow_m_gI() {
+		return shadow_m_gI;
+	}
+
+	public void setShadow_m_gI(int shadow_m_gI) {
+		this.shadow_m_gI = shadow_m_gI;
+	}
+
+	public int getShadow_m_rI() {
+		return shadow_m_rI;
+	}
+
+	public void setShadow_m_rI(int shadow_m_rI) {
+		this.shadow_m_rI = shadow_m_rI;
+	}
+
+	public Set<Integer> getInvisible() {
+		return invisible;
+	}
+
+	public void setInvisible(Set<Integer> invisible) {
+		this.invisible = invisible;
+	}
+
+	public boolean isCheckFinishCoordinates() {
+		return checkFinishCoordinates;
+	}
+
+	public void setCheckFinishCoordinates(boolean checkFinishCoordinates) {
+		this.checkFinishCoordinates = checkFinishCoordinates;
+	}
+
+	public boolean isCheckBackwardCollision() {
+		return checkBackwardCollision;
+	}
+
+	public void setCheckBackwardCollision(boolean checkBackwardCollision) {
+		this.checkBackwardCollision = checkBackwardCollision;
+	}
+
+	public Integer getDeadlineY() {
+		return deadlineY;
+	}
+
+	public void setDeadlineY(Integer deadlineY) {
+		this.deadlineY = deadlineY;
 	}
 }

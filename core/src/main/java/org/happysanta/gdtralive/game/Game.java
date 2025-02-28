@@ -8,7 +8,7 @@ import org.happysanta.gdtralive.game.api.external.GdMenu;
 import org.happysanta.gdtralive.game.api.external.GdSettings;
 import org.happysanta.gdtralive.game.api.external.GdStr;
 import org.happysanta.gdtralive.game.api.exception.InvalidTrackException;
-import org.happysanta.gdtralive.game.api.model.TrackParams;
+import org.happysanta.gdtralive.game.api.model.TrackData;
 import org.happysanta.gdtralive.game.api.GameMode;
 import org.happysanta.gdtralive.game.api.model.MenuData;
 import org.happysanta.gdtralive.game.util.Mapper;
@@ -392,7 +392,7 @@ public class Game {
             view.setDrawTimer(false);
             return;
         }
-        TrackParams track = params.getTrackParams();
+        TrackData track = params.getTrackParams();
         engine.setEditMode(false);
         try {
             engine.loadTrack(track);

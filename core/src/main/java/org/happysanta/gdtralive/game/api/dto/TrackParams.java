@@ -1,36 +1,18 @@
 package org.happysanta.gdtralive.game.api.dto;
 
-import org.happysanta.gdtralive.game.api.model.TrackParams;
+import org.happysanta.gdtralive.game.api.model.TrackData;
 
-public class TrackReference {
-    private String name;
-    private String guid;
+public class TrackParams {
     private GameTheme gameTheme;
     private LeagueTheme leagueTheme;
-    private TrackParams data;
+    private TrackData data;
 
-    public TrackParams getData() {
+    public TrackData getData() {
         return data;
     }
 
-    public void setData(TrackParams data) {
+    public void setData(TrackData data) {
         this.data = data;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getGuid() {
-        return guid;
-    }
-
-    public void setGuid(String guid) {
-        this.guid = guid;
     }
 
     public GameTheme getGameTheme() {

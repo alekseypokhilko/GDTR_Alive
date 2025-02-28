@@ -1,10 +1,10 @@
 package org.happysanta.gdtralive.game.util.mrg;
 
 import org.happysanta.gdtralive.game.api.Constants;
-import org.happysanta.gdtralive.game.api.model.TrackParams;
+import org.happysanta.gdtralive.game.api.model.TrackData;
 import org.happysanta.gdtralive.game.api.model.Mod;
 import org.happysanta.gdtralive.game.api.dto.LevelPack;
-import org.happysanta.gdtralive.game.api.dto.TrackReference;
+import org.happysanta.gdtralive.game.api.dto.TrackParams;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
@@ -36,24 +36,22 @@ public class MrgUtils {
                      DataInputStream dis = new DataInputStream(in)) {
                     for (int i1 = header.getPointers()[league][track]; i1 > 0; i1 -= dis.skipBytes(i1))
                         ;
-                    TrackParams level = new TrackParams();
-                    level.setLeague(league);
-                    level.readTrackData(dis, true); //todo unpack on loading track
+                    TrackData trackData = new TrackData();
+                    trackData.setLeague(league);
+                    trackData.readTrackData(dis, true); //todo unpack on loading track
 
-                    level.setGuid(UUID.randomUUID().toString());
-                    level.setAuthor(author);
-                    level.setName(header.getNames()[league][track]);
+                    trackData.setGuid(UUID.randomUUID().toString());
+                    trackData.setAuthor(author);
+                    trackData.setName(header.getNames()[league][track]);
 
-                    int[][] pointsTrimmed = new int[level.pointsCount][2];
-                    System.arraycopy(level.points, 0, pointsTrimmed, 0, level.pointsCount);
-                    level.points = pointsTrimmed;
+                    int[][] pointsTrimmed = new int[trackData.pointsCount][2];
+                    System.arraycopy(trackData.points, 0, pointsTrimmed, 0, trackData.pointsCount);
+                    trackData.points = pointsTrimmed;
 
-                    TrackReference trackReference = new TrackReference();
-                    trackReference.setGuid(level.getGuid());
-                    trackReference.setName(level.getName());
-                    trackReference.setData(level);
+                    TrackParams trackParams = new TrackParams();
+                    trackParams.setData(trackData);
 
-                    levelPackObj.getTracks().add(trackReference);
+                    levelPackObj.getTracks().add(trackParams);
                 } catch (Exception _ex) {
                     throw new RuntimeException(_ex);
                 }

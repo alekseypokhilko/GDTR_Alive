@@ -23,7 +23,7 @@ public class EngineStateRecord implements Serializable {
     public String c; //controls w/a/s/d
 
     // === other
-    public transient TrackParams track;
+    public transient TrackData track;
     public transient boolean edit;
     public transient int selectedPointIndex;
     public transient boolean perspectiveEnabled;

@@ -20,7 +20,7 @@ import org.happysanta.gdtralive.game.api.EditorMode;
 import org.happysanta.gdtralive.game.api.GDFile;
 import org.happysanta.gdtralive.game.api.GameMode;
 import org.happysanta.gdtralive.game.api.dto.Theme;
-import org.happysanta.gdtralive.game.api.dto.TrackReference;
+import org.happysanta.gdtralive.game.api.dto.TrackParams;
 import org.happysanta.gdtralive.game.api.GdApplication;
 import org.happysanta.gdtralive.game.api.model.GameParams;
 import org.happysanta.gdtralive.game.engine.Engine;
@@ -49,7 +49,7 @@ public class TrackEditorView {
     private int offset = Utils.unpackInt(DEFAULT_OFFSET);
     private int currentEditMode = 0;
     public int selectedPointIndex = 0;
-    private TrackReference currentTrack;
+    private TrackParams currentTrack;
 
     private final MenuLinearLayout modeLayout;
     private final MenuLinearLayout inputLayout;
@@ -349,10 +349,10 @@ public class TrackEditorView {
     public void saveTrack() {
         //todo pack level props and unpack on loading
         //copy level object
-        application.getFileStorage().save(currentTrack, GDFile.TRACK, Fmt.us(currentTrack.getGuid(), currentTrack.getName()));
+        application.getFileStorage().save(currentTrack, GDFile.TRACK, Fmt.us(currentTrack.getData().getGuid(), currentTrack.getData().getName()));
     }
 
-    public TrackReference getCurrentTrack() {
+    public TrackParams getCurrentTrack() {
         return currentTrack;
     }
 

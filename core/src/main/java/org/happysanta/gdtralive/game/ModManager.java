@@ -6,7 +6,7 @@ import org.happysanta.gdtralive.game.api.dto.GameTheme;
 import org.happysanta.gdtralive.game.api.dto.InterfaceTheme;
 import org.happysanta.gdtralive.game.api.dto.LeagueTheme;
 import org.happysanta.gdtralive.game.api.dto.Theme;
-import org.happysanta.gdtralive.game.api.dto.TrackReference;
+import org.happysanta.gdtralive.game.api.dto.TrackParams;
 import org.happysanta.gdtralive.game.api.exception.InvalidTrackException;
 import org.happysanta.gdtralive.game.api.external.GdDataSource;
 import org.happysanta.gdtralive.game.api.external.GdFileStorage;
@@ -14,7 +14,7 @@ import org.happysanta.gdtralive.game.api.external.GdSettings;
 import org.happysanta.gdtralive.game.api.model.Color;
 import org.happysanta.gdtralive.game.api.model.Mod;
 import org.happysanta.gdtralive.game.api.model.ModEntity;
-import org.happysanta.gdtralive.game.api.model.TrackParams;
+import org.happysanta.gdtralive.game.api.model.TrackData;
 import org.happysanta.gdtralive.game.api.model.TrackTheme;
 import org.happysanta.gdtralive.game.util.Mapper;
 import org.happysanta.gdtralive.game.util.Utils;
@@ -57,11 +57,13 @@ public class ModManager {
             if (!dataSource.isDefaultModCreated()) {
                 initDefaultModsState();
             } else {
-                modState = dataSource.getMod(settings.getLevelId());
-                currentMod = loadMod(modState.getName());
+                ModEntity modState = dataSource.getMod(settings.getLevelId());
+                Mod mod = loadMod(modState.getName());
+                setCurrentMod(mod, modState);
                 if (currentMod == null) {
-                    currentMod = loadMod(Constants.DEFAULT_MOD);
-                    modState = dataSource.getMod(1); //default
+                    Mod defaultMod = loadMod(Constants.DEFAULT_MOD);
+                    ModEntity defaultModState = dataSource.getMod(1); //default
+                    setCurrentMod(defaultMod, defaultModState);
                 }
             }
         } catch (Exception e) {
@@ -126,16 +128,17 @@ public class ModManager {
         if (state != null) {
             setCurrentMod(mod, state);
         } else {
-            fileStorage.save(mod, GDFile.MOD, mod.getName());
+            Mod packed = mod.pack();
+            fileStorage.save(packed, GDFile.MOD, mod.getName());
             ModEntity modEntity = Mapper.mapModToEntity(mod, false);
             ModEntity saved = dataSource.createMod(modEntity);
-            setCurrentMod(mod, saved);
+            setCurrentMod(packed, saved);
         }
     }
 
     private void setCurrentMod(Mod mod, ModEntity state) {
         modState = state;
-        currentMod = mod;//testTheme(mod);
+        currentMod = mod.unpack();//testTheme(mod);
         settings.setLevelId(modState.getId());
     }
 
@@ -190,7 +193,7 @@ public class ModManager {
         this.temporallyUnlockedAll = temporallyUnlockedAll;
     }
 
-    public void setTrackTheme(TrackReference track) {
+    public void setTrackTheme(TrackParams track) {
         if (track == null) {
             return;
         }
@@ -313,7 +316,7 @@ public class ModManager {
         return theme;
     }
 
-    public TrackParams loadLevel(int levelIndex, int trackIndex) {
+    public TrackData loadLevel(int levelIndex, int trackIndex) {
         int index = trackIndex;
         try {
             if (trackIndex >= currentMod.getLevels().get(levelIndex).getTracks().size())
@@ -322,25 +325,25 @@ public class ModManager {
             index = 0;
         }
 
-        TrackReference trackReference = currentMod.getLevels().get(levelIndex).getTracks().get(index);
-        setTrackTheme(trackReference);
-        return trackReference.getData();
+        TrackParams trackParams = currentMod.getLevels().get(levelIndex).getTracks().get(index);
+        setTrackTheme(trackParams);
+        return trackParams.getData();
     }
 
-    public TrackParams getRandomTrack() {
+    public TrackData getRandomTrack() {
         int level = Utils.getRandom(currentMod.getLevels().size());
         int track = Utils.getRandom(currentMod.getLevels().get(level).getTracks().size());
-        TrackReference trackReference = currentMod.getLevels().get(level).getTracks().get(track);
-        setTrackTheme(trackReference);
-        return trackReference.getData();
+        TrackParams trackParams = currentMod.getLevels().get(level).getTracks().get(track);
+        setTrackTheme(trackParams);
+        return trackParams.getData();
     }
 
     public String getTrackGuid(int level, int track) {
-        return currentMod.getLevels().get(level).getTracks().get(track).getGuid();
+        return currentMod.getLevels().get(level).getTracks().get(track).getData().getGuid();
     }
 
     public String getTrackName(int level, int track) {
-        return currentMod.getLevels().get(level).getTracks().get(track).getName();
+        return currentMod.getLevels().get(level).getTracks().get(track).getData().getName();
     }
 
     public int getLevelTracksCount(int level) {
@@ -349,7 +352,7 @@ public class ModManager {
 
     public Mod loadMod(String filename) throws InvalidTrackException {
         Mod mod = fileStorage.readMod(filename);
-        Utils.validatePack(mod);
+        Utils.validateMod(mod);
         return mod;
     }
 }

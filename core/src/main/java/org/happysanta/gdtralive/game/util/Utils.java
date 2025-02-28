@@ -8,10 +8,10 @@ import org.happysanta.gdtralive.game.api.GDFile;
 import org.happysanta.gdtralive.game.api.dto.LeagueTheme;
 import org.happysanta.gdtralive.game.api.dto.LevelPack;
 import org.happysanta.gdtralive.game.api.dto.Theme;
-import org.happysanta.gdtralive.game.api.dto.TrackReference;
+import org.happysanta.gdtralive.game.api.dto.TrackParams;
 import org.happysanta.gdtralive.game.api.exception.InvalidTrackException;
 import org.happysanta.gdtralive.game.api.model.Mod;
-import org.happysanta.gdtralive.game.api.model.TrackParams;
+import org.happysanta.gdtralive.game.api.model.TrackData;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
@@ -33,21 +33,21 @@ public class Utils {
     private static final TypeToken<List<Integer>> INT_LIST_TYPE = new TypeToken<List<Integer>>() {
     };
 
-    public static TrackReference initTrackTemplate(String playerName) {
-        TrackParams track = Utils.trackTemplate(playerName);
-        TrackReference trackReference = new TrackReference();
-        trackReference.setData(track);
-        trackReference.setGuid(track.getGuid());
-        trackReference.setName(track.getName());
+    public static TrackParams initTrackTemplate(String playerName) {
+        TrackData track = Utils.trackTemplate(playerName);
+        TrackParams trackParams = new TrackParams();
+        trackParams.setData(track);
+        trackParams.getData().setGuid(track.getGuid());
+        trackParams.getData().setName(track.getName());
 
         Theme theme = Theme.defaultTheme();
-        trackReference.setGameTheme(theme.getGameTheme());
-        trackReference.setLeagueTheme(theme.getLeagueThemes().get(track.getLeague()));
-        return trackReference;
+        trackParams.setGameTheme(theme.getGameTheme());
+        trackParams.setLeagueTheme(theme.getLeagueThemes().get(track.getLeague()));
+        return trackParams;
     }
 
-    public static TrackParams trackTemplate(String playerName) {
-        TrackParams track = new Gson().fromJson(TRACK_TEMPLATE, TrackParams.class);
+    public static TrackData trackTemplate(String playerName) {
+        TrackData track = new Gson().fromJson(TRACK_TEMPLATE, TrackData.class);
         track.setAuthor(playerName);
         track.setGuid(UUID.randomUUID().toString());
         track.setName(track.getName());
@@ -149,6 +149,7 @@ public class Utils {
     public static <T> String toJson(T obj) {
         return GSON.toJson(obj);
     }
+
     public static <T> T fromJson(String ims, Class<T> classOfT) {
         return GSON.fromJson(ims, classOfT);
     }
@@ -164,18 +165,18 @@ public class Utils {
         return fileName;
     }
 
-    public static void validateLevel(TrackParams track) throws InvalidTrackException {
+    public static void validateLevel(TrackData track) throws InvalidTrackException {
         validateGuid(track.getGuid());
     }
 
-    public static void validatePack(Mod mod) throws InvalidTrackException {
+    public static void validateMod(Mod mod) throws InvalidTrackException {
         if (mod == null) {
             throw new InvalidTrackException("Mod not found");
         }
         validateGuid(mod.getGuid());
         for (LevelPack levelPack : mod.getLevels()) {
-            for (TrackReference track : levelPack.getTracks()) {
-                validateGuid(track.getGuid());
+            for (TrackParams track : levelPack.getTracks()) {
+                validateGuid(track.getData().getGuid());
             }
         }
     }
@@ -239,11 +240,93 @@ public class Utils {
         return names;
     }
 
-    public static String[] getLevelTrackNames(List<TrackReference> tracks) {
+    public static String[] getLevelTrackNames(List<TrackParams> tracks) {
         List<String> names = new ArrayList<>();
-        for (TrackReference track : tracks) {
-            names.add(track.getName());
+        for (TrackParams track : tracks) {
+            names.add(track.getData().getName());
         }
         return names.toArray(new String[0]);
+    }
+
+    public static Mod packMod(Mod fromMod) {
+        Mod mod = new Mod();
+        mod.setGameTheme(fromMod.getGameTheme());
+        mod.setLeagueThemes(fromMod.getLeagueThemes());
+        mod.setLevelNames(fromMod.getLevelNames());
+        mod.setAuthor(fromMod.getAuthor());
+        mod.setGuid(fromMod.getGuid());
+        mod.setName(fromMod.getName());
+        mod.setDate(fromMod.getDate());
+        List<LevelPack> levelPacks = new ArrayList<>();
+        for (LevelPack level : fromMod.getLevels()) {
+            LevelPack levelPack = new LevelPack();
+            List<TrackParams> tracks = new ArrayList<>();
+            for (TrackParams track : level.getTracks()) {
+                TrackData from = track.getData();
+
+                TrackData data = new TrackData();
+                data.setName(from.getName());
+                data.setGuid(from.getGuid());
+                data.setAuthor(from.getAuthor());
+                data.setLeague(from.getLeague());
+                data.setStartX(Utils.packInt(from.getStartX()));
+                data.setStartY(Utils.packInt(from.getStartY()));
+                data.setFinishX(Utils.packInt(from.getFinishX()));
+                data.setFinishY(Utils.packInt(from.getFinishY()));
+                data.setStartPointIndex(from.getStartPointIndex());
+                data.setFinishPointIndex(from.getFinishPointIndex());
+                data.setPointsCount(from.getPointsCount());
+                data.setCheckBackwardCollision(from.isCheckBackwardCollision());
+                data.setInvisible(from.getInvisible());
+                data.setDeadlineY(from.getDeadlineY());
+                data.setCheckFinishCoordinates(from.isCheckFinishCoordinates());
+
+                int[][] pointsFrom = from.getPoints();
+                int[][] points = new int[pointsFrom.length][2];
+                for (int i = 0; i < pointsFrom.length; i++) {
+                    int[] X_Y = new int[2];
+                    X_Y[0] = Utils.packInt(pointsFrom[i][0]);
+                    X_Y[1] = Utils.packInt(pointsFrom[i][1]);
+                    points[i] = X_Y;
+                }
+                data.setPoints(points);
+
+                TrackParams tr = new TrackParams();
+                tr.setGameTheme(track.getGameTheme());
+                tr.setLeagueTheme(track.getLeagueTheme());
+                tr.setData(data);
+                tracks.add(tr);
+            }
+            levelPack.setTracks(tracks);
+            levelPacks.add(levelPack);
+        }
+        mod.setLevels(levelPacks);
+        return mod;
+    }
+
+    public static Mod unpackMod(Mod fromMod) {
+        for (LevelPack level : fromMod.getLevels()) {
+            for (TrackParams track : level.getTracks()) {
+                TrackData data = track.getData();
+                data.setStartX(Utils.unpackInt(data.getStartX()));
+                data.setStartY(Utils.unpackInt(data.getStartY()));
+                data.setFinishX(Utils.unpackInt(data.getFinishX()));
+                data.setFinishY(Utils.unpackInt(data.getFinishY()));
+                int[][] pointsFrom = data.getPoints();
+                int[][] points = new int[pointsFrom.length][2];
+                for (int i = 0; i < pointsFrom.length; i++) {
+                    try {
+                        int[] X_Y = new int[2];
+                        X_Y[0] = Utils.unpackInt(pointsFrom[i][0]);
+                        X_Y[1] = Utils.unpackInt(pointsFrom[i][1]);
+                        points[i] = X_Y;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                data.setPoints(points);
+            }
+        }
+        return fromMod;
     }
 }

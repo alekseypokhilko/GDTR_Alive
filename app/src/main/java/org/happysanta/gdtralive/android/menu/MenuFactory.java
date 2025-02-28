@@ -29,7 +29,7 @@ import org.happysanta.gdtralive.game.api.GdApplication;
 import org.happysanta.gdtralive.game.api.MenuType;
 import org.happysanta.gdtralive.game.api.dto.Theme;
 import org.happysanta.gdtralive.game.api.dto.ThemeHeader;
-import org.happysanta.gdtralive.game.api.dto.TrackReference;
+import org.happysanta.gdtralive.game.api.dto.TrackParams;
 import org.happysanta.gdtralive.game.api.external.GdPlatform;
 import org.happysanta.gdtralive.game.api.model.GameParams;
 import org.happysanta.gdtralive.game.api.model.MenuData;
@@ -182,15 +182,14 @@ public class MenuFactory {
     private MenuScreen createTrackOptions(Map<MenuType, MenuScreen> r) {
         MenuScreen screen = new MenuScreen(s(R.string.track_editor), r.get(MenuType.WORKSHOP));
         screen.setBuilder((s, data) -> {
-            TrackReference track = data.getTrackRef();
+            TrackParams track = data.getTrackRef();
             s.clear();
             s.addItem(menu.backAction());
-            s.addItem(new TextMenuElement(boldAttr(R.string.guid, track.getGuid())));
+            s.addItem(new TextMenuElement(boldAttr(R.string.guid, track.getData().getGuid())));
             s.addItem(new TextMenuElement(boldAttr(R.string.author, track.getData().getAuthor())));
-            s.addItem(new InputTextElement(Fmt.colon(s(R.string.name)), track.getName(), item1 -> {
-                TrackReference currentTrack = trackEditor.getCurrentTrack();
+            s.addItem(new InputTextElement(Fmt.colon(s(R.string.name)), track.getData().getName(), item1 -> {
+                TrackParams currentTrack = trackEditor.getCurrentTrack();
                 String name = item1.getText().toString().trim();
-                currentTrack.setName(name);
                 currentTrack.getData().setName(name);
             }));
 

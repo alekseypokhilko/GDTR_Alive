@@ -3,10 +3,10 @@ package org.happysanta.gdtralive.game.engine;
 import org.happysanta.gdtralive.game.api.Constants;
 import org.happysanta.gdtralive.game.api.exception.InvalidTrackException;
 import org.happysanta.gdtralive.game.api.model.Element;
-import org.happysanta.gdtralive.game.api.model.TrackParams;
+import org.happysanta.gdtralive.game.api.model.TrackData;
 
 public class TrackPhysic {
-    public TrackParams track;
+    public TrackData track;
     private int m_longI;
     public int m_eI;
     public int m_dI;
@@ -58,7 +58,7 @@ public class TrackPhysic {
         return track._doII(j >> 1);
     }
 
-    public void load(TrackParams l1) throws InvalidTrackException {
+    public void load(TrackData l1) throws InvalidTrackException {
         try {
             m_longI = 0x80000000;
             track = l1;
@@ -224,7 +224,7 @@ public class TrackPhysic {
         shadowsEnabled = enabled;
     }
 
-    public TrackParams getTrack() {
+    public TrackData getTrack() {
         return track;
     }
 }

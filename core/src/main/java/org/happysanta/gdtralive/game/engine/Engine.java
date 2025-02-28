@@ -6,7 +6,7 @@ import org.happysanta.gdtralive.game.api.model.LeagueProperties;
 import org.happysanta.gdtralive.game.api.external.GdSettings;
 import org.happysanta.gdtralive.game.api.model.Element;
 import org.happysanta.gdtralive.game.api.exception.InvalidTrackException;
-import org.happysanta.gdtralive.game.api.model.TrackParams;
+import org.happysanta.gdtralive.game.api.model.TrackData;
 import org.happysanta.gdtralive.game.api.model.ElementRecord;
 import org.happysanta.gdtralive.game.api.model.EngineStateRecord;
 import org.happysanta.gdtralive.game.api.model.FullEngineState;
@@ -98,7 +98,7 @@ public class Engine {
         this.trackPhysic = new TrackPhysic();
     }
 
-    public void init(GdSettings settings, TrackParams track) throws InvalidTrackException {
+    public void init(GdSettings settings, TrackData track) throws InvalidTrackException {
         this.drawBiker = settings.isDriverSpriteEnabled();
         this.drawBike = settings.isBikeSpriteEnabled();
         setLookAhead(settings.isLookAheadEnabled());
@@ -1053,7 +1053,7 @@ public class Engine {
         return trackPhysic;
     }
 
-    public void loadTrack(TrackParams track) throws InvalidTrackException {
+    public void loadTrack(TrackData track) throws InvalidTrackException {
         trackPhysic.load(track);
     }
 

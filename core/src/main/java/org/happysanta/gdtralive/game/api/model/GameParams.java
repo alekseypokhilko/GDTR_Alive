@@ -4,39 +4,39 @@ import org.happysanta.gdtralive.game.api.GameMode;
 
 public class GameParams {
     private final GameMode mode;
-    private final TrackParams trackParams;
+    private final TrackData trackData;
     private final int league;
 
     private TrackRecord trackRecord;
     private int level;
     private int track;
 
-    private GameParams(GameMode mode, TrackParams trackParams, int league, int level, int track) {
+    private GameParams(GameMode mode, TrackData trackData, int league, int level, int track) {
         this.mode = mode;
-        this.trackParams = trackParams;
+        this.trackData = trackData;
         this.league = league;
         this.level = level;
         this.track = track;
     }
 
-    private GameParams(GameMode mode, TrackParams trackParams) {
+    private GameParams(GameMode mode, TrackData trackData) {
         this.mode = mode;
-        this.league = trackParams.getLeague();
-        this.trackParams = trackParams;
+        this.league = trackData.getLeague();
+        this.trackData = trackData;
     }
 
     private GameParams(TrackRecord trackRecord) {
         this.trackRecord = trackRecord;
         this.mode = GameMode.REPLAY;
         this.league = trackRecord.getLeague();
-        this.trackParams = trackRecord.getTrack();
+        this.trackData = trackRecord.getTrack();
     }
 
-    public static GameParams of(GameMode mode, TrackParams trackParams, int league, int level, int track) {
-        return new GameParams(mode, trackParams, league, level, track);
+    public static GameParams of(GameMode mode, TrackData trackData, int league, int level, int track) {
+        return new GameParams(mode, trackData, league, level, track);
     }
 
-    public static GameParams of(GameMode mode, TrackParams track) {
+    public static GameParams of(GameMode mode, TrackData track) {
         return new GameParams(mode, track);
     }
 
@@ -48,8 +48,8 @@ public class GameParams {
         return mode;
     }
 
-    public TrackParams getTrackParams() {
-        return trackParams;
+    public TrackData getTrackParams() {
+        return trackData;
     }
 
     public TrackRecord getTrackRecord() {

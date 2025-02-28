@@ -3,7 +3,7 @@ package org.happysanta.gdtralive.game.api.model;
 import org.happysanta.gdtralive.game.api.GameMode;
 import org.happysanta.gdtralive.game.api.MenuMode;
 import org.happysanta.gdtralive.game.api.dto.Theme;
-import org.happysanta.gdtralive.game.api.dto.TrackReference;
+import org.happysanta.gdtralive.game.api.dto.TrackParams;
 
 public class MenuData {
     private MenuMode menuMode;
@@ -24,7 +24,7 @@ public class MenuData {
     private Theme theme;
     private Mod mod;
     private String fileName;
-    private TrackReference trackRef;
+    private TrackParams trackRef;
 
     public MenuData() {
     }
@@ -47,7 +47,7 @@ public class MenuData {
         this.fileName = name;
     }
 
-    public MenuData(TrackReference track) {
+    public MenuData(TrackParams track) {
         this.trackRef = track;
     }
 
@@ -169,7 +169,7 @@ public class MenuData {
         this.newUnlockedLeagueCount = newUnlockedLeagueCount;
     }
 
-    public TrackReference getTrackRef() {
+    public TrackParams getTrackRef() {
         return trackRef;
     }
 

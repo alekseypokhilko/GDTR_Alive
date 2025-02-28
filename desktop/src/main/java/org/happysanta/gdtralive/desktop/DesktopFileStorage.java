@@ -5,11 +5,11 @@ import com.google.gson.Gson;
 import org.happysanta.gdtralive.game.api.GDFile;
 import org.happysanta.gdtralive.game.api.dto.LevelPack;
 import org.happysanta.gdtralive.game.api.dto.Theme;
-import org.happysanta.gdtralive.game.api.dto.TrackReference;
+import org.happysanta.gdtralive.game.api.dto.TrackParams;
 import org.happysanta.gdtralive.game.api.exception.InvalidTrackException;
 import org.happysanta.gdtralive.game.api.external.GdFileStorage;
 import org.happysanta.gdtralive.game.api.model.Mod;
-import org.happysanta.gdtralive.game.api.model.TrackParams;
+import org.happysanta.gdtralive.game.api.model.TrackData;
 import org.happysanta.gdtralive.game.api.model.TrackRecord;
 import org.happysanta.gdtralive.game.util.Utils;
 
@@ -27,15 +27,15 @@ public class DesktopFileStorage implements GdFileStorage {
 
     public static final String APP_DIRECTORY = "GDAlive";
 
-    private static void validateLevel(TrackParams track) throws InvalidTrackException {
+    private static void validateLevel(TrackData track) throws InvalidTrackException {
         validateGuid(track.getGuid());
     }
 
     private static void validatePack(Mod mod) throws InvalidTrackException {
         validateGuid(mod.getGuid());
         for (LevelPack levelPack : mod.getLevels()) {
-            for (TrackReference track : levelPack.getTracks()) {
-                validateGuid(track.getGuid());
+            for (TrackParams track : levelPack.getTracks()) {
+                validateGuid(track.getData().getGuid());
             }
         }
     }
@@ -46,14 +46,14 @@ public class DesktopFileStorage implements GdFileStorage {
         }
     }
 
-    public TrackParams getLevelFromPack(String packName, String trackGuid) throws InvalidTrackException {
+    public TrackData getLevelFromPack(String packName, String trackGuid) throws InvalidTrackException {
         Mod mod = new Mod();// loadMod(packName);
         return mod.getLevels().stream()
                 .map(LevelPack::getTracks)
                 .flatMap(Collection::stream)
-                .filter(tRef -> tRef.getGuid().equals(trackGuid))
+                .filter(tRef -> tRef.getData().getGuid().equals(trackGuid))
                 .findAny()
-                .map(TrackReference::getData)
+                .map(TrackParams::getData)
                 .orElseThrow(() -> new InvalidTrackException("Level not found"));
     }
 

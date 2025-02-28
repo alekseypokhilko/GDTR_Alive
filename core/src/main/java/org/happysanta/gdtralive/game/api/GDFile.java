@@ -1,7 +1,7 @@
 package org.happysanta.gdtralive.game.api;
 
 import org.happysanta.gdtralive.game.api.dto.Theme;
-import org.happysanta.gdtralive.game.api.dto.TrackReference;
+import org.happysanta.gdtralive.game.api.dto.TrackParams;
 import org.happysanta.gdtralive.game.api.model.Mod;
 import org.happysanta.gdtralive.game.api.model.TrackRecord;
 import org.happysanta.gdtralive.game.util.Fmt;
@@ -11,7 +11,7 @@ public enum GDFile {
     THEME("gdtheme", "themes", Fmt.slash(Constants.APP_DIRECTORY, "themes"), Theme.class),
     MOD("gdmod", "mods", Fmt.slash(Constants.APP_DIRECTORY, "mods"), Mod.class),
     MRG("mrg", "mrg", Fmt.slash(Constants.APP_DIRECTORY, "mrg"), Object.class),
-    TRACK("gdtrack", "tracks", Fmt.slash(Constants.APP_DIRECTORY, "tracks"), TrackReference.class),
+    TRACK("gdtrack", "tracks", Fmt.slash(Constants.APP_DIRECTORY, "tracks"), TrackParams.class),
     RECORD("gdrecord", "recordings", Fmt.slash(Constants.APP_DIRECTORY, "recordings"), TrackRecord.class);
 
     public final String extension;

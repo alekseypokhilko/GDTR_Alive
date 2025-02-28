@@ -42,7 +42,7 @@ import org.happysanta.gdtralive.game.api.GdApplication;
 import org.happysanta.gdtralive.game.api.MenuType;
 import org.happysanta.gdtralive.game.api.Sprite;
 import org.happysanta.gdtralive.game.api.dto.Theme;
-import org.happysanta.gdtralive.game.api.dto.TrackReference;
+import org.happysanta.gdtralive.game.api.dto.TrackParams;
 import org.happysanta.gdtralive.game.api.external.GdDataSource;
 import org.happysanta.gdtralive.game.api.external.GdFileStorage;
 import org.happysanta.gdtralive.game.api.external.GdMenu;
@@ -537,7 +537,7 @@ public class GDActivity extends Activity implements GdPlatform {
         if (requestCode == Constants.PICKFILE_TRACK_RESULT_CODE && resultCode == Activity.RESULT_OK) {
             Uri uri = data.getData();
             try (InputStream inputStream = Helpers.getGDActivity().getContentResolver().openInputStream(uri)) {
-                TrackReference track = Utils.read(inputStream, GDFile.TRACK);
+                TrackParams track = Utils.read(inputStream, GDFile.TRACK);
                 //todo track screen
                 application.getModManager().setTrackTheme(track);
                 application.getGame().startTrack(GameParams.of(GameMode.SINGLE_TRACK, track.getData()));

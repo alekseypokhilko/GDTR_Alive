@@ -20,12 +20,12 @@ import org.happysanta.gdtralive.game.api.Constants;
 import org.happysanta.gdtralive.game.api.GameMode;
 import org.happysanta.gdtralive.game.api.dto.LevelPack;
 import org.happysanta.gdtralive.game.api.dto.PackTrackReference;
-import org.happysanta.gdtralive.game.api.dto.TrackReference;
+import org.happysanta.gdtralive.game.api.dto.TrackParams;
 import org.happysanta.gdtralive.game.api.exception.InvalidTrackException;
 import org.happysanta.gdtralive.game.api.GdApplication;
 import org.happysanta.gdtralive.game.api.model.GameParams;
 import org.happysanta.gdtralive.game.api.model.Mod;
-import org.happysanta.gdtralive.game.api.model.TrackParams;
+import org.happysanta.gdtralive.game.api.model.TrackData;
 import org.happysanta.gdtralive.game.util.Fmt;
 import org.happysanta.gdtralive.game.util.Utils;
 
@@ -161,7 +161,7 @@ public class DailyMenu {
     private void startDailyTrack(int trackNumber) {
         PackTrackReference trackRef = tracks.get(trackNumber);
         try {
-            TrackParams track = null; //application.getFileStorage().getLevelFromPack(trackRef.getPackGuid(), trackRef.getGuid());
+            TrackData track = null; //application.getFileStorage().getLevelFromPack(trackRef.getPackGuid(), trackRef.getGuid());
             game.startTrack(GameParams.of(GameMode.DAILY, track));
         } catch (Exception e) {
             application.notify("File loading error: " + e.getMessage());
@@ -174,7 +174,7 @@ public class DailyMenu {
             return mod.getLevels().stream()
                     .map(LevelPack::getTracks)
                     .flatMap(Collection::stream)
-                    .map(ref -> new PackTrackReference(ref.getGuid(), ref.getName(), packName))
+                    .map(ref -> new PackTrackReference(ref.getData().getGuid(), ref.getData().getName(), packName))
                     .collect(Collectors.toList());
         } else {
             return null;
@@ -182,14 +182,14 @@ public class DailyMenu {
     }
 
     @TargetApi(Build.VERSION_CODES.N) //todo lower version
-    public TrackParams getLevelFromPack(String packName, String trackGuid) throws InvalidTrackException {
+    public TrackData getLevelFromPack(String packName, String trackGuid) throws InvalidTrackException {
         Mod mod = new Mod();// loadMod(packName);
         return mod.getLevels().stream()
                 .map(LevelPack::getTracks)
                 .flatMap(Collection::stream)
-                .filter(tRef -> tRef.getGuid().equals(trackGuid))
+                .filter(tRef -> tRef.getData().getGuid().equals(trackGuid))
                 .findAny()
-                .map(TrackReference::getData)
+                .map(TrackParams::getData)
                 .orElseThrow(() -> new InvalidTrackException("Level not found"));
     }
 }

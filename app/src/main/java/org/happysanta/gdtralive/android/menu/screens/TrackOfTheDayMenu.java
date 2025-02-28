@@ -15,7 +15,7 @@ import org.happysanta.gdtralive.game.Game;
 import org.happysanta.gdtralive.game.api.GameMode;
 import org.happysanta.gdtralive.game.api.GdApplication;
 import org.happysanta.gdtralive.game.api.model.GameParams;
-import org.happysanta.gdtralive.game.api.model.TrackParams;
+import org.happysanta.gdtralive.game.api.model.TrackData;
 import org.happysanta.gdtralive.game.util.Fmt;
 
 import java.util.List;
@@ -54,7 +54,7 @@ public class TrackOfTheDayMenu {
 
         String trackName = "???";
         String author = "???";
-        TrackParams track = null;
+        TrackData track = null;
         try {
             track = null; //application.getFileStorage().getLevelFromPack(packName, trackGuid);
             trackName = track.getName();
@@ -67,7 +67,7 @@ public class TrackOfTheDayMenu {
         screen.addItem(MenuUtils.emptyLine(true));
         screen.addItem(new TextMenuElement(Html.fromHtml("Track: " + trackName)));
         screen.addItem(new TextMenuElement(Html.fromHtml("Author: " + author)));
-        TrackParams finalTrack = track;
+        TrackData finalTrack = track;
         screen.addItem(new MenuAction(s(R.string.start), menu, __ -> game.startTrack(GameParams.of(GameMode.TRACK_OF_THE_DAY, finalTrack))));
         screen.addItem(menu.backAction());
         screen.addItem(MenuUtils.emptyLine(true));
