@@ -25,7 +25,7 @@ public enum MenuType {
     IN_GAME_SINGLE,
     IN_GAME_PLAY,
     IN_GAME_REPLAY,
-    PLAY_CAMPAIGN,
+    CAMPAIGN,
     OPTIONS,
     FINISHED_CAMPAIGN,
     FINISHED_DAILY,

@@ -103,7 +103,7 @@ public class MenuFactory {
         add(MenuType.ABOUT, this::createAboutScreen);
         add(MenuType.HELP, this::createHelpScreen);
         add(MenuType.OPTIONS, this::createOptionsScreen);
-        add(MenuType.PLAY_CAMPAIGN, this::createPlayClassic);
+        add(MenuType.CAMPAIGN, this::createPlayCampaign);
 
         add(MenuType.FINISHED_PLAY, this::createFinishedPlay);
         add(MenuType.IN_GAME_PLAY, this::createInGamePlay);
@@ -130,7 +130,7 @@ public class MenuFactory {
         add(MenuType.HIGH_SCORE, this::createHighScore);
         add(MenuType.IN_GAME_CAMPAIGN, this::createInGameCampaign);
         add(MenuType.FINISHED_CAMPAIGN, this::createFinishedCampaign);
-        transform(MenuType.PLAY_CAMPAIGN, this::transformPlayCampaign);
+        transform(MenuType.CAMPAIGN, this::transformPlayCampaign);
 
         transform(MenuType.MAIN, this::fillMainScreen);
     }
@@ -309,7 +309,7 @@ public class MenuFactory {
                 application.getFileStorage().save(mod, GDFile.MOD, modName); //todo move to method
                 application.getModManager().activateMod(mod);
                 application.notify(Fmt.colon(s(R.string.mod_activated), modName));
-                this.get(MenuType.PLAY_CAMPAIGN).setTitle(Fmt.sp(s(R.string.play), modName));
+                this.get(MenuType.CAMPAIGN).setTitle(Fmt.sp(s(R.string.play), modName));
                 campaignSelectors.resetSelectors();
             }));
 //            s.addItem(new MenuAction(s(R.string.save), -1, menu,
@@ -366,15 +366,43 @@ public class MenuFactory {
         return screen;
     }
 
-    private void fillPlay(MenuScreen s) {
-        Game game = application.getGame();
-        s.setBeforeShowAction(() -> game.startAutoplay(false));
+    private void fillPlay(MenuScreen screen) {
+        screen.setBeforeShowAction(screen::build);
+        screen.setBuilder((s, data) -> {
+            Game game = application.getGame();
+            ModManager modManager = application.getModManager();
+            s.clear();
+            s.setBeforeShowAction(() -> game.startAutoplay(false));
 //        s.addItem(new MenuItem(s(R.string.daily_challenge), this.get(MenuType.DAILY), menu, __ -> this.get(MenuType.DAILY).build())); //todo
-        s.addItem(new MenuItem(s(R.string.campaign), this.get(MenuType.PLAY_CAMPAIGN), menu, null));
-        s.addItem(new MenuAction(Fmt.ra(s(R.string.random_track)), menu, __ -> game.startTrack(GameParams.of(GameMode.RANDOM, application.getModManager().getRandomTrack()))));
-        s.addItem(new MenuAction(Fmt.ra(s(R.string.tracks)), menu, __ -> application.notify("Coming soon")));
-        s.addItem(new MenuItem(s(R.string.achievements), this.get(MenuType.ACHIEVEMENTS), menu, __ -> this.get(MenuType.ACHIEVEMENTS).build()));
-        s.addItem(menu.backAction(game::resetState));
+            String[] modNames = modManager.getAllInstalledModNames();
+            String currentModName = modManager.getMod().getName();
+            int currentModIndex = 0;
+            for (int i = 0; i < modNames.length; i++) {
+                if (currentModName.equals(modNames[i])){
+                    currentModIndex = i;
+                }
+            }
+            OptionsMenuElement campaignSelector = new OptionsMenuElement(s(R.string.campaign_select), currentModIndex, menu, modNames, false, this.get(MenuType.PLAY),
+                    item -> {
+                        OptionsMenuElement it = (OptionsMenuElement) item;
+                        if (it._charvZ()) {
+                            MenuScreen leagueSelectorCurrentMenu = it.getCurrentMenu();
+                            it.setScreen(menu.currentMenu);
+                            menu.setCurrentMenu(leagueSelectorCurrentMenu);
+                        }
+                    });
+            s.addItem(new MenuItem(s(R.string.campaign), this.get(MenuType.CAMPAIGN), menu, __ -> {
+                String modName = modNames[campaignSelector.getSelectedOption()];
+                modManager.activateMod(modName);
+                campaignSelectors.resetSelectors();
+            }));
+            s.addItem(campaignSelector);
+            s.addItem(new MenuAction(Fmt.ra(s(R.string.random_track)), menu, __ -> game.startTrack(GameParams.of(GameMode.RANDOM, modManager.getRandomTrack()))));
+            s.addItem(new MenuAction(Fmt.ra(s(R.string.tracks)), menu, __ -> application.notify("Coming soon")));
+            s.addItem(new MenuItem(s(R.string.achievements), this.get(MenuType.ACHIEVEMENTS), menu, __ -> this.get(MenuType.ACHIEVEMENTS).build()));
+            s.addItem(menu.backAction(game::resetState));
+            return s;
+        });
     }
 
     private MenuScreen createAchievements(Map<MenuType, MenuScreen> r) {
@@ -516,25 +544,19 @@ public class MenuFactory {
         s.addItem(menu.createAction(MenuAction.EXIT, item -> application.exit()));
     }
 
-    private MenuScreen createPlayClassic(Map<MenuType, MenuScreen> r) {
-        MenuScreen screen = new MenuScreen(s(R.string.play), r.get(MenuType.PLAY));
-        screen.setBeforeShowAction(() -> {
-            screen.setTitle(application.getModManager().getMod().getName());
-            application.getGame().startAutoplay(true);
-        });
-        return screen;
-    }
-
     private MenuScreen createOptionsScreen(Map<MenuType, MenuScreen> r) {
         MenuScreen screen = new MenuScreen(s(R.string.options), r.get(MenuType.MAIN));
         String[] onOffStrings = getStringArray(R.array.on_off);
         String[] keySetStrings = getStringArray(R.array.keyset);
+        String[] scaleOptions = new String[401];
+        for (int i = 0; i < scaleOptions.length; i++) {
+            scaleOptions[i] = "" + i;
+        }
 
-        screen.addItem(new InputTextElement(Fmt.colon(s(R.string.scale), ""), "" + application.getSettings().getScale(),
-                item2 -> {
-                    String text = item2.getText().toString();
-                    int option1 = Utils.isEmpty(text) ? 100 : Integer.parseInt(text);
-                    application.getSettings().setScale(option1);
+        screen.addItem(new OptionsMenuElement(s(R.string.scale), application.getSettings().getScale(), menu, scaleOptions, false, screen,
+                item -> {
+                    int option = ((OptionsMenuElement) item).getSelectedOption();
+                    application.getSettings().setScale(option);
                     application.getModManager().adjustScale(null);
                 }));
         screen.addItem(new OptionsMenuElement(s(R.string.recording_enabled), application.getSettings().isRecordingEnabled() ? 0 : 1, menu, onOffStrings, true, screen,
@@ -678,7 +700,7 @@ public class MenuFactory {
     }
 
     public MenuScreen createInGameCampaign(Map<MenuType, MenuScreen> r) {
-        MenuScreen inGame = new MenuScreen(s(R.string.ingame), r.get(MenuType.PLAY_CAMPAIGN));
+        MenuScreen inGame = new MenuScreen(s(R.string.ingame), r.get(MenuType.CAMPAIGN));
         inGame.addItem(new MenuAction(s(R.string._continue), MenuAction.CONTINUE, menu, item -> application.menuToGame()));
         inGame.addItem(new MenuAction(Fmt.colon(s(R.string.restart), ""), MenuAction.RESTART, menu, item -> menu.menuToGame()));
         inGame.addItem(new MenuAction(s(R.string.training_mode), menu, item -> {
@@ -700,7 +722,7 @@ public class MenuFactory {
     }
 
     public MenuScreen createFinishedCampaign(Map<MenuType, MenuScreen> r) {
-        MenuScreen finished = new MenuScreen(s(R.string.finished), r.get(MenuType.PLAY_CAMPAIGN));
+        MenuScreen finished = new MenuScreen(s(R.string.finished), r.get(MenuType.CAMPAIGN));
         finished.setBuilder((finishedMenu, data) -> {
             campaignSelectors.updateSelectors(data);
             int place = application.getHighScoreManager()
@@ -776,7 +798,7 @@ public class MenuFactory {
     }
 
     public MenuScreen createHighScore(Map<MenuType, MenuScreen> r) {
-        MenuScreen hs = new MenuScreen(s(R.string.highscores), r.get(MenuType.PLAY_CAMPAIGN));
+        MenuScreen hs = new MenuScreen(s(R.string.highscores), r.get(MenuType.CAMPAIGN));
         hs.setBeforeShowAction(() -> {
             MenuData data = new MenuData();
             data.setSelectedLevel(campaignSelectors.getLevelSelector().getSelectedOption());
@@ -803,6 +825,15 @@ public class MenuFactory {
             return s;
         });
         return hs;
+    }
+
+    private MenuScreen createPlayCampaign(Map<MenuType, MenuScreen> r) {
+        MenuScreen screen = new MenuScreen(s(R.string.campaign), r.get(MenuType.PLAY));
+        screen.setBeforeShowAction(() -> {
+            screen.setTitle(application.getModManager().getMod().getName());
+            application.getGame().startAutoplay(true);
+        });
+        return screen;
     }
 
     public void transformPlayCampaign(MenuScreen s) {

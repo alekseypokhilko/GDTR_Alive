@@ -15,7 +15,6 @@ import org.happysanta.gdtralive.game.api.model.Mod;
 import org.happysanta.gdtralive.game.api.model.ModEntity;
 import org.happysanta.gdtralive.game.api.model.TrackParams;
 import org.happysanta.gdtralive.game.api.model.TrackProperties;
-import org.happysanta.gdtralive.game.util.Fmt;
 import org.happysanta.gdtralive.game.util.Mapper;
 import org.happysanta.gdtralive.game.util.Utils;
 
@@ -86,6 +85,18 @@ public class ModManager {
         return currentMod;
     }
 
+    public List<ModEntity> getAllInstalledMods() {
+        return dataSource.getAllLevels();
+    }
+
+    public String[] getAllInstalledModNames() {
+        List<String> names = new ArrayList<>();
+        for (ModEntity mod: getAllInstalledMods()) {
+            names.add(mod.getName());
+        }
+        return names.toArray(new String[]{});
+    }
+
     public void setTrackProperties(TrackReference track) {
         if (track == null) {
             this.currentTrackProperties = null;
@@ -102,6 +113,11 @@ public class ModManager {
         if (trackProperties.getGameProperties() != null || trackProperties.getLeagueProperties() != null) {
             this.currentTrackProperties = trackProperties;
         }
+    }
+
+    public void activateMod(String modName) {
+        Mod mod = fileStorage.readMod(modName);
+        activateMod(mod);
     }
 
     public void activateMod(Mod mod) {
@@ -251,8 +267,7 @@ public class ModManager {
     }
 
     public Mod loadMod(String filename) throws InvalidTrackException {
-        String name = Fmt.dot(filename, GDFile.MOD.extension);
-        Mod mod = fileStorage.readMod(name);
+        Mod mod = fileStorage.readMod(filename);
         Utils.validatePack(mod);
         return mod;
     }

@@ -120,11 +120,11 @@ public class AFileStorage implements GdFileStorage {
 
     private <T> T read(String name, GDFile gdFile) {
         try {
-            return (T) Utils.read(fromAssets(gdFile.folder, name));
+            return (T) Utils.read(fromAssets(gdFile.folder, gdFile.addExtension(name)));
         } catch (IOException e) {
         }
         String modsFolderPath = folders.get(gdFile).getAbsolutePath();
-        try (InputStream inputStream = new FileInputStream(new File(Fmt.slash(modsFolderPath, name)))) {
+        try (InputStream inputStream = new FileInputStream(new File(Fmt.slash(modsFolderPath, gdFile.addExtension(name))))) {
             return Utils.fromJson(GDFile.cutHeader(Utils.readContent(inputStream)), gdFile);
         } catch (IOException e) {
             e.printStackTrace();

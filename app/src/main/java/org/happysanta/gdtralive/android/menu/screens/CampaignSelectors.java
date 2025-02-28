@@ -42,7 +42,7 @@ public class CampaignSelectors {
         }
 
 
-        levelSelector = new OptionsMenuElement(s(R.string.level), getLevel().getSelectedLevel(), menu, this.difficultyLevels, false, menuFactory.get(MenuType.PLAY_CAMPAIGN),
+        levelSelector = new OptionsMenuElement(s(R.string.level), getLevel().getSelectedLevel(), menu, this.difficultyLevels, false, menuFactory.get(MenuType.CAMPAIGN),
                 item -> {
                     OptionsMenuElement it = (OptionsMenuElement) item;
                     if (it._charvZ()) {
@@ -53,7 +53,7 @@ public class CampaignSelectors {
                     getTrackSelector().setUnlockedCount(getLevel().getUnlockedTracksCount(it.getSelectedOption()));
                     getTrackSelector().setSelectedOption(selectedTrack[it.getSelectedOption()]);
                 });
-        trackSelector = new OptionsMenuElement(s(R.string.track), selectedTrack[getLevel().getSelectedLevel()], menu, application.getModManager().getLeagueTrackNames(getLevel().getSelectedLevel()), false, menuFactory.get(MenuType.PLAY_CAMPAIGN),
+        trackSelector = new OptionsMenuElement(s(R.string.track), selectedTrack[getLevel().getSelectedLevel()], menu, application.getModManager().getLeagueTrackNames(getLevel().getSelectedLevel()), false, menuFactory.get(MenuType.CAMPAIGN),
                 item -> {
                     OptionsMenuElement it = (OptionsMenuElement) item;
                     if (it._charvZ()) {
@@ -65,7 +65,7 @@ public class CampaignSelectors {
                     selectedTrack[getLevelSelector().getSelectedOption()] = it.getSelectedOption();
                 }
         );
-        leagueSelector = new OptionsMenuElement(s(R.string.league), getLevel().getSelectedLeague(), menu, this.leagueNames, false, menuFactory.get(MenuType.PLAY_CAMPAIGN),
+        leagueSelector = new OptionsMenuElement(s(R.string.league), getLevel().getSelectedLeague(), menu, this.leagueNames, false, menuFactory.get(MenuType.CAMPAIGN),
                 item -> {
                     OptionsMenuElement it = (OptionsMenuElement) item;
                     if (it._charvZ()) {

@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 
 import org.happysanta.gdtralive.android.Global;
 import org.happysanta.gdtralive.android.Helpers;
+import org.happysanta.gdtralive.game.api.dto.InterfaceTheme;
 import org.happysanta.gdtralive.game.api.util.ActionHandler;
 import org.happysanta.gdtralive.android.menu.views.MenuTextView;
 
@@ -95,7 +96,9 @@ public class InputTextElement implements MenuElement {
     }
 
     public void onThemeReload() {
-        optionTextView.setTextColor(Helpers.getModManager().getInterfaceTheme().getTextColor());
-        editText.setTextColor(Helpers.getModManager().getInterfaceTheme().getTextColor());
+        InterfaceTheme interfaceTheme = Helpers.getModManager().getInterfaceTheme();
+        optionTextView.setTextColor(interfaceTheme.getTextColor());
+        editText.setTextColor(interfaceTheme.getTextColor());
+        editText.setBackgroundColor(interfaceTheme.getMenuBackgroundColor());
     }
 }

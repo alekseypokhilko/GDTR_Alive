@@ -15,6 +15,7 @@
 	<string name="exit">Exit Game</string>
 	<string name="main">Main</string>
 	<string name="campaign">Campaign</string>
+	<string name="campaign_select">Select campaign</string>
 	<string name="competition">Play</string>
 	<string name="workshop">Workshop</string>
 	<string name="profile">Profile</string>
@@ -102,7 +103,7 @@
 	<string name="driver_sprite">Driver sprite</string>
 	<string name="bike_sprite">Bike sprite</string>
 	<string name="input">Input</string>
-	<string name="active_camera">Active caera</string>
+	<string name="active_camera">Active camera</string>
 	<string name="vibrate_on_touch">Vibrate on touch</string>
 	<string name="show_keyboard">Show keyboard</string>
 	<string name="clear_highscore">Clear highscore</string>

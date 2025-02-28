@@ -35,7 +35,7 @@ public class ASettings implements GdSettings {
     private static final int SCALE_OPTION_DEFAULT = 100;
 
     private static final String LOOK_AHEAD_ENABLED = "look_ahead_enabled";
-    private static final boolean LOOK_AHEAD_ENABLED_DEFAULT = true;
+    private static final boolean LOOK_AHEAD_ENABLED_DEFAULT = false;
 
     private static final String VIBRATE_ENABLED = "vibrate_enabled";
     private static final boolean VIBRATE_ENABLED_DEFAULT = true;
