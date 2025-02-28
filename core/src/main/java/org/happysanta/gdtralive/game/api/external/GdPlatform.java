@@ -12,6 +12,8 @@ public interface GdPlatform {
 
     void doRestartApp();
 
+    void pickFile(int requestCode);
+
     void hideKeyboardLayout();
 
     void showKeyboardLayout();

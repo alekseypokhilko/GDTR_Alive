@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -23,9 +24,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.happysanta.gdtralive.R;
-import org.happysanta.gdtralive.android.menu.KeyboardController;
 import org.happysanta.gdtralive.android.menu.AMenu;
+import org.happysanta.gdtralive.android.menu.KeyboardController;
 import org.happysanta.gdtralive.android.menu.MenuFactory;
+import org.happysanta.gdtralive.android.menu.MenuScreen;
 import org.happysanta.gdtralive.android.menu.views.MenuHelmetView;
 import org.happysanta.gdtralive.android.menu.views.MenuImageView;
 import org.happysanta.gdtralive.android.menu.views.MenuLinearLayout;
@@ -34,16 +36,26 @@ import org.happysanta.gdtralive.android.menu.views.ObservableScrollView;
 import org.happysanta.gdtralive.game.GdApplicationImpl;
 import org.happysanta.gdtralive.game.ModManager;
 import org.happysanta.gdtralive.game.api.Constants;
+import org.happysanta.gdtralive.game.api.GameMode;
+import org.happysanta.gdtralive.game.api.GdApplication;
+import org.happysanta.gdtralive.game.api.MenuType;
 import org.happysanta.gdtralive.game.api.Sprite;
 import org.happysanta.gdtralive.game.api.dto.Theme;
-import org.happysanta.gdtralive.game.api.GdApplication;
+import org.happysanta.gdtralive.game.api.dto.TrackReference;
 import org.happysanta.gdtralive.game.api.external.GdDataSource;
 import org.happysanta.gdtralive.game.api.external.GdFileStorage;
 import org.happysanta.gdtralive.game.api.external.GdMenu;
+import org.happysanta.gdtralive.game.api.external.GdPlatform;
 import org.happysanta.gdtralive.game.api.external.GdSettings;
 import org.happysanta.gdtralive.game.api.external.GdStr;
-import org.happysanta.gdtralive.game.api.external.GdPlatform;
+import org.happysanta.gdtralive.game.api.model.GameParams;
+import org.happysanta.gdtralive.game.api.model.MenuData;
+import org.happysanta.gdtralive.game.api.model.Mod;
+import org.happysanta.gdtralive.game.api.model.TrackRecord;
+import org.happysanta.gdtralive.game.util.Utils;
+import org.happysanta.gdtralive.game.util.mrg.MrgUtils;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,7 +66,7 @@ public class GDActivity extends Activity implements GdPlatform {
 
     private GdMenu menu;
     private MenuFactory menuFactory;
-    public TrackEditorView trackEditor;
+    private TrackEditorView trackEditor;
 
     public List<EditText> textInputs = new ArrayList<>();
     private MenuImageView menuBtn;
@@ -197,7 +209,7 @@ public class GDActivity extends Activity implements GdPlatform {
         menuLayout.addView(titleLayout);
         menuLayout.addView(scrollView);
 
-        trackEditor = new TrackEditorView( this, application, application.getModManager());
+        trackEditor = new TrackEditorView(this, application, application.getModManager());
         for (MenuLinearLayout view : trackEditor.getViews()) {
             frame.addView(view);
         }
@@ -262,7 +274,7 @@ public class GDActivity extends Activity implements GdPlatform {
         keyboardController.setKeyboardHandler(application.getGame().getKeyboardHandler());
         AMenu menu = new AMenu(application, menuFactory);
         trackEditor.init(application.getGame());
-        menuFactory.init(menu);
+        menuFactory.init(menu, trackEditor);
         application.setMenu(menu);
         this.menu = menu;
     }
@@ -303,13 +315,13 @@ public class GDActivity extends Activity implements GdPlatform {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        keyboardController.getKeyboardHandler().mappedKeyPressed(keyCode);
+        application.onKeyDown(keyCode);
         return super.onKeyDown(keyCode, event);
     }
 
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
-        keyboardController.getKeyboardHandler().mappedKeyReleased(keyCode);
+        application.onKeyUp(keyCode);
         return super.onKeyUp(keyCode, event);
     }
 
@@ -451,9 +463,77 @@ public class GDActivity extends Activity implements GdPlatform {
     public void doRestartApp() {
         Intent mStartActivity = new Intent(this, GDActivity.class);
         int mPendingIntentId = 123456;
-        PendingIntent mPendingIntent = PendingIntent.getActivity(this, mPendingIntentId, mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
+        PendingIntent mPendingIntent = PendingIntent.getActivity(this, mPendingIntentId, mStartActivity, PendingIntent.FLAG_IMMUTABLE);
         AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
+    }
+
+    public void pickFile(int requestCode) {
+        Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
+        chooseFile.setType("*/*");
+        chooseFile = Intent.createChooser(chooseFile, "Choose a file");
+        startActivityForResult(chooseFile, requestCode);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == Constants.PICKFILE_MRG_RESULT_CODE && resultCode == Activity.RESULT_OK) {
+            Uri uri = data.getData();
+            try (InputStream inputStream = Helpers.getGDActivity().getContentResolver().openInputStream(uri)) {
+                String name = "MOD" + System.currentTimeMillis();
+                Mod mrg = MrgUtils.convertMrg(name, Utils.readAllBytes(inputStream));
+                menu.setCurrentMenu(menuFactory.get(MenuType.MOD_OPTIONS).build(new MenuData(mrg, name)));
+            } catch (Exception e) {
+                e.printStackTrace();
+                notify("Error: " + e.getMessage());
+            }
+        }
+        if (requestCode == Constants.PICKFILE_MOD_RESULT_CODE && resultCode == Activity.RESULT_OK) {
+            Uri uri = data.getData();
+            try (InputStream inputStream = Helpers.getGDActivity().getContentResolver().openInputStream(uri)) {
+                Mod mod = Utils.read(inputStream);
+                MenuScreen modMenu = menuFactory.get(MenuType.MOD_OPTIONS).build(new MenuData(mod, mod.getName()));
+                menu.setCurrentMenu(modMenu);
+            } catch (Exception e) {
+                e.printStackTrace();
+                notify("Error: " + e.getMessage());
+            }
+        }
+        if (requestCode == Constants.PICKFILE_THEME_RESULT_CODE && resultCode == Activity.RESULT_OK) {
+            Uri uri = data.getData();
+            try (InputStream inputStream = Helpers.getGDActivity().getContentResolver().openInputStream(uri)) {
+                Theme theme = Utils.read(inputStream);
+                MenuScreen themeMenu = menuFactory.get(MenuType.THEME_OPTIONS).build(new MenuData(theme, theme.getHeader().getName()));
+                menu.setCurrentMenu(themeMenu);
+            } catch (Exception e) {
+                e.printStackTrace();
+                notify("Error: " + e.getMessage());
+            }
+        }
+        if (requestCode == Constants.PICKFILE_RECORD_RESULT_CODE && resultCode == Activity.RESULT_OK) {
+            Uri uri = data.getData();
+            try (InputStream inputStream = Helpers.getGDActivity().getContentResolver().openInputStream(uri)) {
+                TrackRecord trackRecord = Utils.read(inputStream);
+                MenuScreen recordMenu = menuFactory.get(MenuType.RECORDING_OPTIONS).build(new MenuData(trackRecord));
+                menu.setCurrentMenu(recordMenu);
+            } catch (Exception e) {
+                e.printStackTrace();
+                notify("Error: " + e.getMessage());
+            }
+        }
+        if (requestCode == Constants.PICKFILE_TRACK_RESULT_CODE && resultCode == Activity.RESULT_OK) {
+            Uri uri = data.getData();
+            try (InputStream inputStream = Helpers.getGDActivity().getContentResolver().openInputStream(uri)) {
+                TrackReference track = Utils.read(inputStream);
+                //todo track screen
+                application.getModManager().setTrackProperties(track);
+                application.getGame().startTrack(GameParams.of(GameMode.SINGLE_TRACK, track.getData()));
+            } catch (Exception e) {
+                e.printStackTrace();
+                notify("Error: " + e.getMessage());
+            }
+        }
     }
 
     private int getButtonHeight() {

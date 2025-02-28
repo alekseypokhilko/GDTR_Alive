@@ -42,8 +42,10 @@ public class AMenu implements GdMenu, MenuHandler {
     }
 
     public MenuAction backAction(Runnable beforeBack) {
-        beforeBack.run();
-        return createAction(MenuAction.BACK, item -> this.menuBack());
+        return createAction(MenuAction.BACK, item -> {
+            beforeBack.run();
+            this.menuBack();
+        });
     }
 
     public MenuAction backAction() {

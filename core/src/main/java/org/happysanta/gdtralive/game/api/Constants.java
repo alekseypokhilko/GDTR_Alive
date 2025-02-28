@@ -7,6 +7,11 @@ public class Constants {
     public static final String DEFAULT_MOD = "GDTR Alive";
     public static final String ORIGINAL_MOD = "GDTR Original";
     public static final String APP_DIRECTORY = "GDTR_Alive";
+    public static final int PICKFILE_MRG_RESULT_CODE = 234567;
+    public static final int PICKFILE_MOD_RESULT_CODE = 734567;
+    public static final int PICKFILE_THEME_RESULT_CODE = 345672;
+    public static final int PICKFILE_RECORD_RESULT_CODE = 824256;
+    public static final int PICKFILE_TRACK_RESULT_CODE = 465134;
     public static int RECORD_COUNT = 5;
     public static final long WAIT_TIME = 30L;
     public static final long IMAGES_DELAY = 10L; //todo 1000L;

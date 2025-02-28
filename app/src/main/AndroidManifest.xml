@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="org.happysanta.gdtralive"
     android:versionCode="29"
-    android:versionName="1.1.1">
+    android:versionName="0.0.4">
 
     <uses-sdk/>
 
@@ -29,17 +29,6 @@
             android:configChanges="keyboardHidden"
             android:launchMode="singleInstance"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
-
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.VIEW" />-->
-<!--                <category android:name="android.intent.category.DEFAULT" />-->
-
-<!--                <data android:mimeType="*/*"/>-->
-<!--                <data android:host="deeplink"/>-->
-<!--                <data android:pathPrefix="/"/>-->
-<!--                <data android:scheme="file"/>-->
-<!--                <data android:scheme="content"/>-->
-<!--            </intent-filter>-->
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

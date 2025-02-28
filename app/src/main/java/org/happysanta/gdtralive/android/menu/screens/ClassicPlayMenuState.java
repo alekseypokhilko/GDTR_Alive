@@ -174,6 +174,10 @@ public class ClassicPlayMenuState {
         s.addItem(new MenuItem(s(R.string.highscores), menuFactory.get(MenuType.HIGH_SCORE), menu, null));
         s.addItem(new MenuAction(Fmt.ra(s(R.string.unlock_all)), -1, menu,
                 item -> {
+                    application.notify("Coming soon");
+                    if (true) { //todo
+                        return;
+                    }
                     showConfirm(s(R.string.unlock_all), s(R.string.unlock_all_text), () -> {
                         int leaguesCount = application.getModManager().getLeagueThemes().size();
                         getLevel().setUnlockedLeagues(leaguesCount);

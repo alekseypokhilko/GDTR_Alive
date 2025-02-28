@@ -2,6 +2,7 @@ package org.happysanta.gdtralive.android;
 
 import org.happysanta.gdtralive.game.api.Constants;
 import org.happysanta.gdtralive.game.api.GDFile;
+import org.happysanta.gdtralive.game.api.GdApplication;
 import org.happysanta.gdtralive.game.api.dto.Theme;
 import org.happysanta.gdtralive.game.api.external.GdFileStorage;
 import org.happysanta.gdtralive.game.api.model.Mod;
@@ -25,6 +26,7 @@ public class AFileStorage implements GdFileStorage {
     public List<TrackRecord> records = new ArrayList<>();
 
     // /storage/emulated/0/Android/data/org.happysanta.gdtralive/files/GDTR_Alive
+    private GdApplication application;
     private final File appFolder;
     Map<GDFile, File> folders = new HashMap<>();
 
@@ -34,6 +36,11 @@ public class AFileStorage implements GdFileStorage {
         folders.put(GDFile.TRACK, application.getExternalFilesDir(GDFile.TRACK.appFolder));
         folders.put(GDFile.RECORD, application.getExternalFilesDir(GDFile.RECORD.appFolder));
         this.appFolder = application.getExternalFilesDir(Constants.APP_DIRECTORY);
+    }
+
+    @Override
+    public void setApplication(GdApplication application) {
+        this.application = application;
     }
 
     @Override
@@ -61,13 +68,15 @@ public class AFileStorage implements GdFileStorage {
         List<String> files = new ArrayList<>();
         try {
             files.addAll(Arrays.asList(Objects.requireNonNull(GDActivity.shared.getAssets().list(fileType.folder))));
-        } catch (Exception ignore) {
+        } catch (Exception e) {
+            notify("Error: " + e.getMessage());
         }
         try {
             for (File file : Objects.requireNonNull(folders.get(fileType).listFiles())) {
                 files.add(file.getName());
             }
-        } catch (Exception ignore) {
+        } catch (Exception e) {
+            notify("Error: " + e.getMessage());
         }
         return files;
     }
@@ -80,7 +89,9 @@ public class AFileStorage implements GdFileStorage {
             try (PrintStream out = new PrintStream(file)) {
                 String content = GDFile.addHeader(obj, fileType);
                 out.print(content);
+                notify("Saved");
             } catch (Exception e) {
+                notify("Error: " + e.getMessage());
             }
         }
     }
@@ -88,8 +99,12 @@ public class AFileStorage implements GdFileStorage {
     @Override
     public void delete(GDFile gdFile, String name) {
         try {
-            new File(Fmt.slash(appFolder.getAbsolutePath(), gdFile.folder), gdFile.addExtension(name)).delete();
-        } catch (Exception ignore) {
+            boolean deleted = new File(Fmt.slash(appFolder.getAbsolutePath(), gdFile.folder), gdFile.addExtension(name)).delete();
+            if (deleted) {
+                notify("Deleted");
+            }
+        } catch (Exception e) {
+            notify("Error: " + e.getMessage());
         }
     }
 
@@ -110,11 +125,19 @@ public class AFileStorage implements GdFileStorage {
         }
         String modsFolderPath = folders.get(gdFile).getAbsolutePath();
         try (InputStream inputStream = new FileInputStream(new File(Fmt.slash(modsFolderPath, name)))) {
-            return (T) Utils.fromJson(GDFile.cutHeader(Utils.readContent(inputStream)), gdFile);
-        } catch (IOException io) {
-            io.printStackTrace();
+            return Utils.fromJson(GDFile.cutHeader(Utils.readContent(inputStream)), gdFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+            notify("Error: " + e.getMessage());
         }
+        notify("Not found");
         return null;
+    }
+
+    private void notify(String message) {
+        if (application != null) {
+            application.notify(message);
+        }
     }
 
     private InputStream fromAssets(String folder, String name) throws IOException {

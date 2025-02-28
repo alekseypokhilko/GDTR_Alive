@@ -116,7 +116,10 @@
 	<string name="download_mods">Download mods</string>
 	<string name="download_options">Download options</string>
 	<string name="install_mrg">Install levels.mrg</string>
-	<string name="convert_mrg">Convert levels.mrg</string>
+	<string name="import_mrg">Import levels.mrg</string>
+	<string name="import_mod">Import mod (.gdmod)</string>
+	<string name="import_theme">"Import theme (.gdtheme)"</string>
+	<string name="import_record">"Import Record (.gdrecord)"</string>
 	<string name="levels">"Track packs"</string>
 	<string name="recordings">Recordings</string>
 	<string name="record_option">Track recording</string>

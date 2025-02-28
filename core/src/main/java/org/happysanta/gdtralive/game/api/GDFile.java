@@ -57,4 +57,8 @@ public enum GDFile {
     public String addExtension(String name) {
         return Fmt.dot(name, this.extension);
     }
+
+    public String cutExtension(String name) {
+        return name.replace("." + this.extension, "");
+    }
 }

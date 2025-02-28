@@ -48,6 +48,7 @@ public class GdApplicationImpl implements GdApplication {
         this.fileStorage = fileStorage;
         this.dataSource = dataSource;
 
+        fileStorage.setApplication(this);
         thread = null;
     }
 
@@ -122,6 +123,16 @@ public class GdApplicationImpl implements GdApplication {
             else
                 showMenu();
         }
+    }
+
+    @Override
+    public void onKeyDown(int keyCode) {
+        game.getKeyboardHandler().mappedKeyPressed(keyCode);
+    }
+
+    @Override
+    public void onKeyUp(int keyCode) {
+        game.getKeyboardHandler().mappedKeyReleased(keyCode);
     }
 
     @Override

@@ -32,6 +32,9 @@ public interface GdApplication {
     void onResume();
 
     void onBackPressed();
+    void onKeyDown(int keyCode);
+
+    void onKeyUp(int keyCode);
 
     boolean isMenuShown();
 
