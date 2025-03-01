@@ -11,9 +11,9 @@ import org.happysanta.gdtralive.android.menu.MenuUtils;
 import org.happysanta.gdtralive.android.menu.element.HighScoreTextMenuElement;
 import org.happysanta.gdtralive.android.menu.element.MenuAction;
 import org.happysanta.gdtralive.android.menu.element.TextMenuElement;
+import org.happysanta.gdtralive.game.Application;
 import org.happysanta.gdtralive.game.Game;
 import org.happysanta.gdtralive.game.api.GameMode;
-import org.happysanta.gdtralive.game.api.GdApplication;
 import org.happysanta.gdtralive.game.api.model.GameParams;
 import org.happysanta.gdtralive.game.api.model.TrackData;
 import org.happysanta.gdtralive.game.util.Fmt;
@@ -21,13 +21,13 @@ import org.happysanta.gdtralive.game.util.Fmt;
 import java.util.List;
 
 public class TrackOfTheDayMenu {
-    private final GdApplication application;
+    private final Application application;
     private final AMenu menu;
     private final Game game;
     private final MenuScreen screen;
     private final MenuScreen inGameScreen;
 
-    public TrackOfTheDayMenu(AMenu menu, MenuScreen parent, GdApplication application) {
+    public TrackOfTheDayMenu(AMenu menu, MenuScreen parent, Application application) {
         this.menu = menu;
         this.game = application.getGame();
         this.application = application;

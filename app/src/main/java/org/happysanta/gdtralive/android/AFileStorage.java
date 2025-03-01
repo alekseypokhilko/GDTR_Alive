@@ -1,8 +1,8 @@
 package org.happysanta.gdtralive.android;
 
+import org.happysanta.gdtralive.game.Application;
 import org.happysanta.gdtralive.game.api.Constants;
 import org.happysanta.gdtralive.game.api.GDFile;
-import org.happysanta.gdtralive.game.api.GdApplication;
 import org.happysanta.gdtralive.game.api.dto.Theme;
 import org.happysanta.gdtralive.game.api.external.GdFileStorage;
 import org.happysanta.gdtralive.game.api.model.Mod;
@@ -26,7 +26,7 @@ public class AFileStorage implements GdFileStorage {
     public List<TrackRecord> records = new ArrayList<>();
 
     // /storage/emulated/0/Android/data/org.happysanta.gdtralive/files/GDTR_Alive
-    private GdApplication application;
+    private Application application;
     private final File appFolder;
     Map<GDFile, File> folders = new HashMap<>();
 
@@ -39,7 +39,7 @@ public class AFileStorage implements GdFileStorage {
     }
 
     @Override
-    public void setApplication(GdApplication application) {
+    public void setApplication(Application application) {
         this.application = application;
     }
 

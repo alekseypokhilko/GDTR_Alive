@@ -1,7 +1,7 @@
 package org.happysanta.gdtralive.game.api.external;
 
+import org.happysanta.gdtralive.game.Application;
 import org.happysanta.gdtralive.game.api.GDFile;
-import org.happysanta.gdtralive.game.api.GdApplication;
 import org.happysanta.gdtralive.game.api.dto.Theme;
 import org.happysanta.gdtralive.game.api.model.Mod;
 import org.happysanta.gdtralive.game.api.model.TrackRecord;
@@ -23,7 +23,7 @@ public interface GdFileStorage {
 
     void delete(GDFile gdFile, String name);
 
-    void setApplication(GdApplication application);
+    void setApplication(Application application);
 
 
     //todo remove

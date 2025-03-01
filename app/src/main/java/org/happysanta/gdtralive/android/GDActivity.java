@@ -33,12 +33,11 @@ import org.happysanta.gdtralive.android.menu.views.MenuImageView;
 import org.happysanta.gdtralive.android.menu.views.MenuLinearLayout;
 import org.happysanta.gdtralive.android.menu.views.MenuTitleLinearLayout;
 import org.happysanta.gdtralive.android.menu.views.ObservableScrollView;
-import org.happysanta.gdtralive.game.GdApplicationImpl;
+import org.happysanta.gdtralive.game.Application;
 import org.happysanta.gdtralive.game.ModManager;
 import org.happysanta.gdtralive.game.api.Constants;
 import org.happysanta.gdtralive.game.api.GDFile;
 import org.happysanta.gdtralive.game.api.GameMode;
-import org.happysanta.gdtralive.game.api.GdApplication;
 import org.happysanta.gdtralive.game.api.MenuType;
 import org.happysanta.gdtralive.game.api.Sprite;
 import org.happysanta.gdtralive.game.api.dto.Theme;
@@ -62,7 +61,7 @@ import java.util.List;
 public class GDActivity extends Activity implements GdPlatform {
 
     public static GDActivity shared = null;
-    private GdApplication application;
+    private Application application;
 
     private GdMenu menu;
     private MenuFactory menuFactory;
@@ -91,7 +90,7 @@ public class GDActivity extends Activity implements GdPlatform {
         GdDataSource dataSource = new ADataSource(this);
         AGameView gameView = new AGameView(this);
 
-        this.application = new GdApplicationImpl(this, new ASettingsStorage(), str, fileStorage, dataSource, gameView);
+        this.application = new Application(this, new ASettingsStorage(), str, fileStorage, dataSource, gameView);
         this.menuFactory = new MenuFactory(application, this);
 
         ModManager modManager = application.getModManager();
@@ -278,7 +277,7 @@ public class GDActivity extends Activity implements GdPlatform {
         this.menu = menu;
     }
 
-    public GdApplication getGdApplication() {
+    public Application getGdApplication() {
         return application;
     }
 

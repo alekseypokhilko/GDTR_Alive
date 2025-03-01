@@ -2,14 +2,12 @@ package org.happysanta.gdtralive;
 
 import org.happysanta.gdtralive.desktop.DesktopCanvas;
 import org.happysanta.gdtralive.desktop.DesktopFileStorage;
-import org.happysanta.gdtralive.desktop.DesktopGdApplication;
 import org.happysanta.gdtralive.desktop.DesktopGdDataSource;
 import org.happysanta.gdtralive.desktop.DesktopGdMenu;
 import org.happysanta.gdtralive.desktop.DesktopGdSettings;
 import org.happysanta.gdtralive.desktop.DesktopKeyboardController;
 import org.happysanta.gdtralive.game.Game;
 import org.happysanta.gdtralive.game.engine.Engine;
-import org.happysanta.gdtralive.game.api.GdApplication;
 import org.happysanta.gdtralive.game.api.external.GdFileStorage;
 import org.happysanta.gdtralive.game.api.external.GdMenu;
 import org.happysanta.gdtralive.game.api.external.GdSettings;

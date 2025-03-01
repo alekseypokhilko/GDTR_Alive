@@ -3,7 +3,6 @@ package org.happysanta.gdtralive.game;
 import org.happysanta.gdtralive.game.api.Constants;
 import org.happysanta.gdtralive.game.engine.Engine;
 import org.happysanta.gdtralive.game.api.LevelState;
-import org.happysanta.gdtralive.game.api.GdApplication;
 import org.happysanta.gdtralive.game.api.external.GdMenu;
 import org.happysanta.gdtralive.game.api.external.GdSettings;
 import org.happysanta.gdtralive.game.api.external.GdStr;
@@ -26,7 +25,7 @@ public class Game {
     private final Object gameLock = new Object();
 
     private final Engine engine;
-    private final GdApplication application;
+    private final Application application;
     private final GdSettings settings;
     private final GdStr str;
     private final GdView view;
@@ -44,7 +43,7 @@ public class Game {
     private long lastTrackTime = -1;
     private long delayedRestartAtTime;
 
-    public Game(GdApplication application, int width, int height) {
+    public Game(Application application, int width, int height) {
         GdSettings settings = application.getSettings();
 
         final FrameRender frameRender = new FrameRender(application.getModManager());

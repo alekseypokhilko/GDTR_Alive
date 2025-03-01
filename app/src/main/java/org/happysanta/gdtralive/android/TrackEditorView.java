@@ -14,6 +14,7 @@ import org.happysanta.gdtralive.android.menu.KeyboardController;
 import org.happysanta.gdtralive.android.menu.element.InputTextElement;
 import org.happysanta.gdtralive.android.menu.views.MenuImageView;
 import org.happysanta.gdtralive.android.menu.views.MenuLinearLayout;
+import org.happysanta.gdtralive.game.Application;
 import org.happysanta.gdtralive.game.Game;
 import org.happysanta.gdtralive.game.ModManager;
 import org.happysanta.gdtralive.game.api.EditorMode;
@@ -21,7 +22,6 @@ import org.happysanta.gdtralive.game.api.GDFile;
 import org.happysanta.gdtralive.game.api.GameMode;
 import org.happysanta.gdtralive.game.api.dto.Theme;
 import org.happysanta.gdtralive.game.api.dto.TrackParams;
-import org.happysanta.gdtralive.game.api.GdApplication;
 import org.happysanta.gdtralive.game.api.model.GameParams;
 import org.happysanta.gdtralive.game.engine.Engine;
 import org.happysanta.gdtralive.game.util.Fmt;
@@ -44,7 +44,7 @@ public class TrackEditorView {
     private Game game;
     private Engine engine;
     private final ModManager modManager;
-    private final GdApplication application;
+    private final Application application;
 
     private int offset = Utils.unpackInt(DEFAULT_OFFSET);
     private int currentEditMode = 0;
@@ -60,7 +60,7 @@ public class TrackEditorView {
     private final MenuImageView up;
     private final MenuImageView down;
 
-    public TrackEditorView(GDActivity gd, GdApplication application, ModManager modManager) {
+    public TrackEditorView(GDActivity gd, Application application, ModManager modManager) {
         this.application = application;
         this.modManager = modManager;
         //https://www.flaticon.com/packs/bigmug-line

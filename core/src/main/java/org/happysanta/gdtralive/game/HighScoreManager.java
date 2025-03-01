@@ -1,6 +1,5 @@
 package org.happysanta.gdtralive.game;
 
-import org.happysanta.gdtralive.game.api.GdApplication;
 import org.happysanta.gdtralive.game.api.external.GdDataSource;
 import org.happysanta.gdtralive.game.api.model.HighScores;
 import org.happysanta.gdtralive.game.api.model.Score;
@@ -10,9 +9,9 @@ import java.util.List;
 public class HighScoreManager {
 
     private final GdDataSource dataSource;
-    private final GdApplication application;
+    private final Application application;
 
-    public HighScoreManager(GdApplication application, GdDataSource dataSource) {
+    public HighScoreManager(Application application, GdDataSource dataSource) {
         this.dataSource = dataSource;
         this.application = application;
     }

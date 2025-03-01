@@ -8,26 +8,26 @@ import android.util.Log;
 
 import org.happysanta.gdtralive.android.GDActivity;
 import org.happysanta.gdtralive.android.menu.element.MenuAction;
+import org.happysanta.gdtralive.game.Application;
 import org.happysanta.gdtralive.game.KeyboardHandler;
-import org.happysanta.gdtralive.game.api.GdApplication;
-import org.happysanta.gdtralive.game.api.external.GdMenu;
 import org.happysanta.gdtralive.game.api.GameMode;
-import org.happysanta.gdtralive.game.api.model.MenuData;
 import org.happysanta.gdtralive.game.api.MenuMode;
 import org.happysanta.gdtralive.game.api.MenuType;
+import org.happysanta.gdtralive.game.api.external.GdMenu;
+import org.happysanta.gdtralive.game.api.model.MenuData;
 import org.happysanta.gdtralive.game.api.util.ActionHandler;
 
 import java.io.Serializable;
 
 public class AMenu implements GdMenu, MenuHandler {
-    private final GdApplication application;
+    private final Application application;
     private final MenuFactory menuFactory;
 
     public MenuScreen currentMenu;
     public boolean m_blZ = false;
     public boolean menuDisabled = false;
     private boolean m_SZ = false;
-    public AMenu(GdApplication application, MenuFactory menuFactory) {
+    public AMenu(Application application, MenuFactory menuFactory) {
         this.application = application;
         this.menuFactory = menuFactory;
     }

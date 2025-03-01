@@ -1,6 +1,5 @@
 package org.happysanta.gdtralive.game;
 
-import org.happysanta.gdtralive.game.api.GdApplication;
 import org.happysanta.gdtralive.game.api.external.GdMenu;
 import org.happysanta.gdtralive.game.engine.Engine;
 
@@ -30,13 +29,13 @@ public class KeyboardHandler {
 
     private final Engine engine;
     private GdMenu menu;
-    private final GdApplication application;
+    private final Application application;
 
     private int inputOption;
     private final boolean[] buttons_m_aeaZ;
     private final boolean[] pressedButtons;
 
-    public KeyboardHandler(GdApplication application, Engine engine, int selectedInputOption) {
+    public KeyboardHandler(Application application, Engine engine, int selectedInputOption) {
         this.engine = engine;
         this.application = application;
 

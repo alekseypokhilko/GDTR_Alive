@@ -7,14 +7,14 @@ import org.happysanta.gdtralive.android.menu.AMenu;
 import org.happysanta.gdtralive.android.menu.MenuFactory;
 import org.happysanta.gdtralive.android.menu.MenuScreen;
 import org.happysanta.gdtralive.android.menu.element.OptionsMenuElement;
+import org.happysanta.gdtralive.game.Application;
 import org.happysanta.gdtralive.game.ModManager;
-import org.happysanta.gdtralive.game.api.GdApplication;
 import org.happysanta.gdtralive.game.api.MenuType;
 import org.happysanta.gdtralive.game.api.model.MenuData;
 import org.happysanta.gdtralive.game.api.model.ModEntity;
 
 public class CampaignSelectors {
-    private final GdApplication application;
+    private final Application application;
     private final AMenu menu;
 
     private final OptionsMenuElement levelSelector;
@@ -27,7 +27,7 @@ public class CampaignSelectors {
     private final int[] selectedTrack = new int[100];
 
     //todo extract common parts / split view and logic
-    public CampaignSelectors(AMenu menu, GdApplication application, MenuFactory menuFactory) {
+    public CampaignSelectors(AMenu menu, Application application, MenuFactory menuFactory) {
         this.menu = menu;
         this.application = application;
 

@@ -15,6 +15,7 @@ import org.happysanta.gdtralive.android.menu.element.MenuAction;
 import org.happysanta.gdtralive.android.menu.element.MenuItem;
 import org.happysanta.gdtralive.android.menu.element.OptionsMenuElement;
 import org.happysanta.gdtralive.android.menu.element.TextMenuElement;
+import org.happysanta.gdtralive.game.Application;
 import org.happysanta.gdtralive.game.Game;
 import org.happysanta.gdtralive.game.api.Constants;
 import org.happysanta.gdtralive.game.api.GameMode;
@@ -22,7 +23,6 @@ import org.happysanta.gdtralive.game.api.dto.LevelPack;
 import org.happysanta.gdtralive.game.api.dto.PackTrackReference;
 import org.happysanta.gdtralive.game.api.dto.TrackParams;
 import org.happysanta.gdtralive.game.api.exception.InvalidTrackException;
-import org.happysanta.gdtralive.game.api.GdApplication;
 import org.happysanta.gdtralive.game.api.model.GameParams;
 import org.happysanta.gdtralive.game.api.model.Mod;
 import org.happysanta.gdtralive.game.api.model.TrackData;
@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class DailyMenu {
-    private final GdApplication application;
+    private final Application application;
     private final AMenu menu;
     private final Game game;
     private final MenuScreen screen;
@@ -52,7 +52,7 @@ public class DailyMenu {
 
     MenuFactory menuFactory;
 
-    public DailyMenu(AMenu menu, MenuScreen parent, GdApplication application, MenuFactory menuFactory) {
+    public DailyMenu(AMenu menu, MenuScreen parent, Application application, MenuFactory menuFactory) {
         this.menu = menu;
         this.game = application.getGame();
         this.application = application;

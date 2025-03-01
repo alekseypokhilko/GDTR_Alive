@@ -20,12 +20,12 @@ import org.happysanta.gdtralive.android.menu.element.OptionsMenuElement;
 import org.happysanta.gdtralive.android.menu.element.TextMenuElement;
 import org.happysanta.gdtralive.android.menu.screens.CampaignSelectors;
 import org.happysanta.gdtralive.game.Achievement;
+import org.happysanta.gdtralive.game.Application;
 import org.happysanta.gdtralive.game.Game;
 import org.happysanta.gdtralive.game.ModManager;
 import org.happysanta.gdtralive.game.api.Constants;
 import org.happysanta.gdtralive.game.api.GDFile;
 import org.happysanta.gdtralive.game.api.GameMode;
-import org.happysanta.gdtralive.game.api.GdApplication;
 import org.happysanta.gdtralive.game.api.MenuType;
 import org.happysanta.gdtralive.game.api.dto.Theme;
 import org.happysanta.gdtralive.game.api.dto.ThemeHeader;
@@ -55,7 +55,7 @@ public class MenuFactory {
     };
 
     private final Map<MenuType, MenuScreen> menus = new HashMap<>();
-    private final GdApplication application;
+    private final Application application;
     private final GdPlatform platform;
 
     private AMenu menu;
@@ -65,7 +65,7 @@ public class MenuFactory {
     private List<String> modNames = new ArrayList<>(); //todo remove
     public List<String> themeNames = new ArrayList<>(); //todo remove
 
-    public MenuFactory(GdApplication application, GdPlatform platform) {
+    public MenuFactory(Application application, GdPlatform platform) {
         this.application = application;
         this.platform = platform;
     }

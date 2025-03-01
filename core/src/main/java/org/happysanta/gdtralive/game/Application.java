@@ -1,6 +1,5 @@
 package org.happysanta.gdtralive.game;
 
-import org.happysanta.gdtralive.game.api.GdApplication;
 import org.happysanta.gdtralive.game.api.external.GdDataSource;
 import org.happysanta.gdtralive.game.api.external.GdFileStorage;
 import org.happysanta.gdtralive.game.api.external.GdGameView;
@@ -13,7 +12,7 @@ import org.happysanta.gdtralive.game.api.external.GdStr;
 /**
  * Core application logic
  */
-public class GdApplicationImpl implements GdApplication {
+public class Application {
     private Game game;
     private GdMenu menu;
 
@@ -38,8 +37,8 @@ public class GdApplicationImpl implements GdApplication {
     private boolean inited = false;
     private Thread thread;
 
-    public GdApplicationImpl(GdPlatform platform, GdSettingsStorage settingsStorage, GdStr str,
-                             GdFileStorage fileStorage, GdDataSource dataSource, GdGameView gdGameView) {
+    public Application(GdPlatform platform, GdSettingsStorage settingsStorage, GdStr str,
+                       GdFileStorage fileStorage, GdDataSource dataSource, GdGameView gdGameView) {
         this.platform = platform;
         this.highScoreManager = new HighScoreManager(this, dataSource);
         this.settings = new GdSettingsImpl(settingsStorage);
@@ -53,12 +52,12 @@ public class GdApplicationImpl implements GdApplication {
         thread = null;
     }
 
-    @Override
+    
     public void setMenu(GdMenu menu) {
         this.menu = menu;
     }
 
-    @Override
+    
     public void doStart() {
         Thread.currentThread().setName("main_thread");
         alive = true;
@@ -94,7 +93,7 @@ public class GdApplicationImpl implements GdApplication {
         destroyApp(false);
     }
 
-    @Override
+    
     public void onResume() {
         if (wasPaused && wasStarted) {
             pause = false;
@@ -102,7 +101,7 @@ public class GdApplicationImpl implements GdApplication {
         }
     }
 
-    @Override
+    
     public void onPause() {
         wasPaused = true;
         pause = true;
@@ -116,7 +115,7 @@ public class GdApplicationImpl implements GdApplication {
         }
     }
 
-    @Override
+    
     public void onBackPressed() {
         if (gameView != null && menu != null && inited) {
             if (menuShown)
@@ -126,17 +125,17 @@ public class GdApplicationImpl implements GdApplication {
         }
     }
 
-    @Override
+    
     public void onKeyDown(int keyCode) {
         game.getKeyboardHandler().mappedKeyPressed(keyCode);
     }
 
-    @Override
+    
     public void onKeyUp(int keyCode) {
         game.getKeyboardHandler().mappedKeyReleased(keyCode);
     }
 
-    @Override
+    
     public void showMenu() {
         if (menu != null) {
             menu.setM_blZ(true);
@@ -144,32 +143,32 @@ public class GdApplicationImpl implements GdApplication {
         }
     }
 
-    @Override
+    
     public boolean isMenuShown() {
         return menuShown;
     }
 
-    @Override
+    
     public boolean isAlive() {
         return alive;
     }
 
-    @Override
+    
     public boolean isOnPause() {
         return pause;
     }
 
-    @Override
+    
     public void notify(String message) {
         platform.notify(message);
     }
 
-    @Override
+    
     public void setFullResetting(boolean fullResetting) {
         this.fullResetting = fullResetting;
     }
 
-    @Override
+    
     public void destroyApp(final boolean restart) {
         if (wasDestroyed) {
             return;
@@ -212,42 +211,42 @@ public class GdApplicationImpl implements GdApplication {
         }
     }
 
-    @Override
+    
     public GdFileStorage getFileStorage() {
         return fileStorage;
     }
 
-    @Override
+    
     public GdStr getStr() {
         return str;
     }
 
-    @Override
+    
     public HighScoreManager getHighScoreManager() {
         return highScoreManager;
     }
 
-    @Override
+    
     public ModManager getModManager() {
         return modManager;
     }
 
-    @Override
+    
     public Game getGame() {
         return game;
     }
 
-    @Override
+    
     public GdMenu getMenu() {
         return menu;
     }
 
-    @Override
+    
     public GdSettings getSettings() {
         return settings;
     }
 
-    @Override
+    
     public void gameToMenu() {
         if (gameView == null) {
             return;
@@ -265,7 +264,7 @@ public class GdApplicationImpl implements GdApplication {
         platform.gameToMenuUpdateUi();
     }
 
-    @Override
+    
     public void menuToGame() {
         game.resume();
 
@@ -278,7 +277,7 @@ public class GdApplicationImpl implements GdApplication {
         platform.menuToGameUpdateUi();
     }
 
-    @Override
+    
     public void exit() {
         exiting = true;
         alive = false;
@@ -289,18 +288,18 @@ public class GdApplicationImpl implements GdApplication {
         }
     }
 
-    @Override
+    
     public void trainingMode() {
         platform.trainingMode();
     }
 
-    @Override
+    
     public void editMode() {
         menuToGame();
         platform.hideKeyboardLayout();
     }
 
-    @Override
+    
     public boolean isInited() {
         return inited;
     }
