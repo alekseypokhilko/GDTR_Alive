@@ -9,6 +9,8 @@ public interface GdPlatform {
     GdMenu getMenu(); //todo remove from here
     float getDensity();
     void notify(String message);
+    void showAlert(String title, String message, final Runnable listener);
+    void showConfirm(String title, String message, final Runnable onOk, final Runnable onCancel);
     void runOnUiThread(Runnable action);
 
     void finish();
@@ -27,4 +29,5 @@ public interface GdPlatform {
 
     void trainingMode();
 
+    String getAppVersion();
 }

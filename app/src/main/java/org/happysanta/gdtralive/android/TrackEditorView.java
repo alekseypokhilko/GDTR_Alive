@@ -22,13 +22,14 @@ import org.happysanta.gdtralive.game.api.GDFile;
 import org.happysanta.gdtralive.game.api.GameMode;
 import org.happysanta.gdtralive.game.api.dto.Theme;
 import org.happysanta.gdtralive.game.api.dto.TrackParams;
+import org.happysanta.gdtralive.game.api.external.GdTrackEditor;
 import org.happysanta.gdtralive.game.api.model.GameParams;
 import org.happysanta.gdtralive.game.engine.Engine;
 import org.happysanta.gdtralive.game.util.Fmt;
 import org.happysanta.gdtralive.game.util.Utils;
 
 //todo separate view and controller
-public class TrackEditorView {
+public class TrackEditorView implements GdTrackEditor {
     private static final int BUTTON_HEIGHT = 50;
     private static final int DEFAULT_OFFSET = 10;
     private static final EditorMode[] POINT_EDIT_MODES = new EditorMode[]{
@@ -327,6 +328,7 @@ public class TrackEditorView {
         currentTrack = null;
         modManager.setTrackTheme(null);
         game.showInfoMessage("", 10);
+        application.getMenu().back();
     }
 
     public void playTrack() {

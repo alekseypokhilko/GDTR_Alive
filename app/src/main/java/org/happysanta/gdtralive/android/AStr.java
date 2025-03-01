@@ -37,4 +37,8 @@ public class AStr implements GdStr {
     public String s(Strings key) {
         return s(strings.get(key));
     }
+
+    public String[] getStringArray(int r) {
+        return GDActivity.shared.getResources().getStringArray(r);
+    }
 }

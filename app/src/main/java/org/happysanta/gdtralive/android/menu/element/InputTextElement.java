@@ -21,9 +21,9 @@ public class InputTextElement<T> implements MenuElement<T> {
     protected LinearLayout textView;
     protected MenuTextView optionTextView;
 
-    protected ActionHandler<EditText> actionHandler;
+    protected ActionHandler<MenuElement<T>> actionHandler;
 
-    public InputTextElement(String title, String text, final ActionHandler<EditText> action) {
+    public InputTextElement(String title, String text, final ActionHandler<MenuElement<T>> action) {
         this.actionHandler = action;
         textView = new LinearLayout(getGDActivity());
         String textValue = text == null ? "" : text;
@@ -61,7 +61,7 @@ public class InputTextElement<T> implements MenuElement<T> {
 
         editText.setOnFocusChangeListener((v, hasFocus) -> {
             if (!hasFocus && actionHandler != null) {
-                actionHandler.handle(editText);
+                actionHandler.handle(this);
             }
         });
 

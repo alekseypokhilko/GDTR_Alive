@@ -286,8 +286,9 @@ public class AMenuScreen<T> implements OnMenuElementHighlightListener<T>, MenuSc
 	}
 
 	@Override
-	public void setBeforeShowAction(Runnable beforeShowAction) {
+	public MenuScreen<T> setBeforeShowAction(Runnable beforeShowAction) {
 		this.beforeShowAction = beforeShowAction;
+		return this;
 	}
 
 	@Override
@@ -298,8 +299,9 @@ public class AMenuScreen<T> implements OnMenuElementHighlightListener<T>, MenuSc
 	}
 
 	@Override
-	public void setBuilder(BiFunction<MenuScreen<T>, MenuData, MenuScreen<T>> builder) {
+	public MenuScreen<T> builder(BiFunction<MenuScreen<T>, MenuData, MenuScreen<T>> builder) {
 		this.builder = builder;
+		return this;
 	}
 
 	@Override

@@ -14,7 +14,7 @@ public interface MenuScreen<T> {
     MenuElement<T> getActions(int action);
     void performAction(int k);
 
-    void setBeforeShowAction(Runnable beforeShowAction);
+    MenuScreen<T> setBeforeShowAction(Runnable beforeShowAction);
 
     void performBeforeShowAction();
 
@@ -22,7 +22,7 @@ public interface MenuScreen<T> {
 
     void clear();
 
-    void setBuilder(BiFunction<MenuScreen<T>, MenuData, MenuScreen<T>> builder);
+    MenuScreen<T> builder(BiFunction<MenuScreen<T>, MenuData, MenuScreen<T>> builder);
 
     default MenuScreen<T> build() {
         return build(null);

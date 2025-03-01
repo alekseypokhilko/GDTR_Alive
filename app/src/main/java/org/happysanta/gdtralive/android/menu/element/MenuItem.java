@@ -16,9 +16,9 @@ public class MenuItem<T> extends ClickableMenuElement<T>
 	private int value;
 	protected MenuScreen<T> screen;
 	protected MenuHandler<T> handler;
-	protected ActionHandler action;
+	protected ActionHandler<MenuElement<T>> action;
 
-	public MenuItem(String text, MenuScreen<T> screen, MenuHandler<T> handler, ActionHandler action) {
+	public MenuItem(String text, MenuScreen<T> screen, MenuHandler<T> handler, ActionHandler<MenuElement<T>> action) {
 		this.text = text + ">";
 		this.screen = screen;
 		this.handler = handler;

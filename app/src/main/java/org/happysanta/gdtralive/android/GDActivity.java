@@ -2,9 +2,12 @@ package org.happysanta.gdtralive.android;
 
 import android.app.Activity;
 import android.app.AlarmManager;
+import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
@@ -27,6 +30,7 @@ import org.happysanta.gdtralive.R;
 import org.happysanta.gdtralive.android.menu.AMenu;
 import org.happysanta.gdtralive.android.menu.KeyboardController;
 import org.happysanta.gdtralive.android.menu.MenuFactory;
+import org.happysanta.gdtralive.android.menu.PlatformMenuElementFactory;
 import org.happysanta.gdtralive.android.menu.views.MenuHelmetView;
 import org.happysanta.gdtralive.android.menu.views.MenuImageView;
 import org.happysanta.gdtralive.android.menu.views.MenuLinearLayout;
@@ -62,6 +66,7 @@ public class GDActivity extends Activity implements GdPlatform {
 
     public static GDActivity shared = null;
     private Application application;
+    private PlatformMenuElementFactory<View> viewPlatformMenuElementFactory;
 
     private GdMenu<View> menu;
     private MenuFactory<View> menuFactory;
@@ -91,7 +96,8 @@ public class GDActivity extends Activity implements GdPlatform {
         AGameView gameView = new AGameView(this);
 
         this.application = new Application(this, new ASettingsStorage(), str, fileStorage, dataSource, gameView);
-        this.menuFactory = new MenuFactory(application, this);
+        viewPlatformMenuElementFactory = new PlatformMenuElementFactory<>(application);
+        this.menuFactory = new MenuFactory<>(application, this, viewPlatformMenuElementFactory);
 
         ModManager modManager = application.getModManager();
         gameView.setModManager(modManager);
@@ -270,7 +276,8 @@ public class GDActivity extends Activity implements GdPlatform {
     @Override
     public void init() {
         keyboardController.setKeyboardHandler(application.getGame().getKeyboardHandler());
-        AMenu<View> menu = new AMenu(application, menuFactory);
+        AMenu<View> menu = new AMenu<>(application, menuFactory);
+        viewPlatformMenuElementFactory.setMenu(menu);
         trackEditor.init(application.getGame());
         menuFactory.init(menu, trackEditor);
         application.setMenu(menu);
@@ -366,8 +373,35 @@ public class GDActivity extends Activity implements GdPlatform {
         return buttonHeight * 3 + KeyboardController.PADDING * 2;
     }
 
-    public MenuFactory getMenuFactory() {
-        return menuFactory;
+    @Override
+    public void showAlert(String title, String message, final Runnable listener) {
+        AlertDialog alertDialog = new AlertDialog.Builder(this)
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton(application.getStr().s(R.string.ok), (dialog, which) -> {
+                    if (listener != null) listener.run();
+                })
+                .setOnCancelListener(dialog -> {
+                    if (listener != null) listener.run();
+                })
+                .create();
+        alertDialog.show();
+    }
+
+    public void showConfirm(String title, String message, final Runnable onOk, final Runnable onCancel) {
+        AlertDialog.Builder alert = new AlertDialog.Builder(this)
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton(application.getStr().s(R.string.ok), (dialog, which) -> {
+                    if (onOk != null) onOk.run();
+                })
+                .setNegativeButton(application.getStr().s(R.string.cancel), (dialog, which) -> {
+                    if (onCancel != null) onCancel.run();
+                })
+                .setOnCancelListener(dialog -> {
+                    if (onCancel != null) onCancel.run();
+                });
+        alert.show();
     }
 
     // @UiThread
@@ -559,5 +593,16 @@ public class GDActivity extends Activity implements GdPlatform {
             return 55;
         }
         return 60;
+    }
+
+    @Override
+    public String getAppVersion() {
+        String v = "0.0";
+        try {
+            PackageInfo pInfo = GDActivity.shared.getPackageManager().getPackageInfo(GDActivity.shared.getPackageName(), 0);
+            v = pInfo.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+        }
+        return v;
     }
 }

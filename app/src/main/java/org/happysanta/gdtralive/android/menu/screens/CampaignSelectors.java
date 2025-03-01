@@ -9,6 +9,7 @@ import org.happysanta.gdtralive.android.menu.element.OptionsMenuElement;
 import org.happysanta.gdtralive.game.Application;
 import org.happysanta.gdtralive.game.ModManager;
 import org.happysanta.gdtralive.game.api.MenuType;
+import org.happysanta.gdtralive.game.api.menu.MenuElement;
 import org.happysanta.gdtralive.game.api.menu.MenuScreen;
 import org.happysanta.gdtralive.game.api.model.MenuData;
 import org.happysanta.gdtralive.game.api.model.ModEntity;
@@ -17,9 +18,9 @@ public class CampaignSelectors<T> {
     private final Application application;
     private final AMenu<T> menu;
 
-    private final OptionsMenuElement<T> levelSelector;
-    private final OptionsMenuElement<T> leagueSelector;
-    private final OptionsMenuElement<T> trackSelector;
+    private final MenuElement<T> levelSelector;
+    private final MenuElement<T> leagueSelector;
+    private final MenuElement<T> trackSelector;
     private MenuScreen<T> trackSelectorCurrentMenu;
 
     private String[] leagueNames;
@@ -85,15 +86,15 @@ public class CampaignSelectors<T> {
         leagueSelector.setUnlockedCount(getLevel().getUnlockedLeagues());
     }
 
-    public OptionsMenuElement getLevelSelector() {
+    public MenuElement<T> getLevelSelector() {
         return levelSelector;
     }
 
-    public OptionsMenuElement getLeagueSelector() {
+    public MenuElement<T> getLeagueSelector() {
         return leagueSelector;
     }
 
-    public OptionsMenuElement getTrackSelector() {
+    public MenuElement<T> getTrackSelector() {
         return trackSelector;
     }
 

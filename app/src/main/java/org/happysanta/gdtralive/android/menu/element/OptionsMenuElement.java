@@ -13,11 +13,11 @@ import org.happysanta.gdtralive.R;
 import org.happysanta.gdtralive.android.Global;
 import org.happysanta.gdtralive.android.Helpers;
 import org.happysanta.gdtralive.android.menu.AMenuScreen;
-import org.happysanta.gdtralive.game.api.menu.MenuHandler;
 import org.happysanta.gdtralive.android.menu.views.MenuImageView;
 import org.happysanta.gdtralive.android.menu.views.MenuTextView;
 import org.happysanta.gdtralive.game.KeyboardHandler;
 import org.happysanta.gdtralive.game.api.menu.MenuElement;
+import org.happysanta.gdtralive.game.api.menu.MenuHandler;
 import org.happysanta.gdtralive.game.api.menu.MenuScreen;
 import org.happysanta.gdtralive.game.api.util.ActionHandler;
 
@@ -26,7 +26,7 @@ public class OptionsMenuElement<T>
         implements MenuElement<T>, MenuHandler<T> {
 
     protected int selectedIndex;
-    protected String options[];
+    protected String[] options;
     protected int unlockedCount;
     protected MenuHandler<T> handler;
     protected MenuScreen<T> optionsScreen = null;
@@ -34,12 +34,12 @@ public class OptionsMenuElement<T>
     protected boolean isOnOffToggle;
     protected boolean m_oZ = false;
     protected String selectedOption;
-    protected MenuAction<T> optionsScreenItems[] = null;
+    protected MenuAction<T>[] optionsScreenItems = null;
     protected MenuImageView lockImage = null;
     protected MenuTextView optionTextView = null;
-    protected ActionHandler action;
+    protected ActionHandler<MenuElement<T>> action;
 
-    public OptionsMenuElement(String text, int selectedIndex, MenuHandler<T> handler, String[] options, boolean isOnOffToggle, MenuScreen<T> screen, ActionHandler action) {
+    public OptionsMenuElement(String text, int selectedIndex, MenuHandler<T> handler, String[] options, boolean isOnOffToggle, MenuScreen<T> screen, ActionHandler<MenuElement<T>> action) {
         this.text = text;
         this.selectedIndex = selectedIndex;
         this.handler = handler;
@@ -144,10 +144,6 @@ public class OptionsMenuElement<T>
         updateSelectedOption();
     }
 
-    public int getOptionCount() {
-        return options.length - 1;
-    }
-
     public String[] getOptions() {
         return options;
     }
@@ -166,6 +162,7 @@ public class OptionsMenuElement<T>
         if (update) update();
     }
 
+    @Override
     public int getSelectedOption() {
         return selectedIndex;
     }
@@ -206,7 +203,7 @@ public class OptionsMenuElement<T>
     }
 
     @Override
-    public void handleAction(MenuElement item) {
+    public void handleAction(MenuElement<T> item) {
         int k = 0;
         do {
             if (k >= optionsScreenItems.length)
