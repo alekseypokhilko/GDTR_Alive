@@ -5,15 +5,16 @@ import static org.happysanta.gdtralive.android.Helpers.getGDActivity;
 import static org.happysanta.gdtralive.android.Helpers.isSDK11OrHigher;
 
 import android.content.Context;
+import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.LinearLayout;
 
 import org.happysanta.gdtralive.android.GDActivity;
+import org.happysanta.gdtralive.android.menu.api.MenuScreen;
+import org.happysanta.gdtralive.android.menu.api.OnMenuElementHighlightListener;
 import org.happysanta.gdtralive.android.menu.element.ClickableMenuElement;
 import org.happysanta.gdtralive.android.menu.element.MenuAction;
-import org.happysanta.gdtralive.android.menu.element.MenuElement;
-import org.happysanta.gdtralive.android.menu.element.OnMenuElementHighlightListener;
-import org.happysanta.gdtralive.android.menu.element.OptionsMenuElement;
+import org.happysanta.gdtralive.android.menu.api.MenuElement;
 import org.happysanta.gdtralive.android.menu.views.MenuLinearLayout;
 import org.happysanta.gdtralive.game.KeyboardHandler;
 import org.happysanta.gdtralive.game.api.model.MenuData;
@@ -24,25 +25,25 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
 
-public class MenuScreen implements OnMenuElementHighlightListener, Serializable {
+public class AMenuScreen implements OnMenuElementHighlightListener, MenuScreen<View>, Serializable {
 
 	protected static final int LAYOUT_LEFT_PADDING = 30;
 	protected static final int LAYOUT_TOP_PADDING = 0;
 	protected static final int LAYOUT_BOTTOM_PADDING = 15;
 
-	protected MenuScreen parent;
+	protected AMenuScreen parent;
+
 	protected String title;
 	protected int selectedIndex;
 	protected Vector menuItems;
 	protected MenuLinearLayout layout;
-	protected ClickableMenuElement lastHighlighted;
+	protected MenuElement<View> lastHighlighted;
 	protected boolean isTextScreen = false;
 	protected Runnable beforeShowAction;
-	protected BiFunction<MenuScreen, MenuData, MenuScreen> builder;
+	protected BiFunction<AMenuScreen, MenuData, AMenuScreen> builder;
 	protected Map<Integer, MenuAction> actions = new HashMap<>();
-	protected Map<Integer, OptionsMenuElement> selectors = new HashMap<>();
 
-	public MenuScreen(String title, MenuScreen parent) {
+	public AMenuScreen(String title, AMenuScreen parent) {
 		this.title = title;
 		selectedIndex = -1;
 		menuItems = new Vector();
@@ -59,7 +60,7 @@ public class MenuScreen implements OnMenuElementHighlightListener, Serializable 
 			layout.setMotionEventSplittingEnabled(false);
 	}
 
-	public void addItem(MenuElement item) {
+	public void addItem(MenuElement<View> item) {
 		if (item instanceof MenuAction) {
 			MenuAction action = (MenuAction) item;
 			actions.put(action.getActionValue(), action);
@@ -72,7 +73,7 @@ public class MenuScreen implements OnMenuElementHighlightListener, Serializable 
 			((ClickableMenuElement) item).setOnHighlightListener(this);
 	}
 
-	protected void scrollToItem(MenuElement item) {
+	protected void scrollToItem(MenuElement<View> item) {
 		getGDActivity().scrollToView(item.getView());
 	}
 
@@ -160,11 +161,11 @@ public class MenuScreen implements OnMenuElementHighlightListener, Serializable 
 		return false;
 	}
 
-	public MenuScreen getParent() {
+	public AMenuScreen getParent() {
 		return parent;
 	}
 
-	public void setParent(MenuScreen target) {
+	public void setParent(AMenuScreen target) {
 		parent = target;
 	}
 
@@ -261,7 +262,7 @@ public class MenuScreen implements OnMenuElementHighlightListener, Serializable 
 	}
 
 	@Override
-	public void onElementHighlight(ClickableMenuElement el) {
+	public void onElementHighlight(MenuElement el) {
 		lastHighlighted = el;
 
 		int index = menuItems.indexOf(el);
@@ -283,15 +284,15 @@ public class MenuScreen implements OnMenuElementHighlightListener, Serializable 
 		}
 	}
 
-	public void setBuilder(BiFunction<MenuScreen, MenuData, MenuScreen> builder) {
+	public void setBuilder(BiFunction<AMenuScreen, MenuData, AMenuScreen> builder) {
 		this.builder = builder;
 	}
 
-	public MenuScreen build() {
+	public AMenuScreen build() {
 		return build(null);
 	}
 
-	public MenuScreen build(MenuData data) {
+	public AMenuScreen build(MenuData data) {
 		if (builder != null) {
 			return builder.apply(this, data);
 		}

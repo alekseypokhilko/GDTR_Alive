@@ -23,7 +23,7 @@ public class AMenu implements GdMenu, MenuHandler {
     private final Application application;
     private final MenuFactory menuFactory;
 
-    public MenuScreen currentMenu;
+    public AMenuScreen currentMenu;
     public boolean m_blZ = false;
     public boolean menuDisabled = false;
     private boolean m_SZ = false;
@@ -89,7 +89,7 @@ public class AMenu implements GdMenu, MenuHandler {
 
     private void showInGameMenu(MenuData data) {
         m_SZ = false;
-        MenuScreen screen = menuFactory.get(data.getGameMode().inGame);
+        AMenuScreen screen = menuFactory.get(data.getGameMode().inGame);
         if (screen != null) {
             this.setCurrentMenu(screen.build(data));
         } else {
@@ -98,7 +98,7 @@ public class AMenu implements GdMenu, MenuHandler {
     }
 
     private void showFinishedMenu(MenuData data) {
-        MenuScreen screen = menuFactory.get(data.getGameMode().finished);
+        AMenuScreen screen = menuFactory.get(data.getGameMode().finished);
         if (screen != null) {
             this.setCurrentMenu(screen.build(data));
         } else {
@@ -139,7 +139,7 @@ public class AMenu implements GdMenu, MenuHandler {
         return currentMenu == null;
     }
 
-    public MenuScreen getCurrentMenu() {
+    public AMenuScreen getCurrentMenu() {
         return currentMenu;
     }
 
@@ -162,7 +162,7 @@ public class AMenu implements GdMenu, MenuHandler {
     }
 
     @Override
-    public void setCurrentMenu(MenuScreen menuScreen) { //todo ======HACK=====
+    public void setCurrentMenu(AMenuScreen menuScreen) { //todo ======HACK=====
         this.setCurrentMenu((Serializable) menuScreen);
     }
 
@@ -172,7 +172,7 @@ public class AMenu implements GdMenu, MenuHandler {
     public void setCurrentMenu(Serializable newMenu) {
         menuDisabled = false;
         GDActivity gd = getGDActivity();
-        currentMenu = newMenu == null ? null : (MenuScreen) newMenu; //todo ======HACK=====
+        currentMenu = newMenu == null ? null : (AMenuScreen) newMenu; //todo ======HACK=====
         if (!isCurrentMenuEmpty()) {
             currentMenu.performBeforeShowAction();
             gd.setMenu(currentMenu.getLayout());

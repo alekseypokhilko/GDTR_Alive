@@ -6,7 +6,7 @@ import android.text.Html;
 
 import org.happysanta.gdtralive.R;
 import org.happysanta.gdtralive.android.menu.AMenu;
-import org.happysanta.gdtralive.android.menu.MenuScreen;
+import org.happysanta.gdtralive.android.menu.AMenuScreen;
 import org.happysanta.gdtralive.android.menu.MenuUtils;
 import org.happysanta.gdtralive.android.menu.element.HighScoreTextMenuElement;
 import org.happysanta.gdtralive.android.menu.element.MenuAction;
@@ -24,15 +24,15 @@ public class TrackOfTheDayMenu {
     private final Application application;
     private final AMenu menu;
     private final Game game;
-    private final MenuScreen screen;
-    private final MenuScreen inGameScreen;
+    private final AMenuScreen screen;
+    private final AMenuScreen inGameScreen;
 
-    public TrackOfTheDayMenu(AMenu menu, MenuScreen parent, Application application) {
+    public TrackOfTheDayMenu(AMenu menu, AMenuScreen parent, Application application) {
         this.menu = menu;
         this.game = application.getGame();
         this.application = application;
-        this.screen = new MenuScreen(s(R.string.track_of_day), parent);
-        this.inGameScreen = new MenuScreen(Fmt.sp(s(R.string.ingame), s(R.string.track_of_day)), screen);
+        this.screen = new AMenuScreen(s(R.string.track_of_day), parent);
+        this.inGameScreen = new AMenuScreen(Fmt.sp(s(R.string.ingame), s(R.string.track_of_day)), screen);
         inGameScreen.addItem(new MenuAction(s(R.string._continue), MenuAction.CONTINUE, menu, __ -> application.menuToGame()));
         inGameScreen.addItem(new MenuAction(s(R.string.restart), MenuAction.RESTART, menu,
                 __ -> {
@@ -80,7 +80,7 @@ public class TrackOfTheDayMenu {
         }
     }
 
-    public MenuScreen getScreen() {
+    public AMenuScreen getScreen() {
         return screen;
     }
 }

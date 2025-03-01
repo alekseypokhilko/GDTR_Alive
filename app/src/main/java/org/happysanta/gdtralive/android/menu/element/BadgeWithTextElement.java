@@ -10,13 +10,14 @@ import android.widget.LinearLayout;
 
 import org.happysanta.gdtralive.android.Global;
 import org.happysanta.gdtralive.android.Helpers;
+import org.happysanta.gdtralive.android.menu.api.MenuElement;
 import org.happysanta.gdtralive.game.api.util.ActionHandler;
 import org.happysanta.gdtralive.android.menu.MenuHandler;
 import org.happysanta.gdtralive.android.menu.views.MenuImageView;
 import org.happysanta.gdtralive.android.menu.views.MenuTextView;
 import org.happysanta.gdtralive.game.KeyboardHandler;
 
-public class BadgeWithTextElement implements MenuElement {
+public class BadgeWithTextElement implements MenuElement<View> {
 
 	protected static final int TEXT_SIZE = 20;
 	private final MenuHandler handler;

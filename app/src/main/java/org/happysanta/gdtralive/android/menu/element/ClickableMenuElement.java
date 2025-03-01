@@ -14,12 +14,14 @@ import android.widget.LinearLayout;
 import org.happysanta.gdtralive.android.Global;
 import org.happysanta.gdtralive.android.Helpers;
 import org.happysanta.gdtralive.R;
+import org.happysanta.gdtralive.android.menu.api.MenuElement;
+import org.happysanta.gdtralive.android.menu.api.OnMenuElementHighlightListener;
 import org.happysanta.gdtralive.android.menu.views.MenuHelmetView;
 import org.happysanta.gdtralive.android.menu.views.MenuTextView;
 import org.happysanta.gdtralive.game.KeyboardHandler;
 
 public class ClickableMenuElement
-		implements MenuElement {
+		implements MenuElement<View> {
 
 	public static final int TEXT_SIZE = 20;
 	public static final int PADDING_TOP = 5;
@@ -30,7 +32,6 @@ public class ClickableMenuElement
 	protected MenuHelmetView helmet;
 	protected OnMenuElementHighlightListener onMenuElementHighlightListener = null;
 	protected boolean isHighlighted = false;
-	protected Thread originalThread = null;
 	protected boolean disabled = false;
 
 	public ClickableMenuElement() {
@@ -38,7 +39,6 @@ public class ClickableMenuElement
 
 	public ClickableMenuElement(String text) {
 		this.text = text;
-		originalThread = Thread.currentThread();
 
 		createAllViews();
 	}
@@ -174,6 +174,7 @@ public class ClickableMenuElement
 		onMenuElementHighlightListener = listener;
 	}
 
+	@Override
 	public void showHelmet() {
 		helmet.setShow(true);
 	}

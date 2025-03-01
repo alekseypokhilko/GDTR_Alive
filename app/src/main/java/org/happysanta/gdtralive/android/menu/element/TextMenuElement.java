@@ -11,9 +11,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.happysanta.gdtralive.android.Helpers;
+import org.happysanta.gdtralive.android.menu.api.MenuElement;
 import org.happysanta.gdtralive.android.menu.views.MenuTextView;
 
-public class TextMenuElement implements MenuElement {
+public class TextMenuElement implements MenuElement<View> {
 
     protected static final int TEXT_SIZE = 15;
     protected static final int TEXT_COLOR = 0xff000000;

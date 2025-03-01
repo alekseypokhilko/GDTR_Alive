@@ -5,7 +5,7 @@ import static org.happysanta.gdtralive.android.Helpers.s;
 import org.happysanta.gdtralive.R;
 import org.happysanta.gdtralive.android.menu.AMenu;
 import org.happysanta.gdtralive.android.menu.MenuFactory;
-import org.happysanta.gdtralive.android.menu.MenuScreen;
+import org.happysanta.gdtralive.android.menu.AMenuScreen;
 import org.happysanta.gdtralive.android.menu.element.OptionsMenuElement;
 import org.happysanta.gdtralive.game.Application;
 import org.happysanta.gdtralive.game.ModManager;
@@ -20,7 +20,7 @@ public class CampaignSelectors {
     private final OptionsMenuElement levelSelector;
     private final OptionsMenuElement leagueSelector;
     private final OptionsMenuElement trackSelector;
-    private MenuScreen trackSelectorCurrentMenu;
+    private AMenuScreen trackSelectorCurrentMenu;
 
     private String[] leagueNames;
     private String[] difficultyLevels;
@@ -47,7 +47,7 @@ public class CampaignSelectors {
                 item -> {
                     OptionsMenuElement it = (OptionsMenuElement) item;
                     if (it._charvZ()) {
-                        MenuScreen levelSelectorCurrentMenu = it.getCurrentMenu();
+                        AMenuScreen levelSelectorCurrentMenu = it.getCurrentMenu();
                         menu.setCurrentMenu(levelSelectorCurrentMenu);
                     }
                     getTrackSelector().setOptions(application.getModManager().getLeagueTrackNames(it.getSelectedOption()), false);
@@ -70,7 +70,7 @@ public class CampaignSelectors {
                 item -> {
                     OptionsMenuElement it = (OptionsMenuElement) item;
                     if (it._charvZ()) {
-                        MenuScreen leagueSelectorCurrentMenu = it.getCurrentMenu();
+                        AMenuScreen leagueSelectorCurrentMenu = it.getCurrentMenu();
                         it.setScreen(menu.currentMenu);
                         menu.setCurrentMenu(leagueSelectorCurrentMenu);
                     }

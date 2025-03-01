@@ -6,9 +6,10 @@ import static org.happysanta.gdtralive.android.Helpers.getGDActivity;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.happysanta.gdtralive.android.menu.api.MenuElement;
 import org.happysanta.gdtralive.android.menu.views.MenuTextView;
 
-public class EmptyLineMenuElement implements MenuElement {
+public class EmptyLineMenuElement implements MenuElement<View> {
 
 	protected String text;
 	protected int offset;

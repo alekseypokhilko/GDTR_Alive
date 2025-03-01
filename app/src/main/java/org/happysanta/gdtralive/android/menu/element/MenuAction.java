@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 
 import org.happysanta.gdtralive.R;
 import org.happysanta.gdtralive.android.Helpers;
+import org.happysanta.gdtralive.android.menu.api.MenuElement;
 import org.happysanta.gdtralive.game.api.util.ActionHandler;
 import org.happysanta.gdtralive.android.menu.MenuHandler;
 import org.happysanta.gdtralive.android.menu.views.MenuImageView;
@@ -18,7 +19,7 @@ import org.happysanta.gdtralive.game.KeyboardHandler;
 
 public class MenuAction
         extends ClickableMenuElement
-        implements MenuHandler, MenuElement {
+        implements MenuHandler, MenuElement<View> {
 
     protected static final int DISABLED_COLOR = 0xff999999;
     public static final int LOCK_IMAGE_MARGIN_RIGHT = 5;

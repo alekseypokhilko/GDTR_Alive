@@ -12,23 +12,24 @@ import android.widget.LinearLayout;
 import org.happysanta.gdtralive.android.Global;
 import org.happysanta.gdtralive.android.Helpers;
 import org.happysanta.gdtralive.R;
+import org.happysanta.gdtralive.android.menu.api.MenuElement;
 import org.happysanta.gdtralive.game.api.util.ActionHandler;
 import org.happysanta.gdtralive.android.menu.MenuHandler;
-import org.happysanta.gdtralive.android.menu.MenuScreen;
+import org.happysanta.gdtralive.android.menu.AMenuScreen;
 import org.happysanta.gdtralive.android.menu.views.MenuImageView;
 import org.happysanta.gdtralive.android.menu.views.MenuTextView;
 import org.happysanta.gdtralive.game.KeyboardHandler;
 
 public class OptionsMenuElement
         extends ClickableMenuElement
-        implements MenuElement, MenuHandler {
+        implements MenuElement<View>, MenuHandler {
 
     protected int selectedIndex;
     protected String options[];
     protected int unlockedCount;
     protected MenuHandler handler;
-    protected MenuScreen optionsScreen = null;
-    protected MenuScreen screen = null;
+    protected AMenuScreen optionsScreen = null;
+    protected AMenuScreen screen = null;
     protected boolean isOnOffToggle;
     protected boolean m_oZ = false;
     protected String selectedOption;
@@ -37,7 +38,7 @@ public class OptionsMenuElement
     protected MenuTextView optionTextView = null;
     protected ActionHandler action;
 
-    public OptionsMenuElement(String text, int selectedIndex, MenuHandler handler, String[] options, boolean isOnOffToggle, MenuScreen screen, ActionHandler action) {
+    public OptionsMenuElement(String text, int selectedIndex, MenuHandler handler, String[] options, boolean isOnOffToggle, AMenuScreen screen, ActionHandler action) {
         this.text = text;
         this.selectedIndex = selectedIndex;
         this.handler = handler;
@@ -178,7 +179,7 @@ public class OptionsMenuElement
     }
 
     public void update() {
-        optionsScreen = new MenuScreen(text, screen);
+        optionsScreen = new AMenuScreen(text, screen);
         optionsScreenItems = new MenuAction[options.length];
         for (int k = 0; k < optionsScreenItems.length; k++) {
             if (k > unlockedCount) {
@@ -225,7 +226,7 @@ public class OptionsMenuElement
     }
 
     @Override
-    public MenuScreen getCurrentMenu() {
+    public AMenuScreen getCurrentMenu() {
         return optionsScreen;
     }
 
@@ -317,7 +318,7 @@ public class OptionsMenuElement
         }
     }
 
-    public void setScreen(MenuScreen screen) {
+    public void setScreen(AMenuScreen screen) {
         this.screen = screen;
     }
 

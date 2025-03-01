@@ -27,7 +27,7 @@ import org.happysanta.gdtralive.R;
 import org.happysanta.gdtralive.android.menu.AMenu;
 import org.happysanta.gdtralive.android.menu.KeyboardController;
 import org.happysanta.gdtralive.android.menu.MenuFactory;
-import org.happysanta.gdtralive.android.menu.MenuScreen;
+import org.happysanta.gdtralive.android.menu.AMenuScreen;
 import org.happysanta.gdtralive.android.menu.views.MenuHelmetView;
 import org.happysanta.gdtralive.android.menu.views.MenuImageView;
 import org.happysanta.gdtralive.android.menu.views.MenuLinearLayout;
@@ -504,7 +504,7 @@ public class GDActivity extends Activity implements GdPlatform {
             Uri uri = data.getData();
             try (InputStream inputStream = Helpers.getGDActivity().getContentResolver().openInputStream(uri)) {
                 Mod mod = Utils.read(inputStream, GDFile.MOD);
-                MenuScreen modMenu = menuFactory.get(MenuType.MOD_OPTIONS).build(new MenuData(mod, mod.getName()));
+                AMenuScreen modMenu = menuFactory.get(MenuType.MOD_OPTIONS).build(new MenuData(mod, mod.getName()));
                 menu.setCurrentMenu(modMenu);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -515,7 +515,7 @@ public class GDActivity extends Activity implements GdPlatform {
             Uri uri = data.getData();
             try (InputStream inputStream = Helpers.getGDActivity().getContentResolver().openInputStream(uri)) {
                 Theme theme = Utils.read(inputStream, GDFile.THEME);
-                MenuScreen themeMenu = menuFactory.get(MenuType.THEME_OPTIONS).build(new MenuData(theme, theme.getHeader().getName()));
+                AMenuScreen themeMenu = menuFactory.get(MenuType.THEME_OPTIONS).build(new MenuData(theme, theme.getHeader().getName()));
                 menu.setCurrentMenu(themeMenu);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -526,7 +526,7 @@ public class GDActivity extends Activity implements GdPlatform {
             Uri uri = data.getData();
             try (InputStream inputStream = Helpers.getGDActivity().getContentResolver().openInputStream(uri)) {
                 TrackRecord trackRecord = Utils.read(inputStream, GDFile.RECORD);
-                MenuScreen recordMenu = menuFactory.get(MenuType.RECORDING_OPTIONS).build(new MenuData(trackRecord));
+                AMenuScreen recordMenu = menuFactory.get(MenuType.RECORDING_OPTIONS).build(new MenuData(trackRecord));
                 menu.setCurrentMenu(recordMenu);
             } catch (Exception e) {
                 e.printStackTrace();

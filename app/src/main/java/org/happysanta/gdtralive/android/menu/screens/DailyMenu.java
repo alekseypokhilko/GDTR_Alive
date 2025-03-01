@@ -9,7 +9,7 @@ import android.text.Html;
 import org.happysanta.gdtralive.R;
 import org.happysanta.gdtralive.android.menu.AMenu;
 import org.happysanta.gdtralive.android.menu.MenuFactory;
-import org.happysanta.gdtralive.android.menu.MenuScreen;
+import org.happysanta.gdtralive.android.menu.AMenuScreen;
 import org.happysanta.gdtralive.android.menu.MenuUtils;
 import org.happysanta.gdtralive.android.menu.element.MenuAction;
 import org.happysanta.gdtralive.android.menu.element.MenuItem;
@@ -39,11 +39,11 @@ public class DailyMenu {
     private final Application application;
     private final AMenu menu;
     private final Game game;
-    private final MenuScreen screen;
-    private final MenuScreen finishedScreen;
-    private final MenuScreen inGameScreen;
+    private final AMenuScreen screen;
+    private final AMenuScreen finishedScreen;
+    private final AMenuScreen inGameScreen;
     private final OptionsMenuElement trackSelector;
-    private MenuScreen trackSelectorCurrentMenu;
+    private AMenuScreen trackSelectorCurrentMenu;
 
     private final TrackOfTheDayMenu trackOfTheDay;
 
@@ -52,14 +52,14 @@ public class DailyMenu {
 
     MenuFactory menuFactory;
 
-    public DailyMenu(AMenu menu, MenuScreen parent, Application application, MenuFactory menuFactory) {
+    public DailyMenu(AMenu menu, AMenuScreen parent, Application application, MenuFactory menuFactory) {
         this.menu = menu;
         this.game = application.getGame();
         this.application = application;
         this.menuFactory = menuFactory;
-        this.screen = new MenuScreen(s(R.string.daily_challenge), parent);
+        this.screen = new AMenuScreen(s(R.string.daily_challenge), parent);
         this.trackOfTheDay = new TrackOfTheDayMenu(menu, screen, application);
-        this.inGameScreen = new MenuScreen(Fmt.sp(s(R.string.ingame), s(R.string.daily_challenge)), screen);
+        this.inGameScreen = new AMenuScreen(Fmt.sp(s(R.string.ingame), s(R.string.daily_challenge)), screen);
         inGameScreen.addItem(new MenuAction(s(R.string._continue), MenuAction.CONTINUE, menu,
                 item -> application.menuToGame()));
         inGameScreen.addItem(new MenuAction(s(R.string.restart), MenuAction.RESTART, menu,
@@ -83,7 +83,7 @@ public class DailyMenu {
                     }
                 }
         );
-        this.finishedScreen = new MenuScreen(s(R.string.finished), screen);
+        this.finishedScreen = new AMenuScreen(s(R.string.finished), screen);
     }
 
     public void buildScreen() {
@@ -131,7 +131,7 @@ public class DailyMenu {
 //        }
     }
 
-    public MenuScreen buildFinishedScreen() {
+    public AMenuScreen buildFinishedScreen() {
         trackSelector.setSelectedOption(currentTrack + 1);
         trackSelector.setUnlockedCount(Math.max(currentTrack + 1, trackSelector.getUnlockedCount()));
         trackSelector.setText("Tracks(" + trackSelector.getUnlockedCount() + "/" + tracks.size() + ")");

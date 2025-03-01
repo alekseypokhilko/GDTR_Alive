@@ -1,14 +1,14 @@
 package org.happysanta.gdtralive.android.menu;
 
-import org.happysanta.gdtralive.android.menu.element.MenuElement;
+import org.happysanta.gdtralive.android.menu.api.MenuElement;
 
 public interface MenuHandler {
 
-    default MenuScreen getCurrentMenu() {
+    default AMenuScreen getCurrentMenu() {
         return null;
     }
 
-    default void setCurrentMenu(MenuScreen e) {
+    default void setCurrentMenu(AMenuScreen e) {
 
     }
 

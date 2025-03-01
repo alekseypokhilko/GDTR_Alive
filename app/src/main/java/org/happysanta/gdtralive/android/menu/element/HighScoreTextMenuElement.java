@@ -12,12 +12,11 @@ import android.widget.LinearLayout;
 
 import org.happysanta.gdtralive.android.Global;
 import org.happysanta.gdtralive.R;
+import org.happysanta.gdtralive.android.menu.api.MenuElement;
 import org.happysanta.gdtralive.android.menu.views.MenuImageView;
 import org.happysanta.gdtralive.android.menu.views.MenuLinearLayout;
 
-public class HighScoreTextMenuElement
-        extends TextMenuElement
-        implements MenuElement {
+public class HighScoreTextMenuElement extends TextMenuElement implements MenuElement<View> {
 
     protected static final int TEXT_LEFT_MARGIN = 5;
     protected static final int SUBTITLE_MARGIN_BOTTOM = 8;
