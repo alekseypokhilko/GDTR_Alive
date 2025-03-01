@@ -1,14 +1,5 @@
 package org.happysanta.gdtralive.android.menu;
 
-import static org.happysanta.gdtralive.android.Helpers.getGDActivity;
-import static org.happysanta.gdtralive.android.Helpers.logDebug;
-import static org.happysanta.gdtralive.android.Helpers.s;
-
-import android.util.Log;
-import android.widget.LinearLayout;
-
-import org.happysanta.gdtralive.android.GDActivity;
-import org.happysanta.gdtralive.android.menu.element.MenuAction;
 import org.happysanta.gdtralive.game.Application;
 import org.happysanta.gdtralive.game.KeyboardHandler;
 import org.happysanta.gdtralive.game.api.GameMode;
@@ -18,7 +9,6 @@ import org.happysanta.gdtralive.game.api.external.GdMenu;
 import org.happysanta.gdtralive.game.api.menu.MenuHandler;
 import org.happysanta.gdtralive.game.api.menu.MenuScreen;
 import org.happysanta.gdtralive.game.api.model.MenuData;
-import org.happysanta.gdtralive.game.api.util.ActionHandler;
 
 public class AMenu<T> implements GdMenu<T>, MenuHandler<T> {
     private final Application application;
@@ -38,21 +28,6 @@ public class AMenu<T> implements GdMenu<T>, MenuHandler<T> {
         application.menuToGame();
     }
 
-    public MenuAction<T> createAction(int action, ActionHandler actionHandler) {
-        return new MenuAction<T>(s(MenuUtils.getActionText(action)), action, this, actionHandler);
-    }
-
-    public MenuAction<T> backAction(Runnable beforeBack) {
-        return createAction(MenuAction.BACK, item -> {
-            beforeBack.run();
-            this.menuBack();
-        });
-    }
-
-    public MenuAction<T> backAction() {
-        return createAction(MenuAction.BACK, item -> this.menuBack());
-    }
-
     // not sure about this name
     public boolean canStartTrack() {
         if (m_SZ) {
@@ -65,7 +40,6 @@ public class AMenu<T> implements GdMenu<T>, MenuHandler<T> {
 
     @Override
     public void showMenu(MenuData data) {
-        Log.d("Menu", data.toString());
         preShowMenu();
 
         if (MenuMode.MAIN == data.getMenuMode()) {
@@ -114,9 +88,7 @@ public class AMenu<T> implements GdMenu<T>, MenuHandler<T> {
     }
 
     private void checkExit() {
-        logDebug("[Menu.showMenu] out loop");
-        if (currentMenu == null && getGDActivity() != null) {
-            logDebug("[Menu.showMenu] currentMenu == null, set alive = false");
+        if (currentMenu == null && application.isAlive()) {
             application.exit();
         }
     }
@@ -167,11 +139,10 @@ public class AMenu<T> implements GdMenu<T>, MenuHandler<T> {
     @Override
     public void setCurrentMenu(MenuScreen<T> newMenu) {
         menuDisabled = false;
-        GDActivity gd = getGDActivity();
         currentMenu = newMenu;
         if (!isCurrentMenuEmpty()) {
             currentMenu.performBeforeShowAction();
-            gd.setMenu((LinearLayout)currentMenu.getLayout());
+            application.getPlatform().setMenu(currentMenu);
             currentMenu.onShow();
         }
 

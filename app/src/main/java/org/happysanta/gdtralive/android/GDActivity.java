@@ -346,6 +346,11 @@ public class GDActivity extends Activity implements GdPlatform {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 
+    public void setMenu(final MenuScreen menu) {
+        LinearLayout layout = (LinearLayout) menu.getLayout();
+        setMenu(layout);
+    }
+
     // @UiThread
     public void setMenu(final LinearLayout layout) {
         runOnUiThread(() -> {

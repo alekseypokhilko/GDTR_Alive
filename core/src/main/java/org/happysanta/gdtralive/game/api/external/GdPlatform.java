@@ -1,8 +1,11 @@
 package org.happysanta.gdtralive.game.api.external;
 
+import org.happysanta.gdtralive.game.api.menu.MenuScreen;
+
 public interface GdPlatform {
 
     void init();
+    void setMenu(MenuScreen menu);
     GdMenu getMenu(); //todo remove from here
     float getDensity();
     void notify(String message);

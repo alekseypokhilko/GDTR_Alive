@@ -52,7 +52,10 @@ public class Application {
         thread = null;
     }
 
-    
+    public GdPlatform getPlatform() {
+        return platform;
+    }
+
     public void setMenu(GdMenu menu) {
         this.menu = menu;
     }
