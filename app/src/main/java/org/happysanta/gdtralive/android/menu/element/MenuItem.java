@@ -4,7 +4,7 @@ import static org.happysanta.gdtralive.android.Helpers.logDebug;
 
 import android.view.View;
 
-import org.happysanta.gdtralive.android.menu.api.MenuElement;
+import org.happysanta.gdtralive.game.api.menu.MenuElement;
 import org.happysanta.gdtralive.game.api.util.ActionHandler;
 import org.happysanta.gdtralive.android.menu.MenuHandler;
 import org.happysanta.gdtralive.android.menu.AMenuScreen;

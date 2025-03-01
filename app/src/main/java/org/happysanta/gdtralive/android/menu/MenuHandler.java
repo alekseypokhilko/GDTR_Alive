@@ -1,6 +1,6 @@
 package org.happysanta.gdtralive.android.menu;
 
-import org.happysanta.gdtralive.android.menu.api.MenuElement;
+import org.happysanta.gdtralive.game.api.menu.MenuElement;
 
 public interface MenuHandler {
 

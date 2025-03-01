@@ -12,7 +12,7 @@ import android.widget.LinearLayout;
 
 import org.happysanta.gdtralive.android.Global;
 import org.happysanta.gdtralive.R;
-import org.happysanta.gdtralive.android.menu.api.MenuElement;
+import org.happysanta.gdtralive.game.api.menu.MenuElement;
 import org.happysanta.gdtralive.android.menu.views.MenuImageView;
 import org.happysanta.gdtralive.android.menu.views.MenuLinearLayout;
 

@@ -9,7 +9,7 @@ import android.widget.LinearLayout;
 
 import org.happysanta.gdtralive.android.Global;
 import org.happysanta.gdtralive.android.Helpers;
-import org.happysanta.gdtralive.android.menu.api.MenuElement;
+import org.happysanta.gdtralive.game.api.menu.MenuElement;
 import org.happysanta.gdtralive.game.api.dto.InterfaceTheme;
 import org.happysanta.gdtralive.game.api.util.ActionHandler;
 import org.happysanta.gdtralive.android.menu.views.MenuTextView;
