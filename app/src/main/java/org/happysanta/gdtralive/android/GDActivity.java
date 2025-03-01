@@ -279,7 +279,7 @@ public class GDActivity extends Activity implements GdPlatform {
         AMenu<View> menu = new AMenu<>(application, menuFactory);
         viewPlatformMenuElementFactory.setMenu(menu);
         trackEditor.init(application.getGame());
-        menuFactory.init(menu, trackEditor);
+        menuFactory.init(menu, trackEditor, application.getGame());
         application.setMenu(menu);
         this.menu = menu;
     }

@@ -2,8 +2,6 @@ package org.happysanta.gdtralive.android.menu;
 
 import org.happysanta.gdtralive.R;
 import org.happysanta.gdtralive.android.menu.element.MenuAction;
-import org.happysanta.gdtralive.android.menu.element.OptionsMenuElement;
-import org.happysanta.gdtralive.android.menu.screens.CampaignSelectors;
 import org.happysanta.gdtralive.game.Achievement;
 import org.happysanta.gdtralive.game.Application;
 import org.happysanta.gdtralive.game.Game;
@@ -18,6 +16,7 @@ import org.happysanta.gdtralive.game.api.dto.TrackParams;
 import org.happysanta.gdtralive.game.api.external.GdPlatform;
 import org.happysanta.gdtralive.game.api.external.GdStr;
 import org.happysanta.gdtralive.game.api.external.GdTrackEditor;
+import org.happysanta.gdtralive.game.api.menu.IOptionsMenuElement;
 import org.happysanta.gdtralive.game.api.menu.MenuElement;
 import org.happysanta.gdtralive.game.api.menu.MenuScreen;
 import org.happysanta.gdtralive.game.api.model.GameParams;
@@ -50,9 +49,17 @@ public class MenuFactory<T> {
     private final GdPlatform platform;
 
     private AMenu<T> menu;
+    private Game game;
 
-    private CampaignSelectors<T> campaignSelectors;
+    private IOptionsMenuElement<T> levelSelector;
+    private IOptionsMenuElement<T> leagueSelector;
+    private IOptionsMenuElement<T> trackSelector;
+    private MenuScreen<T> trackSelectorCurrentMenu;
     private GdTrackEditor trackEditor;
+
+    private String[] leagueNames;
+    private String[] difficultyLevels;
+    private final int[] selectedTrack = new int[100];
     private List<String> modNames = new ArrayList<>(); //todo remove
     public List<String> themeNames = new ArrayList<>(); //todo remove
 
@@ -86,13 +93,11 @@ public class MenuFactory<T> {
     //Все переплетено
     //Потяни за нить
     //За ней потянется клубок
-    public void init(AMenu<T> menu, GdTrackEditor trackEditor) {
+    public void init(AMenu<T> menu, GdTrackEditor trackEditor, Game game) {
         this.menu = menu;
         this.trackEditor = trackEditor;
-        add(MenuType.MAIN, r -> {
-            String title = str.s(R.string.main);
-            return e.screen(title, null);
-        });
+        this.game = game;
+        add(MenuType.MAIN, r -> e.screen(str.s(R.string.main), null));
         add(MenuType.PLAY, r -> e.screen(str.s(R.string.play), r.get(MenuType.MAIN)));
         add(MenuType.PROFILE, this::createProfileScreen);
         add(MenuType.ABOUT, this::createAboutScreen);
@@ -121,7 +126,7 @@ public class MenuFactory<T> {
         add(MenuType.ACHIEVEMENTS, this::createAchievements);
         transform(MenuType.PLAY, this::fillPlay);
 
-        this.campaignSelectors = new CampaignSelectors<>(menu, application, this);
+        createCampaignSelectors();
         add(MenuType.HIGH_SCORE, this::createHighScore);
         add(MenuType.IN_GAME_CAMPAIGN, this::createInGameCampaign);
         add(MenuType.FINISHED_CAMPAIGN, this::createFinishedCampaign);
@@ -144,7 +149,7 @@ public class MenuFactory<T> {
             s.addItem(e.actionContinue(__ -> application.menuToGame()));
             s.addItem(e.menuItem(str.s(R.string.options), this.get(MenuType.OPTIONS), null));
             s.addItem(e.menuAction(str.s(R.string.back), it -> {
-                application.getGame().resetState();
+                game.resetState();
                 menu.menuBack();
             }));
             s.resetHighlighted();
@@ -176,12 +181,9 @@ public class MenuFactory<T> {
             s.addItem(e.textHtmlBold(str.s(R.string.guid), track.getData().getGuid()));
             s.addItem(e.textHtmlBold(str.s(R.string.author), track.getData().getAuthor()));
             s.addItem(e.editText(Fmt.colon(str.s(R.string.name)), track.getData().getName(), item -> trackEditor.getCurrentTrack().getData().setName(item.getText().trim())));
-
             s.addItem(e.emptyLine(false));
             s.addItem(e.textHtmlBold(str.s(R.string.league_properties), null));
-            s.addItem(new OptionsMenuElement<>(str.s(R.string.league), track.getData().league, menu, application.getModManager().getLeagueNames(), false, screen,
-                    item -> {
-                        OptionsMenuElement it = (OptionsMenuElement) item;
+            s.addItem(e.selector(str.s(R.string.league), track.getData().league, application.getModManager().getLeagueNames(), false, screen, it -> {
                         if (it._charvZ()) {
                             MenuScreen<T> leagueSelectorCurrentMenu = it.getCurrentMenu();
                             it.setScreen(menu.getCurrentMenu());
@@ -231,8 +233,7 @@ public class MenuFactory<T> {
             s.addItem(e.emptyLine(true));
             for (int i = 0; i < themeNames.size(); i++) { //todo
                 try {
-                    String theme = themeNames.get(i);
-                    MenuElement<T> options = e.menuItem(theme, this.get(MenuType.THEME_OPTIONS),
+                    MenuElement<T> options = e.menuItem(themeNames.get(i), this.get(MenuType.THEME_OPTIONS),
                             item -> this.get(MenuType.THEME_OPTIONS).build(new MenuData(themeNames.get(item.getValue()))));
                     options.setValue(i);
                     screen.addItem(options);
@@ -287,7 +288,7 @@ public class MenuFactory<T> {
                 String modName = mod.getName();
                 application.getModManager().activateMod(mod);
                 this.get(MenuType.CAMPAIGN).setTitle(Fmt.sp(str.s(R.string.play), modName));
-                campaignSelectors.resetSelectors();
+                resetSelectors();
             }));
 //            s.addItem(new MenuAction(str.s(R.string.save), -1, menu,
 //                    __ -> this.application.getFileStorage().save(mod, GDFile.MOD, mod.getName())));
@@ -313,10 +314,8 @@ public class MenuFactory<T> {
                 modNames.add(name);
                 MenuElement<T> options = e.menuItem(name, this.get(MenuType.MOD_OPTIONS),
                         item -> {
-                            int value = item.getValue();
                             try {
-                                String rec = modNames.get(value);
-                                Mod mod = this.application.getModManager().loadMod(rec);
+                                Mod mod = this.application.getModManager().loadMod(modNames.get(item.getValue()));
                                 if (mod != null) {
                                     this.get(MenuType.MOD_OPTIONS).build(new MenuData(mod, name));
                                 } else {
@@ -337,7 +336,6 @@ public class MenuFactory<T> {
 
     private void fillPlay(MenuScreen<T> screen) {
         screen.setBeforeShowAction(screen::build).builder((s, data) -> {
-            Game game = application.getGame();
             ModManager modManager = application.getModManager();
             s.clear();
             s.setBeforeShowAction(() -> game.startAutoplay(false));
@@ -350,13 +348,20 @@ public class MenuFactory<T> {
                     currentModIndex = i;
                 }
             }
-            MenuElement<T> campaignSelector = getSelector(currentModIndex, modNames, this.get(MenuType.PLAY));
+            MenuScreen<T> parent = this.get(MenuType.PLAY);
+            MenuElement<T> campaignSelector = e.selector(str.s(R.string.campaign_select), currentModIndex, modNames, false, parent, it -> {
+                if (it._charvZ()) {
+                    MenuScreen<T> leagueSelectorCurrentMenu = it.getCurrentMenu();
+                    it.setScreen(menu.getCurrentMenu());
+                    menu.setCurrentMenu(leagueSelectorCurrentMenu);
+                }
+            });
             s.addItem(e.menuItem(str.s(R.string.campaign), this.get(MenuType.CAMPAIGN), __ -> {
                 String modName = modNames[campaignSelector.getSelectedOption()];
                 modManager.activateMod(modName);
-                campaignSelectors.setDifficultyLevels(application.getModManager().getLevelNames().toArray(new String[0]));
-//                campaignSelectors.setLeagueNames(); //todo
-                campaignSelectors.resetSelectors();
+                setDifficultyLevels(application.getModManager().getLevelNames().toArray(new String[0]));
+                setLeagueNames(application.getModManager().getLeagueNames());
+                resetSelectors();
             }));
             s.addItem(campaignSelector);
             s.addItem(e.menuAction(Fmt.ra(str.s(R.string.random_track)), __ -> game.startTrack(GameParams.of(GameMode.RANDOM, modManager.getRandomTrack()))));
@@ -365,18 +370,6 @@ public class MenuFactory<T> {
             s.addItem(e.backAction(game::resetState));
             return s;
         });
-    }
-
-    private MenuElement<T> getSelector(int currentModIndex, String[] modNames, MenuScreen<T> parent) {
-        return new OptionsMenuElement<>(str.s(R.string.campaign_select), currentModIndex, menu, modNames, false, parent,
-                item -> {
-                    OptionsMenuElement it = (OptionsMenuElement) item;
-                    if (it._charvZ()) {
-                        MenuScreen<T> leagueSelectorCurrentMenu = it.getCurrentMenu();
-                        it.setScreen(menu.getCurrentMenu());
-                        menu.setCurrentMenu(leagueSelectorCurrentMenu);
-                    }
-                });
     }
 
     private MenuScreen<T> createAchievements(Map<MenuType, MenuScreen<T>> r) {
@@ -397,9 +390,7 @@ public class MenuFactory<T> {
         return e.screen(str.s(R.string.recordings), r.get(MenuType.WORKSHOP)).builder((s, data) -> {
             s.clear();
             s.addItem(e.backAction());
-            s.addItem(e.menuAction(str.s(R.string.import_record), MenuAction.SELECT_FILE, it -> {
-                platform.pickFile(Constants.PICKFILE_RECORD_RESULT_CODE);
-            }));
+            s.addItem(e.menuAction(str.s(R.string.import_record), MenuAction.SELECT_FILE, it -> platform.pickFile(Constants.PICKFILE_RECORD_RESULT_CODE)));
             s.addItem(e.emptyLine(false));
             s.addItem(e.emptyLine(false));
             int i = 0;
@@ -432,16 +423,14 @@ public class MenuFactory<T> {
             s.addItem(e.textHtmlBold(str.s(R.string.name), rec.getTrackName()));
             s.addItem(e.textHtmlBold(str.s(R.string.guid), rec.getTrackGuid()));
             s.addItem(e.textHtmlBold(str.s(R.string.league), "" + rec.getLeague()));
-            long millis = rec.getTime();
-            s.addItem(e.textHtmlBold(str.s(R.string.time), Utils.getDurationString(millis)));
+            s.addItem(e.textHtmlBold(str.s(R.string.time), Utils.getDurationString(rec.getTime())));
             s.addItem(e.textHtmlBold(str.s(R.string.date), rec.getDate()));
             s.addItem(e.emptyLine(true));
-
-            s.addItem(e.menuAction(str.s(R.string.replay), -1, item1 -> application.getGame().startTrack(GameParams.of(rec))));
+            s.addItem(e.menuAction(str.s(R.string.replay), -1, item1 -> game.startTrack(GameParams.of(rec))));
             s.addItem(e.menuAction(str.s(R.string.save), -1, item -> application.getFileStorage().save(rec, GDFile.RECORD, Fmt.us(rec.getTrackName(), rec.getDate()))));
             s.addItem(e.backAction(() -> {
                 this.get(MenuType.RECORDINGS).build();
-                application.getGame().startAutoplay(true);
+                game.startAutoplay(true);
             }));
             return s;
         });
@@ -461,10 +450,8 @@ public class MenuFactory<T> {
 
     private MenuScreen<T> createFinishedPlay(Map<MenuType, MenuScreen<T>> r) {
         return e.screen(str.s(R.string.finished), r.get(MenuType.PLAY)).builder((finishedMenu, data) -> {
-            Game game = application.getGame();
             finishedMenu.clear();
-            long millis = data.getLastTrackTime();
-            finishedMenu.addItem(e.textHtmlBold(str.s(R.string.time), Utils.getDurationString(millis)));
+            finishedMenu.addItem(e.textHtmlBold(str.s(R.string.time), Utils.getDurationString(data.getLastTrackTime())));
             for (String s : application.getHighScoreManager().getFormattedScores(data.getTrackGuid(), data.getSelectedLeague())) {
                 finishedMenu.addItem(e.text(s));
             }
@@ -476,7 +463,6 @@ public class MenuFactory<T> {
     }
 
     private MenuScreen<T> createInGamePlay(Map<MenuType, MenuScreen<T>> r) {
-        Game game = application.getGame();
         MenuScreen<T> ig = e.screen(str.s(R.string.ingame), r.get(MenuType.PLAY));
         ig.addItem(e.actionContinue(__ -> application.menuToGame()));
         ig.addItem(e.menuAction(str.s(R.string.training_mode), __ -> {
@@ -497,7 +483,7 @@ public class MenuFactory<T> {
     }
 
     private void fillMainScreen(MenuScreen<T> s) {
-        s.setBeforeShowAction(() -> application.getGame().startAutoplay(false));
+        s.setBeforeShowAction(() -> game.startAutoplay(false));
         s.addItem(e.menuItem(str.s(R.string.competition), this.get(MenuType.PLAY)));
         s.addItem(e.menuItem(str.s(R.string.workshop), this.get(MenuType.WORKSHOP)));
         s.addItem(e.menuItem(str.s(R.string.profile), this.get(MenuType.PROFILE)));
@@ -516,37 +502,37 @@ public class MenuFactory<T> {
             scaleOptions[i] = "" + i;
         }
 
-        screen.addItem(new OptionsMenuElement<>(str.s(R.string.scale), application.getSettings().getScale(), menu, scaleOptions, false, screen,
+        screen.addItem(e.selector(str.s(R.string.scale), application.getSettings().getScale(), scaleOptions, false, screen,
                 item -> {
                     application.getSettings().setScale(item.getSelectedOption());
                     application.getModManager().adjustScale();
                 }));
-        screen.addItem(new OptionsMenuElement<>(str.s(R.string.recording_enabled), application.getSettings().isRecordingEnabled() ? 0 : 1, menu, onOffStrings, true, screen,
-                item -> application.getGame().setRecordingEnabled(item.getSelectedOption() == 0)));
-        screen.addItem(new OptionsMenuElement<>(str.s(R.string.perspective), application.getSettings().isPerspectiveEnabled() ? 0 : 1, menu, onOffStrings, true, screen,
-                item -> application.getGame().setPerspectiveEnabled(item.getSelectedOption() == 0)));
-        screen.addItem(new OptionsMenuElement<>(str.s(R.string.shadows), application.getSettings().isShadowsEnabled() ? 0 : 1, menu, onOffStrings, true, screen,
-                item -> application.getGame().setShadowsEnabled(item.getSelectedOption() == 0)));
-        screen.addItem(new OptionsMenuElement<>(str.s(R.string.driver_sprite), application.getSettings().isDriverSpriteEnabled() ? 0 : 1, menu, onOffStrings, true, screen,
+        screen.addItem(e.selector(str.s(R.string.recording_enabled), application.getSettings().isRecordingEnabled() ? 0 : 1, onOffStrings, true, screen,
+                item -> game.setRecordingEnabled(item.getSelectedOption() == 0)));
+        screen.addItem(e.selector(str.s(R.string.perspective), application.getSettings().isPerspectiveEnabled() ? 0 : 1, onOffStrings, true, screen,
+                item -> game.setPerspectiveEnabled(item.getSelectedOption() == 0)));
+        screen.addItem(e.selector(str.s(R.string.shadows), application.getSettings().isShadowsEnabled() ? 0 : 1, onOffStrings, true, screen,
+                item -> game.setShadowsEnabled(item.getSelectedOption() == 0)));
+        screen.addItem(e.selector(str.s(R.string.driver_sprite), application.getSettings().isDriverSpriteEnabled() ? 0 : 1, onOffStrings, true, screen,
                 item -> {
                     if (item._charvZ()) item.setSelectedOption(item.getSelectedOption() + 1);
-                    application.getGame().setDrawBiker(item.getSelectedOption() == 0);
+                    game.setDrawBiker(item.getSelectedOption() == 0);
                 }));
-        screen.addItem(new OptionsMenuElement<>(str.s(R.string.bike_sprite), application.getSettings().isBikeSpriteEnabled() ? 0 : 1, menu, onOffStrings, true, screen,
+        screen.addItem(e.selector(str.s(R.string.bike_sprite), application.getSettings().isBikeSpriteEnabled() ? 0 : 1, onOffStrings, true, screen,
                 item1 -> {
                     if (item1._charvZ()) item1.setSelectedOption(item1.getSelectedOption() + 1);
-                    application.getGame().setDrawBike(item1.getSelectedOption() == 0);
+                    game.setDrawBike(item1.getSelectedOption() == 0);
                 }));
-        screen.addItem(new OptionsMenuElement<>(str.s(R.string.input), application.getSettings().getInputOption(), menu, keySetStrings, false, screen, item1 -> {
+        screen.addItem(e.selector(str.s(R.string.input), application.getSettings().getInputOption(), keySetStrings, false, screen, item1 -> {
             if (item1._charvZ()) item1.setSelectedOption(item1.getSelectedOption() + 1);
-            application.getGame().setInputOption(item1.getSelectedOption());
+            game.setInputOption(item1.getSelectedOption());
         }));
-        screen.addItem(new OptionsMenuElement<>(str.s(R.string.active_camera), application.getSettings().isLookAheadEnabled() ? 0 : 1, menu, onOffStrings, true, screen,
-                item -> application.getGame().setLookAhead(item.getSelectedOption() == 0)));
-        screen.addItem(new OptionsMenuElement<>(str.s(R.string.vibrate_on_touch), application.getSettings().isVibrateOnTouchEnabled() ? 0 : 1, menu, onOffStrings, true, screen,
+        screen.addItem(e.selector(str.s(R.string.active_camera), application.getSettings().isLookAheadEnabled() ? 0 : 1, onOffStrings, true, screen,
+                item -> game.setLookAhead(item.getSelectedOption() == 0)));
+        screen.addItem(e.selector(str.s(R.string.vibrate_on_touch), application.getSettings().isVibrateOnTouchEnabled() ? 0 : 1, onOffStrings, true, screen,
                 item -> application.getSettings().setVibrateOnTouchEnabled(item.getSelectedOption() == 0)
         ));
-        screen.addItem(new OptionsMenuElement<>(str.s(R.string.show_keyboard), application.getSettings().isKeyboardInMenuEnabled() ? 0 : 1, menu, onOffStrings, true, screen,
+        screen.addItem(e.selector(str.s(R.string.show_keyboard), application.getSettings().isKeyboardInMenuEnabled() ? 0 : 1, onOffStrings, true, screen,
                 item -> {
                     boolean enabled = item.getSelectedOption() == 0;
                     application.getSettings().setKeyboardInMenuEnabled(enabled);
@@ -671,7 +657,7 @@ public class MenuFactory<T> {
     private MenuScreen<T> createFinishedCampaign(Map<MenuType, MenuScreen<T>> r) {
         MenuScreen<T> finished = e.screen(str.s(R.string.finished), r.get(MenuType.CAMPAIGN));
         finished.builder((finishedMenu, data) -> {
-            campaignSelectors.updateSelectors(data);
+            resetSelectors();
             int place = application.getHighScoreManager()
                     .getHighScores(data.getTrackGuid(), data.getSelectedLeague())
                     .getPlace(data.getSelectedLeague(), data.getLastTrackTime()); //todo npe?
@@ -703,7 +689,7 @@ public class MenuFactory<T> {
         finishedMenu.addItem(e.textHtml(String.format(str.s(R.string.tracks_completed_tpl),
                 completedCount,
                 modManager.getLevelTracksCount(data.getSelectedLevel()),
-                campaignSelectors.getDifficultyLevels()[data.getSelectedLevel()]
+                difficultyLevels[data.getSelectedLevel()]
         )));
 
         //todo fix that
@@ -718,11 +704,11 @@ public class MenuFactory<T> {
                 String title = str.s(R.string.level_completed_text);
                 finishedMenu.addItem(e.text(title));
             }
-            String title = str.s(R.string.congratulations) + campaignSelectors.getLeagueNames()[data.getNewSelectedLeague()];
+            String title = str.s(R.string.congratulations) + leagueNames[data.getNewSelectedLeague()];
             finishedMenu.addItem(e.text(title));
             try {
                 //todo crashed on league unlock
-                application.getPlatform().showAlert(str.s(R.string.league_unlocked), str.s(R.string.league_unlocked_text) + campaignSelectors.getLeagueNames()[data.getNewSelectedLeague()], null);
+                application.getPlatform().showAlert(str.s(R.string.league_unlocked), str.s(R.string.league_unlocked_text) + leagueNames[data.getNewSelectedLeague()], null);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -733,10 +719,10 @@ public class MenuFactory<T> {
 
             finishedMenu.addItem(e.menuAction(Fmt.colon(str.s(R.string.next), modManager.getTrackName(data.getSelectedLevel(), data.getNewSelectedTrack())), MenuAction.NEXT,
                     item -> {
-                        int league = campaignSelectors.getLeagueSelector().getSelectedOption();
-                        int level = campaignSelectors.getLevelSelector().getSelectedOption();
-                        int track = campaignSelectors.getTrackSelector().getSelectedOption();
-                        application.getGame().startTrack(GameParams.of(GameMode.CAMPAIGN, modManager.loadLevel(level, track), league, level, track));
+                        int league = leagueSelector.getSelectedOption();
+                        int level = levelSelector.getSelectedOption();
+                        int track = trackSelector.getSelectedOption();
+                        game.startTrack(GameParams.of(GameMode.CAMPAIGN, modManager.loadLevel(level, track), league, level, track));
                     }
             ));
         }
@@ -751,9 +737,9 @@ public class MenuFactory<T> {
         MenuScreen<T> hs = e.screen(str.s(R.string.highscores), r.get(MenuType.CAMPAIGN));
         hs.setBeforeShowAction(() -> {
             MenuData data = new MenuData();
-            data.setSelectedLevel(campaignSelectors.getLevelSelector().getSelectedOption());
-            data.setSelectedTrack(campaignSelectors.getTrackSelector().getSelectedOption());
-            data.setSelectedLeague(campaignSelectors.getLeagueSelector().getSelectedOption());
+            data.setSelectedLevel(levelSelector.getSelectedOption());
+            data.setSelectedTrack(trackSelector.getSelectedOption());
+            data.setSelectedLeague(leagueSelector.getSelectedOption());
             this.get(MenuType.HIGH_SCORE).build(data);
         });
         hs.addItem(e.backAction());
@@ -783,15 +769,15 @@ public class MenuFactory<T> {
         MenuScreen<T> screen = e.screen(str.s(R.string.campaign), r.get(MenuType.PLAY));
         screen.setBeforeShowAction(() -> {
             screen.setTitle(application.getModManager().getMod().getName());
-            application.getGame().startAutoplay(true);
+            game.startAutoplay(true);
         });
         return screen;
     }
 
     public void transformPlayCampaign(MenuScreen<T> s) {
-        MenuElement<T> trackSelector = campaignSelectors.getTrackSelector();
-        MenuElement<T> levelSelector = campaignSelectors.getLevelSelector();
-        MenuElement<T> leagueSelector = campaignSelectors.getLeagueSelector();
+        MenuElement<T> trackSelector = this.trackSelector;
+        MenuElement<T> levelSelector = this.levelSelector;
+        MenuElement<T> leagueSelector = this.leagueSelector;
         s.addItem(e.menuAction(Fmt.ra(str.s(R.string.start)), item -> {
             if (levelSelector.getSelectedOption() > levelSelector.getUnlockedCount()
                     || trackSelector.getSelectedOption() > trackSelector.getUnlockedCount()
@@ -801,7 +787,7 @@ public class MenuFactory<T> {
                 int league = leagueSelector.getSelectedOption();
                 int level = levelSelector.getSelectedOption();
                 int track = trackSelector.getSelectedOption();
-                application.getGame().startTrack(GameParams.of(GameMode.CAMPAIGN, application.getModManager().loadLevel(level, track), league, level, track));
+                game.startTrack(GameParams.of(GameMode.CAMPAIGN, application.getModManager().loadLevel(level, track), league, level, track));
             }
         }));
         s.addItem(levelSelector);
@@ -819,7 +805,7 @@ public class MenuFactory<T> {
                 modState.setUnlockedLeagues(leaguesCount);
                 modState.setUnlockedLevels(leaguesCount);
                 modState.unlockAllTracks();
-                campaignSelectors.setLeagueNames(application.getModManager().getLeagueNames());
+                setLeagueNames(application.getModManager().getLeagueNames());
                 leagueSelector.setUnlockedCount(modState.getUnlockedLeagues());
                 levelSelector.setUnlockedCount(modState.getUnlockedLevels());
                 application.getModManager().setTemporallyUnlockedAll(true);
@@ -831,7 +817,87 @@ public class MenuFactory<T> {
     }
 
     private void actionGoToPlayMenu() {
-        application.getGame().resetState();
+        game.resetState();
         menu.menuBack();
+    }
+
+    public void setDifficultyLevels(String[] difficultyLevels) {
+        this.difficultyLevels = difficultyLevels;
+        this.levelSelector.setOptions(difficultyLevels);
+    }
+
+    public void setLeagueNames(String[] leagueNames) {
+        this.leagueNames = leagueNames;
+        this.leagueSelector.setOptions(leagueNames);
+    }
+
+    private ModEntity getLevel() {
+        return application.getModManager().getModState();
+    }
+
+    public void createCampaignSelectors() {
+        this.difficultyLevels = application.getModManager().getLevelNames().toArray(new String[0]);
+        this.leagueNames = application.getModManager().getLeagueNames();
+
+        try {
+            selectedTrack[getLevel().getSelectedLevel()] = getLevel().getSelectedTrack();
+        } catch (ArrayIndexOutOfBoundsException _ex) {
+            getLevel().setSelectedLevel(0);
+            getLevel().setSelectedTrack(0);
+            selectedTrack[getLevel().getSelectedLevel()] = getLevel().getSelectedTrack();
+        }
+
+
+        levelSelector = e.selector(application.getStr().s(R.string.level), getLevel().getSelectedLevel(), this.difficultyLevels, false, this.get(MenuType.CAMPAIGN),
+                item -> {
+                    if (item._charvZ()) {
+                        MenuScreen<T> levelSelectorCurrentMenu = item.getCurrentMenu();
+                        menu.setCurrentMenu(levelSelectorCurrentMenu);
+                    }
+                    trackSelector.setOptions(application.getModManager().getLeagueTrackNames(item.getSelectedOption()), false);
+                    trackSelector.setUnlockedCount(getLevel().getUnlockedTracksCount(item.getSelectedOption()));
+                    trackSelector.setSelectedOption(selectedTrack[item.getSelectedOption()]);
+                });
+        trackSelector = e.selector(application.getStr().s(R.string.track), selectedTrack[getLevel().getSelectedLevel()], application.getModManager().getLeagueTrackNames(getLevel().getSelectedLevel()), false, this.get(MenuType.CAMPAIGN),
+                it -> {
+                    if (it._charvZ()) {
+                        it.setUnlockedCount(getLevel().getUnlockedTracksCount(levelSelector.getSelectedOption()));
+                        it.update();
+                        trackSelectorCurrentMenu = it.getCurrentMenu();
+                        menu.setCurrentMenu(trackSelectorCurrentMenu);
+                    }
+                    selectedTrack[levelSelector.getSelectedOption()] = it.getSelectedOption();
+                }
+        );
+        leagueSelector = e.selector(application.getStr().s(R.string.league), getLevel().getSelectedLeague(), this.leagueNames, false, this.get(MenuType.CAMPAIGN), it -> {
+            if (it._charvZ()) {
+                MenuScreen<T> leagueSelectorCurrentMenu = it.getCurrentMenu();
+                it.setScreen(menu.getCurrentMenu());
+                menu.setCurrentMenu(leagueSelectorCurrentMenu);
+            }
+        });
+        try {
+            trackSelector.setUnlockedCount(getLevel().getUnlockedTracksCount(getLevel().getSelectedLevel()));
+        } catch (ArrayIndexOutOfBoundsException _ex) {
+            trackSelector.setUnlockedCount(0);
+        }
+
+        levelSelector.setUnlockedCount(getLevel().getUnlockedLevels());
+        leagueSelector.setUnlockedCount(getLevel().getUnlockedLeagues());
+    }
+
+    public void resetSelectors() {
+        ModManager modManager = application.getModManager();
+        ModEntity modEntity = getLevel();
+        leagueSelector.setUnlockedCount(modEntity.getUnlockedLeagues());
+        leagueSelector.setSelectedOption(modEntity.getSelectedLeague());
+        levelSelector.setUnlockedCount(modEntity.getUnlockedLevels());
+        levelSelector.setSelectedOption(modEntity.getSelectedLevel());
+        trackSelector.setUnlockedCount(modEntity.getUnlockedTracksCount(modEntity.getSelectedLevel()));
+        trackSelector.setSelectedOption(modEntity.getSelectedTrack());
+        trackSelector.setOptions(modManager.getLeagueTrackNames(modEntity.getSelectedLevel()), true);
+        if (menu.currentMenu == trackSelectorCurrentMenu) {
+            selectedTrack[modEntity.getSelectedLevel()] = modEntity.getSelectedTrack();
+        }
     }
 }

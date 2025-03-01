@@ -16,6 +16,7 @@ import org.happysanta.gdtralive.android.menu.AMenuScreen;
 import org.happysanta.gdtralive.android.menu.views.MenuImageView;
 import org.happysanta.gdtralive.android.menu.views.MenuTextView;
 import org.happysanta.gdtralive.game.KeyboardHandler;
+import org.happysanta.gdtralive.game.api.menu.IOptionsMenuElement;
 import org.happysanta.gdtralive.game.api.menu.MenuElement;
 import org.happysanta.gdtralive.game.api.menu.MenuHandler;
 import org.happysanta.gdtralive.game.api.menu.MenuScreen;
@@ -23,12 +24,12 @@ import org.happysanta.gdtralive.game.api.util.ActionHandler;
 
 public class OptionsMenuElement<T>
         extends ClickableMenuElement<T>
-        implements MenuElement<T>, MenuHandler<T> {
+        implements IOptionsMenuElement<T> {
 
     protected int selectedIndex;
     protected String[] options;
     protected int unlockedCount;
-    protected MenuHandler<T> handler;
+    protected MenuHandler<T> menuHandler;
     protected MenuScreen<T> optionsScreen = null;
     protected MenuScreen<T> screen = null;
     protected boolean isOnOffToggle;
@@ -37,12 +38,12 @@ public class OptionsMenuElement<T>
     protected MenuAction<T>[] optionsScreenItems = null;
     protected MenuImageView lockImage = null;
     protected MenuTextView optionTextView = null;
-    protected ActionHandler<MenuElement<T>> action;
+    protected ActionHandler<IOptionsMenuElement<T>> action;
 
-    public OptionsMenuElement(String text, int selectedIndex, MenuHandler<T> handler, String[] options, boolean isOnOffToggle, MenuScreen<T> screen, ActionHandler<MenuElement<T>> action) {
+    public OptionsMenuElement(String text, int selectedIndex, MenuHandler<T> menuHandler, String[] options, boolean isOnOffToggle, MenuScreen<T> screen, ActionHandler<IOptionsMenuElement<T>> action) {
         this.text = text;
         this.selectedIndex = selectedIndex;
-        this.handler = handler;
+        this.menuHandler = menuHandler;
         this.options = options;
         if (this.options == null) this.options = new String[]{""};
         unlockedCount = this.options.length - 1;
@@ -176,6 +177,7 @@ public class OptionsMenuElement<T>
         updateSelectedOption();
     }
 
+    @Override
     public void update() {
         optionsScreen = new AMenuScreen(text, screen);
         optionsScreenItems = new MenuAction[options.length];
@@ -193,6 +195,7 @@ public class OptionsMenuElement<T>
         // System.gc();
     }
 
+    @Override
     public boolean _charvZ() {
         if (m_oZ) {
             m_oZ = false;
@@ -216,11 +219,9 @@ public class OptionsMenuElement<T>
             k++;
         } while (true);
 
-        handler.setCurrentMenu(screen);
-        if (action != null) {
-            action.handle(this);
-        }
-        handler.handleAction(this);
+        menuHandler.setCurrentMenu(screen);
+        handleAction();
+        menuHandler.handleAction(this);
     }
 
     @Override
@@ -249,17 +250,13 @@ public class OptionsMenuElement<T>
                     else
                         selectedOption = s(R.string.on);
                     updateViewText();
-                    if (action != null) {
-                        action.handle(this);
-                    }
-                    handler.handleAction(this);
+                    handleAction();
+                    menuHandler.handleAction(this);
                     return;
                 } else {
                     m_oZ = true;
-                    if (action != null) {
-                        action.handle(this);
-                    }
-                    handler.handleAction(this);
+                    handleAction();
+                    menuHandler.handleAction(this);
                     return;
                 }
 
@@ -268,10 +265,8 @@ public class OptionsMenuElement<T>
                     if (selectedIndex == 1) {
                         selectedIndex = 0;
                         selectedOption = s(R.string.on);
-                        if (action != null) {
-                            action.handle(this);
-                        }
-                        handler.handleAction(this);
+                        handleAction();
+                        menuHandler.handleAction(this);
                         updateViewText();
                     }
                     return;
@@ -280,10 +275,8 @@ public class OptionsMenuElement<T>
                 if (selectedIndex > options.length - 1) {
                     selectedIndex = options.length - 1;
                 } else {
-                    if (action != null) {
-                        action.handle(this);
-                    }
-                    handler.handleAction(this);
+                    handleAction();
+                    menuHandler.handleAction(this);
                 }
                 updateSelectedOption();
                 return;
@@ -293,10 +286,8 @@ public class OptionsMenuElement<T>
                     if (selectedIndex == 0) {
                         selectedIndex = 1;
                         selectedOption = s(R.string.off);
-                        if (action != null) {
-                            action.handle(this);
-                        }
-                        handler.handleAction(this);
+                        handleAction();
+                        menuHandler.handleAction(this);
                         updateViewText();
                     }
                     return;
@@ -306,23 +297,22 @@ public class OptionsMenuElement<T>
                     selectedIndex = 0;
                 } else {
                     updateSelectedOption();
-                    if (action != null) {
-                        action.handle(this);
-                    }
-                    handler.handleAction(this);
+                    handleAction();
+                    menuHandler.handleAction(this);
                 }
                 updateSelectedOption();
                 break;
         }
     }
 
+    @Override
     public void setScreen(MenuScreen<T> screen) {
         this.screen = screen;
     }
 
     @Override
     protected String getTextForView() {
-        return text + ": ";
+        return String.format("%s: ", text);
     }
 
     @Override
@@ -330,4 +320,9 @@ public class OptionsMenuElement<T>
         lockImage.setImageResource(MenuAction.locks[isHighlighted ? 2 : Helpers.getModManager().getInterfaceTheme().getLockSkinIndex()]);
     }
 
+    private void handleAction() {
+        if (action != null) {
+            action.handle(this);
+        }
+    }
 }

@@ -50,6 +50,7 @@ public interface MenuElement<T> {
         return false;
     }
 
+    default void update(){}
     default int getValue() {
         return 0;
     }

@@ -11,8 +11,10 @@ import org.happysanta.gdtralive.android.menu.element.HighScoreTextMenuElement;
 import org.happysanta.gdtralive.android.menu.element.InputTextElement;
 import org.happysanta.gdtralive.android.menu.element.MenuAction;
 import org.happysanta.gdtralive.android.menu.element.MenuItem;
+import org.happysanta.gdtralive.android.menu.element.OptionsMenuElement;
 import org.happysanta.gdtralive.android.menu.element.TextMenuElement;
 import org.happysanta.gdtralive.game.Application;
+import org.happysanta.gdtralive.game.api.menu.IOptionsMenuElement;
 import org.happysanta.gdtralive.game.api.menu.MenuElement;
 import org.happysanta.gdtralive.game.api.menu.MenuScreen;
 import org.happysanta.gdtralive.game.api.util.ActionHandler;
@@ -111,6 +113,10 @@ public class PlatformMenuElementFactory<T> {
 
     public MenuElement<T> getItem(String text, boolean padding) {
         return new HighScoreTextMenuElement<>(Html.fromHtml(text), padding);
+    }
+
+    public IOptionsMenuElement<T> selector(String title, int selected, String[] options, boolean toggle, MenuScreen<T> parent, ActionHandler<IOptionsMenuElement<T>> handler) {
+        return new OptionsMenuElement<>(title, selected, menu, options, toggle, parent, handler);
     }
 
 }
