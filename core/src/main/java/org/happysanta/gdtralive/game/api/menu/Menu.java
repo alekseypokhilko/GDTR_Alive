@@ -1,4 +1,4 @@
-package org.happysanta.gdtralive.android.menu;
+package org.happysanta.gdtralive.game.api.menu;
 
 import org.happysanta.gdtralive.game.Application;
 import org.happysanta.gdtralive.game.KeyboardHandler;
@@ -6,11 +6,9 @@ import org.happysanta.gdtralive.game.api.GameMode;
 import org.happysanta.gdtralive.game.api.MenuMode;
 import org.happysanta.gdtralive.game.api.MenuType;
 import org.happysanta.gdtralive.game.api.external.GdMenu;
-import org.happysanta.gdtralive.game.api.menu.MenuHandler;
-import org.happysanta.gdtralive.game.api.menu.MenuScreen;
 import org.happysanta.gdtralive.game.api.model.MenuData;
 
-public class AMenu<T> implements GdMenu<T>, MenuHandler<T> {
+public class Menu<T> implements GdMenu<T>, MenuHandler<T> {
     private final Application application;
     private final MenuFactory<T> menuFactory;
 
@@ -18,7 +16,7 @@ public class AMenu<T> implements GdMenu<T>, MenuHandler<T> {
     public boolean m_blZ = false;
     public boolean menuDisabled = false;
     private boolean m_SZ = false;
-    public AMenu(Application application, MenuFactory<T> menuFactory) {
+    public Menu(Application application, MenuFactory<T> menuFactory) {
         this.application = application;
         this.menuFactory = menuFactory;
     }

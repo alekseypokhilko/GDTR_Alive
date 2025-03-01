@@ -35,7 +35,7 @@ public class OptionsMenuElement<T>
     protected boolean isOnOffToggle;
     protected boolean m_oZ = false;
     protected String selectedOption;
-    protected MenuAction<T>[] optionsScreenItems = null;
+    protected MenuActionElement<T>[] optionsScreenItems = null;
     protected MenuImageView lockImage = null;
     protected MenuTextView optionTextView = null;
     protected ActionHandler<IOptionsMenuElement<T>> action;
@@ -95,12 +95,12 @@ public class OptionsMenuElement<T>
         );
 
         lockImage = new MenuImageView(context);
-        lockImage.setImageResource(MenuAction.locks[Helpers.getModManager().getInterfaceTheme().getLockSkinIndex()]);
+        lockImage.setImageResource(MenuActionElement.locks[Helpers.getModManager().getInterfaceTheme().getLockSkinIndex()]);
         lockImage.setScaleType(ImageView.ScaleType.CENTER);
         lockImage.setVisibility(View.GONE);
 
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
-        lp.setMargins(0, 0, getDp(MenuAction.LOCK_IMAGE_MARGIN_RIGHT), 0);
+        lp.setMargins(0, 0, getDp(MenuActionElement.LOCK_IMAGE_MARGIN_RIGHT), 0);
         lockImage.setLayoutParams(lp);
         lockImage.setVisibility(View.GONE);
 
@@ -180,13 +180,13 @@ public class OptionsMenuElement<T>
     @Override
     public void update() {
         optionsScreen = new AMenuScreen(text, screen);
-        optionsScreenItems = new MenuAction[options.length];
+        optionsScreenItems = new MenuActionElement[options.length];
         for (int k = 0; k < optionsScreenItems.length; k++) {
             if (k > unlockedCount) {
-                optionsScreenItems[k] = new MenuAction(options[k], this, null);
+                optionsScreenItems[k] = new MenuActionElement(options[k], this, null);
                 optionsScreenItems[k].setLock(true, true);
             } else {
-                optionsScreenItems[k] = new MenuAction(options[k], this, null);
+                optionsScreenItems[k] = new MenuActionElement(options[k], this, null);
             }
             optionsScreen.addItem(optionsScreenItems[k]);
         }
@@ -317,7 +317,7 @@ public class OptionsMenuElement<T>
 
     @Override
     protected void onHighlightChanged() {
-        lockImage.setImageResource(MenuAction.locks[isHighlighted ? 2 : Helpers.getModManager().getInterfaceTheme().getLockSkinIndex()]);
+        lockImage.setImageResource(MenuActionElement.locks[isHighlighted ? 2 : Helpers.getModManager().getInterfaceTheme().getLockSkinIndex()]);
     }
 
     private void handleAction() {

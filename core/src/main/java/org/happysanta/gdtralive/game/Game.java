@@ -15,7 +15,7 @@ import org.happysanta.gdtralive.game.api.model.GameParams;
 import org.happysanta.gdtralive.game.api.model.ModEntity;
 import org.happysanta.gdtralive.game.api.model.Score;
 import org.happysanta.gdtralive.game.util.Utils;
-import org.happysanta.gdtralive.game.api.Strings;
+import org.happysanta.gdtralive.game.api.S;
 
 /**
  * Core game logic
@@ -111,7 +111,7 @@ public class Game {
                 trainer.onCrash(() -> {
                     recorder.stopCapture();
                     delayedRestartAtTime = currentTimeMillis + 3000L;
-                    view.showInfoMessage(str.s(Strings.CRASHED), 3000);
+                    view.showInfoMessage(str.s(S.CRASHED), 3000);
                 });
             }
             if (delayedRestartAtTime != 0L && delayedRestartAtTime < currentTimeMillis) {
@@ -124,7 +124,7 @@ public class Game {
                 trainer.onCrash(() -> {
                     recorder.stopCapture();
                     finishedTime = currentTimeMillis;
-                    view.showInfoMessage(str.s(Strings.CRASHED), 3000);
+                    view.showInfoMessage(str.s(S.CRASHED), 3000);
                     Utils.waitRestart(delayedRestartAtTime, currentTimeMillis);
                     restart(true);
                 });
@@ -299,9 +299,9 @@ public class Game {
     public void goalLoop() {
         long l1 = 0L;
         if (!engine.frontWheelTouchedGround)
-            view.showInfoMessage(str.s(Strings.WHEELIE), 1000);
+            view.showInfoMessage(str.s(S.WHEELIE), 1000);
         else
-            view.showInfoMessage(str.s(Strings.FINISHED), 1000);
+            view.showInfoMessage(str.s(S.FINISHED), 1000);
         for (long l2 = System.currentTimeMillis() + 1000L; l2 > System.currentTimeMillis(); /*view.postInvalidate()*/) {
             if (application.isMenuShown()) {
                 //m_di.postInvalidate();

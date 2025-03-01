@@ -8,7 +8,7 @@ import org.happysanta.gdtralive.game.api.menu.MenuHandler;
 import org.happysanta.gdtralive.game.api.menu.MenuScreen;
 import org.happysanta.gdtralive.game.api.util.ActionHandler;
 
-public class MenuItem<T> extends ClickableMenuElement<T>
+public class MenuItemElement<T> extends ClickableMenuElement<T>
 		implements MenuElement<T> {
 
 	public int x;
@@ -18,7 +18,7 @@ public class MenuItem<T> extends ClickableMenuElement<T>
 	protected MenuHandler<T> handler;
 	protected ActionHandler<MenuElement<T>> action;
 
-	public MenuItem(String text, MenuScreen<T> screen, MenuHandler<T> handler, ActionHandler<MenuElement<T>> action) {
+	public MenuItemElement(String text, MenuScreen<T> screen, MenuHandler<T> handler, ActionHandler<MenuElement<T>> action) {
 		this.text = text + ">";
 		this.screen = screen;
 		this.handler = handler;
@@ -27,7 +27,7 @@ public class MenuItem<T> extends ClickableMenuElement<T>
 		createAllViews();
 	}
 
-	public MenuItem(String text, MenuScreen<T> screen, MenuHandler<T> handler) {
+	public MenuItemElement(String text, MenuScreen<T> screen, MenuHandler<T> handler) {
 		this.text = text + ">";
 		this.screen = screen;
 		this.handler = handler;

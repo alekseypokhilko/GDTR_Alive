@@ -10,22 +10,21 @@ import android.view.ViewTreeObserver;
 import android.widget.LinearLayout;
 
 import org.happysanta.gdtralive.android.GDActivity;
-import org.happysanta.gdtralive.game.api.menu.MenuScreen;
-import org.happysanta.gdtralive.game.api.menu.OnMenuElementHighlightListener;
 import org.happysanta.gdtralive.android.menu.element.ClickableMenuElement;
-import org.happysanta.gdtralive.android.menu.element.MenuAction;
-import org.happysanta.gdtralive.game.api.menu.MenuElement;
+import org.happysanta.gdtralive.android.menu.element.MenuActionElement;
 import org.happysanta.gdtralive.android.menu.views.MenuLinearLayout;
 import org.happysanta.gdtralive.game.KeyboardHandler;
+import org.happysanta.gdtralive.game.api.menu.MenuElement;
+import org.happysanta.gdtralive.game.api.menu.MenuScreen;
+import org.happysanta.gdtralive.game.api.menu.OnMenuElementHighlightListener;
 import org.happysanta.gdtralive.game.api.model.MenuData;
 import org.happysanta.gdtralive.game.api.util.BiFunction;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
 
-public class AMenuScreen<T> implements OnMenuElementHighlightListener<T>, MenuScreen<T>, Serializable {
+public class AMenuScreen<T> implements OnMenuElementHighlightListener<T>, MenuScreen<T> {
 
 	protected static final int LAYOUT_LEFT_PADDING = 30;
 	protected static final int LAYOUT_TOP_PADDING = 0;
@@ -61,8 +60,8 @@ public class AMenuScreen<T> implements OnMenuElementHighlightListener<T>, MenuSc
 	}
 
 	public void addItem(MenuElement<T> item) {
-		if (item instanceof MenuAction) {
-			MenuAction action = (MenuAction) item;
+		if (item instanceof MenuActionElement) {
+			MenuActionElement action = (MenuActionElement) item;
 			actions.put(action.getActionValue(), action);
 		}
 

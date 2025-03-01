@@ -5,7 +5,7 @@
 //import android.text.Html;
 //
 //import org.happysanta.gdtralive.R;
-//import org.happysanta.gdtralive.android.menu.AMenu;
+//import org.happysanta.gdtralive.game.api.menu.AMenu;
 //import org.happysanta.gdtralive.android.menu.AMenuScreen;
 //import org.happysanta.gdtralive.android.menu.MenuUtils;
 //import org.happysanta.gdtralive.android.menu.element.HighScoreTextMenuElement;

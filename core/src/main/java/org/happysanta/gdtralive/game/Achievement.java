@@ -1,7 +1,7 @@
 package org.happysanta.gdtralive.game;
 
 import org.happysanta.gdtralive.game.util.Fmt;
-import org.happysanta.gdtralive.game.api.Strings;
+import org.happysanta.gdtralive.game.api.S;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,11 +28,11 @@ public class Achievement {
         this.level = level;
     }
 
-    public Strings getName() {
+    public S getName() {
         return Type.fromId(id).names[level];
     }
 
-    public Strings getDescription() {
+    public S getDescription() {
         return Type.fromId(id).description;
     }
 
@@ -71,76 +71,76 @@ public class Achievement {
     public enum Type {
         TRIAL_MASTER("trial_master",
                 new long[]{0, 10, 100, 1000},
-                new Strings[]{
-                        Strings.TRIAL_MASTER,
-                        Strings.TRIAL_MASTER,
-                        Strings.TRIAL_MASTER,
-                        Strings.TRIAL_MASTER
+                new S[]{
+                        S.TRIAL_MASTER,
+                        S.TRIAL_MASTER,
+                        S.TRIAL_MASTER,
+                        S.TRIAL_MASTER
                 },
-                Strings.TRIAL_MASTER_DESC
+                S.TRIAL_MASTER_DESC
         ),
 
         GAMBLER("gambler",
                 new long[]{0, 10, 100, 1000},
-                new Strings[]{
-                        Strings.GAMBLER,
-                        Strings.GAMBLER,
-                        Strings.GAMBLER,
-                        Strings.GAMBLER
+                new S[]{
+                        S.GAMBLER,
+                        S.GAMBLER,
+                        S.GAMBLER,
+                        S.GAMBLER
                 },
-                Strings.GAMBLER_DESC
+                S.GAMBLER_DESC
         ),
 
         SERIES_LOVER("series_lover",
                 new long[]{0, 10, 100, 1000},
-                new Strings[]{
-                        Strings.SERIES_LOVER,
-                        Strings.SERIES_LOVER,
-                        Strings.SERIES_LOVER,
-                        Strings.SERIES_LOVER
+                new S[]{
+                        S.SERIES_LOVER,
+                        S.SERIES_LOVER,
+                        S.SERIES_LOVER,
+                        S.SERIES_LOVER
                 },
-                Strings.SERIES_LOVER_DESC
+                S.SERIES_LOVER_DESC
         ),
 
         ESTHETE("esthete",
                 new long[]{0, 1, 10, 100},
-                new Strings[]{
-                        Strings.ESTHETE,
-                        Strings.ESTHETE,
-                        Strings.ESTHETE,
-                        Strings.ESTHETE
+                new S[]{
+                        S.ESTHETE,
+                        S.ESTHETE,
+                        S.ESTHETE,
+                        S.ESTHETE
                 },
-                Strings.ESTHETE_DESC
+                S.ESTHETE_DESC
         ),
 
         DEVELOPER("developer",
                 new long[]{0, 1, 10, 100},
-                new Strings[]{
-                        Strings.DEVELOPER,
-                        Strings.DEVELOPER,
-                        Strings.DEVELOPER,
-                        Strings.DEVELOPER
+                new S[]{
+                        S.DEVELOPER,
+                        S.DEVELOPER,
+                        S.DEVELOPER,
+                        S.DEVELOPER
                 },
-                Strings.DEVELOPER_DESC
+                S.DEVELOPER_DESC
         ),
 
         BACK_TO_SCHOOL("back_to_school",
                 new long[]{0, 10, 100, 1000},
-                new Strings[]{
-                        Strings.BACK_TO_SCHOOL,
-                        Strings.BACK_TO_SCHOOL,
-                        Strings.BACK_TO_SCHOOL,
-                        Strings.BACK_TO_SCHOOL
+                new S[]{
+                        S.BACK_TO_SCHOOL,
+                        S.BACK_TO_SCHOOL,
+                        S.BACK_TO_SCHOOL,
+                        S.BACK_TO_SCHOOL
                 },
-                Strings.BACK_TO_SCHOOL_DESC
+                S.BACK_TO_SCHOOL_DESC
         );
 
         public final String id;
         public final long[] levels;
-        public final Strings[] names;
-        public final Strings description;
+        public final S[] names;
+        public final S description;
 
-        Type(String id, long[] levels, Strings[] names, Strings description) {
+        Type(String id, long[] levels, S[] names, S description) {
             this.id = id;
             this.levels = levels;
             this.names = names;

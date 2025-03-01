@@ -27,10 +27,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.happysanta.gdtralive.R;
-import org.happysanta.gdtralive.android.menu.AMenu;
+import org.happysanta.gdtralive.game.api.menu.Menu;
 import org.happysanta.gdtralive.android.menu.KeyboardController;
-import org.happysanta.gdtralive.android.menu.MenuFactory;
-import org.happysanta.gdtralive.android.menu.PlatformMenuElementFactory;
+import org.happysanta.gdtralive.game.api.menu.MenuFactory;
+import org.happysanta.gdtralive.android.menu.APlatformMenuElementFactory;
 import org.happysanta.gdtralive.android.menu.views.MenuHelmetView;
 import org.happysanta.gdtralive.android.menu.views.MenuImageView;
 import org.happysanta.gdtralive.android.menu.views.MenuLinearLayout;
@@ -66,7 +66,7 @@ public class GDActivity extends Activity implements GdPlatform {
 
     public static GDActivity shared = null;
     private Application application;
-    private PlatformMenuElementFactory<View> viewPlatformMenuElementFactory;
+    private APlatformMenuElementFactory<View> viewPlatformMenuElementFactory;
 
     private GdMenu<View> menu;
     private MenuFactory<View> menuFactory;
@@ -96,7 +96,7 @@ public class GDActivity extends Activity implements GdPlatform {
         AGameView gameView = new AGameView(this);
 
         this.application = new Application(this, new ASettingsStorage(), str, fileStorage, dataSource, gameView);
-        viewPlatformMenuElementFactory = new PlatformMenuElementFactory<>(application);
+        viewPlatformMenuElementFactory = new APlatformMenuElementFactory<>(application);
         this.menuFactory = new MenuFactory<>(application, this, viewPlatformMenuElementFactory);
 
         ModManager modManager = application.getModManager();
@@ -276,7 +276,9 @@ public class GDActivity extends Activity implements GdPlatform {
     @Override
     public void init() {
         keyboardController.setKeyboardHandler(application.getGame().getKeyboardHandler());
-        AMenu<View> menu = new AMenu<>(application, menuFactory);
+
+        //todo move to init method in application
+        Menu<View> menu = new Menu<>(application, menuFactory);
         viewPlatformMenuElementFactory.setMenu(menu);
         trackEditor.init(application.getGame());
         menuFactory.init(menu, trackEditor, application.getGame());

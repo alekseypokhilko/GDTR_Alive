@@ -13,4 +13,6 @@ public interface MenuHandler<T> {
     default void handleAction(MenuElement<T> item) {
 
     }
+
+    default void menuBack() {};
 }

@@ -3,7 +3,7 @@ package org.happysanta.gdtralive.game;
 import org.happysanta.gdtralive.game.engine.Engine;
 import org.happysanta.gdtralive.game.api.external.GdStr;
 import org.happysanta.gdtralive.game.api.model.FullEngineState;
-import org.happysanta.gdtralive.game.api.Strings;
+import org.happysanta.gdtralive.game.api.S;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,14 +29,14 @@ public class Trainer {
         }
         states.add(engine.getFullState());
         engine.setRespawn(engine.getState());
-        view.showInfoMessage(str.s(Strings.ATTEMPT) + attempt, 1000);
+        view.showInfoMessage(str.s(S.ATTEMPT) + attempt, 1000);
     }
 
     public void onCrash(Runnable execution) {
         if (trainingMode) {
             engine.setState(states.get(states.size() - 1));
             attempt++;
-            view.showInfoMessage(str.s(Strings.ATTEMPT) + " " + attempt, 1000);
+            view.showInfoMessage(str.s(S.ATTEMPT) + " " + attempt, 1000);
             Achievement.achievements.get(Achievement.Type.BACK_TO_SCHOOL).increment();
         } else {
             execution.run();

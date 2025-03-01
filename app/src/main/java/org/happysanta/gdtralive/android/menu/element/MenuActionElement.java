@@ -17,7 +17,7 @@ import org.happysanta.gdtralive.android.menu.views.MenuImageView;
 import org.happysanta.gdtralive.android.menu.views.MenuTextView;
 import org.happysanta.gdtralive.game.KeyboardHandler;
 
-public class MenuAction<T>
+public class MenuActionElement<T>
         extends ClickableMenuElement<T>
         implements MenuHandler<T>, MenuElement<T> {
 
@@ -29,24 +29,6 @@ public class MenuAction<T>
             R.drawable.s_lock2
     };
 
-    public static final int OK = 0;
-    public static final int BACK = 1;
-    public static final int EXIT = 2;
-    public static final int YES = 3;
-    public static final int NO = 4;
-    public static final int PLAY_MENU = 5;
-    public static final int GO_TO_MAIN = 6;
-    public static final int RESTART = 7;
-    public static final int NEXT = 8;
-    public static final int CONTINUE = 9;
-    public static final int INSTALL = 10;
-    public static final int LOAD = 11;
-    public static final int SELECT_FILE = 12;
-    public static final int DELETE = 13;
-    public static final int RESTART_WITH_NEW_LEVEL = 14;
-    public static final int SEND_LOGS = 15;
-    public static final int LIKE = 16;
-
     protected MenuHandler<T> handler;
     protected boolean isLocked = false;
     protected boolean isBlackLock = true;
@@ -55,7 +37,7 @@ public class MenuAction<T>
 
     protected int actionValue = -1;
 
-    public MenuAction(String s, int value, MenuHandler<T> handler, ActionHandler<MenuElement<T>> action) {
+    public MenuActionElement(String s, int value, MenuHandler<T> handler, ActionHandler<MenuElement<T>> action) {
         actionValue = value;
         this.handler = handler;
         this.action = action;
@@ -65,7 +47,7 @@ public class MenuAction<T>
         createAllViews();
     }
 
-    public MenuAction(String s, MenuHandler<T> handler, ActionHandler<MenuElement<T>> action) {
+    public MenuActionElement(String s, MenuHandler<T> handler, ActionHandler<MenuElement<T>> action) {
         this(s, -1, handler, action);
     }
 
@@ -79,7 +61,7 @@ public class MenuAction<T>
         lockImage.setVisibility(View.GONE);
 
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
-        lp.setMargins(0, 0, getDp(MenuAction.LOCK_IMAGE_MARGIN_RIGHT), 0);
+        lp.setMargins(0, 0, getDp(MenuActionElement.LOCK_IMAGE_MARGIN_RIGHT), 0);
         lockImage.setLayoutParams(lp);
 
         layout.addView(lockImage, 1);

@@ -56,7 +56,7 @@ public class BadgeWithTextElement<T> implements MenuElement<T> {
 		badge.setImageResource(badgeId);
 		badge.setScaleType(ImageView.ScaleType.CENTER);
 		LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
-		lp.setMargins(0, 0, getDp(MenuAction.LOCK_IMAGE_MARGIN_RIGHT), 0);
+		lp.setMargins(0, 0, getDp(MenuActionElement.LOCK_IMAGE_MARGIN_RIGHT), 0);
 		badge.setLayoutParams(lp);
 
 		Helpers.getModManager().registerThemeReloadHandler(this::onThemeReload);

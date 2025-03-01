@@ -30,7 +30,7 @@ public class ClickableMenuElement<T>
 	protected View.OnTouchListener onTouchListener;
 	protected LinearLayout layout;
 	protected MenuHelmetView helmet;
-	protected OnMenuElementHighlightListener onMenuElementHighlightListener = null;
+	protected OnMenuElementHighlightListener<T> onMenuElementHighlightListener = null;
 	protected boolean isHighlighted = false;
 	protected boolean disabled = false;
 
