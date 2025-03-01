@@ -95,7 +95,7 @@ public class TrackEditorView {
         LinearLayout inputRow = new LinearLayout(gd);
         inputRow.setPadding(Helpers.getDp(KeyboardController.PADDING), Helpers.getDp(KeyboardController.PADDING), Helpers.getDp(KeyboardController.PADDING), 0);
         inputRow.setOrientation(LinearLayout.VERTICAL);
-        inputRow.addView(offsetInput.getView());
+        inputRow.addView((View) offsetInput.getView());
         inputLayout.setOrientation(LinearLayout.VERTICAL);
         inputLayout.addView(inputRow);
         inputLayout.setGravity(Gravity.TOP | Gravity.CENTER);
@@ -272,9 +272,9 @@ public class TrackEditorView {
         }
     }
 
-    private void saveOffset(EditText et) {
+    private void saveOffset(Object et) {
         try {
-            String value = et.getText().toString();
+            String value = ((EditText)et).getText().toString();
             int i = Integer.parseInt(value);
             offset = Utils.unpackInt(i);
         } catch (Exception e) {

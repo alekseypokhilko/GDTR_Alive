@@ -12,6 +12,7 @@ import android.text.Html;
 import org.happysanta.gdtralive.R;
 import org.happysanta.gdtralive.android.TrackEditorView;
 import org.happysanta.gdtralive.android.menu.element.BadgeWithTextElement;
+import org.happysanta.gdtralive.android.menu.element.EmptyLineMenuElement;
 import org.happysanta.gdtralive.android.menu.element.HighScoreTextMenuElement;
 import org.happysanta.gdtralive.android.menu.element.InputTextElement;
 import org.happysanta.gdtralive.android.menu.element.MenuAction;
@@ -31,11 +32,14 @@ import org.happysanta.gdtralive.game.api.dto.Theme;
 import org.happysanta.gdtralive.game.api.dto.ThemeHeader;
 import org.happysanta.gdtralive.game.api.dto.TrackParams;
 import org.happysanta.gdtralive.game.api.external.GdPlatform;
+import org.happysanta.gdtralive.game.api.menu.MenuElement;
+import org.happysanta.gdtralive.game.api.menu.MenuScreen;
 import org.happysanta.gdtralive.game.api.model.GameParams;
 import org.happysanta.gdtralive.game.api.model.MenuData;
 import org.happysanta.gdtralive.game.api.model.Mod;
 import org.happysanta.gdtralive.game.api.model.ModEntity;
 import org.happysanta.gdtralive.game.api.model.TrackRecord;
+import org.happysanta.gdtralive.game.api.util.ActionHandler;
 import org.happysanta.gdtralive.game.api.util.Consumer;
 import org.happysanta.gdtralive.game.api.util.Function;
 import org.happysanta.gdtralive.game.util.Fmt;
@@ -46,7 +50,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MenuFactory {
+public class MenuFactory<T> {
     public static int[] ACHIEVEMENT_ICONS = {
             R.drawable.s_lock1,
             R.drawable.levels_wheel0,
@@ -54,11 +58,11 @@ public class MenuFactory {
             R.drawable.levels_wheel2
     };
 
-    private final Map<MenuType, AMenuScreen> menus = new HashMap<>();
+    private final Map<MenuType, MenuScreen<T>> menus = new HashMap<>();
     private final Application application;
     private final GdPlatform platform;
 
-    private AMenu menu;
+    private AMenu<T> menu;
 
     private CampaignSelectors campaignSelectors;
     private TrackEditorView trackEditor;
@@ -70,20 +74,20 @@ public class MenuFactory {
         this.platform = platform;
     }
 
-    public AMenuScreen add(MenuType type, Function<Map<MenuType, AMenuScreen>, AMenuScreen> builder) {
-        AMenuScreen screen = builder.apply(menus);
+    public MenuScreen<T> add(MenuType type, Function<Map<MenuType, MenuScreen<T>>, MenuScreen<T>> builder) {
+        MenuScreen<T> screen = builder.apply(menus);
         menus.put(type, screen);
         return screen;
     }
 
-    public AMenuScreen transform(MenuType type, Consumer<AMenuScreen> transformer) {
-        AMenuScreen screen = menus.get(type);
+    public MenuScreen<T> transform(MenuType type, Consumer<MenuScreen<T>> transformer) {
+        MenuScreen<T> screen = menus.get(type);
         transformer.accept(screen);
         return screen;
     }
 
-    public AMenuScreen get(MenuType type) {
-        AMenuScreen screen = menus.get(type);
+    public MenuScreen<T> get(MenuType type) {
+        MenuScreen<T> screen = menus.get(type);
         if (screen == null) {
             throw new IllegalStateException("FIX ME: no " + type); //todo remove
         }
@@ -93,11 +97,14 @@ public class MenuFactory {
     //Все переплетено
     //Потяни за нить
     //За ней потянется клубок
-    public void init(AMenu menu, TrackEditorView trackEditor) {
+    public void init(AMenu<T> menu, TrackEditorView trackEditor) {
         this.menu = menu;
         this.trackEditor = trackEditor;
-        add(MenuType.MAIN, r -> new AMenuScreen(s(R.string.main), null));
-        add(MenuType.PLAY, r -> new AMenuScreen(s(R.string.play), r.get(MenuType.MAIN)));
+        add(MenuType.MAIN, r -> {
+            String title = s(R.string.main);
+            return screen(title, null);
+        });
+        add(MenuType.PLAY, r -> screen(s(R.string.play), r.get(MenuType.MAIN)));
         add(MenuType.PROFILE, this::createProfileScreen);
         add(MenuType.ABOUT, this::createAboutScreen);
         add(MenuType.HELP, this::createHelpScreen);
@@ -106,7 +113,7 @@ public class MenuFactory {
 
         add(MenuType.FINISHED_PLAY, this::createFinishedPlay);
         add(MenuType.IN_GAME_PLAY, this::createInGamePlay);
-        add(MenuType.WORKSHOP, r -> new AMenuScreen(s(R.string.workshop), r.get(MenuType.MAIN)));
+        add(MenuType.WORKSHOP, r -> screen(s(R.string.workshop), r.get(MenuType.MAIN)));
         add(MenuType.MODS, this::createMods);
         add(MenuType.MOD_OPTIONS, this::createModOptions);
         add(MenuType.THEMES, this::createThemes);
@@ -134,21 +141,21 @@ public class MenuFactory {
         transform(MenuType.MAIN, this::fillMainScreen);
     }
 
-    private AMenuScreen createTEMPLATE(Map<MenuType, AMenuScreen> r) {
-        AMenuScreen screen = new AMenuScreen(s(R.string.main), r.get(MenuType.MAIN));
+    private MenuScreen<T> createTEMPLATE(Map<MenuType, MenuScreen<T>> r) {
+        MenuScreen<T> screen = screen(s(R.string.main), r.get(MenuType.MAIN));
         screen.setBuilder((s, data) -> {
             return s;
         });
         return screen;
     }
 
-    private AMenuScreen createInGameReplay(Map<MenuType, AMenuScreen> r) {
-        AMenuScreen screen = new AMenuScreen(s(R.string.replay), r.get(MenuType.RECORDING_OPTIONS));
+    private MenuScreen<T> createInGameReplay(Map<MenuType, MenuScreen<T>> r) {
+        MenuScreen<T> screen = screen(s(R.string.replay), r.get(MenuType.RECORDING_OPTIONS));
         screen.setBuilder((s, data) -> {
             s.clear();
-            s.addItem(new MenuAction(s(R.string._continue), MenuAction.CONTINUE, menu, __ -> application.menuToGame()));
-            s.addItem(new MenuItem(s(R.string.options), this.get(MenuType.OPTIONS), menu, null));
-            s.addItem(new MenuAction(s(R.string.back), menu, it -> {
+            s.addItem(actionContinue(__ -> application.menuToGame()));
+            s.addItem(getItem(s(R.string.options), this.get(MenuType.OPTIONS), null));
+            s.addItem(getMenuAction(s(R.string.back), it -> {
                 application.getGame().resetState();
                 menu.menuBack();
             }));
@@ -158,16 +165,16 @@ public class MenuFactory {
         return screen;
     }
 
-    private AMenuScreen createInGameEditor(Map<MenuType, AMenuScreen> r) {
-        AMenuScreen screen = new AMenuScreen(s(R.string.track_editor), r.get(MenuType.WORKSHOP));
+    private MenuScreen<T> createInGameEditor(Map<MenuType, MenuScreen<T>> r) {
+        MenuScreen<T> screen = screen(s(R.string.track_editor), r.get(MenuType.WORKSHOP));
         screen.setBuilder((s, data) -> {
             s.clear();
-            s.addItem(new MenuAction(s(R.string.back), menu, it -> trackEditor.startEditing()));
-            s.addItem(new MenuAction(s(R.string.play), menu, it -> trackEditor.playTrack()));
-            s.addItem(new MenuItem(s(R.string.track_options), this.get(MenuType.TRACK_EDITOR_OPTIONS), menu, item -> this.get(MenuType.TRACK_EDITOR_OPTIONS).build(new MenuData(trackEditor.getCurrentTrack()))));
-            s.addItem(new MenuItem(s(R.string.options), this.get(MenuType.OPTIONS), menu, null));
-            s.addItem(new MenuAction(s(R.string.save), menu, it -> trackEditor.saveTrack()));
-            s.addItem(new MenuAction(s(R.string.exit_editor), menu, it -> {
+            s.addItem(getMenuAction(s(R.string.back), it -> trackEditor.startEditing()));
+            s.addItem(getMenuAction(s(R.string.play), it -> trackEditor.playTrack()));
+            s.addItem(getItem(s(R.string.track_options), this.get(MenuType.TRACK_EDITOR_OPTIONS), item -> this.get(MenuType.TRACK_EDITOR_OPTIONS).build(new MenuData(trackEditor.getCurrentTrack()))));
+            s.addItem(getItem(s(R.string.options), this.get(MenuType.OPTIONS), null));
+            s.addItem(getMenuAction(s(R.string.save), it -> trackEditor.saveTrack()));
+            s.addItem(getMenuAction(s(R.string.exit_editor), it -> {
                 trackEditor.exitEditor();
                 menu.menuBack();
             }));
@@ -179,8 +186,8 @@ public class MenuFactory {
         return screen;
     }
 
-    private AMenuScreen createTrackOptions(Map<MenuType, AMenuScreen> r) {
-        AMenuScreen screen = new AMenuScreen(s(R.string.track_editor), r.get(MenuType.WORKSHOP));
+    private MenuScreen<T> createTrackOptions(Map<MenuType, MenuScreen<T>> r) {
+        MenuScreen<T> screen = screen(s(R.string.track_editor), r.get(MenuType.WORKSHOP));
         screen.setBuilder((s, data) -> {
             TrackParams track = data.getTrackRef();
             s.clear();
@@ -189,17 +196,17 @@ public class MenuFactory {
             s.addItem(new TextMenuElement(boldAttr(R.string.author, track.getData().getAuthor())));
             s.addItem(new InputTextElement(Fmt.colon(s(R.string.name)), track.getData().getName(), item1 -> {
                 TrackParams currentTrack = trackEditor.getCurrentTrack();
-                String name = item1.getText().toString().trim();
+                String name = ((InputTextElement)item1).getText().toString().trim();
                 currentTrack.getData().setName(name);
             }));
 
-            s.addItem(MenuUtils.emptyLine(false));
+            s.addItem(emptyLine(false));
             s.addItem(new TextMenuElement(boldAttr(R.string.league_properties, null)));
             s.addItem(new OptionsMenuElement(s(R.string.league), track.getData().league, menu, application.getModManager().getLeagueNames(), false, screen,
                     item -> {
                         OptionsMenuElement it = (OptionsMenuElement) item;
                         if (it._charvZ()) {
-                            AMenuScreen leagueSelectorCurrentMenu = it.getCurrentMenu();
+                            MenuScreen<T> leagueSelectorCurrentMenu = it.getCurrentMenu();
                             it.setScreen(menu.currentMenu);
                             menu.setCurrentMenu(leagueSelectorCurrentMenu);
                         } else {
@@ -214,7 +221,7 @@ public class MenuFactory {
 //                }));
 //            }
 
-            s.addItem(MenuUtils.emptyLine(false));
+            s.addItem(emptyLine(false));
             s.addItem(new TextMenuElement(boldAttr(R.string.track_properties, null)));
 //            for (Map.Entry<String, String> entry : track.getGameProperties().entrySet()) {
 //                s.addItem(new PropInput(Fmt.colon(entry.getKey()), entry.getValue(), entry.getKey(), item -> {
@@ -229,8 +236,8 @@ public class MenuFactory {
         return screen;
     }
 
-    private AMenuScreen createThemes(Map<MenuType, AMenuScreen> r) {
-        AMenuScreen screen = new AMenuScreen(s(R.string.themes), r.get(MenuType.WORKSHOP));
+    private MenuScreen<T> createThemes(Map<MenuType, MenuScreen<T>> r) {
+        MenuScreen<T> screen = screen(s(R.string.themes), r.get(MenuType.WORKSHOP));
         screen.setBeforeShowAction(()-> this.get(MenuType.THEMES).build());
         screen.setBuilder((s, data) -> {
             s.clear();
@@ -245,8 +252,8 @@ public class MenuFactory {
             s.addItem(new MenuAction(s(R.string.import_theme), MenuAction.SELECT_FILE, menu, it -> {
                 platform.pickFile(Constants.PICKFILE_THEME_RESULT_CODE);
             }));
-            s.addItem(MenuUtils.emptyLine(true));
-            s.addItem(MenuUtils.emptyLine(true));
+            s.addItem(emptyLine(true));
+            s.addItem(emptyLine(true));
             for (int i = 0; i < themeNames.size(); i++) { //todo
                 try {
                     String theme = themeNames.get(i);
@@ -263,8 +270,8 @@ public class MenuFactory {
         return screen;
     }
 
-    private AMenuScreen createThemeOptions(Map<MenuType, AMenuScreen> r) {
-        AMenuScreen screen = new AMenuScreen(s(R.string.theme), r.get(MenuType.WORKSHOP));
+    private MenuScreen<T> createThemeOptions(Map<MenuType, MenuScreen<T>> r) {
+        MenuScreen<T> screen = screen(s(R.string.theme), r.get(MenuType.WORKSHOP));
         screen.setBuilder((s, data) -> {
             String name = GDFile.THEME.cutExtension(data.getFileName());
             Theme theme = data.getTheme() == null
@@ -277,7 +284,7 @@ public class MenuFactory {
             s.addItem(new TextMenuElement(boldAttr(R.string.guid, header.getGuid())));
             s.addItem(new TextMenuElement(boldAttr(R.string.author, header.getAuthor())));
             s.addItem(new TextMenuElement(boldAttr(R.string.date, header.getDate())));
-            s.addItem(MenuUtils.emptyLine(true));
+            s.addItem(emptyLine(true));
 
             s.addItem(new MenuAction(s(R.string.install), -1, menu, item -> {
                 application.getFileStorage().save(theme, GDFile.THEME, theme.getHeader().getName()); //todo move to method
@@ -295,8 +302,8 @@ public class MenuFactory {
         return screen;
     }
 
-    private AMenuScreen createModOptions(Map<MenuType, AMenuScreen> r) {
-        AMenuScreen screen = new AMenuScreen(s(R.string.mod), r.get(MenuType.MODS));
+    private MenuScreen<T> createModOptions(Map<MenuType, MenuScreen<T>> r) {
+        MenuScreen<T> screen = screen(s(R.string.mod), r.get(MenuType.MODS));
         screen.setBuilder((s, data) -> {
             Mod mod = data.getMod();
             s.clear();
@@ -305,7 +312,7 @@ public class MenuFactory {
             s.addItem(new TextMenuElement(boldAttr(R.string.tracks, Fmt.formatLevelsCount(mod))));
             s.addItem(new TextMenuElement(boldAttr(R.string.author, mod.getAuthor())));
             s.addItem(new TextMenuElement(boldAttr(R.string.date, mod.getDate())));
-            s.addItem(MenuUtils.emptyLine(false));
+            s.addItem(emptyLine(false));
 
             s.addItem(new MenuAction(s(R.string.install), -1, menu, item -> {
                 String modName = mod.getName();
@@ -323,8 +330,8 @@ public class MenuFactory {
         return screen;
     }
 
-    private AMenuScreen createMods(Map<MenuType, AMenuScreen> r) {
-        AMenuScreen screen = new AMenuScreen(s(R.string.mod_packs), r.get(MenuType.WORKSHOP));
+    private MenuScreen<T> createMods(Map<MenuType, MenuScreen<T>> r) {
+        MenuScreen<T> screen = screen(s(R.string.mod_packs), r.get(MenuType.WORKSHOP));
         screen.setBuilder((s, data) -> {
             s.clear();
             modNames.clear();
@@ -335,8 +342,8 @@ public class MenuFactory {
             s.addItem(new MenuAction(s(R.string.import_mrg), MenuAction.SELECT_FILE, menu, it -> {
                 platform.pickFile(Constants.PICKFILE_MRG_RESULT_CODE);
             }));
-            s.addItem(MenuUtils.emptyLine(true));
-            s.addItem(MenuUtils.emptyLine(true));
+            s.addItem(emptyLine(true));
+            s.addItem(emptyLine(true));
             int i = 0;
             List<String> list = application.getFileStorage().listFiles(GDFile.MOD);
             for (String filename : list) {
@@ -367,7 +374,7 @@ public class MenuFactory {
         return screen;
     }
 
-    private void fillPlay(AMenuScreen screen) {
+    private void fillPlay(MenuScreen<T> screen) {
         screen.setBeforeShowAction(screen::build);
         screen.setBuilder((s, data) -> {
             Game game = application.getGame();
@@ -387,7 +394,7 @@ public class MenuFactory {
                     item -> {
                         OptionsMenuElement it = (OptionsMenuElement) item;
                         if (it._charvZ()) {
-                            AMenuScreen leagueSelectorCurrentMenu = it.getCurrentMenu();
+                            MenuScreen<T> leagueSelectorCurrentMenu = it.getCurrentMenu();
                             it.setScreen(menu.currentMenu);
                             menu.setCurrentMenu(leagueSelectorCurrentMenu);
                         }
@@ -400,16 +407,16 @@ public class MenuFactory {
                 campaignSelectors.resetSelectors();
             }));
             s.addItem(campaignSelector);
-            s.addItem(new MenuAction(Fmt.ra(s(R.string.random_track)), menu, __ -> game.startTrack(GameParams.of(GameMode.RANDOM, modManager.getRandomTrack()))));
-            s.addItem(new MenuAction(Fmt.ra(s(R.string.tracks)), menu, __ -> application.notify("Coming soon")));
-            s.addItem(new MenuItem(s(R.string.achievements), this.get(MenuType.ACHIEVEMENTS), menu, __ -> this.get(MenuType.ACHIEVEMENTS).build()));
+            s.addItem(getMenuAction(Fmt.ra(s(R.string.random_track)), __ -> game.startTrack(GameParams.of(GameMode.RANDOM, modManager.getRandomTrack()))));
+            s.addItem(getMenuAction(Fmt.ra(s(R.string.tracks)), __ -> application.notify("Coming soon")));
+            s.addItem(getItem(s(R.string.achievements), this.get(MenuType.ACHIEVEMENTS), __ -> this.get(MenuType.ACHIEVEMENTS).build()));
             s.addItem(menu.backAction(game::resetState));
             return s;
         });
     }
 
-    private AMenuScreen createAchievements(Map<MenuType, AMenuScreen> r) {
-        AMenuScreen screen = new AMenuScreen(s(R.string.achievements), r.get(MenuType.PLAY));
+    private MenuScreen<T> createAchievements(Map<MenuType, MenuScreen<T>> r) {
+        MenuScreen<T> screen = screen(s(R.string.achievements), r.get(MenuType.PLAY));
         screen.setBuilder((s, data) -> {
             s.clear();
             for (Achievement achievement : Achievement.achievements.values()) {
@@ -417,7 +424,7 @@ public class MenuFactory {
                 s.addItem(new BadgeWithTextElement(ACHIEVEMENT_ICONS[achievement.getLevel()], title, menu, item -> {
                 }));
                 s.addItem(new TextMenuElement(Html.fromHtml(application.getStr().s(achievement.getDescription()))));
-                s.addItem(MenuUtils.emptyLine(false));
+                s.addItem(emptyLine(false));
             }
             s.addItem(menu.backAction());
             return s;
@@ -425,16 +432,16 @@ public class MenuFactory {
         return screen;
     }
 
-    private AMenuScreen createRecordings(Map<MenuType, AMenuScreen> r) {
-        AMenuScreen screen = new AMenuScreen(s(R.string.recordings), r.get(MenuType.WORKSHOP));
+    private MenuScreen<T> createRecordings(Map<MenuType, MenuScreen<T>> r) {
+        MenuScreen<T> screen = screen(s(R.string.recordings), r.get(MenuType.WORKSHOP));
         screen.setBuilder((s, data) -> {
                     s.clear();
                     s.addItem(menu.backAction());
                     s.addItem(new MenuAction(s(R.string.import_record), MenuAction.SELECT_FILE, menu, it -> {
                         platform.pickFile(Constants.PICKFILE_RECORD_RESULT_CODE);
                     }));
-                    s.addItem(MenuUtils.emptyLine(false));
-                    s.addItem(MenuUtils.emptyLine(false));
+                    s.addItem(emptyLine(false));
+                    s.addItem(emptyLine(false));
                     int i = 0;
                     //todo
                     for (TrackRecord rec : application.getFileStorage().getAllRecords()) {
@@ -460,8 +467,8 @@ public class MenuFactory {
         return screen;
     }
 
-    private AMenuScreen createRecordingOptions(Map<MenuType, AMenuScreen> r) {
-        AMenuScreen screen = new AMenuScreen(s(R.string.record_option), r.get(MenuType.RECORDINGS));
+    private MenuScreen<T> createRecordingOptions(Map<MenuType, MenuScreen<T>> r) {
+        MenuScreen<T> screen = screen(s(R.string.record_option), r.get(MenuType.RECORDINGS));
         screen.setBuilder((s, data) -> {
             TrackRecord rec = data.getRecording();
             s.clear();
@@ -471,7 +478,7 @@ public class MenuFactory {
             long millis = rec.getTime();
             s.addItem(new TextMenuElement(boldAttr(R.string.time, Utils.getDurationString(millis))));
             s.addItem(new TextMenuElement(boldAttr(R.string.date, rec.getDate())));
-            s.addItem(MenuUtils.emptyLine(true));
+            s.addItem(emptyLine(true));
 
             s.addItem(new MenuAction(s(R.string.replay), -1, menu, item -> application.getGame().startTrack(GameParams.of(rec))));
             s.addItem(new MenuAction(s(R.string.save), -1, menu,
@@ -485,20 +492,29 @@ public class MenuFactory {
         return screen;
     }
 
-    private void transformWorkshop(AMenuScreen s) {
-        s.addItem(new MenuAction(Fmt.ra(s(R.string.create_new_track)), menu, item -> {
+    private void transformWorkshop(MenuScreen<T> s) {
+        s.addItem(getMenuAction(Fmt.ra(s(R.string.create_new_track)), item -> {
             application.notify("Coming soon");
 //            trackEditor.createNew(application.getSettings().getPlayerName());
         }));
-        s.addItem(new MenuItem(s(R.string.mod_packs), this.get(MenuType.MODS), menu, __ -> this.get(MenuType.MODS).build()));
-        s.addItem(new MenuItem(s(R.string.themes), this.get(MenuType.THEMES), menu, __ -> this.get(MenuType.THEMES).build()));
-        s.addItem(new MenuItem(s(R.string.recordings), this.get(MenuType.RECORDINGS), menu, __ -> this.get(MenuType.RECORDINGS).build()));
-        s.addItem(MenuUtils.emptyLine(true));
+        s.addItem(getItem(s(R.string.mod_packs), this.get(MenuType.MODS), __ -> this.get(MenuType.MODS).build()));
+        s.addItem(getItem(s(R.string.themes), this.get(MenuType.THEMES), __ -> this.get(MenuType.THEMES).build()));
+        s.addItem(getItem(s(R.string.recordings), this.get(MenuType.RECORDINGS), __ -> this.get(MenuType.RECORDINGS).build()));
+        s.addItem(emptyLine(true));
         s.addItem(menu.backAction());
     }
 
-    private AMenuScreen createFinishedPlay(Map<MenuType, AMenuScreen> r) {
-        AMenuScreen fm = new AMenuScreen(s(R.string.finished), r.get(MenuType.PLAY));
+    public MenuElement<T> emptyLine(boolean beforeAction) {
+        return new EmptyLineMenuElement<T>(beforeAction ? 10 : 20);
+    }
+    private MenuElement<T> getItem(String title, MenuScreen<T> parent, ActionHandler handler) {
+        return new MenuItem<T>(title, parent, menu, handler);
+    }
+
+    private MenuScreen<T> createFinishedPlay(Map<MenuType, MenuScreen<T>> r) {
+        String title = s(R.string.finished);
+        MenuScreen<T> parent = r.get(MenuType.PLAY);
+        MenuScreen<T> fm = screen(title, parent);
         fm.setBuilder((finishedMenu, data) -> {
             Game game = application.getGame();
             finishedMenu.clear();
@@ -507,23 +523,25 @@ public class MenuFactory {
             for (String s : application.getHighScoreManager().getFormattedScores(data.getTrackGuid(), data.getSelectedLeague())) {
                 finishedMenu.addItem(new TextMenuElement(s));
             }
-            finishedMenu.addItem(new MenuAction(Fmt.ra(s(R.string.random_track)), this.menu, __ -> game.startTrack(GameParams.of(GameMode.RANDOM, application.getModManager().getRandomTrack()))));
-            finishedMenu.addItem(new MenuAction(Fmt.colon(s(R.string.restart), data.getTrackName()), MenuAction.RESTART, this.menu, __ -> game.restart()));
+            finishedMenu.addItem(this.getMenuAction(Fmt.ra(s(R.string.random_track)), __ -> game.startTrack(GameParams.of(GameMode.RANDOM, application.getModManager().getRandomTrack()))));
+            finishedMenu.addItem(this.getItdasd(Fmt.colon(s(R.string.restart), data.getTrackName()), __ -> game.restart()));
             finishedMenu.addItem(this.menu.backAction());
             return finishedMenu;
         });
         return fm;
     }
 
-    private AMenuScreen createInGamePlay(Map<MenuType, AMenuScreen> r) {
+    private MenuScreen<T> createInGamePlay(Map<MenuType, MenuScreen<T>> r) {
         Game game = application.getGame();
-        AMenuScreen ig = new AMenuScreen(s(R.string.ingame), r.get(MenuType.PLAY));
-        ig.addItem(new MenuAction(s(R.string._continue), MenuAction.CONTINUE, menu, __ -> application.menuToGame()));
-        ig.addItem(new MenuAction(s(R.string.training_mode), menu, __ -> {
+        String title = s(R.string.ingame);
+        MenuScreen<T> parent = r.get(MenuType.PLAY);
+        MenuScreen<T> ig = screen(title, parent);
+        ig.addItem(actionContinue(__ -> application.menuToGame()));
+        ig.addItem(getMenuAction(s(R.string.training_mode), __ -> {
             application.trainingMode();
             application.menuToGame();
         }));
-        ig.addItem(new MenuAction(Fmt.colon(s(R.string.restart), "Name"), MenuAction.RESTART, menu, __ -> game.restart()));
+        ig.addItem(restartAction("Name", __ -> game.restart()));
         ig.addItem(menu.createAction(MenuAction.LIKE, item -> application.notify("Coming soon")));
         ig.addItem(menu.backAction(game::resetState));
         ig.setBuilder((s, data) -> {
@@ -536,7 +554,23 @@ public class MenuFactory {
         return ig;
     }
 
-    private void fillMainScreen(AMenuScreen s) {
+    private MenuElement<T> getMenuAction(String title, ActionHandler handler) {
+        return new MenuAction<T>(title, menu, handler);
+    }
+
+    private MenuElement<T> restartAction(String name, ActionHandler handler) {
+        return getItdasd(Fmt.colon(s(R.string.restart), name), handler);
+    }
+
+    private MenuElement<T> actionContinue(ActionHandler handler) {
+        return new MenuAction<T>(s(R.string._continue), MenuAction.CONTINUE, menu, handler);
+    }
+
+    public MenuScreen<T> screen(String title, MenuScreen<T> parent) {
+        return new AMenuScreen(title, parent);
+    }
+
+    private void fillMainScreen(MenuScreen<T> s) {
         s.setBeforeShowAction(() -> application.getGame().startAutoplay(false));
         s.addItem(new MenuItem(s(R.string.competition), this.get(MenuType.PLAY), menu));
         s.addItem(new MenuItem(s(R.string.workshop), this.get(MenuType.WORKSHOP), menu));
@@ -547,8 +581,8 @@ public class MenuFactory {
         s.addItem(menu.createAction(MenuAction.EXIT, item -> application.exit()));
     }
 
-    private AMenuScreen createOptionsScreen(Map<MenuType, AMenuScreen> r) {
-        AMenuScreen screen = new AMenuScreen(s(R.string.options), r.get(MenuType.MAIN));
+    private MenuScreen<T> createOptionsScreen(Map<MenuType, MenuScreen<T>> r) {
+        MenuScreen<T> screen = screen(s(R.string.options), r.get(MenuType.MAIN));
         String[] onOffStrings = getStringArray(R.array.on_off);
         String[] keySetStrings = getStringArray(R.array.keyset);
         String[] scaleOptions = new String[401];
@@ -611,10 +645,11 @@ public class MenuFactory {
                     else platform.hideKeyboardLayout();
                 }));
 
-        AMenuScreen eraseScreen = new AMenuScreen(s(R.string.confirm_clear), screen);
+        String title1 = s(R.string.confirm_clear);
+        MenuScreen<T> eraseScreen = screen(title1, screen);
         eraseScreen.addItem(new TextMenuElement(s(R.string.erase_text1)));
         eraseScreen.addItem(new TextMenuElement(s(R.string.erase_text2)));
-        eraseScreen.addItem(MenuUtils.emptyLine(true));
+        eraseScreen.addItem(emptyLine(true));
         eraseScreen.addItem(menu.createAction(MenuAction.NO, item -> menu.menuBack()));
         eraseScreen.addItem(menu.createAction(MenuAction.YES, item -> {
             application.getHighScoreManager().clearAllHighScores();
@@ -622,10 +657,11 @@ public class MenuFactory {
             menu.menuBack();
         }));
 
-        AMenuScreen resetScreen = new AMenuScreen(s(R.string.confirm_reset), eraseScreen);
+        String title = s(R.string.confirm_reset);
+        MenuScreen<T> resetScreen = screen(title, eraseScreen);
         resetScreen.addItem(new TextMenuElement(s(R.string.reset_text1)));
         resetScreen.addItem(new TextMenuElement(s(R.string.reset_text2)));
-        resetScreen.addItem(MenuUtils.emptyLine(true));
+        resetScreen.addItem(emptyLine(true));
         resetScreen.addItem(menu.createAction(MenuAction.NO, item -> menu.menuBack()));
         resetScreen.addItem(menu.createAction(MenuAction.YES, item -> {
             showAlert(s(R.string.reset), s(R.string.reset_text), () -> {
@@ -639,62 +675,67 @@ public class MenuFactory {
             menu.menuBack();
         }));
 
-        eraseScreen.addItem(new MenuItem(s(R.string.full_reset), resetScreen, menu, null));
-        screen.addItem(new MenuItem(s(R.string.clear_highscore), eraseScreen, menu, null));
+        eraseScreen.addItem(getItem(s(R.string.full_reset), resetScreen, null));
+        screen.addItem(getItem(s(R.string.clear_highscore), eraseScreen, null));
 
         screen.addItem(menu.backAction());
         return screen;
     }
 
-    private AMenuScreen createHelpScreen(Map<MenuType, AMenuScreen> r) {
-        AMenuScreen screen = new AMenuScreen(s(R.string.help), r.get(MenuType.MAIN));
-        AMenuScreen objectiveHelpScreen = new AMenuScreen(s(R.string.objective), screen);
+    private MenuScreen<T> createHelpScreen(Map<MenuType, MenuScreen<T>> r) {
+        MenuScreen<T> screen = screen(s(R.string.help), r.get(MenuType.MAIN));
+        String title4 = s(R.string.objective);
+        MenuScreen<T> objectiveHelpScreen = screen(title4, screen);
         objectiveHelpScreen.setIsTextScreen(true);
         objectiveHelpScreen.addItem(new TextMenuElement(Html.fromHtml(s(R.string.objective_text))));
         objectiveHelpScreen.addItem(menu.backAction());
 
-        AMenuScreen keysHelpScreen = new AMenuScreen(s(R.string.keys), screen);
+        String title3 = s(R.string.keys);
+        MenuScreen<T> keysHelpScreen = screen(title3, screen);
         keysHelpScreen.setIsTextScreen(true);
         keysHelpScreen.addItem(new TextMenuElement(Html.fromHtml(s(R.string.keyset_text))));
         keysHelpScreen.addItem(new MenuAction(s(R.string.back), MenuAction.BACK, menu, item -> menu.menuBack()));
 
-        AMenuScreen unlockingHelpScreen = new AMenuScreen(s(R.string.unlocking), screen);
+        String title2 = s(R.string.unlocking);
+        MenuScreen<T> unlockingHelpScreen = screen(title2, screen);
         unlockingHelpScreen.setIsTextScreen(true);
         unlockingHelpScreen.addItem(new TextMenuElement(Html.fromHtml(s(R.string.unlocking_text))));
         unlockingHelpScreen.addItem(menu.backAction());
 
-        AMenuScreen highscoreHelpScreen = new AMenuScreen(s(R.string.highscores), screen);
+        String title1 = s(R.string.highscores);
+        MenuScreen<T> highscoreHelpScreen = screen(title1, screen);
         highscoreHelpScreen.setIsTextScreen(true);
         highscoreHelpScreen.addItem(new TextMenuElement(Html.fromHtml(s(R.string.highscore_text))));
         highscoreHelpScreen.addItem(menu.backAction());
 
-        AMenuScreen optionsHelpScreen = new AMenuScreen(s(R.string.options), screen);
+        String title = s(R.string.options);
+        MenuScreen<T> optionsHelpScreen = screen(title, screen);
         optionsHelpScreen.setIsTextScreen(true);
         optionsHelpScreen.addItem(new TextMenuElement(Html.fromHtml(s(R.string.options_text))));
         optionsHelpScreen.addItem(menu.backAction());
 
-        screen.addItem(new MenuItem(s(R.string.objective), objectiveHelpScreen, menu, null));
-        screen.addItem(new MenuItem(s(R.string.keys), keysHelpScreen, menu, null));
-        screen.addItem(new MenuItem(s(R.string.unlocking), unlockingHelpScreen, menu, null));
-        screen.addItem(new MenuItem(s(R.string.highscores), highscoreHelpScreen, menu, null));
-        screen.addItem(new MenuItem(s(R.string.options), optionsHelpScreen, menu, null));
+        screen.addItem(getItem(s(R.string.objective), objectiveHelpScreen, null));
+        screen.addItem(getItem(s(R.string.keys), keysHelpScreen, null));
+        screen.addItem(getItem(s(R.string.unlocking), unlockingHelpScreen, null));
+        screen.addItem(getItem(s(R.string.highscores), highscoreHelpScreen, null));
+        screen.addItem(getItem(s(R.string.options), optionsHelpScreen, null));
         screen.addItem(menu.backAction());
         return screen;
     }
 
-    private AMenuScreen createAboutScreen(Map<MenuType, AMenuScreen> r) {
-        AMenuScreen screen = new AMenuScreen(String.format("%s v%s", s(R.string.about), getAppVersion()), r.get(MenuType.MAIN));
+    private MenuScreen<T> createAboutScreen(Map<MenuType, MenuScreen<T>> r) {
+        MenuScreen<T> screen = screen(String.format("%s v%s", s(R.string.about), getAppVersion()), r.get(MenuType.MAIN));
         screen.setIsTextScreen(true);
         screen.addItem(new TextMenuElement(Html.fromHtml(s(R.string.about_text))));
         screen.addItem(menu.backAction());
         return screen;
     }
 
-    private AMenuScreen createProfileScreen(Map<MenuType, AMenuScreen> r) {
-        AMenuScreen screen = new AMenuScreen(s(R.string.profile), r.get(MenuType.MAIN));
+    private MenuScreen<T> createProfileScreen(Map<MenuType, MenuScreen<T>> r) {
+        MenuScreen<T> screen = screen(s(R.string.profile), r.get(MenuType.MAIN));
         InputTextElement nameInput = new InputTextElement(Fmt.colon(s(R.string.name), ""), application.getSettings().getPlayerName(), null);
         screen.addItem(nameInput);
-        screen.addItem(new MenuAction(s(R.string.save), menu, item -> {
+        screen.addItem(getMenuAction(s(R.string.save), item -> {
             application.getSettings().setPlayerName(nameInput.getText());
             application.notify(s(R.string.saved));
         }));
@@ -702,17 +743,17 @@ public class MenuFactory {
         return screen;
     }
 
-    public AMenuScreen createInGameCampaign(Map<MenuType, AMenuScreen> r) {
-        AMenuScreen inGame = new AMenuScreen(s(R.string.ingame), r.get(MenuType.CAMPAIGN));
-        inGame.addItem(new MenuAction(s(R.string._continue), MenuAction.CONTINUE, menu, item -> application.menuToGame()));
-        inGame.addItem(new MenuAction(Fmt.colon(s(R.string.restart), ""), MenuAction.RESTART, menu, item -> menu.menuToGame()));
-        inGame.addItem(new MenuAction(s(R.string.training_mode), menu, item -> {
+    private MenuScreen<T> createInGameCampaign(Map<MenuType, MenuScreen<T>> r) {
+        MenuScreen<T> inGame = screen(s(R.string.ingame), r.get(MenuType.CAMPAIGN));
+        inGame.addItem(actionContinue(__ -> application.menuToGame()));
+        inGame.addItem(getItdasd(Fmt.colon(s(R.string.restart), ""), item -> menu.menuToGame()));
+        inGame.addItem(getMenuAction(s(R.string.training_mode), __ -> {
             application.trainingMode();
             application.menuToGame();
         }));
         inGame.addItem(menu.createAction(MenuAction.LIKE, item -> application.notify("Coming soon")));
-        inGame.addItem(new MenuItem(s(R.string.options), r.get(MenuType.OPTIONS), menu, null));
-        inGame.addItem(new MenuItem(s(R.string.help), r.get(MenuType.HELP), menu, null));
+        inGame.addItem(getItem(s(R.string.options), r.get(MenuType.OPTIONS), null));
+        inGame.addItem(getItem(s(R.string.help), r.get(MenuType.HELP), null));
         inGame.addItem(menu.createAction(MenuAction.PLAY_MENU, item -> actionGoToPlayMenu()));
         inGame.setBuilder((s, data) -> {
             if (data != null) {
@@ -724,8 +765,8 @@ public class MenuFactory {
         return inGame;
     }
 
-    public AMenuScreen createFinishedCampaign(Map<MenuType, AMenuScreen> r) {
-        AMenuScreen finished = new AMenuScreen(s(R.string.finished), r.get(MenuType.CAMPAIGN));
+    private MenuScreen<T> createFinishedCampaign(Map<MenuType, MenuScreen<T>> r) {
+        MenuScreen<T> finished = screen(s(R.string.finished), r.get(MenuType.CAMPAIGN));
         finished.setBuilder((finishedMenu, data) -> {
             campaignSelectors.updateSelectors(data);
             int place = application.getHighScoreManager()
@@ -746,7 +787,7 @@ public class MenuFactory {
         return finished;
     }
 
-    private AMenuScreen showFinishMenu(AMenuScreen finishedMenu, MenuData data) {
+    private MenuScreen<T> showFinishMenu(MenuScreen<T> finishedMenu, MenuData data) {
         finishedMenu.clear();
         long millis = data.getLastTrackTime();
         finishedMenu.addItem(new TextMenuElement(Html.fromHtml("<b>" + s(R.string.time) + "</b>: " + Utils.getDurationString(millis))));
@@ -793,15 +834,15 @@ public class MenuFactory {
                     }
             ));
         }
-        finishedMenu.addItem(new MenuAction(Fmt.colon(s(R.string.restart), data.getTrackName()), MenuAction.RESTART, menu, item -> menu.menuToGame()));
+        finishedMenu.addItem(getItdasd(Fmt.colon(s(R.string.restart), data.getTrackName()), item -> menu.menuToGame()));
         finishedMenu.addItem(menu.createAction(MenuAction.PLAY_MENU, item -> actionGoToPlayMenu()));
         finishedMenu.resetHighlighted();
         finishedMenu.highlightElement();
         return finishedMenu;
     }
 
-    public AMenuScreen createHighScore(Map<MenuType, AMenuScreen> r) {
-        AMenuScreen hs = new AMenuScreen(s(R.string.highscores), r.get(MenuType.CAMPAIGN));
+    private MenuScreen<T> createHighScore(Map<MenuType, MenuScreen<T>> r) {
+        MenuScreen<T> hs = screen(s(R.string.highscores), r.get(MenuType.CAMPAIGN));
         hs.setBeforeShowAction(() -> {
             MenuData data = new MenuData();
             data.setSelectedLevel(campaignSelectors.getLevelSelector().getSelectedOption());
@@ -830,8 +871,8 @@ public class MenuFactory {
         return hs;
     }
 
-    private AMenuScreen createPlayCampaign(Map<MenuType, AMenuScreen> r) {
-        AMenuScreen screen = new AMenuScreen(s(R.string.campaign), r.get(MenuType.PLAY));
+    private MenuScreen<T> createPlayCampaign(Map<MenuType, MenuScreen<T>> r) {
+        MenuScreen<T> screen = screen(s(R.string.campaign), r.get(MenuType.PLAY));
         screen.setBeforeShowAction(() -> {
             screen.setTitle(application.getModManager().getMod().getName());
             application.getGame().startAutoplay(true);
@@ -839,7 +880,7 @@ public class MenuFactory {
         return screen;
     }
 
-    public void transformPlayCampaign(AMenuScreen s) {
+    public void transformPlayCampaign(MenuScreen<T> s) {
         OptionsMenuElement trackSelector = campaignSelectors.getTrackSelector();
         OptionsMenuElement levelSelector = campaignSelectors.getLevelSelector();
         OptionsMenuElement leagueSelector = campaignSelectors.getLeagueSelector();
@@ -858,7 +899,7 @@ public class MenuFactory {
         s.addItem(levelSelector);
         s.addItem(trackSelector);
         s.addItem(leagueSelector);
-        s.addItem(new MenuItem(s(R.string.highscores), this.get(MenuType.HIGH_SCORE), menu, null));
+        s.addItem(getItem(s(R.string.highscores), this.get(MenuType.HIGH_SCORE), null));
         s.addItem(new MenuAction(Fmt.ra(s(R.string.unlock_all)), -1, menu,
                 item -> {
                     application.notify("Coming soon");
@@ -885,5 +926,9 @@ public class MenuFactory {
     private void actionGoToPlayMenu() {
         application.getGame().resetState();
         menu.menuBack();
+    }
+
+    private MenuElement<T> getItdasd(String title, ActionHandler handler) {
+        return new MenuAction<T>(title, MenuAction.RESTART, menu, handler);
     }
 }

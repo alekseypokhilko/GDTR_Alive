@@ -20,8 +20,8 @@ import org.happysanta.gdtralive.android.menu.views.MenuHelmetView;
 import org.happysanta.gdtralive.android.menu.views.MenuTextView;
 import org.happysanta.gdtralive.game.KeyboardHandler;
 
-public class ClickableMenuElement
-		implements MenuElement<View> {
+public class ClickableMenuElement<T>
+		implements MenuElement<T> {
 
 	public static final int TEXT_SIZE = 20;
 	public static final int PADDING_TOP = 5;
@@ -138,8 +138,8 @@ public class ClickableMenuElement
 	}
 
 	@Override
-	public View getView() {
-		return layout;
+	public T getView() {
+		return (T) layout;
 	}
 
 	protected MenuTextView getMenuTextView() {

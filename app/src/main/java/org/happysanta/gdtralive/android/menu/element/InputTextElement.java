@@ -2,19 +2,18 @@ package org.happysanta.gdtralive.android.menu.element;
 
 import static org.happysanta.gdtralive.android.Helpers.getGDActivity;
 
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import org.happysanta.gdtralive.android.Global;
 import org.happysanta.gdtralive.android.Helpers;
-import org.happysanta.gdtralive.game.api.menu.MenuElement;
-import org.happysanta.gdtralive.game.api.dto.InterfaceTheme;
-import org.happysanta.gdtralive.game.api.util.ActionHandler;
 import org.happysanta.gdtralive.android.menu.views.MenuTextView;
+import org.happysanta.gdtralive.game.api.dto.InterfaceTheme;
+import org.happysanta.gdtralive.game.api.menu.MenuElement;
+import org.happysanta.gdtralive.game.api.util.ActionHandler;
 
-public class InputTextElement implements MenuElement<View> {
+public class InputTextElement<T> implements MenuElement<T> {
 
     protected static final int TEXT_SIZE = 20;
 
@@ -74,8 +73,8 @@ public class InputTextElement implements MenuElement<View> {
     }
 
     @Override
-    public View getView() {
-        return textView;
+    public T getView() {
+        return (T) textView;
     }
 
     public String getText() {

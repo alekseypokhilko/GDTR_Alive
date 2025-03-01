@@ -3,30 +3,29 @@ package org.happysanta.gdtralive.android.menu.element;
 import static org.happysanta.gdtralive.android.Helpers.getDp;
 import static org.happysanta.gdtralive.android.Helpers.getGDActivity;
 
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import org.happysanta.gdtralive.android.Global;
 import org.happysanta.gdtralive.android.Helpers;
-import org.happysanta.gdtralive.game.api.menu.MenuElement;
-import org.happysanta.gdtralive.game.api.util.ActionHandler;
-import org.happysanta.gdtralive.android.menu.MenuHandler;
 import org.happysanta.gdtralive.android.menu.views.MenuImageView;
 import org.happysanta.gdtralive.android.menu.views.MenuTextView;
 import org.happysanta.gdtralive.game.KeyboardHandler;
+import org.happysanta.gdtralive.game.api.menu.MenuElement;
+import org.happysanta.gdtralive.game.api.menu.MenuHandler;
+import org.happysanta.gdtralive.game.api.util.ActionHandler;
 
-public class BadgeWithTextElement implements MenuElement<View> {
+public class BadgeWithTextElement<T> implements MenuElement<T> {
 
 	protected static final int TEXT_SIZE = 20;
-	private final MenuHandler handler;
+	private final MenuHandler<T> handler;
 	private final ActionHandler action;
 
 	protected LinearLayout textView;
 	protected MenuTextView optionTextView;
 
-	public BadgeWithTextElement(int badgeId, String title, MenuHandler handler, ActionHandler action ) {
+	public BadgeWithTextElement(int badgeId, String title, MenuHandler<T> handler, ActionHandler action ) {
 		this.handler = handler;
 		this.action = action;
 		textView = new LinearLayout(getGDActivity());
@@ -66,8 +65,8 @@ public class BadgeWithTextElement implements MenuElement<View> {
 	}
 
 	@Override
-	public View getView() {
-		return textView;
+	public T getView() {
+		return (T) textView;
 	}
 
 	@Override

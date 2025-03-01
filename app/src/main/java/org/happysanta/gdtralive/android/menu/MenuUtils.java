@@ -2,7 +2,6 @@ package org.happysanta.gdtralive.android.menu;
 
 import org.happysanta.gdtralive.R;
 import org.happysanta.gdtralive.android.menu.element.MenuAction;
-import org.happysanta.gdtralive.android.menu.element.EmptyLineMenuElement;
 
 public class MenuUtils {
 
@@ -75,9 +74,5 @@ public class MenuUtils {
 
         }
         return r;
-    }
-
-    public static EmptyLineMenuElement emptyLine(boolean beforeAction) {
-        return new EmptyLineMenuElement(beforeAction ? 10 : 20);
     }
 }

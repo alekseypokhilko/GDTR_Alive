@@ -12,14 +12,14 @@ import org.happysanta.gdtralive.R;
 import org.happysanta.gdtralive.android.Helpers;
 import org.happysanta.gdtralive.game.api.menu.MenuElement;
 import org.happysanta.gdtralive.game.api.util.ActionHandler;
-import org.happysanta.gdtralive.android.menu.MenuHandler;
+import org.happysanta.gdtralive.game.api.menu.MenuHandler;
 import org.happysanta.gdtralive.android.menu.views.MenuImageView;
 import org.happysanta.gdtralive.android.menu.views.MenuTextView;
 import org.happysanta.gdtralive.game.KeyboardHandler;
 
-public class MenuAction
-        extends ClickableMenuElement
-        implements MenuHandler, MenuElement<View> {
+public class MenuAction<T>
+        extends ClickableMenuElement<T>
+        implements MenuHandler<T>, MenuElement<T> {
 
     protected static final int DISABLED_COLOR = 0xff999999;
     public static final int LOCK_IMAGE_MARGIN_RIGHT = 5;
@@ -47,15 +47,15 @@ public class MenuAction
     public static final int SEND_LOGS = 15;
     public static final int LIKE = 16;
 
-    protected MenuHandler handler;
+    protected MenuHandler<T> handler;
     protected boolean isLocked = false;
     protected boolean isBlackLock = true;
     protected MenuImageView lockImage = null;
-    protected ActionHandler action;
+    protected ActionHandler<MenuElement<T>> action;
 
     protected int actionValue = -1;
 
-    public MenuAction(String s, int value, MenuHandler handler, ActionHandler action) {
+    public MenuAction(String s, int value, MenuHandler<T> handler, ActionHandler<MenuElement<T>> action) {
         actionValue = value;
         this.handler = handler;
         this.action = action;
@@ -65,7 +65,7 @@ public class MenuAction
         createAllViews();
     }
 
-    public MenuAction(String s, MenuHandler handler, ActionHandler action) {
+    public MenuAction(String s, MenuHandler<T> handler, ActionHandler<MenuElement<T>> action) {
         this(s, -1, handler, action);
     }
 
@@ -89,7 +89,7 @@ public class MenuAction
         return actionValue;
     }
 
-    public void setHandler(MenuHandler hander) {
+    public void setHandler(MenuHandler<T> hander) {
         this.handler = hander;
     }
 

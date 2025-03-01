@@ -3,8 +3,8 @@ package org.happysanta.gdtralive.game.api.menu;
 /**
  * Author: ch1p
  */
-public interface OnMenuElementHighlightListener {
+public interface OnMenuElementHighlightListener<T> {
 
-	void onElementHighlight(MenuElement el);
+	void onElementHighlight(MenuElement<T> el);
 
 }

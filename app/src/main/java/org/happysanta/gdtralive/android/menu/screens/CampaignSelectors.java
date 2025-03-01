@@ -5,29 +5,29 @@ import static org.happysanta.gdtralive.android.Helpers.s;
 import org.happysanta.gdtralive.R;
 import org.happysanta.gdtralive.android.menu.AMenu;
 import org.happysanta.gdtralive.android.menu.MenuFactory;
-import org.happysanta.gdtralive.android.menu.AMenuScreen;
 import org.happysanta.gdtralive.android.menu.element.OptionsMenuElement;
 import org.happysanta.gdtralive.game.Application;
 import org.happysanta.gdtralive.game.ModManager;
 import org.happysanta.gdtralive.game.api.MenuType;
+import org.happysanta.gdtralive.game.api.menu.MenuScreen;
 import org.happysanta.gdtralive.game.api.model.MenuData;
 import org.happysanta.gdtralive.game.api.model.ModEntity;
 
-public class CampaignSelectors {
+public class CampaignSelectors<T> {
     private final Application application;
-    private final AMenu menu;
+    private final AMenu<T> menu;
 
-    private final OptionsMenuElement levelSelector;
-    private final OptionsMenuElement leagueSelector;
-    private final OptionsMenuElement trackSelector;
-    private AMenuScreen trackSelectorCurrentMenu;
+    private final OptionsMenuElement<T> levelSelector;
+    private final OptionsMenuElement<T> leagueSelector;
+    private final OptionsMenuElement<T> trackSelector;
+    private MenuScreen<T> trackSelectorCurrentMenu;
 
     private String[] leagueNames;
     private String[] difficultyLevels;
     private final int[] selectedTrack = new int[100];
 
     //todo extract common parts / split view and logic
-    public CampaignSelectors(AMenu menu, Application application, MenuFactory menuFactory) {
+    public CampaignSelectors(AMenu<T> menu, Application application, MenuFactory<T> menuFactory) {
         this.menu = menu;
         this.application = application;
 
@@ -43,11 +43,11 @@ public class CampaignSelectors {
         }
 
 
-        levelSelector = new OptionsMenuElement(s(R.string.level), getLevel().getSelectedLevel(), menu, this.difficultyLevels, false, menuFactory.get(MenuType.CAMPAIGN),
+        levelSelector = new OptionsMenuElement<T>(s(R.string.level), getLevel().getSelectedLevel(), menu, this.difficultyLevels, false, menuFactory.get(MenuType.CAMPAIGN),
                 item -> {
                     OptionsMenuElement it = (OptionsMenuElement) item;
                     if (it._charvZ()) {
-                        AMenuScreen levelSelectorCurrentMenu = it.getCurrentMenu();
+                        MenuScreen<T> levelSelectorCurrentMenu = it.getCurrentMenu();
                         menu.setCurrentMenu(levelSelectorCurrentMenu);
                     }
                     getTrackSelector().setOptions(application.getModManager().getLeagueTrackNames(it.getSelectedOption()), false);
@@ -56,7 +56,7 @@ public class CampaignSelectors {
                 });
         trackSelector = new OptionsMenuElement(s(R.string.track), selectedTrack[getLevel().getSelectedLevel()], menu, application.getModManager().getLeagueTrackNames(getLevel().getSelectedLevel()), false, menuFactory.get(MenuType.CAMPAIGN),
                 item -> {
-                    OptionsMenuElement it = (OptionsMenuElement) item;
+                    OptionsMenuElement<T> it = (OptionsMenuElement) item;
                     if (it._charvZ()) {
                         it.setUnlockedCount(getLevel().getUnlockedTracksCount(getLevelSelector().getSelectedOption()));
                         it.update();
@@ -70,8 +70,8 @@ public class CampaignSelectors {
                 item -> {
                     OptionsMenuElement it = (OptionsMenuElement) item;
                     if (it._charvZ()) {
-                        AMenuScreen leagueSelectorCurrentMenu = it.getCurrentMenu();
-                        it.setScreen(menu.currentMenu);
+                        MenuScreen leagueSelectorCurrentMenu = it.getCurrentMenu();
+                        it.setScreen(menu.getCurrentMenu());
                         menu.setCurrentMenu(leagueSelectorCurrentMenu);
                     }
                 });

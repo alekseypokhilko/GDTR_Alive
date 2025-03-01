@@ -1,10 +1,9 @@
 package org.happysanta.gdtralive.game.api.external;
 
+import org.happysanta.gdtralive.game.api.menu.MenuScreen;
 import org.happysanta.gdtralive.game.api.model.MenuData;
 
-import java.io.Serializable;
-
-public interface GdMenu {
+public interface GdMenu<T> {
     void menuToGame();
 
     boolean canStartTrack();
@@ -15,7 +14,7 @@ public interface GdMenu {
 
     boolean isCurrentMenuEmpty();
 
-    void setCurrentMenu(Serializable newMenu);
+    void setCurrentMenu(MenuScreen<T> newMenu);
 
     void onCurrentMenuScroll(double p);
 

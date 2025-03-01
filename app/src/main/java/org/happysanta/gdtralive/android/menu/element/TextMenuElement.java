@@ -7,14 +7,13 @@ import android.text.Html;
 import android.text.Spanned;
 import android.text.SpannedString;
 import android.text.util.Linkify;
-import android.view.View;
 import android.view.ViewGroup;
 
 import org.happysanta.gdtralive.android.Helpers;
-import org.happysanta.gdtralive.game.api.menu.MenuElement;
 import org.happysanta.gdtralive.android.menu.views.MenuTextView;
+import org.happysanta.gdtralive.game.api.menu.MenuElement;
 
-public class TextMenuElement implements MenuElement<View> {
+public class TextMenuElement<T> implements MenuElement<T> {
 
     protected static final int TEXT_SIZE = 15;
     protected static final int TEXT_COLOR = 0xff000000;
@@ -54,8 +53,8 @@ public class TextMenuElement implements MenuElement<View> {
     }
 
     @Override
-    public View getView() {
-        return textView;
+    public T getView() {
+        return (T) textView;
     }
 
     public String getText() {

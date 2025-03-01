@@ -2,25 +2,23 @@ package org.happysanta.gdtralive.android.menu.element;
 
 import static org.happysanta.gdtralive.android.Helpers.logDebug;
 
-import android.view.View;
-
-import org.happysanta.gdtralive.game.api.menu.MenuElement;
-import org.happysanta.gdtralive.game.api.util.ActionHandler;
-import org.happysanta.gdtralive.android.menu.MenuHandler;
-import org.happysanta.gdtralive.android.menu.AMenuScreen;
 import org.happysanta.gdtralive.game.KeyboardHandler;
+import org.happysanta.gdtralive.game.api.menu.MenuElement;
+import org.happysanta.gdtralive.game.api.menu.MenuHandler;
+import org.happysanta.gdtralive.game.api.menu.MenuScreen;
+import org.happysanta.gdtralive.game.api.util.ActionHandler;
 
-public class MenuItem extends ClickableMenuElement
-		implements MenuElement<View> {
+public class MenuItem<T> extends ClickableMenuElement<T>
+		implements MenuElement<T> {
 
 	public int x;
 	public int y;
 	private int value;
-	protected AMenuScreen screen;
-	protected MenuHandler handler;
+	protected MenuScreen<T> screen;
+	protected MenuHandler<T> handler;
 	protected ActionHandler action;
 
-	public MenuItem(String text, AMenuScreen screen, MenuHandler handler, ActionHandler action) {
+	public MenuItem(String text, MenuScreen<T> screen, MenuHandler<T> handler, ActionHandler action) {
 		this.text = text + ">";
 		this.screen = screen;
 		this.handler = handler;
@@ -29,7 +27,7 @@ public class MenuItem extends ClickableMenuElement
 		createAllViews();
 	}
 
-	public MenuItem(String text, AMenuScreen screen, MenuHandler handler) {
+	public MenuItem(String text, MenuScreen<T> screen, MenuHandler<T> handler) {
 		this.text = text + ">";
 		this.screen = screen;
 		this.handler = handler;

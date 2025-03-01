@@ -16,7 +16,7 @@ import org.happysanta.gdtralive.game.api.menu.MenuElement;
 import org.happysanta.gdtralive.android.menu.views.MenuImageView;
 import org.happysanta.gdtralive.android.menu.views.MenuLinearLayout;
 
-public class HighScoreTextMenuElement extends TextMenuElement implements MenuElement<View> {
+public class HighScoreTextMenuElement<T> extends TextMenuElement<T> implements MenuElement<T> {
 
     protected static final int TEXT_LEFT_MARGIN = 5;
     protected static final int SUBTITLE_MARGIN_BOTTOM = 8;
@@ -73,8 +73,8 @@ public class HighScoreTextMenuElement extends TextMenuElement implements MenuEle
     }
 
     @Override
-    public View getView() {
-        return layout;
+    public T getView() {
+        return (T)layout;
     }
 
     public void setMedal(boolean showMedal, int medalIndex) {

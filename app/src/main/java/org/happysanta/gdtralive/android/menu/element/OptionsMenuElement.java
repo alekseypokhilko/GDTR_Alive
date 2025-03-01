@@ -9,36 +9,37 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import org.happysanta.gdtralive.R;
 import org.happysanta.gdtralive.android.Global;
 import org.happysanta.gdtralive.android.Helpers;
-import org.happysanta.gdtralive.R;
-import org.happysanta.gdtralive.game.api.menu.MenuElement;
-import org.happysanta.gdtralive.game.api.util.ActionHandler;
-import org.happysanta.gdtralive.android.menu.MenuHandler;
 import org.happysanta.gdtralive.android.menu.AMenuScreen;
+import org.happysanta.gdtralive.game.api.menu.MenuHandler;
 import org.happysanta.gdtralive.android.menu.views.MenuImageView;
 import org.happysanta.gdtralive.android.menu.views.MenuTextView;
 import org.happysanta.gdtralive.game.KeyboardHandler;
+import org.happysanta.gdtralive.game.api.menu.MenuElement;
+import org.happysanta.gdtralive.game.api.menu.MenuScreen;
+import org.happysanta.gdtralive.game.api.util.ActionHandler;
 
-public class OptionsMenuElement
-        extends ClickableMenuElement
-        implements MenuElement<View>, MenuHandler {
+public class OptionsMenuElement<T>
+        extends ClickableMenuElement<T>
+        implements MenuElement<T>, MenuHandler<T> {
 
     protected int selectedIndex;
     protected String options[];
     protected int unlockedCount;
-    protected MenuHandler handler;
-    protected AMenuScreen optionsScreen = null;
-    protected AMenuScreen screen = null;
+    protected MenuHandler<T> handler;
+    protected MenuScreen<T> optionsScreen = null;
+    protected MenuScreen<T> screen = null;
     protected boolean isOnOffToggle;
     protected boolean m_oZ = false;
     protected String selectedOption;
-    protected MenuAction optionsScreenItems[] = null;
+    protected MenuAction<T> optionsScreenItems[] = null;
     protected MenuImageView lockImage = null;
     protected MenuTextView optionTextView = null;
     protected ActionHandler action;
 
-    public OptionsMenuElement(String text, int selectedIndex, MenuHandler handler, String[] options, boolean isOnOffToggle, AMenuScreen screen, ActionHandler action) {
+    public OptionsMenuElement(String text, int selectedIndex, MenuHandler<T> handler, String[] options, boolean isOnOffToggle, MenuScreen<T> screen, ActionHandler action) {
         this.text = text;
         this.selectedIndex = selectedIndex;
         this.handler = handler;
@@ -226,7 +227,7 @@ public class OptionsMenuElement
     }
 
     @Override
-    public AMenuScreen getCurrentMenu() {
+    public MenuScreen<T> getCurrentMenu() {
         return optionsScreen;
     }
 
@@ -318,7 +319,7 @@ public class OptionsMenuElement
         }
     }
 
-    public void setScreen(AMenuScreen screen) {
+    public void setScreen(MenuScreen<T> screen) {
         this.screen = screen;
     }
 

@@ -25,25 +25,25 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
 
-public class AMenuScreen implements OnMenuElementHighlightListener, MenuScreen<View>, Serializable {
+public class AMenuScreen<T> implements OnMenuElementHighlightListener<T>, MenuScreen<T>, Serializable {
 
 	protected static final int LAYOUT_LEFT_PADDING = 30;
 	protected static final int LAYOUT_TOP_PADDING = 0;
 	protected static final int LAYOUT_BOTTOM_PADDING = 15;
 
-	protected AMenuScreen parent;
+	protected MenuScreen<T> parent;
 
 	protected String title;
 	protected int selectedIndex;
 	protected Vector menuItems;
 	protected MenuLinearLayout layout;
-	protected MenuElement<View> lastHighlighted;
+	protected MenuElement<T> lastHighlighted;
 	protected boolean isTextScreen = false;
 	protected Runnable beforeShowAction;
-	protected BiFunction<AMenuScreen, MenuData, AMenuScreen> builder;
-	protected Map<Integer, MenuAction> actions = new HashMap<>();
+	protected BiFunction<MenuScreen<T>, MenuData, MenuScreen<T>> builder;
+	protected Map<Integer, MenuElement<T>> actions = new HashMap<>();
 
-	public AMenuScreen(String title, AMenuScreen parent) {
+	public AMenuScreen(String title, MenuScreen<T> parent) {
 		this.title = title;
 		selectedIndex = -1;
 		menuItems = new Vector();
@@ -60,23 +60,24 @@ public class AMenuScreen implements OnMenuElementHighlightListener, MenuScreen<V
 			layout.setMotionEventSplittingEnabled(false);
 	}
 
-	public void addItem(MenuElement<View> item) {
+	public void addItem(MenuElement<T> item) {
 		if (item instanceof MenuAction) {
 			MenuAction action = (MenuAction) item;
 			actions.put(action.getActionValue(), action);
 		}
 
-		layout.addView(item.getView());
+		layout.addView((View) item.getView());
 		menuItems.add(item);
 
 		if (item instanceof ClickableMenuElement)
 			((ClickableMenuElement) item).setOnHighlightListener(this);
 	}
 
-	protected void scrollToItem(MenuElement<View> item) {
-		getGDActivity().scrollToView(item.getView());
+	protected void scrollToItem(MenuElement<T> item) {
+		getGDActivity().scrollToView((View) item.getView());
 	}
 
+	@Override
 	public void performAction(int k) {
 		// logDebug("MenuScreen.performAction: k = " + k);
 		int from = 0;
@@ -161,14 +162,16 @@ public class AMenuScreen implements OnMenuElementHighlightListener, MenuScreen<V
 		return false;
 	}
 
-	public AMenuScreen getParent() {
+	public MenuScreen<T> getParent() {
 		return parent;
 	}
 
-	public void setParent(AMenuScreen target) {
+	@Override
+	public void setParent(MenuScreen<T> target) {
 		parent = target;
 	}
 
+	@Override
 	public void clear() {
 		menuItems.removeAllElements();
 		layout.removeAllViews();
@@ -177,10 +180,11 @@ public class AMenuScreen implements OnMenuElementHighlightListener, MenuScreen<V
 		lastHighlighted = null;
 	}
 
-	public LinearLayout getLayout() {
-		return layout;
+	public T getLayout() {
+		return (T)layout;
 	}
 
+	@Override
 	public void setTitle(String s) {
 		title = s;
 	}
@@ -194,19 +198,23 @@ public class AMenuScreen implements OnMenuElementHighlightListener, MenuScreen<V
 		});
 	}
 
-	public MenuAction getActions(int action) {
+	@Override
+	public MenuElement<T> getActions(int action) {
 		return actions.get(action);
 	}
 
+	@Override
 	public void onShow() {
 		updateTitle();
 		highlightElement();
 	}
 
+	@Override
 	public void resetHighlighted() {
 		lastHighlighted = null;
 	}
 
+	@Override
 	public void highlightElement() {
 		if (lastHighlighted != null) {
 			lastHighlighted.showHelmet();
@@ -239,6 +247,7 @@ public class AMenuScreen implements OnMenuElementHighlightListener, MenuScreen<V
 		}
 	}
 
+	@Override
 	public void setSelected(int index) {
 		try {
 			if (menuItems.elementAt(index) instanceof ClickableMenuElement) {
@@ -253,11 +262,12 @@ public class AMenuScreen implements OnMenuElementHighlightListener, MenuScreen<V
 		}
 	}
 
-	protected void highlightElement(ClickableMenuElement el) {
+	public void highlightElement(MenuElement<T> el) {
 		el.showHelmet();
 		lastHighlighted = el;
 	}
 
+	@Override
 	public void onScroll(double percent) {
 	}
 
@@ -270,29 +280,35 @@ public class AMenuScreen implements OnMenuElementHighlightListener, MenuScreen<V
 			selectedIndex = index;
 	}
 
+	@Override
 	public void setIsTextScreen(boolean isTextScreen) {
 		this.isTextScreen = isTextScreen;
 	}
 
+	@Override
 	public void setBeforeShowAction(Runnable beforeShowAction) {
 		this.beforeShowAction = beforeShowAction;
 	}
 
+	@Override
 	public void performBeforeShowAction() {
 		if (beforeShowAction != null) {
 			beforeShowAction.run();
 		}
 	}
 
-	public void setBuilder(BiFunction<AMenuScreen, MenuData, AMenuScreen> builder) {
+	@Override
+	public void setBuilder(BiFunction<MenuScreen<T>, MenuData, MenuScreen<T>> builder) {
 		this.builder = builder;
 	}
 
-	public AMenuScreen build() {
+	@Override
+	public MenuScreen<T> build() {
 		return build(null);
 	}
 
-	public AMenuScreen build(MenuData data) {
+	@Override
+	public MenuScreen<T> build(MenuData data) {
 		if (builder != null) {
 			return builder.apply(this, data);
 		}
