@@ -1,7 +1,9 @@
 package org.happysanta.gdtralive.game.api;
 
 import java.text.SimpleDateFormat;
+import java.util.HashSet;
 import java.util.Locale;
+import java.util.Set;
 
 public class Constants {
     public static final String DEFAULT_MOD = "GDTR Alive";
@@ -26,4 +28,20 @@ public class Constants {
     };
 
     public static int[] m_foraI = {0x1c000, 0x10000, 32768};
+
+    public static Set<String> IGNORE_SAVE = new HashSet<>();
+
+    static {
+        IGNORE_SAVE.add(ORIGINAL_MOD);
+        IGNORE_SAVE.add(DEFAULT_MOD);
+        IGNORE_SAVE.add("GDTR ULTIMATE Δ");
+        IGNORE_SAVE.add("GDTR ULTIMATE β");
+        IGNORE_SAVE.add("GDTR ULTIMATE π");
+        IGNORE_SAVE.add("GDTR ULTIMATE Ω");
+        IGNORE_SAVE.add("GDTR ULTIMATE μ");
+        IGNORE_SAVE.add("GDTR ULTIMATE α");
+        IGNORE_SAVE.add("GDTR ULTIMATE λ");
+        IGNORE_SAVE.add("GDTR ULTIMATE Ξ");
+        IGNORE_SAVE.add("GDTR ULTIMATE γ");
+    }
 }

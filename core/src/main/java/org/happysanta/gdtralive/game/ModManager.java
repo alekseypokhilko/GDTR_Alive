@@ -109,7 +109,7 @@ public class ModManager {
     }
 
     public void deleteMod(String modName) {
-        if (Constants.DEFAULT_MOD.equals(modName) || Constants.ORIGINAL_MOD.equals(modName)) {
+        if (Constants.IGNORE_SAVE.contains(modName)) {
             return;
         }
         Mod mod = fileStorage.readMod(modName);
@@ -129,7 +129,9 @@ public class ModManager {
             setCurrentMod(mod, state);
         } else {
             Mod packed = mod.pack();
-            fileStorage.save(packed, GDFile.MOD, mod.getName());
+            if (!Constants.IGNORE_SAVE.contains(mod.getName())) {
+                fileStorage.save(packed, GDFile.MOD, mod.getName());
+            }
             ModEntity modEntity = Mapper.mapModToEntity(mod, false);
             ModEntity saved = dataSource.createMod(modEntity);
             setCurrentMod(packed, saved);

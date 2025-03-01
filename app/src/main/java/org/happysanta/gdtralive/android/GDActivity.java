@@ -494,7 +494,7 @@ public class GDActivity extends Activity implements GdPlatform {
             Uri uri = data.getData();
             try (InputStream inputStream = Helpers.getGDActivity().getContentResolver().openInputStream(uri)) {
                 String name = "MOD" + System.currentTimeMillis();
-                Mod mrg = MrgUtils.convertMrg(name, Utils.readAllBytes(inputStream));
+                Mod mrg = MrgUtils.convertMrg(name, Utils.readAllBytes(inputStream), false);
                 menu.setCurrentMenu(menuFactory.get(MenuType.MOD_OPTIONS).build(new MenuData(mrg, name)));
             } catch (Exception e) {
                 e.printStackTrace();
