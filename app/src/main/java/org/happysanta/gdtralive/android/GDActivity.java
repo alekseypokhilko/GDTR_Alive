@@ -58,9 +58,12 @@ import org.happysanta.gdtralive.game.api.model.TrackRecord;
 import org.happysanta.gdtralive.game.util.Utils;
 import org.happysanta.gdtralive.game.util.mrg.MrgUtils;
 
+import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class GDActivity extends Activity implements GdPlatform {
 
@@ -91,7 +94,13 @@ public class GDActivity extends Activity implements GdPlatform {
         shared = this;
 
         GdStr str = new AStr();
-        GdFileStorage fileStorage = new AFileStorage(this);
+        File appFolder = getExternalFilesDir(Constants.APP_DIRECTORY);
+        Map<GDFile, File> folders = new HashMap<>();
+        folders.put(GDFile.MOD, getExternalFilesDir(GDFile.MOD.appFolder));
+        folders.put(GDFile.THEME, getExternalFilesDir(GDFile.THEME.appFolder));
+        folders.put(GDFile.TRACK, getExternalFilesDir(GDFile.TRACK.appFolder));
+        folders.put(GDFile.RECORD, getExternalFilesDir(GDFile.RECORD.appFolder));
+        GdFileStorage fileStorage = new AFileStorage(appFolder, folders);
         GdDataSource dataSource = new ADataSource(this);
         AGameView gameView = new AGameView(this);
 
