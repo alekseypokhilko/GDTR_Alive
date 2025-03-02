@@ -8,7 +8,7 @@ import org.happysanta.gdtralive.game.api.MenuType;
 import org.happysanta.gdtralive.game.api.external.GdMenu;
 import org.happysanta.gdtralive.game.api.model.MenuData;
 
-public class Menu<T> implements GdMenu<T>, MenuHandler<T> {
+public class Menu<T> implements GdMenu<T> {
     private final Application application;
     private final MenuFactory<T> menuFactory;
 

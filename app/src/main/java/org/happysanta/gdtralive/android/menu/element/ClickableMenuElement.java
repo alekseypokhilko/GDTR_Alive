@@ -20,8 +20,7 @@ import org.happysanta.gdtralive.android.menu.views.MenuHelmetView;
 import org.happysanta.gdtralive.android.menu.views.MenuTextView;
 import org.happysanta.gdtralive.game.KeyboardHandler;
 
-public class ClickableMenuElement<T>
-		implements MenuElement<T> {
+public abstract class ClickableMenuElement<T> implements MenuElement<T> {
 
 	public static final int TEXT_SIZE = 20;
 	public static final int PADDING_TOP = 5;
@@ -33,15 +32,6 @@ public class ClickableMenuElement<T>
 	protected OnMenuElementHighlightListener<T> onMenuElementHighlightListener = null;
 	protected boolean isHighlighted = false;
 	protected boolean disabled = false;
-
-	public ClickableMenuElement() {
-	}
-
-	public ClickableMenuElement(String text) {
-		this.text = text;
-
-		createAllViews();
-	}
 
 	protected boolean inViewBounds(View view, int x, int y) {
 		Rect rect = new Rect();
@@ -163,11 +153,6 @@ public class ClickableMenuElement<T>
 
 	protected String getTextForView() {
 		return text;
-	}
-
-	@Override
-	public void performAction(int k) {
-
 	}
 
 	public void setOnHighlightListener(OnMenuElementHighlightListener listener) {

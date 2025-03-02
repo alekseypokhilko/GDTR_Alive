@@ -1,9 +1,9 @@
 package org.happysanta.gdtralive.game.api.external;
 
-import org.happysanta.gdtralive.game.api.menu.MenuScreen;
+import org.happysanta.gdtralive.game.api.menu.MenuHandler;
 import org.happysanta.gdtralive.game.api.model.MenuData;
 
-public interface GdMenu<T> {
+public interface GdMenu<T> extends MenuHandler<T> {
     void menuToGame();
 
     boolean canStartTrack();
@@ -14,13 +14,9 @@ public interface GdMenu<T> {
 
     boolean isCurrentMenuEmpty();
 
-    void setCurrentMenu(MenuScreen<T> newMenu);
-
     void onCurrentMenuScroll(double p);
 
     void back();
-
-    void menuBack();
 
     void setM_blZ(boolean flag);
 

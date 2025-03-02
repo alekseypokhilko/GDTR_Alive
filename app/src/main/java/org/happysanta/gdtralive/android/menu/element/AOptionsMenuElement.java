@@ -16,15 +16,16 @@ import org.happysanta.gdtralive.android.menu.AMenuScreen;
 import org.happysanta.gdtralive.android.menu.views.MenuImageView;
 import org.happysanta.gdtralive.android.menu.views.MenuTextView;
 import org.happysanta.gdtralive.game.KeyboardHandler;
-import org.happysanta.gdtralive.game.api.menu.IOptionsMenuElement;
+import org.happysanta.gdtralive.game.api.menu.OptionsMenuElement;
 import org.happysanta.gdtralive.game.api.menu.MenuElement;
 import org.happysanta.gdtralive.game.api.menu.MenuHandler;
 import org.happysanta.gdtralive.game.api.menu.MenuScreen;
 import org.happysanta.gdtralive.game.api.util.ActionHandler;
+import org.happysanta.gdtralive.game.util.Fmt;
 
-public class OptionsMenuElement<T>
+public class AOptionsMenuElement<T>
         extends ClickableMenuElement<T>
-        implements IOptionsMenuElement<T> {
+        implements OptionsMenuElement<T> {
 
     protected int selectedIndex;
     protected String[] options;
@@ -38,9 +39,9 @@ public class OptionsMenuElement<T>
     protected MenuActionElement<T>[] optionsScreenItems = null;
     protected MenuImageView lockImage = null;
     protected MenuTextView optionTextView = null;
-    protected ActionHandler<IOptionsMenuElement<T>> action;
+    protected ActionHandler<OptionsMenuElement<T>> action;
 
-    public OptionsMenuElement(String text, int selectedIndex, MenuHandler<T> menuHandler, String[] options, boolean isOnOffToggle, MenuScreen<T> screen, ActionHandler<IOptionsMenuElement<T>> action) {
+    public AOptionsMenuElement(String text, int selectedIndex, MenuHandler<T> menuHandler, String[] options, boolean isOnOffToggle, MenuScreen<T> screen, ActionHandler<OptionsMenuElement<T>> action) {
         this.text = text;
         this.selectedIndex = selectedIndex;
         this.menuHandler = menuHandler;
@@ -145,10 +146,6 @@ public class OptionsMenuElement<T>
         updateSelectedOption();
     }
 
-    public String[] getOptions() {
-        return options;
-    }
-
     public void setOptions(String as[]) {
         setOptions(as, true);
     }
@@ -168,6 +165,7 @@ public class OptionsMenuElement<T>
         return selectedIndex;
     }
 
+    @Override
     public void setSelectedOption(int k) {
         selectedIndex = k;
         if (selectedIndex > options.length - 1)
@@ -220,7 +218,7 @@ public class OptionsMenuElement<T>
         } while (true);
 
         menuHandler.setCurrentMenu(screen);
-        handleAction();
+        performAction();
         menuHandler.handleAction(this);
     }
 
@@ -250,12 +248,12 @@ public class OptionsMenuElement<T>
                     else
                         selectedOption = s(R.string.on);
                     updateViewText();
-                    handleAction();
+                    performAction();
                     menuHandler.handleAction(this);
                     return;
                 } else {
                     m_oZ = true;
-                    handleAction();
+                    performAction();
                     menuHandler.handleAction(this);
                     return;
                 }
@@ -265,7 +263,7 @@ public class OptionsMenuElement<T>
                     if (selectedIndex == 1) {
                         selectedIndex = 0;
                         selectedOption = s(R.string.on);
-                        handleAction();
+                        performAction();
                         menuHandler.handleAction(this);
                         updateViewText();
                     }
@@ -275,7 +273,7 @@ public class OptionsMenuElement<T>
                 if (selectedIndex > options.length - 1) {
                     selectedIndex = options.length - 1;
                 } else {
-                    handleAction();
+                    performAction();
                     menuHandler.handleAction(this);
                 }
                 updateSelectedOption();
@@ -286,7 +284,7 @@ public class OptionsMenuElement<T>
                     if (selectedIndex == 0) {
                         selectedIndex = 1;
                         selectedOption = s(R.string.off);
-                        handleAction();
+                        performAction();
                         menuHandler.handleAction(this);
                         updateViewText();
                     }
@@ -297,7 +295,7 @@ public class OptionsMenuElement<T>
                     selectedIndex = 0;
                 } else {
                     updateSelectedOption();
-                    handleAction();
+                    performAction();
                     menuHandler.handleAction(this);
                 }
                 updateSelectedOption();
@@ -312,7 +310,7 @@ public class OptionsMenuElement<T>
 
     @Override
     protected String getTextForView() {
-        return String.format("%s: ", text);
+        return Fmt.colon(text);
     }
 
     @Override
@@ -320,7 +318,7 @@ public class OptionsMenuElement<T>
         lockImage.setImageResource(MenuActionElement.locks[isHighlighted ? 2 : Helpers.getModManager().getInterfaceTheme().getLockSkinIndex()]);
     }
 
-    private void handleAction() {
+    private void performAction() {
         if (action != null) {
             action.handle(this);
         }

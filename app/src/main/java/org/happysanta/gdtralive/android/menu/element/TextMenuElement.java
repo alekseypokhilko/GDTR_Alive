@@ -72,10 +72,6 @@ public class TextMenuElement<T> implements MenuElement<T> {
         return false;
     }
 
-    @Override
-    public void performAction(int k) {
-    }
-
     public void onThemeReload() {
         getTextView().setTextColor(Helpers.getModManager().getInterfaceTheme().getTextColor());
     }

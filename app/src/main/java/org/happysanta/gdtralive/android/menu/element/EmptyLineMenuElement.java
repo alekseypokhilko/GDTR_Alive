@@ -36,8 +36,4 @@ public class EmptyLineMenuElement<T> implements MenuElement<T> {
         text = s;
     }
 
-    @Override
-    public void performAction(int k) {
-    }
-
 }

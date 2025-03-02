@@ -58,9 +58,9 @@ public class MenuFactory<T> {
     private Menu<T> menu;
     private Game game;
 
-    private IOptionsMenuElement<T> levelSelector;
-    private IOptionsMenuElement<T> leagueSelector;
-    private IOptionsMenuElement<T> trackSelector;
+    private OptionsMenuElement<T> levelSelector;
+    private OptionsMenuElement<T> leagueSelector;
+    private OptionsMenuElement<T> trackSelector;
     private MenuScreen<T> trackSelectorCurrentMenu;
     private GdTrackEditor trackEditor;
 
@@ -240,7 +240,7 @@ public class MenuFactory<T> {
             s.addItem(e.emptyLine(true));
             for (int i = 0; i < themeNames.size(); i++) { //todo
                 try {
-                    MenuElement<T> options = e.menuItem(themeNames.get(i), this.get(MenuType.THEME_OPTIONS),
+                    MenuItemElement<T> options = e.menuItem(themeNames.get(i), this.get(MenuType.THEME_OPTIONS),
                             item -> this.get(MenuType.THEME_OPTIONS).build(new MenuData(themeNames.get(item.getValue()))));
                     options.setValue(i);
                     screen.addItem(options);
@@ -319,7 +319,7 @@ public class MenuFactory<T> {
             for (String filename : list) {
                 String name = GDFile.MOD.cutExtension(filename);
                 modNames.add(name);
-                MenuElement<T> options = e.menuItem(name, this.get(MenuType.MOD_OPTIONS),
+                MenuItemElement<T> options = e.menuItem(name, this.get(MenuType.MOD_OPTIONS),
                         item -> {
                             try {
                                 Mod mod = this.application.getModManager().loadMod(modNames.get(item.getValue()));
@@ -356,7 +356,7 @@ public class MenuFactory<T> {
                 }
             }
             MenuScreen<T> parent = this.get(MenuType.PLAY);
-            MenuElement<T> campaignSelector = e.selector(str.s(S.campaign_select), currentModIndex, modNames, false, parent, it -> {
+            OptionsMenuElement<T> campaignSelector = e.selector(str.s(S.campaign_select), currentModIndex, modNames, false, parent, it -> {
                 if (it._charvZ()) {
                     MenuScreen<T> leagueSelectorCurrentMenu = it.getCurrentMenu();
                     it.setScreen(menu.getCurrentMenu());
@@ -407,7 +407,7 @@ public class MenuFactory<T> {
                     long millis = rec.getTime();
                     String time = Utils.getDurationString(millis);
                     String name = String.format("[%s] %s", time, rec.getTrackName());
-                    MenuElement<T> options = e.menuItem(name, this.get(MenuType.RECORDING_OPTIONS),
+                    MenuItemElement<T> options = e.menuItem(name, this.get(MenuType.RECORDING_OPTIONS),
                             item -> {
                                 TrackRecord recording = application.getFileStorage().getAllRecords().get(item.getValue());
                                 this.get(MenuType.RECORDING_OPTIONS).build(new MenuData(recording));
@@ -514,9 +514,9 @@ public class MenuFactory<T> {
                     application.getSettings().setScale(item.getSelectedOption());
                     application.getModManager().adjustScale();
                 }));
-        screen.addItem(e.selector(str.s(S.recording_enabled), application.getSettings().isRecordingEnabled() ? 0 : 1, onOffStrings, true, screen,
+        screen.addItem(e.toggle(str.s(S.recording_enabled), application.getSettings().isRecordingEnabled() ? 0 : 1, onOffStrings,
                 item -> game.setRecordingEnabled(item.getSelectedOption() == 0)));
-        screen.addItem(e.selector(str.s(S.perspective), application.getSettings().isPerspectiveEnabled() ? 0 : 1, onOffStrings, true, screen,
+        screen.addItem(e.toggle(str.s(S.perspective), application.getSettings().isPerspectiveEnabled() ? 0 : 1, onOffStrings,
                 item -> game.setPerspectiveEnabled(item.getSelectedOption() == 0)));
         screen.addItem(e.selector(str.s(S.shadows), application.getSettings().isShadowsEnabled() ? 0 : 1, onOffStrings, true, screen,
                 item -> game.setShadowsEnabled(item.getSelectedOption() == 0)));
@@ -782,9 +782,9 @@ public class MenuFactory<T> {
     }
 
     public void transformPlayCampaign(MenuScreen<T> s) {
-        MenuElement<T> trackSelector = this.trackSelector;
-        MenuElement<T> levelSelector = this.levelSelector;
-        MenuElement<T> leagueSelector = this.leagueSelector;
+        OptionsMenuElement<T> trackSelector = this.trackSelector;
+        OptionsMenuElement<T> levelSelector = this.levelSelector;
+        OptionsMenuElement<T> leagueSelector = this.leagueSelector;
         s.addItem(e.menuAction(Fmt.ra(str.s(S.start)), item -> {
             if (levelSelector.getSelectedOption() > levelSelector.getUnlockedCount()
                     || trackSelector.getSelectedOption() > trackSelector.getUnlockedCount()

@@ -17,9 +17,7 @@ import org.happysanta.gdtralive.android.menu.views.MenuImageView;
 import org.happysanta.gdtralive.android.menu.views.MenuTextView;
 import org.happysanta.gdtralive.game.KeyboardHandler;
 
-public class MenuActionElement<T>
-        extends ClickableMenuElement<T>
-        implements MenuHandler<T>, MenuElement<T> {
+public class MenuActionElement<T> extends ClickableMenuElement<T> {
 
     protected static final int DISABLED_COLOR = 0xff999999;
     public static final int LOCK_IMAGE_MARGIN_RIGHT = 5;

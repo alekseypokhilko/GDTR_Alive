@@ -91,10 +91,6 @@ public class InputTextElement<T> implements MenuElement<T> {
         return false;
     }
 
-    @Override
-    public void performAction(int k) {
-    }
-
     public void onThemeReload() {
         InterfaceTheme interfaceTheme = Helpers.getModManager().getInterfaceTheme();
         optionTextView.setTextColor(interfaceTheme.getTextColor());

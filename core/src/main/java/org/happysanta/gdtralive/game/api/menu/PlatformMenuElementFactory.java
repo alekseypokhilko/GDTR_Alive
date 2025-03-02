@@ -1,10 +1,11 @@
 package org.happysanta.gdtralive.game.api.menu;
 
+import org.happysanta.gdtralive.game.api.external.GdMenu;
 import org.happysanta.gdtralive.game.api.util.ActionHandler;
 
 public interface PlatformMenuElementFactory<T> {
 
-    void setMenu(MenuHandler<T> menu);
+    void setMenu(GdMenu<T> menu);
 
     MenuElement<T> emptyLine(boolean beforeAction);
 
@@ -12,11 +13,12 @@ public interface PlatformMenuElementFactory<T> {
 
     MenuElement<T> text(String title);
 
-    MenuElement<T> menuItem(String title, MenuScreen<T> parent);
+    MenuItemElement<T> menuItem(String title, MenuScreen<T> parent);
 
     MenuElement<T> actionContinue(ActionHandler handler);
 
     MenuScreen<T> screen(String title, MenuScreen<T> parent);
+
     MenuElement<T> createAction(int action, ActionHandler actionHandler);
 
     MenuElement<T> backAction(Runnable beforeBack);
@@ -24,6 +26,7 @@ public interface PlatformMenuElementFactory<T> {
     MenuElement<T> backAction();
 
     MenuElement<T> reatart(String title, ActionHandler handler);
+
     MenuElement<T> menuAction(String title, int action, ActionHandler<MenuElement<T>> handler);
 
     MenuElement<T> menuAction(String title, ActionHandler<MenuElement<T>> handler);
@@ -32,15 +35,17 @@ public interface PlatformMenuElementFactory<T> {
 
     MenuElement<T> textHtml(String text);
 
-    MenuElement<T> menuItem(String title, MenuScreen<T> parent, ActionHandler<MenuElement<T>> handler);
+    MenuItemElement<T> menuItem(String title, MenuScreen<T> parent, ActionHandler<MenuItemElement<T>> handler);
 
     MenuElement<T> badge(int icon, String title);
 
-    MenuElement<T> editText(String title, String value, ActionHandler<MenuElement<T>> handler) ;
+    MenuElement<T> editText(String title, String value, ActionHandler<MenuElement<T>> handler);
 
     MenuElement<T> highScore(String title, int place, boolean padding);
 
     MenuElement<T> getItem(String text, boolean padding);
-    IOptionsMenuElement<T> selector(String title, int selected, String[] options, boolean toggle, MenuScreen<T> parent, ActionHandler<IOptionsMenuElement<T>> handler) ;
-    
+
+    OptionsMenuElement<T> selector(String title, int selected, String[] options, boolean toggle, MenuScreen<T> parent, ActionHandler<OptionsMenuElement<T>> handler);
+
+    ToggleMenuElement<T> toggle(String title, int selected, String[] options, ActionHandler<ToggleMenuElement<T>> action);
 }
