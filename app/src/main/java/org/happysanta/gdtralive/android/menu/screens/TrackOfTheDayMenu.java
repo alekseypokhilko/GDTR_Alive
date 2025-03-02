@@ -8,9 +8,9 @@
 //import org.happysanta.gdtralive.game.api.menu.AMenu;
 //import org.happysanta.gdtralive.android.menu.AMenuScreen;
 //import org.happysanta.gdtralive.android.menu.MenuUtils;
-//import org.happysanta.gdtralive.android.menu.element.HighScoreTextMenuElement;
+//import org.happysanta.gdtralive.game.api.menu.element.HighScoreTextMenuElement;
 //import org.happysanta.gdtralive.android.menu.element.MenuAction;
-//import org.happysanta.gdtralive.android.menu.element.TextMenuElement;
+//import org.happysanta.gdtralive.game.api.menu.element.TextMenuElement;
 //import org.happysanta.gdtralive.game.Application;
 //import org.happysanta.gdtralive.game.Game;
 //import org.happysanta.gdtralive.game.api.GameMode;

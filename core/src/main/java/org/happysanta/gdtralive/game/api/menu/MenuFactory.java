@@ -387,7 +387,8 @@ public class MenuFactory<T> {
             s.clear();
             for (Achievement achievement : Achievement.achievements.values()) {
                 String title = Fmt.sp(str.s(achievement.getName()), achievement.getProgressFormatted());
-                s.add(e.badge(achievement.getLevel(), title));
+                s.add(e.text(title));//todo remove
+                //s.add(e.badge(achievement.getLevel(), title)); //todo refactor
                 s.add(e.textHtml(str.s(achievement.getDescription())));
                 s.add(e.emptyLine(false));
             }

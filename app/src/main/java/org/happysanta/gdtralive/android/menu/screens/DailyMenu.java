@@ -14,7 +14,7 @@
 //import org.happysanta.gdtralive.android.menu.element.MenuAction;
 //import org.happysanta.gdtralive.android.menu.element.MenuItem;
 //import org.happysanta.gdtralive.android.menu.element.OptionsMenuElement;
-//import org.happysanta.gdtralive.android.menu.element.TextMenuElement;
+//import org.happysanta.gdtralive.game.api.menu.element.TextMenuElement;
 //import org.happysanta.gdtralive.game.Application;
 //import org.happysanta.gdtralive.game.Game;
 //import org.happysanta.gdtralive.game.api.Constants;

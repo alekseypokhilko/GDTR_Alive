@@ -6,6 +6,9 @@ import static org.happysanta.gdtralive.android.Helpers.s;
 
 import android.content.Context;
 import android.text.Html;
+import android.text.Spanned;
+import android.text.SpannedString;
+import android.text.util.Linkify;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -16,15 +19,16 @@ import org.happysanta.gdtralive.R;
 import org.happysanta.gdtralive.android.GDActivity;
 import org.happysanta.gdtralive.android.Global;
 import org.happysanta.gdtralive.android.Helpers;
+import org.happysanta.gdtralive.android.menu.views.MenuLinearLayout;
 import org.happysanta.gdtralive.game.api.menu.element.OptionsMenuElement;
 import org.happysanta.gdtralive.android.menu.element.BadgeWithTextElement;
-import org.happysanta.gdtralive.android.menu.element.HighScoreTextMenuElement;
+import org.happysanta.gdtralive.game.api.menu.element.HighScoreTextMenuElement;
 import org.happysanta.gdtralive.android.menu.views.MenuImageView;
 import org.happysanta.gdtralive.game.ModManager;
 import org.happysanta.gdtralive.game.api.menu.element.IMenuActionElement;
 import org.happysanta.gdtralive.game.api.menu.element.InputTextElement;
 import org.happysanta.gdtralive.game.api.menu.element.MenuActionElement;
-import org.happysanta.gdtralive.android.menu.element.TextMenuElement;
+import org.happysanta.gdtralive.game.api.menu.element.TextMenuElement;
 import org.happysanta.gdtralive.android.menu.views.MenuEditTextView;
 import org.happysanta.gdtralive.android.menu.views.MenuHelmetView;
 import org.happysanta.gdtralive.android.menu.views.MenuTextView;
@@ -89,8 +93,9 @@ public class APlatformMenuElementFactory<T> implements PlatformMenuElementFactor
         return reatart(Fmt.colon(s(R.string.restart), name), handler);
     }
 
+    protected static final int TEXT_COLOR = 0xff000000;
     public MenuElement<T> text(String title) {
-        return new TextMenuElement<>(title);
+        return new TextMenuElement<>(getMenuTextView(SpannedString.valueOf(title), context));
     }
 
     public IMenuItemElement<T> menu(String title, MenuScreen<T> parent) {
@@ -164,11 +169,11 @@ public class APlatformMenuElementFactory<T> implements PlatformMenuElementFactor
     }
 
     public MenuElement<T> textHtmlBold(String key, String value) {
-        return new TextMenuElement<>(Html.fromHtml(String.format("<b>%s</b>: %s", key, value == null ? "" : value)));
+        return new TextMenuElement<>(getMenuTextView(Html.fromHtml(String.format("<b>%s</b>: %s", key, value == null ? "" : value)), context));
     }
 
     public MenuElement<T> textHtml(String text) {
-        return new TextMenuElement<>(Html.fromHtml(text));
+        return new TextMenuElement<>(getMenuTextView(Html.fromHtml(text), context));
     }
 
     public IMenuItemElement<T> menu(String title, MenuScreen<T> parent, ActionHandler<IMenuItemElement<T>> handler) {
@@ -240,11 +245,76 @@ public class APlatformMenuElementFactory<T> implements PlatformMenuElementFactor
     }
 
     public MenuElement<T> highScore(String title, int place, boolean padding) {
-        return new HighScoreTextMenuElement<>(title, place, padding);
+        int TEXT_LEFT_MARGIN = 5;
+        int SUBTITLE_MARGIN_BOTTOM = 8;
+        int SUBTITLE_TEXT_SIZE = 20;
+        int LAYOUT_PADDING = 3;
+        int TEXT_SIZE = 15;
+        int[] medals = new int[]{
+                R.drawable.s_medal_gold,
+                R.drawable.s_medal_silver,
+                R.drawable.s_medal_bronze
+        };
+        MenuTextView textView = (MenuTextView) getMenuTextView(SpannedString.valueOf(title), context);
+
+        MenuLinearLayout layout = new MenuLinearLayout(context);
+        layout.setOrientation(LinearLayout.HORIZONTAL);
+        layout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+
+        MenuImageView image = new MenuImageView(context);
+        image.setScaleType(ImageView.ScaleType.CENTER);
+        image.setVisibility(View.GONE);
+        // textView was already created in super constructor
+        textView.setLineSpacing(0, 1);
+
+        LinearLayout.LayoutParams textViewLayoutParams1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        // textViewLayoutParams.setMargins(getDp(TEXT_LEFT_MARGIN), 0, 0, 0);
+        textView.setLayoutParams(textViewLayoutParams1);
+
+        layout.addView(image, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT));
+        layout.addView(textView);
+        if (place >=0 && place <= 2) {
+            image.setVisibility(true);
+            image.setImageResource(medals[place]);
+
+            LinearLayout.LayoutParams textViewLayoutParams = (LinearLayout.LayoutParams) textView.getLayoutParams();
+            textViewLayoutParams.setMargins(getDp(TEXT_LEFT_MARGIN), 0, 0, 0);
+            textView.setLayoutParams(textViewLayoutParams);
+        }
+        layout.setPadding(0, padding ? getDp(LAYOUT_PADDING) : 0, 0, padding ? getDp(LAYOUT_PADDING) : 0);
+        return new HighScoreTextMenuElement<>(place, padding, textView, layout);
     }
 
     public MenuElement<T> getItem(String text, boolean padding) {
-        return new HighScoreTextMenuElement<>(Html.fromHtml(text), padding);
+        int TEXT_LEFT_MARGIN = 5;
+        int SUBTITLE_MARGIN_BOTTOM = 8;
+        int SUBTITLE_TEXT_SIZE = 20;
+        int LAYOUT_PADDING = 3;
+        int TEXT_SIZE = 15;
+        MenuTextView textView = (MenuTextView)getMenuTextView(Html.fromHtml(text), context);
+        MenuLinearLayout layout = new MenuLinearLayout(context);
+        layout.setOrientation(LinearLayout.HORIZONTAL);
+        layout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+
+        MenuImageView image = new MenuImageView(context);
+        image.setScaleType(ImageView.ScaleType.CENTER);
+        image.setVisibility(View.GONE);
+        // textView was already created in super constructor
+        textView.setLineSpacing(0, 1);
+
+        LinearLayout.LayoutParams textViewLayoutParams1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        // textViewLayoutParams.setMargins(getDp(TEXT_LEFT_MARGIN), 0, 0, 0);
+        textView.setLayoutParams(textViewLayoutParams1);
+
+        layout.addView(image, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT));
+        layout.addView(textView);
+        textView.setTextSize(padding ? SUBTITLE_TEXT_SIZE : TEXT_SIZE);
+        textView.setTypeface(Global.robotoCondensedTypeface);
+
+        LinearLayout.LayoutParams textViewLayoutParams = (LinearLayout.LayoutParams) textView.getLayoutParams();
+        textViewLayoutParams.setMargins(!padding && false/*showMedal*/ ? getDp(TEXT_LEFT_MARGIN) : 0, 0, 0, padding ? getDp(SUBTITLE_MARGIN_BOTTOM) : 0);
+        textView.setLayoutParams(textViewLayoutParams);
+        return new HighScoreTextMenuElement<>(padding, textView, layout);
     }
 
     public IOptionsMenuElement<T> selector(String title, int selected, String[] options, MenuScreen<T> parent, ActionHandler<IOptionsMenuElement<T>> action) {
@@ -423,5 +493,23 @@ public class APlatformMenuElementFactory<T> implements PlatformMenuElementFactor
         lp.setMargins(0, 0, getDp(LOCK_IMAGE_MARGIN_RIGHT), 0);
         lockImage.setLayoutParams(lp);
         return lockImage;
+    }
+
+    private IMenuTextView<T> getMenuTextView(Spanned text, Context activity) {
+        MenuTextView textView1 = new MenuTextView(activity);
+        textView1.setText(text);
+        textView1.setTextColor(TEXT_COLOR);
+        textView1.setTextSize(TEXT_SIZE);
+        textView1.setTextColor(Helpers.getModManager().getInterfaceTheme().getTextColor());
+        Helpers.getModManager().registerThemeReloadHandler(() -> textView1.setTextColor(Helpers.getModManager().getInterfaceTheme().getTextColor()));
+        textView1.setLineSpacing(0f, 1.5f);
+        textView1.setLayoutParams(new ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        ));
+
+        Linkify.addLinks(textView1, Linkify.WEB_URLS);
+        textView1.setLinksClickable(true);
+        return textView1;
     }
 }
