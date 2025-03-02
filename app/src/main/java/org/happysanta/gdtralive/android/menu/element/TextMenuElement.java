@@ -39,7 +39,7 @@ public class TextMenuElement<T> implements MenuElement<T> {
         textView.setTextColor(TEXT_COLOR);
         textView.setTextSize(TEXT_SIZE);
         textView.setTextColor(Helpers.getModManager().getInterfaceTheme().getTextColor());
-        Helpers.getModManager().registerThemeReloadHandler(this::onThemeReload);
+        Helpers.getModManager().registerThemeReloadHandler(() -> getTextView().setTextColor(Helpers.getModManager().getInterfaceTheme().getTextColor()));
         textView.setLineSpacing(0f, 1.5f);
         textView.setLayoutParams(new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -70,10 +70,6 @@ public class TextMenuElement<T> implements MenuElement<T> {
     @Override
     public boolean isSelectable() {
         return false;
-    }
-
-    public void onThemeReload() {
-        getTextView().setTextColor(Helpers.getModManager().getInterfaceTheme().getTextColor());
     }
 
     public MenuTextView getTextView() {

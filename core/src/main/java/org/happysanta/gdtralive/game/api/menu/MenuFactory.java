@@ -17,7 +17,7 @@ import org.happysanta.gdtralive.game.api.external.GdStr;
 import org.happysanta.gdtralive.game.api.external.GdTrackEditor;
 import org.happysanta.gdtralive.game.api.menu.element.IInputTextElement;
 import org.happysanta.gdtralive.game.api.menu.element.IMenuItemElement;
-import org.happysanta.gdtralive.game.api.menu.element.OptionsMenuElement;
+import org.happysanta.gdtralive.game.api.menu.element.IOptionsMenuElement;
 import org.happysanta.gdtralive.game.api.model.GameParams;
 import org.happysanta.gdtralive.game.api.model.MenuData;
 import org.happysanta.gdtralive.game.api.model.Mod;
@@ -61,9 +61,9 @@ public class MenuFactory<T> {
     private Menu<T> menu;
     private Game game;
 
-    private OptionsMenuElement<T> levelSelector;
-    private OptionsMenuElement<T> leagueSelector;
-    private OptionsMenuElement<T> trackSelector;
+    private IOptionsMenuElement<T> levelSelector;
+    private IOptionsMenuElement<T> leagueSelector;
+    private IOptionsMenuElement<T> trackSelector;
     private MenuScreen<T> trackSelectorCurrentMenu;
     private GdTrackEditor trackEditor;
 
@@ -359,7 +359,7 @@ public class MenuFactory<T> {
                 }
             }
             MenuScreen<T> parent = this.get(MenuType.PLAY);
-            OptionsMenuElement<T> campaignSelector = e.selector(str.s(S.campaign_select), currentModIndex, modNames, parent, it -> {
+            IOptionsMenuElement<T> campaignSelector = e.selector(str.s(S.campaign_select), currentModIndex, modNames, parent, it -> {
                 if (it._charvZ()) {
                     MenuScreen<T> leagueSelectorCurrentMenu = it.getCurrentMenu();
                     it.setScreen(menu.getCurrentMenu());
@@ -777,9 +777,9 @@ public class MenuFactory<T> {
     }
 
     public void transformPlayCampaign(MenuScreen<T> s) {
-        OptionsMenuElement<T> trackSelector = this.trackSelector;
-        OptionsMenuElement<T> levelSelector = this.levelSelector;
-        OptionsMenuElement<T> leagueSelector = this.leagueSelector;
+        IOptionsMenuElement<T> trackSelector = this.trackSelector;
+        IOptionsMenuElement<T> levelSelector = this.levelSelector;
+        IOptionsMenuElement<T> leagueSelector = this.leagueSelector;
         s.add(e.action(Fmt.ra(str.s(S.start)), item -> {
             if (levelSelector.getSelectedOption() > levelSelector.getUnlockedCount()
                     || trackSelector.getSelectedOption() > trackSelector.getUnlockedCount()

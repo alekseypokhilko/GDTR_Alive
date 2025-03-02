@@ -9,17 +9,21 @@ import android.text.Html;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import org.happysanta.gdtralive.R;
 import org.happysanta.gdtralive.android.GDActivity;
 import org.happysanta.gdtralive.android.Global;
 import org.happysanta.gdtralive.android.Helpers;
-import org.happysanta.gdtralive.android.menu.element.AOptionsMenuElement;
+import org.happysanta.gdtralive.game.api.menu.element.OptionsMenuElement;
 import org.happysanta.gdtralive.android.menu.element.BadgeWithTextElement;
 import org.happysanta.gdtralive.android.menu.element.HighScoreTextMenuElement;
+import org.happysanta.gdtralive.android.menu.views.MenuImageView;
+import org.happysanta.gdtralive.game.ModManager;
+import org.happysanta.gdtralive.game.api.menu.element.IMenuActionElement;
 import org.happysanta.gdtralive.game.api.menu.element.InputTextElement;
-import org.happysanta.gdtralive.android.menu.element.MenuActionElement;
+import org.happysanta.gdtralive.game.api.menu.element.MenuActionElement;
 import org.happysanta.gdtralive.android.menu.element.TextMenuElement;
 import org.happysanta.gdtralive.android.menu.views.MenuEditTextView;
 import org.happysanta.gdtralive.android.menu.views.MenuHelmetView;
@@ -39,15 +43,17 @@ import org.happysanta.gdtralive.game.api.menu.element.IInputTextElement;
 import org.happysanta.gdtralive.game.api.menu.element.IMenuItemElement;
 import org.happysanta.gdtralive.game.api.menu.element.IToggleMenuElement;
 import org.happysanta.gdtralive.game.api.menu.element.MenuItemElement;
-import org.happysanta.gdtralive.game.api.menu.element.OptionsMenuElement;
+import org.happysanta.gdtralive.game.api.menu.element.IOptionsMenuElement;
 import org.happysanta.gdtralive.game.api.menu.element.ToggleMenuElement;
 import org.happysanta.gdtralive.game.api.menu.view.IMenuEditTextView;
 import org.happysanta.gdtralive.game.api.menu.view.IMenuHelmetView;
+import org.happysanta.gdtralive.game.api.menu.view.IMenuImageView;
 import org.happysanta.gdtralive.game.api.menu.view.IMenuTextView;
 import org.happysanta.gdtralive.game.api.util.ActionHandler;
 import org.happysanta.gdtralive.game.util.Fmt;
 
 public class APlatformMenuElementFactory<T> implements PlatformMenuElementFactory<T> {
+    public static final int LOCK_IMAGE_MARGIN_RIGHT = 5;
     public static int[] ACHIEVEMENT_ICONS = {
             R.drawable.s_lock1,
             R.drawable.levels_wheel0,
@@ -55,22 +61,24 @@ public class APlatformMenuElementFactory<T> implements PlatformMenuElementFactor
             R.drawable.levels_wheel2
     };
 
-    public static final int[] locks = new int[]{
-            R.drawable.s_lock0,
-            R.drawable.s_lock1,
-            R.drawable.s_lock2
-    };
     private GdMenu<T> menu;
     private final Application application;
+    private final ModManager modManager;
     private final Context context;
 
     public APlatformMenuElementFactory(Application application, GDActivity gdActivity) {
         this.application = application;
+        this.modManager = application.getModManager();
         this.context = gdActivity;
     }
 
     public void setMenu(GdMenu<T> menu) {
         this.menu = menu;
+    }
+
+    @Override
+    public ModManager getModManager() {
+        return modManager;
     }
 
     public MenuElement<T> emptyLine(boolean beforeAction) {
@@ -93,12 +101,15 @@ public class APlatformMenuElementFactory<T> implements PlatformMenuElementFactor
         return new MenuItemElement<>(title, parent, menu, helmetView, textView, touchInterceptor, layout);
     }
 
-    public MenuElement<T> actionContinue(ActionHandler handler) {
+    public IMenuActionElement<T> actionContinue(ActionHandler<IMenuActionElement<T>> handler) {
         IMenuHelmetView<T> helmetView = createHelmetView(context);
         MenuTextView<T> textView = createTextView(context);
         TouchInterceptor<T> touchInterceptor = new TouchInterceptor<>();
         T layout = createLayout(context, helmetView, textView, createOnTouchListener(touchInterceptor));
-        return new MenuActionElement<T>(s(R.string._continue), MenuFactory.CONTINUE, handler, helmetView, textView, touchInterceptor, layout);
+
+        IMenuImageView<T> lockImage = getMenuImageView(context);
+        ((LinearLayout) layout).addView((View) lockImage, 1);
+        return new MenuActionElement<T>(s(R.string._continue), MenuFactory.CONTINUE, handler, helmetView, textView, touchInterceptor, layout, lockImage, this);
     }
 
     public MenuScreen<T> screen(String title, MenuScreen<T> parent) {
@@ -110,7 +121,7 @@ public class APlatformMenuElementFactory<T> implements PlatformMenuElementFactor
         MenuTextView<T> textView = createTextView(context);
         TouchInterceptor<T> touchInterceptor = new TouchInterceptor<>();
         T layout = createLayout(context, helmetView, textView, createOnTouchListener(touchInterceptor));
-        return new MenuActionElement<T>(application.getStr().s(getActionText(action)), action, actionHandler, helmetView, textView, touchInterceptor, layout);
+        return new MenuActionElement<T>(application.getStr().s(getActionText(action)), action, actionHandler, helmetView, textView, touchInterceptor, layout, getMenuImageView(context), this);
     }
 
     public MenuElement<T> backAction(Runnable beforeBack) {
@@ -129,23 +140,27 @@ public class APlatformMenuElementFactory<T> implements PlatformMenuElementFactor
         MenuTextView<T> textView = createTextView(context);
         TouchInterceptor<T> touchInterceptor = new TouchInterceptor<>();
         T layout = createLayout(context, helmetView, textView, createOnTouchListener(touchInterceptor));
-        return new MenuActionElement<T>(title, MenuFactory.RESTART, handler, helmetView, textView, touchInterceptor, layout);
+        return new MenuActionElement<T>(title, MenuFactory.RESTART, handler, helmetView, textView, touchInterceptor, layout, getMenuImageView(context), this);
     }
 
-    public MenuElement<T> action(String title, int action, ActionHandler<MenuElement<T>> handler) {
+    public IMenuActionElement<T> action(String title, int action, ActionHandler<IMenuActionElement<T>> handler) {
         IMenuHelmetView<T> helmetView = createHelmetView(context);
         MenuTextView<T> textView = createTextView(context);
         TouchInterceptor<T> touchInterceptor = new TouchInterceptor<>();
         T layout = createLayout(context, helmetView, textView, createOnTouchListener(touchInterceptor));
-        return new MenuActionElement<>(title, action, handler, helmetView, textView, touchInterceptor, layout);
+        IMenuImageView<T> lockImage = getMenuImageView(context);
+        ((LinearLayout) layout).addView((View) lockImage, 1);
+        return new MenuActionElement<>(title, action, handler, helmetView, textView, touchInterceptor, layout, lockImage, this);
     }
 
-    public MenuElement<T> action(String title, ActionHandler<MenuElement<T>> handler) {
+    public IMenuActionElement<T> action(String title, ActionHandler<IMenuActionElement<T>> handler) {
         IMenuHelmetView<T> helmetView = createHelmetView(context);
         MenuTextView<T> textView = createTextView(context);
         TouchInterceptor<T> touchInterceptor = new TouchInterceptor<>();
         T layout = createLayout(context, helmetView, textView, createOnTouchListener(touchInterceptor));
-        return new MenuActionElement<>(title, -1, handler, helmetView, textView, touchInterceptor, layout);
+        IMenuImageView<T> lockImage = getMenuImageView(context);
+        ((LinearLayout) layout).addView((View) lockImage, 1);
+        return new MenuActionElement<>(title, -1, handler, helmetView, textView, touchInterceptor, layout, lockImage, this);
     }
 
     public MenuElement<T> textHtmlBold(String key, String value) {
@@ -232,7 +247,7 @@ public class APlatformMenuElementFactory<T> implements PlatformMenuElementFactor
         return new HighScoreTextMenuElement<>(Html.fromHtml(text), padding);
     }
 
-    public OptionsMenuElement<T> selector(String title, int selected, String[] options, MenuScreen<T> parent, ActionHandler<OptionsMenuElement<T>> action) {
+    public IOptionsMenuElement<T> selector(String title, int selected, String[] options, MenuScreen<T> parent, ActionHandler<IOptionsMenuElement<T>> action) {
         IMenuHelmetView<T> helmetView = createHelmetView(context);
         MenuTextView<T> textView = createTextView(context);
         ((MenuTextView<T>) textView.getView()).setLayoutParams(new LinearLayout.LayoutParams(
@@ -240,8 +255,15 @@ public class APlatformMenuElementFactory<T> implements PlatformMenuElementFactor
                 LinearLayout.LayoutParams.WRAP_CONTENT
         ));
         TouchInterceptor<T> touchInterceptor = new TouchInterceptor<>();
+        IMenuTextView<T> optionsTextView = createOptionsTextView(context, textView);
+        IMenuImageView<T> lockImage = getMenuImageView(context);
         T layout = createLayout(context, helmetView, textView, createOnTouchListener(touchInterceptor));
-        return new AOptionsMenuElement<>(title, selected, menu, options, parent, action, helmetView, textView, touchInterceptor, layout);
+        ((LinearLayout) layout).addView((View) lockImage);
+        ((LinearLayout) layout).addView((View) optionsTextView.getView());
+        return new OptionsMenuElement<>(
+                title, selected, menu, options, parent, action, helmetView,
+                textView, touchInterceptor, layout, optionsTextView, lockImage, this
+        );
     }
 
     public IToggleMenuElement<T> toggle(String title, int selected, ActionHandler<IToggleMenuElement<T>> action) {
@@ -391,5 +413,15 @@ public class APlatformMenuElementFactory<T> implements PlatformMenuElementFactor
         MenuTextView<T> view = new MenuTextView<>(context);
         view.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, getDp(offset)));
         return view;
+    }
+
+    private MenuImageView<T> getMenuImageView(Context context) {
+        MenuImageView<T> lockImage = new MenuImageView<>(context);
+        lockImage.setScaleType(ImageView.ScaleType.CENTER);
+        lockImage.setVisibility(View.GONE);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
+        lp.setMargins(0, 0, getDp(LOCK_IMAGE_MARGIN_RIGHT), 0);
+        lockImage.setLayoutParams(lp);
+        return lockImage;
     }
 }
