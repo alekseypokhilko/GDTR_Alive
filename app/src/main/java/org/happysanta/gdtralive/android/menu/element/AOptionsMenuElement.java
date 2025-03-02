@@ -17,7 +17,11 @@ import org.happysanta.gdtralive.game.KeyboardHandler;
 import org.happysanta.gdtralive.game.api.menu.MenuElement;
 import org.happysanta.gdtralive.game.api.menu.MenuHandler;
 import org.happysanta.gdtralive.game.api.menu.MenuScreen;
-import org.happysanta.gdtralive.game.api.menu.OptionsMenuElement;
+import org.happysanta.gdtralive.game.api.menu.TouchInterceptor;
+import org.happysanta.gdtralive.game.api.menu.element.ClickableMenuElement;
+import org.happysanta.gdtralive.game.api.menu.element.OptionsMenuElement;
+import org.happysanta.gdtralive.game.api.menu.view.IMenuHelmetView;
+import org.happysanta.gdtralive.game.api.menu.view.IMenuTextView;
 import org.happysanta.gdtralive.game.api.util.ActionHandler;
 import org.happysanta.gdtralive.game.util.Fmt;
 
@@ -35,11 +39,13 @@ public class AOptionsMenuElement<T>
     protected String selectedOption;
     protected MenuActionElement<T>[] optionsScreenItems = null;
     protected MenuImageView lockImage = null;
-    protected MenuTextView optionTextView = null;
+    protected IMenuTextView<T> optionTextView = null;
     protected ActionHandler<OptionsMenuElement<T>> action;
 
-    public AOptionsMenuElement(String text, int selectedIndex, MenuHandler<T> menuHandler, String[] options, MenuScreen<T> screen, ActionHandler<OptionsMenuElement<T>> action) {
-        super();
+    public AOptionsMenuElement(String text, int selectedIndex, MenuHandler<T> menuHandler, String[] options,
+                               MenuScreen<T> screen, ActionHandler<OptionsMenuElement<T>> action,
+                               IMenuHelmetView<T> helmetView, MenuTextView<T> textView, TouchInterceptor<T> touchInterceptor, T layout) {
+        super(layout, textView, helmetView, touchInterceptor);
         this.text = text;
         this.selectedIndex = selectedIndex;
         this.menuHandler = menuHandler;
@@ -47,8 +53,10 @@ public class AOptionsMenuElement<T>
         if (this.options == null) this.options = new String[]{""};
         unlockedCount = this.options.length - 1;
         this.action = action;
+        this.textView.setText(getTextForView());
 
-        createAllViews(getGDActivity());
+        Context context = getGDActivity();
+        createAllViews(context);
         setSelectedOption(selectedIndex);
 
         this.screen = screen;
@@ -56,19 +64,27 @@ public class AOptionsMenuElement<T>
         update();
     }
 
-    @Override
     protected void createAllViews(Context context) {
-        super.createAllViews(context);
+        optionTextView = createOptionsTextView(context);
 
-        ((MenuTextView) textView.getView()).setLayoutParams(new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        ));
+        lockImage = new MenuImageView(context);
+        lockImage.setImageResource(MenuActionElement.locks[Helpers.getModManager().getInterfaceTheme().getLockSkinIndex()]);
+        lockImage.setScaleType(ImageView.ScaleType.CENTER);
+        lockImage.setVisibility(View.GONE);
 
-        optionTextView = new MenuTextView(context);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
+        lp.setMargins(0, 0, getDp(MenuActionElement.LOCK_IMAGE_MARGIN_RIGHT), 0);
+        lockImage.setLayoutParams(lp);
+        lockImage.setVisibility(View.GONE);
+
+        ((LinearLayout) layout).addView(lockImage);
+        ((LinearLayout) layout).addView((View) optionTextView.getView());
+    }
+
+    private IMenuTextView<T> createOptionsTextView(Context context) {
+        MenuTextView<T> optionTextView = new MenuTextView<>(context);
         optionTextView.setText(selectedOption);
         optionTextView.setTextColor(Helpers.getModManager().getInterfaceTheme().getTextColor());
-        Helpers.getModManager().registerThemeReloadHandler(this::onOptionTextViewThemeReload);
         optionTextView.setTextSize(TEXT_SIZE);
         optionTextView.setTypeface(Global.robotoCondensedTypeface);
         optionTextView.setLayoutParams(new LinearLayout.LayoutParams(
@@ -81,26 +97,7 @@ public class AOptionsMenuElement<T>
                 ((MenuTextView) textView.getView()).getPaddingRight(),
                 ((MenuTextView) textView.getView()).getPaddingBottom()
         );
-
-        lockImage = new MenuImageView(context);
-        lockImage.setImageResource(MenuActionElement.locks[Helpers.getModManager().getInterfaceTheme().getLockSkinIndex()]);
-        lockImage.setScaleType(ImageView.ScaleType.CENTER);
-        lockImage.setVisibility(View.GONE);
-
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
-        lp.setMargins(0, 0, getDp(MenuActionElement.LOCK_IMAGE_MARGIN_RIGHT), 0);
-        lockImage.setLayoutParams(lp);
-        lockImage.setVisibility(View.GONE);
-
-        ((LinearLayout)layout).addView(lockImage);
-        ((LinearLayout)layout).addView(optionTextView);
-    }
-
-    private void onOptionTextViewThemeReload() {
-        getOptionTextView().setTextColor(Helpers.getModManager().getInterfaceTheme().getTextColor());
-    }
-
-    public MenuTextView getOptionTextView() {
+        Helpers.getModManager().registerThemeReloadHandler(() -> optionTextView.setTextColor(Helpers.getModManager().getInterfaceTheme().getTextColor()));
         return optionTextView;
     }
 
@@ -109,9 +106,13 @@ public class AOptionsMenuElement<T>
         updateViewText();
 
         if (selectedIndex > unlockedCount) {
-            lockImage.setVisibility(View.VISIBLE);
+            if (lockImage != null) {
+                lockImage.setVisibility(View.VISIBLE);
+            }
         } else {
-            lockImage.setVisibility(View.GONE);
+            if (lockImage != null) {
+                lockImage.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -124,11 +125,12 @@ public class AOptionsMenuElement<T>
         if (unlockedCount > options.length - 1)
             unlockedCount = options.length - 1;
         if (optionsScreen != null) {
-            for (int l = 0; l < optionsScreenItems.length; l++)
-                if (l > k)
-                    optionsScreenItems[l].setLock(true, true);
-                else
-                    optionsScreenItems[l].setLock(false, false);
+            for (int l = 0; l < optionsScreenItems.length; l++) {
+            } //todo
+//                if (l > k)
+//                    optionsScreenItems[l].setLock(true, true);
+//                else
+//                    optionsScreenItems[l].setLock(false, false);
         }
         updateSelectedOption();
     }
@@ -168,14 +170,15 @@ public class AOptionsMenuElement<T>
         optionsScreenItems = new MenuActionElement[options.length];
         for (int k = 0; k < optionsScreenItems.length; k++) {
             if (k > unlockedCount) {
-                optionsScreenItems[k] = new MenuActionElement<>(options[k], this);
-                optionsScreenItems[k].setLock(true, true);
+                // ++++TODO++++++
+//                optionsScreenItems[k] = new MenuActionElement<>(options[k], this);
+//                optionsScreenItems[k].setLock(true, true);
             } else {
-                optionsScreenItems[k] = new MenuActionElement<>(options[k], this);
+//                optionsScreenItems[k] = new MenuActionElement<>(options[k], this);
             }
-            optionsScreen.add(optionsScreenItems[k]);
+//            optionsScreen.add(optionsScreenItems[k]);
         }
-        optionsScreen.setSelected(selectedIndex);
+//        optionsScreen.setSelected(selectedIndex);
 
         // System.gc();
     }

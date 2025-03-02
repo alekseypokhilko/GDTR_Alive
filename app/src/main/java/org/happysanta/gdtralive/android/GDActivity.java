@@ -105,7 +105,7 @@ public class GDActivity extends Activity implements GdPlatform {
         AGameView gameView = new AGameView(this);
 
         this.application = new Application(this, new ASettingsStorage(), str, fileStorage, dataSource, gameView);
-        viewPlatformMenuElementFactory = new APlatformMenuElementFactory<>(application);
+        viewPlatformMenuElementFactory = new APlatformMenuElementFactory<>(application, this);
         this.menuFactory = new MenuFactory<>(application, this, viewPlatformMenuElementFactory);
 
         ModManager modManager = application.getModManager();

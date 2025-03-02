@@ -10,13 +10,13 @@ import android.view.ViewTreeObserver;
 import android.widget.LinearLayout;
 
 import org.happysanta.gdtralive.android.GDActivity;
-import org.happysanta.gdtralive.android.menu.element.ClickableMenuElement;
+import org.happysanta.gdtralive.game.api.menu.element.ClickableMenuElement;
 import org.happysanta.gdtralive.android.menu.element.MenuActionElement;
 import org.happysanta.gdtralive.android.menu.views.MenuLinearLayout;
 import org.happysanta.gdtralive.game.KeyboardHandler;
 import org.happysanta.gdtralive.game.api.menu.MenuElement;
 import org.happysanta.gdtralive.game.api.menu.MenuScreen;
-import org.happysanta.gdtralive.game.api.menu.OnMenuElementHighlightListener;
+import org.happysanta.gdtralive.game.api.menu.element.OnMenuElementHighlightListener;
 import org.happysanta.gdtralive.game.api.model.MenuData;
 import org.happysanta.gdtralive.game.api.util.BiFunction;
 

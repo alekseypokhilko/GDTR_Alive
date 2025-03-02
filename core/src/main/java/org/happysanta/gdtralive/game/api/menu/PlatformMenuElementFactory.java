@@ -1,6 +1,9 @@
 package org.happysanta.gdtralive.game.api.menu;
 
 import org.happysanta.gdtralive.game.api.external.GdMenu;
+import org.happysanta.gdtralive.game.api.menu.element.MenuItemElement;
+import org.happysanta.gdtralive.game.api.menu.element.OptionsMenuElement;
+import org.happysanta.gdtralive.game.api.menu.element.IToggleMenuElement;
 import org.happysanta.gdtralive.game.api.util.ActionHandler;
 
 public interface PlatformMenuElementFactory<T> {
@@ -47,5 +50,5 @@ public interface PlatformMenuElementFactory<T> {
 
     OptionsMenuElement<T> selector(String title, int selected, String[] options, MenuScreen<T> parent, ActionHandler<OptionsMenuElement<T>> handler);
 
-    ToggleMenuElement<T> toggle(String title, int selected, ActionHandler<ToggleMenuElement<T>> action);
+    IToggleMenuElement<T> toggle(String title, int selected, ActionHandler<IToggleMenuElement<T>> action);
 }

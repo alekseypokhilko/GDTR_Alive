@@ -15,7 +15,7 @@ import org.happysanta.gdtralive.android.ACanvas;
 import org.happysanta.gdtralive.android.Helpers;
 import org.happysanta.gdtralive.android.GdBitmap;
 import org.happysanta.gdtralive.game.api.Sprite;
-import org.happysanta.gdtralive.game.api.menu.IMenuHelmetView;
+import org.happysanta.gdtralive.game.api.menu.view.IMenuHelmetView;
 
 public class MenuHelmetView<T> extends View implements IMenuHelmetView<T> {
 

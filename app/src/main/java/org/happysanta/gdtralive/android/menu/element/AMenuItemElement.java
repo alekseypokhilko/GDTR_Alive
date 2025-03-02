@@ -1,12 +1,15 @@
 package org.happysanta.gdtralive.android.menu.element;
 
-import static org.happysanta.gdtralive.android.Helpers.getGDActivity;
 import static org.happysanta.gdtralive.android.Helpers.logDebug;
 
+import org.happysanta.gdtralive.android.menu.views.MenuTextView;
 import org.happysanta.gdtralive.game.KeyboardHandler;
+import org.happysanta.gdtralive.game.api.menu.element.ClickableMenuElement;
+import org.happysanta.gdtralive.game.api.menu.view.IMenuHelmetView;
 import org.happysanta.gdtralive.game.api.menu.MenuHandler;
-import org.happysanta.gdtralive.game.api.menu.MenuItemElement;
+import org.happysanta.gdtralive.game.api.menu.element.MenuItemElement;
 import org.happysanta.gdtralive.game.api.menu.MenuScreen;
+import org.happysanta.gdtralive.game.api.menu.TouchInterceptor;
 import org.happysanta.gdtralive.game.api.util.ActionHandler;
 import org.happysanta.gdtralive.game.util.Fmt;
 
@@ -19,22 +22,17 @@ public class AMenuItemElement<T> extends ClickableMenuElement<T> implements Menu
     protected MenuHandler<T> handler;
     protected ActionHandler<MenuItemElement<T>> action;
 
-    public AMenuItemElement(String text, MenuScreen<T> screen, MenuHandler<T> handler, ActionHandler<MenuItemElement<T>> action) {
+    public AMenuItemElement(String text, MenuScreen<T> screen, MenuHandler<T> handler, ActionHandler<MenuItemElement<T>> action, IMenuHelmetView<T> helmetView, MenuTextView<T> textView, TouchInterceptor<T> touchInterceptor, T layout) {
+        super(layout, textView, helmetView, touchInterceptor);
         this.text = Fmt.ra(text);
         this.screen = screen;
         this.handler = handler;
         this.action = action;
-
-        createAllViews(getGDActivity());
+        this.textView.setText(getTextForView());
     }
 
-    public AMenuItemElement(String text, MenuScreen<T> screen, MenuHandler<T> handler) {
-        this.text = Fmt.ra(text);
-        this.screen = screen;
-        this.handler = handler;
-        this.action = null;
-
-        createAllViews(getGDActivity());
+    public AMenuItemElement(String text, MenuScreen<T> screen, MenuHandler<T> handler, IMenuHelmetView<T> helmetView, MenuTextView<T> textView, TouchInterceptor<T> touchInterceptor, T layout) {
+        this(text, screen, handler, null, helmetView, textView, touchInterceptor, layout);
     }
 
     @Override

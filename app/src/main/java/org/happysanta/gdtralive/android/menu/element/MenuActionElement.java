@@ -13,7 +13,10 @@ import org.happysanta.gdtralive.android.Helpers;
 import org.happysanta.gdtralive.android.menu.views.MenuImageView;
 import org.happysanta.gdtralive.android.menu.views.MenuTextView;
 import org.happysanta.gdtralive.game.KeyboardHandler;
+import org.happysanta.gdtralive.game.api.menu.element.ClickableMenuElement;
+import org.happysanta.gdtralive.game.api.menu.view.IMenuHelmetView;
 import org.happysanta.gdtralive.game.api.menu.MenuElement;
+import org.happysanta.gdtralive.game.api.menu.TouchInterceptor;
 import org.happysanta.gdtralive.game.api.util.ActionHandler;
 
 public class MenuActionElement<T> extends ClickableMenuElement<T> {
@@ -33,23 +36,19 @@ public class MenuActionElement<T> extends ClickableMenuElement<T> {
 
     protected int actionValue = -1;
 
-    public MenuActionElement(String s, int value, ActionHandler<MenuElement<T>> action) {
-        actionValue = value;
+    public MenuActionElement(String s, int value, ActionHandler<MenuElement<T>> action,
+                             IMenuHelmetView<T> helmetView, MenuTextView<T> textView, TouchInterceptor<T> touchInterceptor, T layout) {
+        super(layout, textView, helmetView, touchInterceptor);
+        this.actionValue = value;
         this.action = action;
+        this.text = s;
+        this.textView.setText(getTextForView());
 
-        text = s;
-
-        createAllViews(getGDActivity());
+        Context context = getGDActivity();
+        createAllViews(context);
     }
 
-    public MenuActionElement(String s, ActionHandler<MenuElement<T>> action) {
-        this(s, -1, action);
-    }
-
-    @Override
     protected void createAllViews(Context context) {
-        super.createAllViews(context);
-
         lockImage = new MenuImageView(context);
         lockImage.setScaleType(ImageView.ScaleType.CENTER);
         lockImage.setVisibility(View.GONE);
@@ -69,14 +68,10 @@ public class MenuActionElement<T> extends ClickableMenuElement<T> {
         this.isLocked = isLocked;
         this.isBlackLock = isBlackLock;
 
-        lockImage.setVisibility(isLocked ? View.VISIBLE : View.GONE);
-        lockImage.setImageResource(locks[isBlackLock ? Helpers.getModManager().getInterfaceTheme().getLockSkinIndex() : 1]);
-    }
-
-    @Override
-    public void setText(String s) {
-        text = s;
-        updateViewText();
+        if (lockImage != null) {
+            lockImage.setVisibility(isLocked ? View.VISIBLE : View.GONE);
+            lockImage.setImageResource(locks[isBlackLock ? Helpers.getModManager().getInterfaceTheme().getLockSkinIndex() : 1]);
+        }
     }
 
     @Override

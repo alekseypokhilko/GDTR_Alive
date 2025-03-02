@@ -6,7 +6,7 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.widget.TextView;
 
-import org.happysanta.gdtralive.game.api.menu.IMenuTextView;
+import org.happysanta.gdtralive.game.api.menu.view.IMenuTextView;
 
 public class MenuTextView<T> extends TextView implements IMenuTextView<T> {
 
@@ -33,6 +33,7 @@ public class MenuTextView<T> extends TextView implements IMenuTextView<T> {
 		return isAttached;
 	}
 
+	@Override
 	public void setTextOnUiThread(final CharSequence sequence) {
 		runOnUiThread(() -> MenuTextView.super.setText(sequence));
 	}

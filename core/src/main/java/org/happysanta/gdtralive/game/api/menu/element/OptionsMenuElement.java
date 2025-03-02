@@ -1,4 +1,8 @@
-package org.happysanta.gdtralive.game.api.menu;
+package org.happysanta.gdtralive.game.api.menu.element;
+
+import org.happysanta.gdtralive.game.api.menu.MenuElement;
+import org.happysanta.gdtralive.game.api.menu.MenuHandler;
+import org.happysanta.gdtralive.game.api.menu.MenuScreen;
 
 public interface OptionsMenuElement<T> extends MenuElement<T>, MenuHandler<T> {
     void setScreen(MenuScreen<T> screen);

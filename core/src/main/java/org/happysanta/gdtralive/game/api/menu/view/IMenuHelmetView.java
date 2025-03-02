@@ -1,4 +1,4 @@
-package org.happysanta.gdtralive.game.api.menu;
+package org.happysanta.gdtralive.game.api.menu.view;
 
 public interface IMenuHelmetView<T> {
 
