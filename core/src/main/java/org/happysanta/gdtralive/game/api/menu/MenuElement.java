@@ -12,10 +12,6 @@ public interface MenuElement<T> {
 
     void setText(String text);
 
-    default String getText() {
-        return null;
-    }
-
     default void performAction(int k) {};
 
     default void showHelmet() {

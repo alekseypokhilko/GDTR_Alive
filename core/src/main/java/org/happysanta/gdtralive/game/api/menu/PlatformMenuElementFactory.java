@@ -1,7 +1,8 @@
 package org.happysanta.gdtralive.game.api.menu;
 
 import org.happysanta.gdtralive.game.api.external.GdMenu;
-import org.happysanta.gdtralive.game.api.menu.element.MenuItemElement;
+import org.happysanta.gdtralive.game.api.menu.element.IInputTextElement;
+import org.happysanta.gdtralive.game.api.menu.element.IMenuItemElement;
 import org.happysanta.gdtralive.game.api.menu.element.OptionsMenuElement;
 import org.happysanta.gdtralive.game.api.menu.element.IToggleMenuElement;
 import org.happysanta.gdtralive.game.api.util.ActionHandler;
@@ -16,7 +17,7 @@ public interface PlatformMenuElementFactory<T> {
 
     MenuElement<T> text(String title);
 
-    MenuItemElement<T> menu(String title, MenuScreen<T> parent);
+    IMenuItemElement<T> menu(String title, MenuScreen<T> parent);
 
     MenuElement<T> actionContinue(ActionHandler handler);
 
@@ -38,11 +39,11 @@ public interface PlatformMenuElementFactory<T> {
 
     MenuElement<T> textHtml(String text);
 
-    MenuItemElement<T> menu(String title, MenuScreen<T> parent, ActionHandler<MenuItemElement<T>> handler);
+    IMenuItemElement<T> menu(String title, MenuScreen<T> parent, ActionHandler<IMenuItemElement<T>> handler);
 
     MenuElement<T> badge(int icon, String title);
 
-    MenuElement<T> editText(String title, String value, ActionHandler<MenuElement<T>> handler);
+    IInputTextElement<T> editText(String title, String value, ActionHandler<IInputTextElement<T>> handler);
 
     MenuElement<T> highScore(String title, int place, boolean padding);
 

@@ -11,7 +11,6 @@ import android.widget.LinearLayout;
 
 import org.happysanta.gdtralive.R;
 import org.happysanta.gdtralive.android.menu.KeyboardController;
-import org.happysanta.gdtralive.android.menu.element.InputTextElement;
 import org.happysanta.gdtralive.android.menu.views.MenuImageView;
 import org.happysanta.gdtralive.android.menu.views.MenuLinearLayout;
 import org.happysanta.gdtralive.game.Application;
@@ -75,7 +74,7 @@ public class TrackEditorView implements GdTrackEditor {
         MenuImageView cameraMoveMode = button(R.drawable.c_camera, v -> handleCameraModeButton());
         MenuImageView pointModeSelection = button(R.drawable.c_points, v -> handleTrackEditModeButton());
         MenuImageView objectEditModeSelection = button(R.drawable.c_objects, v -> handleObjectEditMode());
-        InputTextElement offsetInput = new InputTextElement(Fmt.colon(s(R.string.offset)), "" + DEFAULT_OFFSET, this::saveOffset);
+//        InputTextElement offsetInput = new InputTextElement(Fmt.colon(s(R.string.offset)), "" + DEFAULT_OFFSET, this::saveOffset, new IMenuTextView());
 
         modeLayout = new MenuLinearLayout(gd, false);
         inputLayout = new MenuLinearLayout(gd, false);
@@ -96,7 +95,7 @@ public class TrackEditorView implements GdTrackEditor {
         LinearLayout inputRow = new LinearLayout(gd);
         inputRow.setPadding(Helpers.getDp(KeyboardController.PADDING), Helpers.getDp(KeyboardController.PADDING), Helpers.getDp(KeyboardController.PADDING), 0);
         inputRow.setOrientation(LinearLayout.VERTICAL);
-        inputRow.addView((View) offsetInput.getView());
+//        inputRow.addView((View) offsetInput.getView());
         inputLayout.setOrientation(LinearLayout.VERTICAL);
         inputLayout.addView(inputRow);
         inputLayout.setGravity(Gravity.TOP | Gravity.CENTER);

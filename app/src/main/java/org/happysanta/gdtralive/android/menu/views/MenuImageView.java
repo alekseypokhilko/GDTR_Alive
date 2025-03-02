@@ -5,20 +5,22 @@ import static org.happysanta.gdtralive.android.Helpers.runOnUiThread;
 import android.content.Context;
 import android.widget.ImageView;
 
-public class MenuImageView extends ImageView {
+import org.happysanta.gdtralive.game.api.menu.view.IMenuImageView;
 
-	public MenuImageView(Context context) {
-		super(context);
-	}
+public class MenuImageView extends ImageView implements IMenuImageView {
 
-	@Override
-	public void setImageResource(final int resid) {
-		runOnUiThread(() -> MenuImageView.super.setImageResource(resid));
-	}
+    public MenuImageView(Context context) {
+        super(context);
+    }
 
-	@Override
-	public void setVisibility(final int visibility) {
-		runOnUiThread(() -> MenuImageView.super.setVisibility(visibility));
-	}
+    @Override
+    public void setImageResource(final int resid) {
+        runOnUiThread(() -> MenuImageView.super.setImageResource(resid));
+    }
+
+    @Override
+    public void setVisibility(final int visibility) {
+        runOnUiThread(() -> MenuImageView.super.setVisibility(visibility));
+    }
 
 }

@@ -15,7 +15,8 @@ import org.happysanta.gdtralive.game.api.dto.TrackParams;
 import org.happysanta.gdtralive.game.api.external.GdPlatform;
 import org.happysanta.gdtralive.game.api.external.GdStr;
 import org.happysanta.gdtralive.game.api.external.GdTrackEditor;
-import org.happysanta.gdtralive.game.api.menu.element.MenuItemElement;
+import org.happysanta.gdtralive.game.api.menu.element.IInputTextElement;
+import org.happysanta.gdtralive.game.api.menu.element.IMenuItemElement;
 import org.happysanta.gdtralive.game.api.menu.element.OptionsMenuElement;
 import org.happysanta.gdtralive.game.api.model.GameParams;
 import org.happysanta.gdtralive.game.api.model.MenuData;
@@ -242,7 +243,7 @@ public class MenuFactory<T> {
             s.add(e.emptyLine(true));
             for (int i = 0; i < themeNames.size(); i++) { //todo
                 try {
-                    MenuItemElement<T> options = e.menu(themeNames.get(i), this.get(MenuType.THEME_OPTIONS),
+                    IMenuItemElement<T> options = e.menu(themeNames.get(i), this.get(MenuType.THEME_OPTIONS),
                             item -> this.get(MenuType.THEME_OPTIONS).build(new MenuData(themeNames.get(item.getValue()))));
                     options.setValue(i);
                     screen.add(options);
@@ -321,7 +322,7 @@ public class MenuFactory<T> {
             for (String filename : list) {
                 String name = GDFile.MOD.cutExtension(filename);
                 modNames.add(name);
-                MenuItemElement<T> options = e.menu(name, this.get(MenuType.MOD_OPTIONS),
+                IMenuItemElement<T> options = e.menu(name, this.get(MenuType.MOD_OPTIONS),
                         item -> {
                             try {
                                 Mod mod = this.application.getModManager().loadMod(modNames.get(item.getValue()));
@@ -409,7 +410,7 @@ public class MenuFactory<T> {
                     long millis = rec.getTime();
                     String time = Utils.getDurationString(millis);
                     String name = String.format("[%s] %s", time, rec.getTrackName());
-                    MenuItemElement<T> options = e.menu(name, this.get(MenuType.RECORDING_OPTIONS),
+                    IMenuItemElement<T> options = e.menu(name, this.get(MenuType.RECORDING_OPTIONS),
                             item -> {
                                 TrackRecord recording = application.getFileStorage().getAllRecords().get(item.getValue());
                                 this.get(MenuType.RECORDING_OPTIONS).build(new MenuData(recording));
@@ -623,7 +624,7 @@ public class MenuFactory<T> {
 
     private MenuScreen<T> createProfileScreen(Map<MenuType, MenuScreen<T>> r) {
         MenuScreen<T> screen = e.screen(str.s(S.profile), r.get(MenuType.MAIN));
-        MenuElement<T> nameInput = e.editText(Fmt.colon(str.s(S.name), ""), application.getSettings().getPlayerName(), null);
+        IInputTextElement<T> nameInput = e.editText(Fmt.colon(str.s(S.name), ""), application.getSettings().getPlayerName(), null);
         screen.add(nameInput);
         screen.add(e.action(str.s(S.save), item -> {
             application.getSettings().setPlayerName(nameInput.getText());

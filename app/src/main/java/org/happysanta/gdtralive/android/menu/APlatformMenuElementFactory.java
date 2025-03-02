@@ -8,6 +8,7 @@ import android.content.Context;
 import android.text.Html;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import org.happysanta.gdtralive.R;
@@ -15,30 +16,34 @@ import org.happysanta.gdtralive.android.GDActivity;
 import org.happysanta.gdtralive.android.Global;
 import org.happysanta.gdtralive.android.Helpers;
 import org.happysanta.gdtralive.android.menu.element.AOptionsMenuElement;
-import org.happysanta.gdtralive.game.api.menu.element.ToggleMenuElement;
 import org.happysanta.gdtralive.android.menu.element.BadgeWithTextElement;
-import org.happysanta.gdtralive.android.menu.element.EmptyLineMenuElement;
 import org.happysanta.gdtralive.android.menu.element.HighScoreTextMenuElement;
-import org.happysanta.gdtralive.android.menu.element.InputTextElement;
+import org.happysanta.gdtralive.game.api.menu.element.InputTextElement;
 import org.happysanta.gdtralive.android.menu.element.MenuActionElement;
-import org.happysanta.gdtralive.android.menu.element.AMenuItemElement;
 import org.happysanta.gdtralive.android.menu.element.TextMenuElement;
-import org.happysanta.gdtralive.game.api.menu.TouchInterceptor;
+import org.happysanta.gdtralive.android.menu.views.MenuEditTextView;
 import org.happysanta.gdtralive.android.menu.views.MenuHelmetView;
 import org.happysanta.gdtralive.android.menu.views.MenuTextView;
 import org.happysanta.gdtralive.game.Application;
 import org.happysanta.gdtralive.game.api.S;
+import org.happysanta.gdtralive.game.api.dto.InterfaceTheme;
 import org.happysanta.gdtralive.game.api.external.GdMenu;
-import org.happysanta.gdtralive.game.api.menu.element.IToggleMenuElement;
-import org.happysanta.gdtralive.game.api.menu.view.IMenuHelmetView;
-import org.happysanta.gdtralive.game.api.menu.view.IMenuTextView;
 import org.happysanta.gdtralive.game.api.menu.MenuElement;
 import org.happysanta.gdtralive.game.api.menu.MenuFactory;
-import org.happysanta.gdtralive.game.api.menu.element.MenuItemElement;
 import org.happysanta.gdtralive.game.api.menu.MenuScreen;
-import org.happysanta.gdtralive.game.api.menu.element.OptionsMenuElement;
 import org.happysanta.gdtralive.game.api.menu.PlatformMenuElementFactory;
+import org.happysanta.gdtralive.game.api.menu.TouchInterceptor;
 import org.happysanta.gdtralive.game.api.menu.ViewUtils;
+import org.happysanta.gdtralive.game.api.menu.element.EmptyLineMenuElement;
+import org.happysanta.gdtralive.game.api.menu.element.IInputTextElement;
+import org.happysanta.gdtralive.game.api.menu.element.IMenuItemElement;
+import org.happysanta.gdtralive.game.api.menu.element.IToggleMenuElement;
+import org.happysanta.gdtralive.game.api.menu.element.MenuItemElement;
+import org.happysanta.gdtralive.game.api.menu.element.OptionsMenuElement;
+import org.happysanta.gdtralive.game.api.menu.element.ToggleMenuElement;
+import org.happysanta.gdtralive.game.api.menu.view.IMenuEditTextView;
+import org.happysanta.gdtralive.game.api.menu.view.IMenuHelmetView;
+import org.happysanta.gdtralive.game.api.menu.view.IMenuTextView;
 import org.happysanta.gdtralive.game.api.util.ActionHandler;
 import org.happysanta.gdtralive.game.util.Fmt;
 
@@ -69,7 +74,7 @@ public class APlatformMenuElementFactory<T> implements PlatformMenuElementFactor
     }
 
     public MenuElement<T> emptyLine(boolean beforeAction) {
-        return new EmptyLineMenuElement<>(beforeAction ? 10 : 20);
+        return new EmptyLineMenuElement<>(createEmptyLineElement(beforeAction ? 10 : 20));
     }
 
     public MenuElement<T> restartAction(String name, ActionHandler handler) {
@@ -80,12 +85,12 @@ public class APlatformMenuElementFactory<T> implements PlatformMenuElementFactor
         return new TextMenuElement<>(title);
     }
 
-    public MenuItemElement<T> menu(String title, MenuScreen<T> parent) {
+    public IMenuItemElement<T> menu(String title, MenuScreen<T> parent) {
         IMenuHelmetView<T> helmetView = createHelmetView(context);
         MenuTextView<T> textView = createTextView(context);
         TouchInterceptor<T> touchInterceptor = new TouchInterceptor<>();
         T layout = createLayout(context, helmetView, textView, createOnTouchListener(touchInterceptor));
-        return new AMenuItemElement<>(title, parent, menu, helmetView, textView, touchInterceptor, layout);
+        return new MenuItemElement<>(title, parent, menu, helmetView, textView, touchInterceptor, layout);
     }
 
     public MenuElement<T> actionContinue(ActionHandler handler) {
@@ -151,20 +156,72 @@ public class APlatformMenuElementFactory<T> implements PlatformMenuElementFactor
         return new TextMenuElement<>(Html.fromHtml(text));
     }
 
-    public MenuItemElement<T> menu(String title, MenuScreen<T> parent, ActionHandler<MenuItemElement<T>> handler) {
+    public IMenuItemElement<T> menu(String title, MenuScreen<T> parent, ActionHandler<IMenuItemElement<T>> handler) {
         IMenuHelmetView<T> helmetView = createHelmetView(context);
         MenuTextView<T> textView = createTextView(context);
         TouchInterceptor<T> touchInterceptor = new TouchInterceptor<>();
         T layout = createLayout(context, helmetView, textView, createOnTouchListener(touchInterceptor));
-        return new AMenuItemElement<>(title, parent, menu, handler, helmetView, textView, touchInterceptor, layout);
+        return new MenuItemElement<>(title, parent, menu, handler, helmetView, textView, touchInterceptor, layout);
     }
 
     public MenuElement<T> badge(int icon, String title) {
         return new BadgeWithTextElement<>(ACHIEVEMENT_ICONS[icon], title, menu, null);
     }
 
-    public MenuElement<T> editText(String title, String value, ActionHandler<MenuElement<T>> handler) {
-        return new InputTextElement<>(title, value, handler);
+    public IInputTextElement<T> editText(String title, String value, ActionHandler<IInputTextElement<T>> handler) {
+        LinearLayout textView = new LinearLayout(getGDActivity());
+        String textValue = title == null ? "" : title;
+        if (textValue.length() > 25) {
+            textView.setOrientation(LinearLayout.VERTICAL);
+        } else {
+            textView.setOrientation(LinearLayout.HORIZONTAL);
+        }
+        textView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+        textView.setLayoutParams(new ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        ));
+
+        MenuTextView<T> optionTextView = new MenuTextView<>(getGDActivity());
+        optionTextView.setText(textValue);
+        optionTextView.setTextColor(Helpers.getModManager().getInterfaceTheme().getTextColor());
+        optionTextView.setTextSize(TEXT_SIZE);
+        optionTextView.setTypeface(Global.robotoCondensedTypeface);
+        optionTextView.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        ));
+        optionTextView.setPadding(
+                textView.getPaddingLeft(),
+                textView.getPaddingTop(),
+                textView.getPaddingRight(),
+                textView.getPaddingBottom()
+        );
+
+        IMenuEditTextView<T> editText = new MenuEditTextView<>(context);
+        EditText editTextView = (EditText) editText.getView();
+        editTextView.setTextColor(Helpers.getModManager().getInterfaceTheme().getTextColor());
+        editTextView.setText(value);
+        editTextView.setLines(1);
+
+        getGDActivity().textInputs.add(editTextView);
+
+        Helpers.getModManager().registerThemeReloadHandler(() -> {
+            InterfaceTheme interfaceTheme = Helpers.getModManager().getInterfaceTheme();
+            optionTextView.setTextColor(interfaceTheme.getTextColor());
+            editText.setTextColor(interfaceTheme.getTextColor());
+            editTextView.setBackgroundColor(interfaceTheme.getMenuBackgroundColor());
+        });
+
+        textView.addView(optionTextView);
+        textView.addView(editTextView);
+        InputTextElement<T> tInputTextElement = new InputTextElement<>(handler, optionTextView, (T) textView, editText);
+        editTextView.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus && handler != null) {
+                handler.handle(tInputTextElement);
+            }
+        });
+        return tInputTextElement;
     }
 
     public MenuElement<T> highScore(String title, int place, boolean padding) {
@@ -184,7 +241,7 @@ public class APlatformMenuElementFactory<T> implements PlatformMenuElementFactor
         ));
         TouchInterceptor<T> touchInterceptor = new TouchInterceptor<>();
         T layout = createLayout(context, helmetView, textView, createOnTouchListener(touchInterceptor));
-        return new AOptionsMenuElement<>(title, selected, menu, options, parent, action,  helmetView, textView, touchInterceptor, layout);
+        return new AOptionsMenuElement<>(title, selected, menu, options, parent, action, helmetView, textView, touchInterceptor, layout);
     }
 
     public IToggleMenuElement<T> toggle(String title, int selected, ActionHandler<IToggleMenuElement<T>> action) {
@@ -328,5 +385,11 @@ public class APlatformMenuElementFactory<T> implements PlatformMenuElementFactor
     protected View.OnTouchListener createOnTouchListener(TouchInterceptor<T> touchInterceptor) {
         ViewUtils<T> viewUtils = new AViewUtils<>();
         return (view, motionEvent) -> touchInterceptor.onTouch((T) view, motionEvent.getAction(), (int) motionEvent.getRawX(), (int) motionEvent.getRawY(), viewUtils);
+    }
+
+    private IMenuTextView<T> createEmptyLineElement(int offset) {
+        MenuTextView<T> view = new MenuTextView<>(context);
+        view.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, getDp(offset)));
+        return view;
     }
 }
