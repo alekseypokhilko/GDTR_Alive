@@ -13,22 +13,13 @@ public class AGameView extends View implements GdGameView {
     private ACanvas canvas;
     private ModManager modManager;
 
-    //timer
     public int width;
     public int height;
-    public int height1;
-    public boolean m_KZ;
-    public long m_rJ;
-    int m_uI;
-    private boolean m_AZ;
+    private int height1;
 
     public AGameView(GDActivity micro) {
         super(micro);
-        m_uI = 0;
-        m_AZ = true;
-        m_rJ = -1L;
         invalidate();
-        m_KZ = false;
         adjustDimensions();
     }
 
@@ -37,19 +28,12 @@ public class AGameView extends View implements GdGameView {
         this.canvas = new ACanvas(modManager);
     }
 
-    public void adjustDimensions(boolean flag) {
-        m_AZ = flag;
-        adjustDimensions();
-    }
-
     public void adjustDimensions() {
         if (modManager == null) {
             return;
         }
         width = getScaledWidth();
         height1 = height = getScaledHeight();
-        if (m_KZ && m_AZ)
-            height -= 80;
         //postInvalidate();
     }
 

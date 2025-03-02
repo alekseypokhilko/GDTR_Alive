@@ -6,7 +6,7 @@ import org.happysanta.gdtralive.game.api.util.BiFunction;
 public interface MenuScreen<T> {
     void setTitle(String s);
 
-    void addItem(MenuElement<T> item);
+    void add(MenuElement<T> item);
 
     MenuScreen<T> getParent();
     void setParent(MenuScreen<T> target);

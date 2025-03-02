@@ -13,7 +13,7 @@ public interface PlatformMenuElementFactory<T> {
 
     MenuElement<T> text(String title);
 
-    MenuItemElement<T> menuItem(String title, MenuScreen<T> parent);
+    MenuItemElement<T> menu(String title, MenuScreen<T> parent);
 
     MenuElement<T> actionContinue(ActionHandler handler);
 
@@ -27,15 +27,15 @@ public interface PlatformMenuElementFactory<T> {
 
     MenuElement<T> reatart(String title, ActionHandler handler);
 
-    MenuElement<T> menuAction(String title, int action, ActionHandler<MenuElement<T>> handler);
+    MenuElement<T> action(String title, int action, ActionHandler<MenuElement<T>> handler);
 
-    MenuElement<T> menuAction(String title, ActionHandler<MenuElement<T>> handler);
+    MenuElement<T> action(String title, ActionHandler<MenuElement<T>> handler);
 
     MenuElement<T> textHtmlBold(String key, String value);
 
     MenuElement<T> textHtml(String text);
 
-    MenuItemElement<T> menuItem(String title, MenuScreen<T> parent, ActionHandler<MenuItemElement<T>> handler);
+    MenuItemElement<T> menu(String title, MenuScreen<T> parent, ActionHandler<MenuItemElement<T>> handler);
 
     MenuElement<T> badge(int icon, String title);
 
@@ -45,7 +45,7 @@ public interface PlatformMenuElementFactory<T> {
 
     MenuElement<T> getItem(String text, boolean padding);
 
-    OptionsMenuElement<T> selector(String title, int selected, String[] options, boolean toggle, MenuScreen<T> parent, ActionHandler<OptionsMenuElement<T>> handler);
+    OptionsMenuElement<T> selector(String title, int selected, String[] options, MenuScreen<T> parent, ActionHandler<OptionsMenuElement<T>> handler);
 
-    ToggleMenuElement<T> toggle(String title, int selected, String[] options, ActionHandler<ToggleMenuElement<T>> action);
+    ToggleMenuElement<T> toggle(String title, int selected, ActionHandler<ToggleMenuElement<T>> action);
 }

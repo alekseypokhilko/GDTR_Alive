@@ -59,7 +59,7 @@ public class AMenuScreen<T> implements OnMenuElementHighlightListener<T>, MenuSc
 			layout.setMotionEventSplittingEnabled(false);
 	}
 
-	public void addItem(MenuElement<T> item) {
+	public void add(MenuElement<T> item) {
 		if (item instanceof MenuActionElement) {
 			MenuActionElement action = (MenuActionElement) item;
 			actions.put(action.getActionValue(), action);

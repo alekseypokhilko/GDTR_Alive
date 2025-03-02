@@ -15,6 +15,7 @@ import org.happysanta.gdtralive.android.menu.element.MenuActionElement;
 import org.happysanta.gdtralive.android.menu.element.AMenuItemElement;
 import org.happysanta.gdtralive.android.menu.element.TextMenuElement;
 import org.happysanta.gdtralive.game.Application;
+import org.happysanta.gdtralive.game.api.S;
 import org.happysanta.gdtralive.game.api.external.GdMenu;
 import org.happysanta.gdtralive.game.api.menu.MenuElement;
 import org.happysanta.gdtralive.game.api.menu.MenuFactory;
@@ -56,12 +57,12 @@ public class APlatformMenuElementFactory<T> implements PlatformMenuElementFactor
         return new TextMenuElement<>(title);
     }
 
-    public MenuItemElement<T> menuItem(String title, MenuScreen<T> parent) {
+    public MenuItemElement<T> menu(String title, MenuScreen<T> parent) {
         return new AMenuItemElement<>(title, parent, menu);
     }
 
     public MenuElement<T> actionContinue(ActionHandler handler) {
-        return new MenuActionElement<T>(s(R.string._continue), MenuFactory.CONTINUE, menu, handler);
+        return new MenuActionElement<T>(s(R.string._continue), MenuFactory.CONTINUE, handler);
     }
 
     public MenuScreen<T> screen(String title, MenuScreen<T> parent) {
@@ -69,7 +70,7 @@ public class APlatformMenuElementFactory<T> implements PlatformMenuElementFactor
     }
 
     public MenuElement<T> createAction(int action, ActionHandler actionHandler) {
-        return new MenuActionElement<T>(application.getStr().s(getActionText(action)), action, menu, actionHandler);
+        return new MenuActionElement<T>(application.getStr().s(getActionText(action)), action, actionHandler);
     }
 
     public MenuElement<T> backAction(Runnable beforeBack) {
@@ -84,15 +85,15 @@ public class APlatformMenuElementFactory<T> implements PlatformMenuElementFactor
     }
 
     public MenuElement<T> reatart(String title, ActionHandler handler) {
-        return new MenuActionElement<T>(title, MenuFactory.RESTART, menu, handler);
+        return new MenuActionElement<T>(title, MenuFactory.RESTART, handler);
     }
 
-    public MenuElement<T> menuAction(String title, int action, ActionHandler<MenuElement<T>> handler) {
-        return new MenuActionElement<>(title, action, menu, handler);
+    public MenuElement<T> action(String title, int action, ActionHandler<MenuElement<T>> handler) {
+        return new MenuActionElement<>(title, action, handler);
     }
 
-    public MenuElement<T> menuAction(String title, ActionHandler<MenuElement<T>> handler) {
-        return new MenuActionElement<>(title, -1, menu, handler);
+    public MenuElement<T> action(String title, ActionHandler<MenuElement<T>> handler) {
+        return new MenuActionElement<>(title, -1, handler);
     }
 
     public MenuElement<T> textHtmlBold(String key, String value) {
@@ -103,7 +104,7 @@ public class APlatformMenuElementFactory<T> implements PlatformMenuElementFactor
         return new TextMenuElement<>(Html.fromHtml(text));
     }
 
-    public MenuItemElement<T> menuItem(String title, MenuScreen<T> parent, ActionHandler<MenuItemElement<T>> handler) {
+    public MenuItemElement<T> menu(String title, MenuScreen<T> parent, ActionHandler<MenuItemElement<T>> handler) {
         return new AMenuItemElement<>(title, parent, menu, handler);
     }
 
@@ -123,12 +124,13 @@ public class APlatformMenuElementFactory<T> implements PlatformMenuElementFactor
         return new HighScoreTextMenuElement<>(Html.fromHtml(text), padding);
     }
 
-    public OptionsMenuElement<T> selector(String title, int selected, String[] options, boolean toggle, MenuScreen<T> parent, ActionHandler<OptionsMenuElement<T>> action) {
-        return new AOptionsMenuElement<>(title, selected, menu, options, toggle, parent, action);
+    public OptionsMenuElement<T> selector(String title, int selected, String[] options, MenuScreen<T> parent, ActionHandler<OptionsMenuElement<T>> action) {
+        return new AOptionsMenuElement<>(title, selected, menu, options, parent, action);
     }
 
-    public ToggleMenuElement<T> toggle(String title, int selected, String[] options, ActionHandler<ToggleMenuElement<T>> action) {
-        return new AToggleMenuElement<>(title, selected, options, action);
+    public ToggleMenuElement<T> toggle(String title, int selected, ActionHandler<ToggleMenuElement<T>> action) {
+        String[] onOffStrings = application.getStr().getStringArray(S.on_off);
+        return new AToggleMenuElement<>(title, selected, onOffStrings, action);
     }
 
     public static int getActionText(int action) {

@@ -2,30 +2,28 @@ package org.happysanta.gdtralive.android.menu.element;
 
 import static org.happysanta.gdtralive.android.Helpers.getDp;
 import static org.happysanta.gdtralive.android.Helpers.getGDActivity;
-import static org.happysanta.gdtralive.android.Helpers.s;
 
 import android.content.Context;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import org.happysanta.gdtralive.R;
 import org.happysanta.gdtralive.android.Global;
 import org.happysanta.gdtralive.android.Helpers;
 import org.happysanta.gdtralive.android.menu.AMenuScreen;
 import org.happysanta.gdtralive.android.menu.views.MenuImageView;
 import org.happysanta.gdtralive.android.menu.views.MenuTextView;
 import org.happysanta.gdtralive.game.KeyboardHandler;
-import org.happysanta.gdtralive.game.api.menu.OptionsMenuElement;
 import org.happysanta.gdtralive.game.api.menu.MenuElement;
 import org.happysanta.gdtralive.game.api.menu.MenuHandler;
 import org.happysanta.gdtralive.game.api.menu.MenuScreen;
+import org.happysanta.gdtralive.game.api.menu.OptionsMenuElement;
 import org.happysanta.gdtralive.game.api.util.ActionHandler;
 import org.happysanta.gdtralive.game.util.Fmt;
 
 public class AOptionsMenuElement<T>
         extends ClickableMenuElement<T>
-        implements OptionsMenuElement<T> {
+        implements OptionsMenuElement<T>, ActionHandler<MenuElement<T>> {
 
     protected int selectedIndex;
     protected String[] options;
@@ -33,7 +31,6 @@ public class AOptionsMenuElement<T>
     protected MenuHandler<T> menuHandler;
     protected MenuScreen<T> optionsScreen = null;
     protected MenuScreen<T> screen = null;
-    protected boolean isOnOffToggle;
     protected boolean m_oZ = false;
     protected String selectedOption;
     protected MenuActionElement<T>[] optionsScreenItems = null;
@@ -41,30 +38,21 @@ public class AOptionsMenuElement<T>
     protected MenuTextView optionTextView = null;
     protected ActionHandler<OptionsMenuElement<T>> action;
 
-    public AOptionsMenuElement(String text, int selectedIndex, MenuHandler<T> menuHandler, String[] options, boolean isOnOffToggle, MenuScreen<T> screen, ActionHandler<OptionsMenuElement<T>> action) {
+    public AOptionsMenuElement(String text, int selectedIndex, MenuHandler<T> menuHandler, String[] options, MenuScreen<T> screen, ActionHandler<OptionsMenuElement<T>> action) {
         this.text = text;
         this.selectedIndex = selectedIndex;
         this.menuHandler = menuHandler;
         this.options = options;
         if (this.options == null) this.options = new String[]{""};
         unlockedCount = this.options.length - 1;
-        this.isOnOffToggle = isOnOffToggle;
         this.action = action;
 
         createAllViews();
         setSelectedOption(selectedIndex);
 
-        if (isOnOffToggle) {
-            if (selectedIndex == 1) {
-                selectedOption = s(R.string.off);
-            } else {
-                selectedOption = s(R.string.on);
-            }
-        } else {
-            this.screen = screen;
-            updateSelectedOption();
-            update();
-        }
+        this.screen = screen;
+        updateSelectedOption();
+        update();
     }
 
     @Override
@@ -121,7 +109,7 @@ public class AOptionsMenuElement<T>
         selectedOption = options[selectedIndex];
         updateViewText();
 
-        if (selectedIndex > unlockedCount && !isOnOffToggle) {
+        if (selectedIndex > unlockedCount) {
             lockImage.setVisibility(View.VISIBLE);
         } else {
             lockImage.setVisibility(View.GONE);
@@ -146,11 +134,11 @@ public class AOptionsMenuElement<T>
         updateSelectedOption();
     }
 
-    public void setOptions(String as[]) {
+    public void setOptions(String[] as) {
         setOptions(as, true);
     }
 
-    public void setOptions(String as[], boolean update) {
+    public void setOptions(String[] as, boolean update) {
         options = as;
         if (selectedIndex > options.length - 1)
             selectedIndex = options.length - 1;
@@ -177,16 +165,16 @@ public class AOptionsMenuElement<T>
 
     @Override
     public void update() {
-        optionsScreen = new AMenuScreen(text, screen);
+        optionsScreen = new AMenuScreen<>(text, screen);
         optionsScreenItems = new MenuActionElement[options.length];
         for (int k = 0; k < optionsScreenItems.length; k++) {
             if (k > unlockedCount) {
-                optionsScreenItems[k] = new MenuActionElement(options[k], this, null);
+                optionsScreenItems[k] = new MenuActionElement<>(options[k], this);
                 optionsScreenItems[k].setLock(true, true);
             } else {
-                optionsScreenItems[k] = new MenuActionElement(options[k], this, null);
+                optionsScreenItems[k] = new MenuActionElement<>(options[k], this);
             }
-            optionsScreen.addItem(optionsScreenItems[k]);
+            optionsScreen.add(optionsScreenItems[k]);
         }
         optionsScreen.setSelected(selectedIndex);
 
@@ -223,6 +211,11 @@ public class AOptionsMenuElement<T>
     }
 
     @Override
+    public void handle(MenuElement<T> item) {
+        handleAction(item);
+    }
+
+    @Override
     public MenuScreen<T> getCurrentMenu() {
         return optionsScreen;
     }
@@ -239,36 +232,12 @@ public class AOptionsMenuElement<T>
         // logDebug("OptionMenuElement performAction: k = " + k);
         switch (k) {
             case KeyboardHandler.KEY_FIRE:
-                if (isOnOffToggle) {
-                    selectedIndex++;
-                    if (selectedIndex > 1)
-                        selectedIndex = 0;
-                    if (selectedIndex == 1)
-                        selectedOption = s(R.string.off);
-                    else
-                        selectedOption = s(R.string.on);
-                    updateViewText();
-                    performAction();
-                    menuHandler.handleAction(this);
-                    return;
-                } else {
-                    m_oZ = true;
-                    performAction();
-                    menuHandler.handleAction(this);
-                    return;
-                }
+                m_oZ = true;
+                performAction();
+                menuHandler.handleAction(this);
+                return;
 
             case KeyboardHandler.KEY_RIGHT:
-                if (isOnOffToggle) {
-                    if (selectedIndex == 1) {
-                        selectedIndex = 0;
-                        selectedOption = s(R.string.on);
-                        performAction();
-                        menuHandler.handleAction(this);
-                        updateViewText();
-                    }
-                    return;
-                }
                 selectedIndex++;
                 if (selectedIndex > options.length - 1) {
                     selectedIndex = options.length - 1;
@@ -280,16 +249,6 @@ public class AOptionsMenuElement<T>
                 return;
 
             case KeyboardHandler.KEY_LEFT: // '\003'
-                if (isOnOffToggle) {
-                    if (selectedIndex == 0) {
-                        selectedIndex = 1;
-                        selectedOption = s(R.string.off);
-                        performAction();
-                        menuHandler.handleAction(this);
-                        updateViewText();
-                    }
-                    return;
-                }
                 selectedIndex--;
                 if (selectedIndex < 0) {
                     selectedIndex = 0;

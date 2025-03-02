@@ -10,24 +10,22 @@ import android.widget.LinearLayout;
 
 import org.happysanta.gdtralive.R;
 import org.happysanta.gdtralive.android.Helpers;
-import org.happysanta.gdtralive.game.api.menu.MenuElement;
-import org.happysanta.gdtralive.game.api.util.ActionHandler;
-import org.happysanta.gdtralive.game.api.menu.MenuHandler;
 import org.happysanta.gdtralive.android.menu.views.MenuImageView;
 import org.happysanta.gdtralive.android.menu.views.MenuTextView;
 import org.happysanta.gdtralive.game.KeyboardHandler;
+import org.happysanta.gdtralive.game.api.menu.MenuElement;
+import org.happysanta.gdtralive.game.api.util.ActionHandler;
 
 public class MenuActionElement<T> extends ClickableMenuElement<T> {
 
     protected static final int DISABLED_COLOR = 0xff999999;
     public static final int LOCK_IMAGE_MARGIN_RIGHT = 5;
-    public static final int locks[] = new int[]{
+    public static final int[] locks = new int[]{
             R.drawable.s_lock0,
             R.drawable.s_lock1,
             R.drawable.s_lock2
     };
 
-    protected MenuHandler<T> handler;
     protected boolean isLocked = false;
     protected boolean isBlackLock = true;
     protected MenuImageView lockImage = null;
@@ -35,9 +33,8 @@ public class MenuActionElement<T> extends ClickableMenuElement<T> {
 
     protected int actionValue = -1;
 
-    public MenuActionElement(String s, int value, MenuHandler<T> handler, ActionHandler<MenuElement<T>> action) {
+    public MenuActionElement(String s, int value, ActionHandler<MenuElement<T>> action) {
         actionValue = value;
-        this.handler = handler;
         this.action = action;
 
         text = s;
@@ -45,8 +42,8 @@ public class MenuActionElement<T> extends ClickableMenuElement<T> {
         createAllViews();
     }
 
-    public MenuActionElement(String s, MenuHandler<T> handler, ActionHandler<MenuElement<T>> action) {
-        this(s, -1, handler, action);
+    public MenuActionElement(String s, ActionHandler<MenuElement<T>> action) {
+        this(s, -1, action);
     }
 
     @Override
@@ -69,10 +66,6 @@ public class MenuActionElement<T> extends ClickableMenuElement<T> {
         return actionValue;
     }
 
-    public void setHandler(MenuHandler<T> hander) {
-        this.handler = hander;
-    }
-
     public void setLock(boolean isLocked, boolean isBlackLock) {
         this.isLocked = isLocked;
         this.isBlackLock = isBlackLock;
@@ -89,13 +82,12 @@ public class MenuActionElement<T> extends ClickableMenuElement<T> {
 
     @Override
     public void performAction(int k) {
-        if (disabled || handler == null) return;
+        if (disabled) return;
 
         if (k == KeyboardHandler.KEY_FIRE) {
             if (action != null) {
                 action.handle(this);
             }
-            handler.handleAction(this);
         }
     }
 
