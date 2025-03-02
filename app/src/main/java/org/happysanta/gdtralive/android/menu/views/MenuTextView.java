@@ -6,7 +6,9 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.widget.TextView;
 
-public class MenuTextView extends TextView {
+import org.happysanta.gdtralive.game.api.menu.IMenuTextView;
+
+public class MenuTextView<T> extends TextView implements IMenuTextView<T> {
 
 	protected boolean isAttached = false;
 
@@ -50,4 +52,13 @@ public class MenuTextView extends TextView {
 		runOnUiThread(() -> MenuTextView.super.setVisibility(visibility));
 	}
 
+	@Override
+	public void setTextColor(int color) {
+		super.setTextColor(color);
+	}
+
+	@Override
+	public T getView() {
+		return (T) this;
+	}
 }

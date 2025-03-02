@@ -2,6 +2,7 @@ package org.happysanta.gdtralive.android.menu.element;
 
 import static org.happysanta.gdtralive.android.Helpers.getGDActivity;
 
+import android.content.Context;
 import android.widget.LinearLayout;
 
 import org.happysanta.gdtralive.android.Global;
@@ -25,7 +26,7 @@ public class AToggleMenuElement<T> extends ClickableMenuElement<T> implements To
         this.options = options;
         this.action = action;
 
-        createAllViews();
+        createAllViews(getGDActivity());
         if (this.selectedIndex > options.length - 1)
             this.selectedIndex = 0;
         if (this.selectedIndex < 0)
@@ -34,10 +35,10 @@ public class AToggleMenuElement<T> extends ClickableMenuElement<T> implements To
     }
 
     @Override
-    protected void createAllViews() {
-        super.createAllViews();
+    protected void createAllViews(Context context) {
+        super.createAllViews(context);
 
-        textView.setLayoutParams(new LinearLayout.LayoutParams(
+        ((MenuTextView) textView.getView()).setLayoutParams(new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
         ));
@@ -52,13 +53,13 @@ public class AToggleMenuElement<T> extends ClickableMenuElement<T> implements To
                 LinearLayout.LayoutParams.WRAP_CONTENT
         ));
         optionTextView.setPadding(
-                textView.getPaddingLeft(),
-                textView.getPaddingTop(),
-                textView.getPaddingRight(),
-                textView.getPaddingBottom()
+                ((MenuTextView) textView.getView()).getPaddingLeft(),
+                ((MenuTextView) textView.getView()).getPaddingTop(),
+                ((MenuTextView) textView.getView()).getPaddingRight(),
+                ((MenuTextView) textView.getView()).getPaddingBottom()
         );
 
-        layout.addView(optionTextView);
+        ((LinearLayout) layout).addView(optionTextView);
 
         Helpers.getModManager().registerThemeReloadHandler(this::onOptionTextViewThemeReload);
     }

@@ -1,5 +1,6 @@
 package org.happysanta.gdtralive.android.menu.element;
 
+import static org.happysanta.gdtralive.android.Helpers.getGDActivity;
 import static org.happysanta.gdtralive.android.Helpers.logDebug;
 
 import org.happysanta.gdtralive.game.KeyboardHandler;
@@ -24,7 +25,7 @@ public class AMenuItemElement<T> extends ClickableMenuElement<T> implements Menu
         this.handler = handler;
         this.action = action;
 
-        createAllViews();
+        createAllViews(getGDActivity());
     }
 
     public AMenuItemElement(String text, MenuScreen<T> screen, MenuHandler<T> handler) {
@@ -33,7 +34,7 @@ public class AMenuItemElement<T> extends ClickableMenuElement<T> implements Menu
         this.handler = handler;
         this.action = null;
 
-        createAllViews();
+        createAllViews(getGDActivity());
     }
 
     @Override

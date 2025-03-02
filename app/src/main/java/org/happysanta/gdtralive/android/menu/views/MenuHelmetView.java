@@ -9,13 +9,15 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import org.happysanta.gdtralive.android.ACanvas;
 import org.happysanta.gdtralive.android.Helpers;
 import org.happysanta.gdtralive.android.GdBitmap;
 import org.happysanta.gdtralive.game.api.Sprite;
+import org.happysanta.gdtralive.game.api.menu.IMenuHelmetView;
 
-public class MenuHelmetView extends View {
+public class MenuHelmetView<T> extends View implements IMenuHelmetView<T> {
 
 	protected static final int WIDTH = 8;
 	protected static final int HEIGHT = 8;
@@ -38,10 +40,21 @@ public class MenuHelmetView extends View {
 
 	public MenuHelmetView(Context context) {
 		super(context);
+		this.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT));
 	}
 
 	public MenuHelmetView(Context context, AttributeSet attributeSet) {
 		super(context, attributeSet);
+	}
+
+	@Override
+	public void setShow(boolean show) {
+		setShow(show, true);
+	}
+
+	@Override
+	public T getView() {
+		return (T) this;
 	}
 
 	@Override
@@ -91,10 +104,6 @@ public class MenuHelmetView extends View {
 			height = MeasureSpec.getSize(getDp(HEIGHT * 4.5f));
 		}
 		setMeasuredDimension(width, height);
-	}
-
-	public void setShow(boolean show) {
-		setShow(show, true);
 	}
 
 	public void setShow(boolean show, boolean checkLast) {

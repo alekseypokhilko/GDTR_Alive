@@ -39,7 +39,7 @@ public class MenuActionElement<T> extends ClickableMenuElement<T> {
 
         text = s;
 
-        createAllViews();
+        createAllViews(getGDActivity());
     }
 
     public MenuActionElement(String s, ActionHandler<MenuElement<T>> action) {
@@ -47,10 +47,9 @@ public class MenuActionElement<T> extends ClickableMenuElement<T> {
     }
 
     @Override
-    protected void createAllViews() {
-        super.createAllViews();
+    protected void createAllViews(Context context) {
+        super.createAllViews(context);
 
-        Context context = getGDActivity();
         lockImage = new MenuImageView(context);
         lockImage.setScaleType(ImageView.ScaleType.CENTER);
         lockImage.setVisibility(View.GONE);
@@ -59,7 +58,7 @@ public class MenuActionElement<T> extends ClickableMenuElement<T> {
         lp.setMargins(0, 0, getDp(MenuActionElement.LOCK_IMAGE_MARGIN_RIGHT), 0);
         lockImage.setLayoutParams(lp);
 
-        layout.addView(lockImage, 1);
+        ((LinearLayout)layout).addView(lockImage, 1);
     }
 
     public int getActionValue() {
@@ -102,7 +101,7 @@ public class MenuActionElement<T> extends ClickableMenuElement<T> {
         if (disabled) {
             ((MenuTextView) textView).setTextColor(DISABLED_COLOR);
         } else {
-            ((MenuTextView) textView).setTextColor(defaultColorStateList());
+            ((MenuTextView) textView).setTextColor(getGDActivity().getResources().getColorStateList(R.drawable.menu_item_color));
         }
     }
 

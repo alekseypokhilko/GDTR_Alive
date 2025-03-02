@@ -39,6 +39,7 @@ public class AOptionsMenuElement<T>
     protected ActionHandler<OptionsMenuElement<T>> action;
 
     public AOptionsMenuElement(String text, int selectedIndex, MenuHandler<T> menuHandler, String[] options, MenuScreen<T> screen, ActionHandler<OptionsMenuElement<T>> action) {
+        super();
         this.text = text;
         this.selectedIndex = selectedIndex;
         this.menuHandler = menuHandler;
@@ -47,7 +48,7 @@ public class AOptionsMenuElement<T>
         unlockedCount = this.options.length - 1;
         this.action = action;
 
-        createAllViews();
+        createAllViews(getGDActivity());
         setSelectedOption(selectedIndex);
 
         this.screen = screen;
@@ -56,12 +57,10 @@ public class AOptionsMenuElement<T>
     }
 
     @Override
-    protected void createAllViews() {
-        Context context = getGDActivity();
+    protected void createAllViews(Context context) {
+        super.createAllViews(context);
 
-        super.createAllViews();
-
-        textView.setLayoutParams(new LinearLayout.LayoutParams(
+        ((MenuTextView) textView.getView()).setLayoutParams(new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
         ));
@@ -77,10 +76,10 @@ public class AOptionsMenuElement<T>
                 LinearLayout.LayoutParams.WRAP_CONTENT
         ));
         optionTextView.setPadding(
-                textView.getPaddingLeft(),
-                textView.getPaddingTop(),
-                textView.getPaddingRight(),
-                textView.getPaddingBottom()
+                ((MenuTextView) textView.getView()).getPaddingLeft(),
+                ((MenuTextView) textView.getView()).getPaddingTop(),
+                ((MenuTextView) textView.getView()).getPaddingRight(),
+                ((MenuTextView) textView.getView()).getPaddingBottom()
         );
 
         lockImage = new MenuImageView(context);
@@ -93,8 +92,8 @@ public class AOptionsMenuElement<T>
         lockImage.setLayoutParams(lp);
         lockImage.setVisibility(View.GONE);
 
-        layout.addView(lockImage);
-        layout.addView(optionTextView);
+        ((LinearLayout)layout).addView(lockImage);
+        ((LinearLayout)layout).addView(optionTextView);
     }
 
     private void onOptionTextViewThemeReload() {
