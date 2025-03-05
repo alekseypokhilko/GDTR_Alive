@@ -95,7 +95,8 @@ public class MenuFactory<T> {
     public MenuScreen<T> get(MenuType type) {
         MenuScreen<T> screen = menus.get(type);
         if (screen == null) {
-            throw new IllegalStateException("FIX ME: no " + type); //todo remove
+            return new FakeMenuScreen<T>(menu);
+//            throw new IllegalStateException("FIX ME: no " + type); //todo remove
         }
         return screen;
     }
@@ -851,7 +852,7 @@ public class MenuFactory<T> {
         }
 
 
-        levelSelector = e.selector(application.getStr().s(S.level), getLevel().getSelectedLevel(), this.difficultyLevels,  this.get(MenuType.CAMPAIGN),
+        levelSelector = e.selector(application.getStr().s(S.level), getLevel().getSelectedLevel(), this.difficultyLevels, this.get(MenuType.CAMPAIGN),
                 item -> {
                     if (item._charvZ()) {
                         MenuScreen<T> levelSelectorCurrentMenu = item.getCurrentMenu();

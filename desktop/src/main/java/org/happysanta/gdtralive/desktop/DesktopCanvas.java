@@ -178,9 +178,9 @@ public class DesktopCanvas implements GdCanvas {
         Font font = new Font(null, Font.PLAIN, 20);
         canvas.setFont(font);
         canvas.setColor(java.awt.Color.BLACK);
-        int x = (int) (view.width / 2 - view.width / ZOOM);
-        int y = (int) (view.height / 2 - view.height / ZOOM + 25);
-        canvas.drawString(time, x, y); //todo calculate
+        int x = (int) (view.width - view.width / ZOOM);
+        int y = (int) (view.height - view.height / ZOOM);
+        canvas.drawString(time, 15, 25); //todo calculate
     }
 
     public void drawArc(int i1, Float j1, Float k1, int l1) {

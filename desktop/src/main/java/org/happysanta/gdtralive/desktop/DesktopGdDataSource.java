@@ -36,7 +36,9 @@ public class DesktopGdDataSource implements GdDataSource {
 
     @Override
     public ModEntity getMod(long id) {
-        return null;
+        ModEntity modEntity = new ModEntity();
+        modEntity.setId(id);
+        return modEntity;
     }
 
     @Override
@@ -89,8 +91,11 @@ public class DesktopGdDataSource implements GdDataSource {
         return false;
     }
 
+    int i = 0;
     @Override
     public ModEntity createMod(ModEntity mod) {
-        return null;
+        i =i + 1;
+        mod.setId(i);
+        return mod;
     }
 }

@@ -1,112 +1,44 @@
 package org.happysanta.gdtralive.desktop;
 
-import com.google.gson.Gson;
-
+import org.happysanta.gdtralive.game.AbstractFileStorage;
 import org.happysanta.gdtralive.game.api.GDFile;
-import org.happysanta.gdtralive.game.api.dto.LevelPack;
-import org.happysanta.gdtralive.game.api.dto.Theme;
-import org.happysanta.gdtralive.game.api.dto.TrackParams;
-import org.happysanta.gdtralive.game.api.exception.InvalidTrackException;
-import org.happysanta.gdtralive.game.api.external.GdFileStorage;
 import org.happysanta.gdtralive.game.api.model.Mod;
-import org.happysanta.gdtralive.game.api.model.TrackData;
-import org.happysanta.gdtralive.game.api.model.TrackRecord;
 import org.happysanta.gdtralive.game.util.Utils;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collection;
-import java.util.List;
-import java.util.regex.Pattern;
+import java.util.Map;
 
-public class DesktopFileStorage implements GdFileStorage {
-    private static final Pattern UUID_REGEX =
-            Pattern.compile("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
-    private static final String ASSETS_TRACKS_FOLDER = "tracks/";
-    public static final String ASSETS_MODS_FOLDER = "mods/";
+public class DesktopFileStorage extends AbstractFileStorage {
 
-    public static final String APP_DIRECTORY = "GDAlive";
-
-    private static void validateLevel(TrackData track) throws InvalidTrackException {
-        validateGuid(track.getGuid());
-    }
-
-    private static void validatePack(Mod mod) throws InvalidTrackException {
-        validateGuid(mod.getGuid());
-        for (LevelPack levelPack : mod.getLevels()) {
-            for (TrackParams track : levelPack.getTracks()) {
-                validateGuid(track.getData().getGuid());
-            }
-        }
-    }
-
-    private static void validateGuid(String guid) throws InvalidTrackException {
-        if (!UUID_REGEX.matcher(guid).matches()) {
-            throw new InvalidTrackException("Invalid track guid");
-        }
-    }
-
-    public TrackData getLevelFromPack(String packName, String trackGuid) throws InvalidTrackException {
-        Mod mod = new Mod();// loadMod(packName);
-        return mod.getLevels().stream()
-                .map(LevelPack::getTracks)
-                .flatMap(Collection::stream)
-                .filter(tRef -> tRef.getData().getGuid().equals(trackGuid))
-                .findAny()
-                .map(TrackParams::getData)
-                .orElseThrow(() -> new InvalidTrackException("Level not found"));
+    public DesktopFileStorage(File appFolder, Map<GDFile, File> folders) {
+        super(appFolder, folders);
     }
 
     @Override
-    public <T> void save(T obj, GDFile fileType, String fileName) {
-        ///todo
-    }
-
-    @Override
-    public void addRecord(TrackRecord rec) {
-
-    }
-
-    @Override
-    public List<TrackRecord> getAllRecords() {
-        return null;
-    }
-
-    @Override
-    public Mod readMod(String name) {
+    public Mod readMod(String name) { //todo
         ClassLoader classloader = Thread.currentThread().getContextClassLoader();
-        try (InputStream inputStream = classloader.getResourceAsStream("mod.json")) {
+        try (InputStream inputStream = classloader.getResourceAsStream("mod.gdmod")) {
             String content = Utils.readContent(inputStream);
-            String ims = content.substring(content.indexOf(":") + 1);
-            Mod mod = new Gson().fromJson(ims, Mod.class);
-            return mod;
+            return Utils.fromJson(content, Mod.class);
         } catch (IOException e) {
             return null;
         }
     }
 
     @Override
-    public Theme readTheme(String name) {
-        return null;
+    public <T> void save(T obj, GDFile fileType, String fileName) {
+        //todo
     }
 
     @Override
-    public List<String> listFiles(GDFile fileType) {
-        return List.of();
+    protected String[] listAssets(GDFile fileType) throws IOException {
+        return new String[0];
     }
 
     @Override
-    public void delete(GDFile gdFile, String name) {
-
-    }
-
-    @Override
-    public TrackRecord readRecord(String name) {
-        return null;
-    }
-
-    @Override
-    public TrackRecord readTrack(String name) {
+    protected InputStream fromAssets(String folder, String name) throws IOException {
         return null;
     }
 }

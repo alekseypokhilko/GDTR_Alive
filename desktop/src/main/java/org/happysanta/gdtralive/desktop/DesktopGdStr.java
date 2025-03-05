@@ -20,6 +20,16 @@ public class DesktopGdStr implements GdStr {
         return "GDActivity.shared.getString(r)";
     }
 
+    @Override
+    public String[] getStringArray(int r) {
+        return new String[0];
+    }
+
+    @Override
+    public String[] getStringArray(S key) {
+        return new String[0];
+    }
+
     public String s(S key) {
         switch (key) {
             case CRASHED:

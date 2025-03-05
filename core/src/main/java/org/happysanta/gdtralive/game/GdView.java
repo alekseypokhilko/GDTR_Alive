@@ -111,7 +111,6 @@ public class GdView {
         state.offsetY = cameraY;
         state.width = scaledWidth;
         state.height = scaledHeight;
-        state.zoom = 3.5;
         state.drawBiker = engine.drawBiker ? 1 : 0;
         state.drawBike = engine.drawBike ? 1 : 0;
         state.drawBiker2 = engine.crashedInAir_MAYBE ? 1 : 0;

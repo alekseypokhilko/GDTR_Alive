@@ -720,10 +720,10 @@ public class FrameRender {
         double progr = progress / (double) 0xFFFF;
 
         setColor(mm().getInterfaceTheme().getProgressBackgroundColor());
-        canvas.drawRect(0, 0, view.width, 3, view);
+        canvas.drawRect(0, 0, view.width, 5, view);
 
         setColor(mm().getInterfaceTheme().getProgressColor());
-        canvas.drawRect(0, 0, (int) Math.round(view.width * Math.min(Math.max(progr, 0), 1)), 3, view);
+        canvas.drawRect(0, 0, (int) Math.round(view.width * Math.min(Math.max(progr, 0), 1)), 5, view);
     }
 
     public void drawLogo(Sprite sprite, ViewState view) {
