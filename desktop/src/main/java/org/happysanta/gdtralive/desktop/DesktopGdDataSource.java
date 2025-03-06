@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class DesktopGdDataSource implements GdDataSource {
-ModEntity level;
+    ModEntity level;
 
     @Override
     public void open() throws Exception {
@@ -116,9 +116,10 @@ ModEntity level;
     }
 
     int i = 0;
+
     @Override
     public ModEntity createMod(ModEntity mod) {
-        i =i + 1;
+        i = i + 1;
         mod.setId(i);
         level = mod;
         return level;

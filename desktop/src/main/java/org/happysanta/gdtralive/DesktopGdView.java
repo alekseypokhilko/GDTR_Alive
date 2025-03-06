@@ -1,22 +1,9 @@
 package org.happysanta.gdtralive;
 
-import org.happysanta.gdtralive.desktop.DGameView;
-import org.happysanta.gdtralive.desktop.DPlatform;
-import org.happysanta.gdtralive.desktop.DSettingsStorage;
 import org.happysanta.gdtralive.desktop.DesktopCanvas;
-import org.happysanta.gdtralive.desktop.DesktopFileStorage;
-import org.happysanta.gdtralive.desktop.DesktopGdDataSource;
-import org.happysanta.gdtralive.desktop.DesktopGdSettings;
-import org.happysanta.gdtralive.desktop.DesktopGdStr;
 import org.happysanta.gdtralive.desktop.DesktopKeyboardController;
-import org.happysanta.gdtralive.game.Application;
-import org.happysanta.gdtralive.game.Game;
 import org.happysanta.gdtralive.game.GdView;
-import org.happysanta.gdtralive.game.api.GameMode;
-import org.happysanta.gdtralive.game.api.external.GdMenu;
-import org.happysanta.gdtralive.game.api.external.GdSettings;
-import org.happysanta.gdtralive.game.api.menu.Menu;
-import org.happysanta.gdtralive.game.api.model.GameParams;
+import org.happysanta.gdtralive.game.api.external.GdGameView;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -27,81 +14,24 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.geom.AffineTransform;
-import java.io.File;
-import java.util.HashMap;
 
-import javax.swing.JComponent;
 import javax.swing.JPanel;
-import javax.swing.Timer;
 
-public class DesktopGdView extends JPanel implements ActionListener, KeyListener {
-
-    public static double ZOOM = 2;
+public class DesktopGdView extends JPanel implements ActionListener, KeyListener, GdGameView {
     public static int height = 720;
     public static int width = 1280;
 
+    private final DesktopCanvas canvas = new DesktopCanvas();
+    private GdView gdView;
+    private final DesktopKeyboardController desktopKeyboardController;
 
-    public GdSettings settings;
-
-    public Game game;
-    public DesktopCanvas canvas = new DesktopCanvas();
-    public final GdView gdView;
-    DesktopKeyboardController desktopKeyboardController;
-
-    public static Application application;
-    public static DPlatform platform;
-    public static Menu<JComponent> menu;
-
-    private final AffineTransform at;
-
-    public DesktopGdView() {
+    public DesktopGdView(DesktopKeyboardController desktopKeyboardController) {
         super();
-        int width = getWidth();
-        int height = getHeight();
-        double anchorx = (width - width * ZOOM) / ZOOM;
-        double anchory = (height - height * ZOOM) / ZOOM;
-
-        //https://stackoverflow.com/questions/30792089/java-graphics2d-translate-and-scale
-        this.at = new AffineTransform();
-        this.at.translate(anchorx, anchory);
-        this.at.scale(ZOOM, ZOOM);
-        this.at.translate(-ZOOM, -ZOOM);
-
+        this.desktopKeyboardController = desktopKeyboardController;
         setFocusable(true);
         addKeyListener(this);
         setSize(width, height);
         setVisible(true);
-
-        this.settings = new DesktopGdSettings();
-        platform = new DPlatform();
-        DSettingsStorage settingsStorage = new DSettingsStorage();
-        DesktopGdStr str = new DesktopGdStr();
-        DesktopGdDataSource dataSource = new DesktopGdDataSource();
-        DesktopFileStorage fileStorage = new DesktopFileStorage(new File("mods"), new HashMap<>());
-        DGameView gdGameView = new DGameView();
-        application = new Application(platform, settingsStorage, str, fileStorage, dataSource, gdGameView);
-        application.doStart();
-
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        game = application.getGame();
-        menu = (Menu<JComponent>) platform.getMenu();
-        application.setMenu(platform.getMenu());
-//        startRandom();
-        desktopKeyboardController = new DesktopKeyboardController(application);
-        gdView = application.getGame().getView();
-        application.gameToMenu();
-
-
-        new Timer(0, this).start();
-        new Timer(5000, actionEvent -> System.gc()).start(); //todo fix heap pollution
-    }
-
-    private void startRandom() {
-        game.startTrack(GameParams.of(GameMode.CAMPAIGN, application.getModManager().loadLevel(0, 0), 2, 0, 0));
     }
 
     @Override
@@ -109,17 +39,41 @@ public class DesktopGdView extends JPanel implements ActionListener, KeyListener
         super.paint(g);
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g2d.setTransform(at);
-        canvas.setCanvas(g2d);
-        if (application.isMenuShown()) {
-            GdMenu menu1 = application.getMenu();
-            if (menu1 == null) {
-                ".".equals("");
-            }
+        if (GdDesktopApp.instance.getWidth() != getWidth() || GdDesktopApp.instance.getHeight() != getHeight()) {
+            setSize(GdDesktopApp.instance.getWidth(), GdDesktopApp.instance.getHeight());
+            GdDesktopApp.lpane.setSize(GdDesktopApp.instance.getWidth(), GdDesktopApp.instance.getHeight());
         }
-        gdView.drawGame(canvas, getWidth(), getHeight());
+
+        float density = GdDesktopApp.application.getModManager().getGameDensity();
+        //https://stackoverflow.com/questions/30792089/java-graphics2d-translate-and-scale
+        AffineTransform at = new AffineTransform();
+        at.scale(density, density);
+        g2d.transform(at);
+
+        canvas.setCanvas(g2d);
+        gdView.drawGame(canvas, (int) (getWidth() / density), (int) (getHeight() / density));
         g2d.dispose();
         g.dispose();
+    }
+
+    @Override
+    public int getGdWidth() {
+        return getWidth();
+    }
+
+    @Override
+    public int getGdHeight() {
+        return getHeight();
+    }
+
+    @Override
+    public void setGdView(GdView gdView) {
+        this.gdView = gdView;
+    }
+
+    @Override
+    public GdView getGdView() {
+        return gdView;
     }
 
     @Override
@@ -134,8 +88,6 @@ public class DesktopGdView extends JPanel implements ActionListener, KeyListener
 
     @Override
     public void keyTyped(KeyEvent e) {
-        int keyCode = e.getKeyCode();
-        keyCode = e.getKeyCode();
     }
 
     @Override

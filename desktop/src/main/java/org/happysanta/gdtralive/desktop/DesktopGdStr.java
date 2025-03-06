@@ -52,6 +52,9 @@ public class DesktopGdStr implements GdStr {
         if (key == S.keyset) {
             return new String[] {"1", "2", "3"};
         }
+        if (key == S.on_off) {
+            return new String[] {"On", "Off"};
+        }
         return new String[0];
     }
 

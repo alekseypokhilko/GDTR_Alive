@@ -8,10 +8,10 @@ import java.awt.event.KeyEvent;
 
 public class DesktopKeyboardController {
 
-    private final Application application;
-    private final Game game;
+    private Application application;
+    private Game game;
 
-    public DesktopKeyboardController(Application application) {
+    public void setApplication(Application application) {
         this.game = application.getGame();
         this.application = application;
     }

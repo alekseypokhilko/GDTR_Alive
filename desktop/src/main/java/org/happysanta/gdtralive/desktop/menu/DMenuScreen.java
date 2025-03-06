@@ -12,6 +12,7 @@ import org.happysanta.gdtralive.game.api.util.BiFunction;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.GridLayout;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
@@ -38,6 +39,7 @@ public class DMenuScreen<T> implements OnMenuElementHighlightListener<T>, MenuSc
 		this.parent = parent;
 
 		layout = new JPanel();
+		layout.setLayout(new GridLayout(20,1,1,1));
 		layout.setOpaque(false);
 		layout.setBackground(new Color(0,0,0,0));
 		layout.setBounds(0, 0, DesktopGdView.width, DesktopGdView.height);

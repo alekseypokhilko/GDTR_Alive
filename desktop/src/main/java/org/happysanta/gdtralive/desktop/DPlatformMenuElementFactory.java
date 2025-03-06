@@ -7,6 +7,7 @@ import org.happysanta.gdtralive.desktop.menu.MenuImageView;
 import org.happysanta.gdtralive.desktop.menu.MenuTextView;
 import org.happysanta.gdtralive.game.Application;
 import org.happysanta.gdtralive.game.ModManager;
+import org.happysanta.gdtralive.game.api.S;
 import org.happysanta.gdtralive.game.api.external.GdMenu;
 import org.happysanta.gdtralive.game.api.menu.MenuElement;
 import org.happysanta.gdtralive.game.api.menu.MenuFactory;
@@ -24,6 +25,7 @@ import org.happysanta.gdtralive.game.api.menu.element.MenuActionElement;
 import org.happysanta.gdtralive.game.api.menu.element.MenuItemElement;
 import org.happysanta.gdtralive.game.api.menu.element.OptionsMenuElement;
 import org.happysanta.gdtralive.game.api.menu.element.TextMenuElement;
+import org.happysanta.gdtralive.game.api.menu.element.ToggleMenuElement;
 import org.happysanta.gdtralive.game.api.menu.view.IMenuHelmetView;
 import org.happysanta.gdtralive.game.api.menu.view.IMenuImageView;
 import org.happysanta.gdtralive.game.api.menu.view.IMenuTextView;
@@ -31,10 +33,11 @@ import org.happysanta.gdtralive.game.api.util.ActionHandler;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.File;
+import java.io.InputStream;
 
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -45,8 +48,15 @@ public class DPlatformMenuElementFactory<T> implements PlatformMenuElementFactor
     private GdMenu<T> menu;
     private final Application application;
     private final ModManager modManager;
+    private Font font;
 
     public DPlatformMenuElementFactory(Application application) {
+        ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+        try (InputStream inputStream = classloader.getResourceAsStream("RobotoCondensed-Regular.ttf")) {
+            font = Font.createFont(0, inputStream);
+        } catch (Exception e) {
+            font = new Font(null, Font.PLAIN, 20);
+        }
         this.application = application;
         this.modManager = application.getModManager();
     }
@@ -226,10 +236,6 @@ public class DPlatformMenuElementFactory<T> implements PlatformMenuElementFactor
         return new MenuActionElement<>(title, -1, handler, helmetView, textView, touchInterceptor, layout, lock, this);
     }
 
-    private static <T> MenuImageView<T> getLock() {
-        return new MenuImageView<>();
-    }
-
     @Override
     public MenuElement<T> textHtmlBold(String key, String value) {
         return null;
@@ -301,11 +307,28 @@ public class DPlatformMenuElementFactory<T> implements PlatformMenuElementFactor
 
     @Override
     public IToggleMenuElement<T> toggle(String title, int selected, ActionHandler<IToggleMenuElement<T>> action) {
-        return null;
+        String[] onOffStrings = application.getStr().getStringArray(S.on_off);
+        IMenuHelmetView<T> helmetView = getHelmetView();
+        MenuTextView<T> textView = getTextView();
+        TouchInterceptor<T> touchInterceptor = new TouchInterceptor<>();
+        IMenuTextView<T> optionsTextView = getTextView();
+        IMenuImageView<T> lockImage = getLock();
+        ViewUtils<T> viewUtils = new DViewUtils<>();
+        JLabel view = (JLabel) textView.getView();
+        view.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                touchInterceptor.onTouch((T) view, 1, 0, 0, viewUtils);
+            }
+        });
+        T layout = createLayout(helmetView, textView);
+        ((JPanel) layout).add((JComponent) lockImage);
+        ((JPanel) layout).add((JComponent) optionsTextView.getView());
+        return new ToggleMenuElement<>(title, selected, onOffStrings, action, helmetView, textView, touchInterceptor, layout, optionsTextView);
+
     }
 
     protected T createLayout(IMenuHelmetView<T> helmet, IMenuTextView<T> textView) {
-        JPanel layout = new JPanel();
+        JPanel layout = new JPanel(new FlowLayout(FlowLayout.LEFT));
         layout.setBackground(new Color(0,0,0,0));
         layout.setOpaque(false);
         layout.add((Component) helmet.getView());
@@ -316,12 +339,11 @@ public class DPlatformMenuElementFactory<T> implements PlatformMenuElementFactor
         return new MenuHelmetView<>();
     }
 
-    private static <T> MenuTextView<T> getTextView() {
+    private MenuTextView<T> getTextView() {
         MenuTextView<T> view = new MenuTextView<>();
         view.setBackground(new Color(0,0,0,0));
         view.setOpaque(false);
         try {
-            Font font = Font.createFont(0, new File("/Users/semen/Documents/projects/MY/GDTR_Alive/app/src/main/assets/RobotoCondensed-Regular.ttf"));
             view.setFont(font.deriveFont(25f));
         } catch (Exception e) {
             e.printStackTrace();
@@ -331,5 +353,9 @@ public class DPlatformMenuElementFactory<T> implements PlatformMenuElementFactor
 
     private IMenuTextView<T> createEmptyLineElement(int offset) { //todo
         return new MenuTextView<>();
+    }
+
+    private static <T> MenuImageView<T> getLock() {
+        return new MenuImageView<>();
     }
 }

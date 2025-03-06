@@ -269,14 +269,17 @@ public class Application {
 
     
     public void menuToGame() {
+        game.resume();
+
         menuShown = false;
-        if (!settings.isKeyboardInMenuEnabled())
+        if (!settings.isKeyboardInMenuEnabled()) {
             platform.hideKeyboardLayout();
-        else
+        }
+        else {
             platform.showKeyboardLayout();
+        }
 
         platform.menuToGameUpdateUi();
-        game.resume();
     }
 
     

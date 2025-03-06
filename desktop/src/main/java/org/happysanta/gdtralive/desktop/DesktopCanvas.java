@@ -1,13 +1,11 @@
 package org.happysanta.gdtralive.desktop;
 
-import static org.happysanta.gdtralive.DesktopGdView.ZOOM;
-
+import org.happysanta.gdtralive.game.api.Sprite;
 import org.happysanta.gdtralive.game.api.external.GdCanvas;
 import org.happysanta.gdtralive.game.api.model.Color;
 import org.happysanta.gdtralive.game.api.model.EngineStateRecord;
-import org.happysanta.gdtralive.game.util.Utils;
-import org.happysanta.gdtralive.game.api.Sprite;
 import org.happysanta.gdtralive.game.api.model.ViewState;
+import org.happysanta.gdtralive.game.util.Utils;
 
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -17,7 +15,6 @@ import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,9 +30,9 @@ public class DesktopCanvas implements GdCanvas {
     private Font font;
 
     public DesktopCanvas() {
-        try {
-        //todo from resources
-            font = Font.createFont(0, new File("/Users/semen/Documents/projects/MY/GDTR_Alive/app/src/main/assets/RobotoCondensed-Regular.ttf"));
+        ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+        try (InputStream inputStream = classloader.getResourceAsStream("RobotoCondensed-Regular.ttf")) {
+            font = Font.createFont(0, inputStream);
         } catch (Exception e) {
             font = new Font(null, Font.PLAIN, 20);
         }
@@ -112,10 +109,6 @@ public class DesktopCanvas implements GdCanvas {
     }
 
     public void drawRect(int left, int top, int right, int bottom, ViewState view) {
-        int x = (int) (view.width / 2 - view.width / ZOOM) ;
-        int y = (int) (view.height / 2 - view.height / ZOOM) ;
-        int xx = (int) (view.width / 2 - right / ZOOM) ;
-        int yy = (int) (view.height / 2 - view.height / ZOOM) + bottom;
         canvas.fillRect(left, top, right, bottom);
     }
 
@@ -184,9 +177,7 @@ public class DesktopCanvas implements GdCanvas {
 //        Font font = new Font(null, Font.PLAIN, 20);
         canvas.setFont(font.deriveFont(25f));
         canvas.setColor(java.awt.Color.BLACK);
-        int x = (int) (view.width - view.width / ZOOM);
-        int y = (int) (view.height - view.height / ZOOM);
-        canvas.drawString(time, 15, 25); //todo calculate
+        canvas.drawString(time, 15, 35); //todo calculate
     }
 
     public void drawArc(int i1, Float j1, Float k1, int l1) {
