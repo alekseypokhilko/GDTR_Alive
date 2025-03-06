@@ -42,7 +42,7 @@ public class Application {
         this.platform = platform;
         this.highScoreManager = new HighScoreManager(this, dataSource);
         this.settings = new GdSettingsImpl(settingsStorage);
-        this.modManager = new ModManager(fileStorage, settings, dataSource, platform.getDensity());
+        this.modManager = new ModManager(fileStorage, settings, dataSource, platform.getDensity(), this);
         this.gameView = gdGameView;
         this.str = str;
         this.fileStorage = fileStorage;

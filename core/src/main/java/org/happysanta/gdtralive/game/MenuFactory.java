@@ -1,9 +1,5 @@
-package org.happysanta.gdtralive.game.api.menu;
+package org.happysanta.gdtralive.game;
 
-import org.happysanta.gdtralive.game.Achievement;
-import org.happysanta.gdtralive.game.Application;
-import org.happysanta.gdtralive.game.Game;
-import org.happysanta.gdtralive.game.ModManager;
 import org.happysanta.gdtralive.game.api.Constants;
 import org.happysanta.gdtralive.game.api.GDFile;
 import org.happysanta.gdtralive.game.api.GameMode;
@@ -16,6 +12,9 @@ import org.happysanta.gdtralive.game.api.dto.TrackParams;
 import org.happysanta.gdtralive.game.api.external.GdPlatform;
 import org.happysanta.gdtralive.game.api.external.GdStr;
 import org.happysanta.gdtralive.game.api.external.GdTrackEditor;
+import org.happysanta.gdtralive.game.api.menu.MenuElement;
+import org.happysanta.gdtralive.game.api.menu.MenuScreen;
+import org.happysanta.gdtralive.game.api.menu.PlatformMenuElementFactory;
 import org.happysanta.gdtralive.game.api.menu.element.IInputTextElement;
 import org.happysanta.gdtralive.game.api.menu.element.IMenuItemElement;
 import org.happysanta.gdtralive.game.api.menu.element.IOptionsMenuElement;
@@ -111,6 +110,7 @@ public class MenuFactory<T> {
         this.game = game;
         add(MenuType.MAIN, r -> e.screen(str.s(S.main), null));
         add(MenuType.PLAY, r -> e.screen(str.s(S.play), r.get(MenuType.MAIN)));
+        add(MenuType.RENAME, this::createRenameScreen);
         add(MenuType.PROFILE, this::createProfileScreen);
         add(MenuType.ABOUT, this::createAboutScreen);
         add(MenuType.HELP, this::createHelpScreen);
@@ -147,12 +147,18 @@ public class MenuFactory<T> {
         transform(MenuType.MAIN, this::fillMainScreen);
     }
 
-    private MenuScreen<T> createTEMPLATE(Map<MenuType, MenuScreen<T>> r) {
-        MenuScreen<T> screen = e.screen(str.s(S.main), r.get(MenuType.MAIN));
-        screen.builder((s, data) -> {
-            return s;
-        });
-        return screen;
+    private MenuScreen<T> createRenameScreen(Map<MenuType, MenuScreen<T>> r) {
+        return e.screen(str.s(S.rename), r.get(MenuType.MAIN))
+                .builder((screen, data) -> {
+                    screen.clear();
+                    IInputTextElement<T> nameInput = e.editText(Fmt.colon(str.s(S.value), ""), data.getValue(), null);
+                    screen.add(nameInput);
+                    screen.add(e.action(str.s(S.save), __ -> {
+                        data.getHandler().accept(nameInput.getText());
+                    }));
+                    screen.add(e.backAction());
+                    return screen;
+                });
     }
 
     private MenuScreen<T> createInGameReplay(Map<MenuType, MenuScreen<T>> r) {
@@ -259,7 +265,7 @@ public class MenuFactory<T> {
 
     private MenuScreen<T> createThemeOptions(Map<MenuType, MenuScreen<T>> r) {
         return e.screen(str.s(S.theme), r.get(MenuType.WORKSHOP)).builder((s, data) -> {
-            String name = GDFile.THEME.cutExtension(data.getFileName());
+            String name = GDFile.THEME.cutExtension(data.getValue());
             Theme theme = data.getTheme() == null
                     ? application.getModManager().loadTheme(name)
                     : data.getTheme();
@@ -293,11 +299,23 @@ public class MenuFactory<T> {
             s.add(e.action(str.s(S.install), __ -> {
                 String modName = mod.getName();
                 application.getModManager().activateMod(mod);
+                application.notify(String.format("Active: %s", mod.getName()));
                 this.get(MenuType.CAMPAIGN).setTitle(Fmt.sp(str.s(S.play), modName));
                 resetSelectors();
+                s.highlightElement();
             }));
-//            s.addItem(new MenuAction(str.s(Strings.save), -1, menu,
-//                    __ -> this.application.getFileStorage().save(mod, GDFile.MOD, mod.getName())));
+            s.add(e.action(str.s(S.rename), __ -> {
+                MenuData menuData = new MenuData(mod.getName());
+                menuData.setHandler(o -> {
+                    String newName = (String) o;
+                    mod.setName(newName);
+                    application.notify("Renamed");
+                    s.build(new MenuData(mod, null));
+                    menu.back();
+                });
+                MenuScreen<T> build = this.get(MenuType.RENAME).setParent(s).build(menuData);
+                menu.setCurrentMenu(build);
+            }));
             s.add(e.action(str.s(S.delete), -1, __ -> this.application.getModManager().deleteMod(mod.getName())));
             s.add(e.backAction(() -> this.get(MenuType.MODS).build()));
             return s;
@@ -336,6 +354,7 @@ public class MenuFactory<T> {
                 s.add(options);
                 i++;
             }
+            s.resetHighlighted();
             return s;
         });
     }
@@ -402,16 +421,11 @@ public class MenuFactory<T> {
             s.add(e.emptyLine(false));
             s.add(e.emptyLine(false));
             int i = 0;
-            //todo
-            for (TrackRecord rec : application.getFileStorage().getAllRecords()) {
+            for (String name : application.getFileStorage().listFiles(GDFile.RECORD)) {
                 try {
-                    long millis = rec.getTime();
-                    String time = Utils.getDurationString(millis);
-                    String name = String.format("[%s] %s", time, rec.getTrackName());
-                    IMenuItemElement<T> options = e.menu(name, this.get(MenuType.RECORDING_OPTIONS),
+                    IMenuItemElement<T> options = e.menu(GDFile.RECORD.cutExtension(name), this.get(MenuType.RECORDING_OPTIONS),
                             item -> {
-                                TrackRecord recording = application.getFileStorage().getAllRecords().get(item.getValue());
-                                this.get(MenuType.RECORDING_OPTIONS).build(new MenuData(recording));
+                                this.get(MenuType.RECORDING_OPTIONS).build(new MenuData((TrackRecord) null, GDFile.RECORD.cutExtension(name)));
                             });
                     options.setValue(i);
                     s.add(options);
@@ -426,7 +440,9 @@ public class MenuFactory<T> {
 
     private MenuScreen<T> createRecordingOptions(Map<MenuType, MenuScreen<T>> r) {
         return e.screen(str.s(S.record_option), r.get(MenuType.RECORDINGS)).builder((s, data) -> {
-            TrackRecord rec = data.getRecording();
+            TrackRecord rec = data.getRecording() != null
+                    ? data.getRecording()
+                    : application.getFileStorage().readRecord(data.getValue());
             s.clear();
             s.add(e.textHtmlBold(str.s(S.name), rec.getTrackName()));
             s.add(e.textHtmlBold(str.s(S.guid), rec.getTrackGuid()));
@@ -435,7 +451,7 @@ public class MenuFactory<T> {
             s.add(e.textHtmlBold(str.s(S.date), rec.getDate()));
             s.add(e.emptyLine(true));
             s.add(e.action(str.s(S.replay), -1, item1 -> game.startTrack(GameParams.of(rec))));
-            s.add(e.action(str.s(S.save), -1, item -> application.getFileStorage().save(rec, GDFile.RECORD, Fmt.us(rec.getTrackName(), rec.getDate()))));
+            s.add(e.action(str.s(S.delete), __ -> this.application.getFileStorage().delete(GDFile.RECORD, data.getValue())));
             s.add(e.backAction(() -> {
                 this.get(MenuType.RECORDINGS).build();
                 game.startAutoplay(true);
@@ -492,7 +508,7 @@ public class MenuFactory<T> {
 
     private void fillMainScreen(MenuScreen<T> s) {
         s.setBeforeShowAction(() -> game.startAutoplay(false));
-        s.add(e.menu(str.s(S.competition), this.get(MenuType.PLAY)));
+        s.add(e.menu(str.s(S.competition), this.get(MenuType.PLAY), __ -> this.get(MenuType.PLAY).build()));
         s.add(e.menu(str.s(S.workshop), this.get(MenuType.WORKSHOP)));
         s.add(e.menu(str.s(S.profile), this.get(MenuType.PROFILE)));
         s.add(e.menu(str.s(S.options), this.get(MenuType.OPTIONS)));

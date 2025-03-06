@@ -24,10 +24,4 @@ public interface GdFileStorage {
     void delete(GDFile gdFile, String name);
 
     void setApplication(Application application);
-
-
-    //todo remove
-    void addRecord(TrackRecord rec);
-
-    List<TrackRecord> getAllRecords();
 }

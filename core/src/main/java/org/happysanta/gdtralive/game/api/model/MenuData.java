@@ -4,6 +4,7 @@ import org.happysanta.gdtralive.game.api.GameMode;
 import org.happysanta.gdtralive.game.api.MenuMode;
 import org.happysanta.gdtralive.game.api.dto.Theme;
 import org.happysanta.gdtralive.game.api.dto.TrackParams;
+import org.happysanta.gdtralive.game.api.util.Consumer;
 
 public class MenuData {
     private MenuMode menuMode;
@@ -23,32 +24,38 @@ public class MenuData {
     private TrackRecord recording;
     private Theme theme;
     private Mod mod;
-    private String fileName;
+    private String value;
     private TrackParams trackRef;
+    private Consumer<Object> handler;
 
     public MenuData() {
     }
 
-    public MenuData(TrackRecord trackRecord) {
+    public MenuData(TrackRecord trackRecord, String name) {
         this.recording = trackRecord;
+        this.value = name;
     }
 
     public MenuData(Mod mod, String name) {
         this.mod = mod;
-        this.fileName = name;
+        this.value = name;
     }
 
     public MenuData(Theme theme, String name) {
         this.theme = theme;
-        this.fileName = name;
+        this.value = name;
     }
 
-    public MenuData(String name) {
-        this.fileName = name;
+    public MenuData(String value) {
+        this.value = value;
     }
 
     public MenuData(TrackParams track) {
         this.trackRef = track;
+    }
+
+    public MenuData(Consumer<Object> handler) {
+        this.handler = handler;
     }
 
     public static MenuData mainMenu() {
@@ -185,8 +192,16 @@ public class MenuData {
         return theme;
     }
 
-    public String getFileName() {
-        return fileName;
+    public String getValue() {
+        return value;
+    }
+
+    public Consumer<Object> getHandler() {
+        return handler;
+    }
+
+    public void setHandler(Consumer<Object> handler) {
+        this.handler = handler;
     }
 
     @Override

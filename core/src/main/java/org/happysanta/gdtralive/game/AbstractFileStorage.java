@@ -20,8 +20,6 @@ import java.util.Map;
 import java.util.Objects;
 
 public abstract class AbstractFileStorage implements GdFileStorage {
-    protected List<TrackRecord> records = new ArrayList<>();
-
     // /storage/emulated/0/Android/data/org.happysanta.gdtralive/files/GDTR_Alive
     protected Application application;
     protected final File appFolder;
@@ -102,16 +100,6 @@ public abstract class AbstractFileStorage implements GdFileStorage {
         } catch (Exception e) {
             notify("Error: " + e.getMessage());
         }
-    }
-
-    @Override
-    public void addRecord(TrackRecord rec) { //todo
-        records.add(rec);
-    }
-
-    @Override
-    public List<TrackRecord> getAllRecords() { //todo
-        return records;
     }
 
     private <T> T read(String name, GDFile gdFile) {

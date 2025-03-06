@@ -154,8 +154,9 @@ public class DMenuScreen<T> implements OnMenuElementHighlightListener<T>, MenuSc
 	}
 
 	@Override
-	public void setParent(MenuScreen<T> target) {
+	public MenuScreen<T> setParent(MenuScreen<T> target) {
 		parent = target;
+		return this;
 	}
 
 	@Override

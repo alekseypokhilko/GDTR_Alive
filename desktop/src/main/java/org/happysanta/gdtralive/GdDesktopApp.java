@@ -10,8 +10,8 @@ import org.happysanta.gdtralive.game.Application;
 import org.happysanta.gdtralive.game.api.Platform;
 import org.happysanta.gdtralive.game.api.external.GdMenu;
 import org.happysanta.gdtralive.game.api.external.GdPlatform;
-import org.happysanta.gdtralive.game.api.menu.Menu;
-import org.happysanta.gdtralive.game.api.menu.MenuFactory;
+import org.happysanta.gdtralive.game.Menu;
+import org.happysanta.gdtralive.game.MenuFactory;
 import org.happysanta.gdtralive.game.api.menu.MenuScreen;
 
 import java.awt.BorderLayout;

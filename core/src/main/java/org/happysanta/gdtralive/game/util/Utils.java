@@ -1,6 +1,11 @@
 package org.happysanta.gdtralive.game.util;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 
 import org.happysanta.gdtralive.game.api.Constants;
@@ -10,6 +15,8 @@ import org.happysanta.gdtralive.game.api.dto.LevelPack;
 import org.happysanta.gdtralive.game.api.dto.Theme;
 import org.happysanta.gdtralive.game.api.dto.TrackParams;
 import org.happysanta.gdtralive.game.api.exception.InvalidTrackException;
+import org.happysanta.gdtralive.game.api.model.ElementRecord;
+import org.happysanta.gdtralive.game.api.model.IElement;
 import org.happysanta.gdtralive.game.api.model.Mod;
 import org.happysanta.gdtralive.game.api.model.TrackData;
 
@@ -18,6 +25,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -29,9 +37,21 @@ public class Utils {
     public static final Pattern UUID_REGEX =
             Pattern.compile("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
     public static final String TRACK_TEMPLATE = "{\"author\":\"unnamed\",\"checkBackwardCollision\":true,\"checkFinishCoordinates\":true,\"finishPointIndex\":2,\"finishX\":7323648,\"finishY\":0,\"guid\":\"123\",\"invisible\":[],\"league\":0,\"name\":\"Unnamed\",\"points\":[[-4710400,-286720],[-4087808,-278528],[-3645440,-278528],[-3104768,-270336]],\"pointsCount\":4,\"startPointIndex\":1,\"startX\":-4374528,\"startY\":81920}";
-    private static final Gson GSON = new Gson();
+    private static final Gson GSON;
     private static final TypeToken<List<Integer>> INT_LIST_TYPE = new TypeToken<List<Integer>>() {
     };
+
+    static {
+        class IElementJsonAdapter implements JsonDeserializer<IElement> {
+            @Override
+            public IElement deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+                return context.deserialize(json, ElementRecord.class);
+            }
+        }
+
+        GSON = new GsonBuilder().registerTypeAdapter(IElement.class, new IElementJsonAdapter())
+                .create();
+    }
 
     public static TrackParams initTrackTemplate(String playerName) {
         TrackData track = Utils.trackTemplate(playerName);

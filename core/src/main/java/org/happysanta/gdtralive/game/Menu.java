@@ -1,11 +1,10 @@
-package org.happysanta.gdtralive.game.api.menu;
+package org.happysanta.gdtralive.game;
 
-import org.happysanta.gdtralive.game.Application;
-import org.happysanta.gdtralive.game.KeyboardHandler;
 import org.happysanta.gdtralive.game.api.GameMode;
 import org.happysanta.gdtralive.game.api.MenuMode;
 import org.happysanta.gdtralive.game.api.MenuType;
 import org.happysanta.gdtralive.game.api.external.GdMenu;
+import org.happysanta.gdtralive.game.api.menu.MenuScreen;
 import org.happysanta.gdtralive.game.api.model.MenuData;
 
 public class Menu<T> implements GdMenu<T> {

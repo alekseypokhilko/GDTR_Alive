@@ -38,6 +38,7 @@ public class AStr implements GdStr {
         strings.put(S.track_editor, R.string.track_editor);
         strings.put(S.track_options, R.string.track_options);
         strings.put(S.save, R.string.save);
+        strings.put(S.value, R.string.value);
         strings.put(S.exit_editor, R.string.exit_editor);
         strings.put(S.guid, R.string.guid);
         strings.put(S.author, R.string.author);
@@ -51,6 +52,7 @@ public class AStr implements GdStr {
         strings.put(S.description, R.string.description);
         strings.put(S.date, R.string.date);
         strings.put(S.install, R.string.install);
+        strings.put(S.rename, R.string.rename);
         strings.put(S.delete, R.string.delete);
         strings.put(S.mod, R.string.mod);
         strings.put(S.tracks, R.string.tracks);

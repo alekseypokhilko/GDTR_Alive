@@ -9,7 +9,7 @@ public interface MenuScreen<T> {
     void add(MenuElement<T> item);
 
     MenuScreen<T> getParent();
-    void setParent(MenuScreen<T> target);
+    MenuScreen<T> setParent(MenuScreen<T> target);
 
     MenuElement<T> getActions(int action);
     void performAction(int k);

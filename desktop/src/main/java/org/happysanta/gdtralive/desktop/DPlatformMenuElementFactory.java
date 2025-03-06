@@ -10,7 +10,7 @@ import org.happysanta.gdtralive.game.ModManager;
 import org.happysanta.gdtralive.game.api.S;
 import org.happysanta.gdtralive.game.api.external.GdMenu;
 import org.happysanta.gdtralive.game.api.menu.MenuElement;
-import org.happysanta.gdtralive.game.api.menu.MenuFactory;
+import org.happysanta.gdtralive.game.MenuFactory;
 import org.happysanta.gdtralive.game.api.menu.MenuScreen;
 import org.happysanta.gdtralive.game.api.menu.PlatformMenuElementFactory;
 import org.happysanta.gdtralive.game.api.menu.TouchInterceptor;

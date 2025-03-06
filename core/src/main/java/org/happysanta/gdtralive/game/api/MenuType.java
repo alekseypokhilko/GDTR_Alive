@@ -3,6 +3,7 @@ package org.happysanta.gdtralive.game.api;
 public enum MenuType {
     MAIN,
     PLAY,
+    RENAME,
     DAILY,
     RECORDINGS,
     RECORDING_OPTIONS,

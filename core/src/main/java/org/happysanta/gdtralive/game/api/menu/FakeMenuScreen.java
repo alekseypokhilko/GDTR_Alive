@@ -28,8 +28,8 @@ public class FakeMenuScreen<T> implements MenuScreen<T>{
     }
 
     @Override
-    public void setParent(MenuScreen<T> target) {
-
+    public MenuScreen<T> setParent(MenuScreen<T> target) {
+        return this;
     }
 
     @Override

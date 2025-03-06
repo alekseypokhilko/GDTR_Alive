@@ -29,6 +29,7 @@ public class ModManager {
 
     private final List<Runnable> themeReloadHandlers = new ArrayList<>();
 
+    private Application application;
     private Theme theme;
     private Mod currentMod;
     private ModEntity modState;
@@ -40,7 +41,8 @@ public class ModManager {
     private final GdFileStorage fileStorage;
     private final GdSettings settings;
 
-    public ModManager(GdFileStorage fileStorage, GdSettings settings, GdDataSource dataSource, float defaultDensity) {
+    public ModManager(GdFileStorage fileStorage, GdSettings settings, GdDataSource dataSource, float defaultDensity, Application application) {
+        this.application = application;
         this.defaultDensity = defaultDensity;
         this.fileStorage = fileStorage;
         this.dataSource = dataSource;

@@ -49,8 +49,8 @@ import org.happysanta.gdtralive.game.api.external.GdFileStorage;
 import org.happysanta.gdtralive.game.api.external.GdMenu;
 import org.happysanta.gdtralive.game.api.external.GdPlatform;
 import org.happysanta.gdtralive.game.api.external.GdStr;
-import org.happysanta.gdtralive.game.api.menu.Menu;
-import org.happysanta.gdtralive.game.api.menu.MenuFactory;
+import org.happysanta.gdtralive.game.Menu;
+import org.happysanta.gdtralive.game.MenuFactory;
 import org.happysanta.gdtralive.game.api.menu.MenuScreen;
 import org.happysanta.gdtralive.game.api.model.GameParams;
 import org.happysanta.gdtralive.game.api.model.MenuData;
@@ -582,7 +582,7 @@ public class GDActivity extends Activity implements GdPlatform {
             Uri uri = data.getData();
             try (InputStream inputStream = Helpers.getGDActivity().getContentResolver().openInputStream(uri)) {
                 TrackRecord trackRecord = Utils.read(inputStream, GDFile.RECORD);
-                MenuScreen recordMenu = menuFactory.get(MenuType.RECORDING_OPTIONS).build(new MenuData(trackRecord));
+                MenuScreen recordMenu = menuFactory.get(MenuType.RECORDING_OPTIONS).build(new MenuData(trackRecord, null));
                 menu.setCurrentMenu(recordMenu);
             } catch (Exception e) {
                 e.printStackTrace();
