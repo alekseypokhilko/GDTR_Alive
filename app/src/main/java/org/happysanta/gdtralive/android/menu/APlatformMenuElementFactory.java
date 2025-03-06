@@ -266,6 +266,7 @@ public class APlatformMenuElementFactory<T> implements PlatformMenuElementFactor
         image.setVisibility(View.GONE);
         // textView was already created in super constructor
         textView.setLineSpacing(0, 1);
+        textView.setTextSize(!padding ? SUBTITLE_TEXT_SIZE : TEXT_SIZE);
 
         LinearLayout.LayoutParams textViewLayoutParams1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         // textViewLayoutParams.setMargins(getDp(TEXT_LEFT_MARGIN), 0, 0, 0);

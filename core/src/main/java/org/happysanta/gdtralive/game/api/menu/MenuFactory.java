@@ -8,6 +8,7 @@ import org.happysanta.gdtralive.game.api.Constants;
 import org.happysanta.gdtralive.game.api.GDFile;
 import org.happysanta.gdtralive.game.api.GameMode;
 import org.happysanta.gdtralive.game.api.MenuType;
+import org.happysanta.gdtralive.game.api.Platform;
 import org.happysanta.gdtralive.game.api.S;
 import org.happysanta.gdtralive.game.api.dto.Theme;
 import org.happysanta.gdtralive.game.api.dto.ThemeHeader;
@@ -369,6 +370,7 @@ public class MenuFactory<T> {
             });
             s.add(e.menu(str.s(S.campaign), this.get(MenuType.CAMPAIGN), __ -> {
                 String modName = modNames[campaignSelector.getSelectedOption()];
+                modManager.setTemporallyUnlockedAll(false);
                 modManager.activateMod(modName);
                 setDifficultyLevels(application.getModManager().getLevelNames().toArray(new String[0]));
                 setLeagueNames(application.getModManager().getLeagueNames());
@@ -520,6 +522,8 @@ public class MenuFactory<T> {
                 }));
         screen.add(e.toggle(str.s(S.recording_enabled), application.getSettings().isRecordingEnabled() ? 0 : 1,
                 item -> game.setRecordingEnabled(item.getSelectedOption() == 0)));
+        screen.add(e.toggle(str.s(S.god_mode), application.getSettings().isGodModeEnabled() ? 0 : 1,
+                item -> game.setGodModeEnabled(item.getSelectedOption() == 0)));
         screen.add(e.toggle(str.s(S.perspective), application.getSettings().isPerspectiveEnabled() ? 0 : 1,
                 item -> game.setPerspectiveEnabled(item.getSelectedOption() == 0)));
         screen.add(e.toggle(str.s(S.shadows), application.getSettings().isShadowsEnabled() ? 0 : 1,
@@ -528,21 +532,23 @@ public class MenuFactory<T> {
                 item -> game.setDrawBiker(item.getSelectedOption() == 0)));
         screen.add(e.toggle(str.s(S.bike_sprite), application.getSettings().isBikeSpriteEnabled() ? 0 : 1,
                 item1 -> game.setDrawBike(item1.getSelectedOption() == 0)));
-        screen.add(e.selector(str.s(S.input), application.getSettings().getInputOption(), keySetStrings, screen, item1 -> {
-            if (item1._charvZ()) item1.setSelectedOption(item1.getSelectedOption() + 1);
-            game.setInputOption(item1.getSelectedOption());
-        }));
         screen.add(e.toggle(str.s(S.active_camera), application.getSettings().isLookAheadEnabled() ? 0 : 1,
                 item -> game.setLookAhead(item.getSelectedOption() == 0)));
-        screen.add(e.toggle(str.s(S.vibrate_on_touch), application.getSettings().isVibrateOnTouchEnabled() ? 0 : 1,
-                item -> application.getSettings().setVibrateOnTouchEnabled(item.getSelectedOption() == 0)));
-        screen.add(e.toggle(str.s(S.show_keyboard), application.getSettings().isKeyboardInMenuEnabled() ? 0 : 1,
-                item -> {
-                    boolean enabled = item.getSelectedOption() == 0;
-                    application.getSettings().setKeyboardInMenuEnabled(enabled);
-                    if (enabled) platform.showKeyboardLayout();
-                    else platform.hideKeyboardLayout();
-                }));
+        if (application.getPlatform().getPlatform() == Platform.MOBILE) {
+            screen.add(e.selector(str.s(S.input), application.getSettings().getInputOption(), keySetStrings, screen, item1 -> {
+                if (item1._charvZ()) item1.setSelectedOption(item1.getSelectedOption() + 1);
+                game.setInputOption(item1.getSelectedOption());
+            }));
+            screen.add(e.toggle(str.s(S.vibrate_on_touch), application.getSettings().isVibrateOnTouchEnabled() ? 0 : 1,
+                    item -> application.getSettings().setVibrateOnTouchEnabled(item.getSelectedOption() == 0)));
+            screen.add(e.toggle(str.s(S.show_keyboard), application.getSettings().isKeyboardInMenuEnabled() ? 0 : 1,
+                    item -> {
+                        boolean enabled = item.getSelectedOption() == 0;
+                        application.getSettings().setKeyboardInMenuEnabled(enabled);
+                        if (enabled) platform.showKeyboardLayout();
+                        else platform.hideKeyboardLayout();
+                    }));
+        }
 
         MenuScreen<T> eraseScreen = e.screen(str.s(S.confirm_clear), screen);
         eraseScreen.add(e.text(str.s(S.erase_text1)));
@@ -801,25 +807,24 @@ public class MenuFactory<T> {
         s.add(trackSelector);
         s.add(leagueSelector);
         s.add(e.menu(str.s(S.highscores), this.get(MenuType.HIGH_SCORE), null));
-        s.add(e.action(Fmt.ra(str.s(S.unlock_all)), item -> {
-            application.notify("Coming soon");
-            if (true) { //todo
-                return;
-            }
-            application.getPlatform().showConfirm(str.s(S.unlock_all), str.s(S.unlock_all_text), () -> {
-                int leaguesCount = application.getModManager().getLeagueThemes().size();
-                ModEntity modState = application.getModManager().getModState();
-                modState.setUnlockedLeagues(leaguesCount);
-                modState.setUnlockedLevels(leaguesCount);
-                modState.unlockAllTracks();
-                setLeagueNames(application.getModManager().getLeagueNames());
-                leagueSelector.setUnlockedCount(modState.getUnlockedLeagues());
-                levelSelector.setUnlockedCount(modState.getUnlockedLevels());
-                application.getModManager().setTemporallyUnlockedAll(true);
-                application.notify("Unlocked all tracks, leagues and difficulties");
-            }, () -> {
-            });
+        s.add(e.action(Fmt.ra(str.s(S.skip_track)), item -> {
+            application.getModManager().skipTrack(levelSelector.getSelectedOption());
+            resetSelectors();
         }));
+        s.add(e.action(Fmt.ra(str.s(S.unlock_all)), item -> application.getPlatform().showConfirm(str.s(S.unlock_all), str.s(S.unlock_all_text), () -> {
+            application.getModManager().setTemporallyUnlockedAll(true);
+            int leaguesCount = application.getModManager().getLeagueThemes().size();
+            ModEntity modState = application.getModManager().getModState();
+            modState.setUnlockedLeagues(leaguesCount);
+            modState.setUnlockedLevels(leaguesCount);
+            modState.unlockAllTracks();
+            setLeagueNames(application.getModManager().getLeagueNames());
+            leagueSelector.setUnlockedCount(modState.getUnlockedLeagues());
+            levelSelector.setUnlockedCount(modState.getUnlockedLevels());
+            application.getModManager().setTemporallyUnlockedAll(true);
+            application.notify("Unlocked all tracks, leagues and difficulties");
+        }, () -> {
+        })));
         s.add(e.backAction());
     }
 

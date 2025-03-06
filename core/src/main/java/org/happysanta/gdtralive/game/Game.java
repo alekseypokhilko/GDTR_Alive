@@ -57,7 +57,7 @@ public class Game {
             } catch (InvalidTrackException ignore) {
             }
         }
-        this.view = new GdView(frameRender, engine, width, height);
+        this.view = new GdView(frameRender, engine, width, height, application.getPlatform());
         this.recorder = new Recorder(engine, application.getFileStorage(), settings);
         this.player = new Player(engine, () -> restart(true));
         this.trainer = new Trainer(engine, view, application.getStr());
@@ -344,7 +344,7 @@ public class Game {
     }
 
     private void saveScore(long lastTrackTime) {
-        if (trainer.isTrainingMode()) {
+        if (trainer.isTrainingMode() || engine.isGodMode()) {
             return;
         }
         Score score = new Score();
@@ -376,11 +376,13 @@ public class Game {
                 throw new RuntimeException(e); //todo
             }
             engine.setReplayMode(true);
+            engine.setGodMode(true);
             engine.startAutoplay();
             menu.menuToGame();
             return;
         } else {
             engine.setReplayMode(false);
+            engine.setGodMode(settings.isGodModeEnabled());
             recorder.setCapturingMode(settings.isRecordingEnabled());
         }
         if (GameMode.TRACK_EDITOR == params.getMode()) {
@@ -438,6 +440,11 @@ public class Game {
     public void setShadowsEnabled(boolean enabled) {
         settings.setShadowsEnabled(enabled);
         engine.getTrackPhysic().setShadowsEnabled(enabled);
+    }
+
+    public void setGodModeEnabled(boolean enabled) {
+        settings.setGodModeEnabled(enabled);
+        engine.setGodMode(enabled);
     }
 
     public void setDrawBiker(boolean drawBiker) {

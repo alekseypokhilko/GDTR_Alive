@@ -357,4 +357,11 @@ public class ModManager {
         Utils.validateMod(mod);
         return mod;
     }
+
+    public void skipTrack(int level) {
+        int unlockedTracksCount = modState.getUnlockedTracksCount(level);
+        modState.setUnlockedTracks(level, unlockedTracksCount + 1);
+        modState.setSelectedTrack(Math.min(unlockedTracksCount + 1, modState.getTracksCount(level) - 1));
+        dataSource.updateMod(modState);
+    }
 }

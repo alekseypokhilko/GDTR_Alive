@@ -23,7 +23,8 @@ public class Engine {
     private static final int BACK_WHEEL = 2;
 
     private boolean replay;
-    public boolean edit;
+    private boolean godMode = false;
+    private boolean edit;
     public int selectedPointIndex = 0;
     private EngineStateRecord replayState;
     private EngineStateRecord respawn = null;
@@ -473,9 +474,9 @@ public class Engine {
             //if out of bounds
             levelState = LevelState.CRASHED;
         }
-        if (levelState == LevelState.CRASHED || m_mZ) {
+        if (!godMode && (levelState == LevelState.CRASHED || m_mZ)) {
             return LevelState.CRASHED;
-        } else if (crashedInAir_MAYBE) {
+        } else if (!godMode && crashedInAir_MAYBE) {
             return LevelState.CRASHED_IN_AIR;
         } else if (isStartNotCrossed()) {
             frontWheelTouchedGround = false;
@@ -559,8 +560,9 @@ public class Engine {
             if (!flag && m_RZ)
                 return k1 == 3 ? LevelState.S1 : LevelState.FINISHED;
             if (k1 == 0) {
-                if (((j1 = i1 + j1 >> 1) - i1 >= 0 ? j1 - i1 : -(j1 - i1)) < 65)
+                if (((j1 = i1 + j1 >> 1) - i1 >= 0 ? j1 - i1 : -(j1 - i1)) < 65 && !godMode) {
                     return LevelState.CRASHED;
+                }
             } else if (k1 == 3) {
                 m_RZ = true;
                 j1 = i1 + j1 >> 1;
@@ -572,8 +574,9 @@ public class Engine {
                         _caIV(m_waI);
                         j2 = checkCollisionWithTrackLine(m_waI);
                         i2 = j2;
-                        if (j2 == 0)
+                        if (j2 == 0 && !godMode) {
                             return LevelState.CRASHED;
+                        }
                     } while (i2 != 2);
                 }
                 i1 = j1;
@@ -1075,6 +1078,14 @@ public class Engine {
 
     public void setRespawn(EngineStateRecord respawn) {
         this.respawn = respawn;
+    }
+
+    public void setGodMode(boolean godMode) {
+        this.godMode = godMode;
+    }
+
+    public boolean isGodMode() {
+        return godMode;
     }
 
     public static final List<LeagueProperties> leagueProperties = LeagueProperties.getDefaultLeagueProperties();

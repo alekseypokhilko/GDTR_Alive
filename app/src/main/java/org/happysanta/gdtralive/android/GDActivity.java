@@ -27,10 +27,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.happysanta.gdtralive.R;
-import org.happysanta.gdtralive.game.api.menu.Menu;
-import org.happysanta.gdtralive.android.menu.KeyboardController;
-import org.happysanta.gdtralive.game.api.menu.MenuFactory;
 import org.happysanta.gdtralive.android.menu.APlatformMenuElementFactory;
+import org.happysanta.gdtralive.android.menu.KeyboardController;
 import org.happysanta.gdtralive.android.menu.views.MenuHelmetView;
 import org.happysanta.gdtralive.android.menu.views.MenuImageView;
 import org.happysanta.gdtralive.android.menu.views.MenuLinearLayout;
@@ -42,6 +40,7 @@ import org.happysanta.gdtralive.game.api.Constants;
 import org.happysanta.gdtralive.game.api.GDFile;
 import org.happysanta.gdtralive.game.api.GameMode;
 import org.happysanta.gdtralive.game.api.MenuType;
+import org.happysanta.gdtralive.game.api.Platform;
 import org.happysanta.gdtralive.game.api.Sprite;
 import org.happysanta.gdtralive.game.api.dto.Theme;
 import org.happysanta.gdtralive.game.api.dto.TrackParams;
@@ -50,6 +49,8 @@ import org.happysanta.gdtralive.game.api.external.GdFileStorage;
 import org.happysanta.gdtralive.game.api.external.GdMenu;
 import org.happysanta.gdtralive.game.api.external.GdPlatform;
 import org.happysanta.gdtralive.game.api.external.GdStr;
+import org.happysanta.gdtralive.game.api.menu.Menu;
+import org.happysanta.gdtralive.game.api.menu.MenuFactory;
 import org.happysanta.gdtralive.game.api.menu.MenuScreen;
 import org.happysanta.gdtralive.game.api.model.GameParams;
 import org.happysanta.gdtralive.game.api.model.MenuData;
@@ -295,6 +296,11 @@ public class GDActivity extends Activity implements GdPlatform {
         this.menu = menu;
     }
 
+    @Override
+    public Platform getPlatform() {
+        return Platform.MOBILE;
+    }
+
     public Application getGdApplication() {
         return application;
     }
@@ -330,7 +336,7 @@ public class GDActivity extends Activity implements GdPlatform {
     }
 
     //todo refactor
-    private static final int[] ignore = new int[] {4, 24, 25};
+    private static final int[] ignore = new int[]{4, 24, 25};
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {

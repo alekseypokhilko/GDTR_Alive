@@ -1,7 +1,9 @@
 package org.happysanta.gdtralive.game;
 
 import org.happysanta.gdtralive.game.api.LoadingState;
+import org.happysanta.gdtralive.game.api.Platform;
 import org.happysanta.gdtralive.game.api.Sprite;
+import org.happysanta.gdtralive.game.api.external.GdPlatform;
 import org.happysanta.gdtralive.game.api.model.MessageElement;
 import org.happysanta.gdtralive.game.api.model.ViewState;
 import org.happysanta.gdtralive.game.engine.Engine;
@@ -12,6 +14,7 @@ import java.util.Timer;
 
 public class GdView {
 
+    private final GdPlatform platform;
     private final Engine engine;
     private final FrameRender frameRender;
     private LoadingState loadingState;
@@ -25,7 +28,8 @@ public class GdView {
     private int infoMessageIndex;
     private Timer timer;
 
-    public GdView(FrameRender frameRender, Engine engine, int width, int height) {
+    public GdView(FrameRender frameRender, Engine engine, int width, int height, GdPlatform platform) {
+        this.platform = platform;
         this.frameRender = frameRender;
         infoMessageNeedDeleting = false;
         drawTimer = true;
@@ -76,7 +80,7 @@ public class GdView {
         }
 
         engine.updateElementPosition();
-        double yOffset = height > width ? 2 : 1.3;
+        double yOffset = height > width ? 2 : (platform.getPlatform() == Platform.MOBILE ? 1.3 : 1.7);
         moveTrack(-engine.currentX_MAYBE() + width / 2,
                 (int) (engine.currentY_MAYBE() + height / yOffset), width);
 

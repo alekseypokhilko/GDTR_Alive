@@ -14,6 +14,9 @@ public class GdSettingsImpl implements GdSettings {
     private static final String RECORDING_ENABLED = "perspective_enabled";
     private static final boolean RECORDING_ENABLED_DEFAULT = false;
 
+    private static final String GOD_MODE_ENABLED = "god_mode_enabled";
+    private static final boolean GOD_MODE_ENABLED_DEFAULT = false;
+
     private static final String SHADOWS_ENABLED = "shadows_enabled";
     private static final boolean SHADOWS_ENABLED_DEFAULT = true;
 
@@ -54,6 +57,7 @@ public class GdSettingsImpl implements GdSettings {
 
     public void resetAll() {
         setRecordingEnabled(RECORDING_ENABLED_DEFAULT);
+        setGodModeEnabled(GOD_MODE_ENABLED_DEFAULT);
         setPerspectiveEnabled(PERSPECTIVE_ENABLED_DEFAULT);
         setShadowsEnabled(SHADOWS_ENABLED_DEFAULT);
         setDriverSpriteEnabled(DRIVER_SPRITE_ENABLED_DEFAULT);
@@ -89,6 +93,16 @@ public class GdSettingsImpl implements GdSettings {
 
     public void setRecordingEnabled(boolean enabled) {
         storage.setBoolean(RECORDING_ENABLED, enabled);
+    }
+
+    @Override
+    public boolean isGodModeEnabled() {
+        return storage.getBoolean(GOD_MODE_ENABLED, GOD_MODE_ENABLED_DEFAULT);
+    }
+
+    @Override
+    public void setGodModeEnabled(boolean enabled) {
+        storage.setBoolean(GOD_MODE_ENABLED, enabled);
     }
 
     public boolean isShadowsEnabled() {
