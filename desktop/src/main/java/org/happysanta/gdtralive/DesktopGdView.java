@@ -2,7 +2,6 @@ package org.happysanta.gdtralive;
 
 import org.happysanta.gdtralive.desktop.DGameView;
 import org.happysanta.gdtralive.desktop.DPlatform;
-import org.happysanta.gdtralive.desktop.DPlatformMenuElementFactory;
 import org.happysanta.gdtralive.desktop.DSettingsStorage;
 import org.happysanta.gdtralive.desktop.DesktopCanvas;
 import org.happysanta.gdtralive.desktop.DesktopFileStorage;
@@ -14,11 +13,10 @@ import org.happysanta.gdtralive.game.Application;
 import org.happysanta.gdtralive.game.Game;
 import org.happysanta.gdtralive.game.GdView;
 import org.happysanta.gdtralive.game.api.GameMode;
+import org.happysanta.gdtralive.game.api.external.GdMenu;
 import org.happysanta.gdtralive.game.api.external.GdSettings;
 import org.happysanta.gdtralive.game.api.menu.Menu;
-import org.happysanta.gdtralive.game.api.menu.MenuFactory;
 import org.happysanta.gdtralive.game.api.model.GameParams;
-import org.happysanta.gdtralive.game.api.model.TrackData;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -32,6 +30,7 @@ import java.awt.geom.AffineTransform;
 import java.io.File;
 import java.util.HashMap;
 
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -51,9 +50,10 @@ public class DesktopGdView extends JPanel implements ActionListener, KeyListener
 
     public static Application application;
     public static DPlatform platform;
-    public static Menu<Object> menu;
+    public static Menu<JComponent> menu;
 
     private final AffineTransform at;
+
     public DesktopGdView() {
         super();
         int width = getWidth();
@@ -72,7 +72,6 @@ public class DesktopGdView extends JPanel implements ActionListener, KeyListener
         setSize(width, height);
         setVisible(true);
 
-
         this.settings = new DesktopGdSettings();
         platform = new DPlatform();
         DSettingsStorage settingsStorage = new DSettingsStorage();
@@ -81,14 +80,7 @@ public class DesktopGdView extends JPanel implements ActionListener, KeyListener
         DesktopFileStorage fileStorage = new DesktopFileStorage(new File("mods"), new HashMap<>());
         DGameView gdGameView = new DGameView();
         application = new Application(platform, settingsStorage, str, fileStorage, dataSource, gdGameView);
-
-        DPlatformMenuElementFactory dPlatformMenuElementFactory = new DPlatformMenuElementFactory();
-        MenuFactory<Object> objectMenuFactory = new MenuFactory<>(application, platform, dPlatformMenuElementFactory);
-         menu = new Menu<>(application, objectMenuFactory);
         application.doStart();
-        dPlatformMenuElementFactory.setMenu(menu);
-//        objectMenuFactory.init(menu, null, application.getGame());
-        application.setMenu(platform.getMenu());
 
         try {
             Thread.sleep(1000);
@@ -96,29 +88,20 @@ public class DesktopGdView extends JPanel implements ActionListener, KeyListener
             throw new RuntimeException(e);
         }
         game = application.getGame();
-        startRandom();
-
-        desktopKeyboardController = new DesktopKeyboardController(application.getGame());
-
+        menu = (Menu<JComponent>) platform.getMenu();
+        application.setMenu(platform.getMenu());
+//        startRandom();
+        desktopKeyboardController = new DesktopKeyboardController(application);
         gdView = application.getGame().getView();
-        gdView.setLoadingState(null);
-        gdView.setDrawTimer(true);
-        menu.menuToGame();
-        game.resume();
+        application.gameToMenu();
 
-        game.restart(false);
-        if (menu.canStartTrack())
-            game.restart(true);
-        game.getEngine().unlockKeys();
-        game.restart(false);
 
         new Timer(0, this).start();
         new Timer(5000, actionEvent -> System.gc()).start(); //todo fix heap pollution
     }
 
     private void startRandom() {
-        TrackData randomTrack = application.getModManager().getRandomTrack();
-        game.startTrack(GameParams.of(GameMode.CAMPAIGN, randomTrack, 2, 0, 0));
+        game.startTrack(GameParams.of(GameMode.CAMPAIGN, application.getModManager().loadLevel(0, 0), 2, 0, 0));
     }
 
     @Override
@@ -129,8 +112,10 @@ public class DesktopGdView extends JPanel implements ActionListener, KeyListener
         g2d.setTransform(at);
         canvas.setCanvas(g2d);
         if (application.isMenuShown()) {
-            startRandom();
-            menu.menuToGame();
+            GdMenu menu1 = application.getMenu();
+            if (menu1 == null) {
+                ".".equals("");
+            }
         }
         gdView.drawGame(canvas, getWidth(), getHeight());
         g2d.dispose();
@@ -149,7 +134,8 @@ public class DesktopGdView extends JPanel implements ActionListener, KeyListener
 
     @Override
     public void keyTyped(KeyEvent e) {
-
+        int keyCode = e.getKeyCode();
+        keyCode = e.getKeyCode();
     }
 
     @Override

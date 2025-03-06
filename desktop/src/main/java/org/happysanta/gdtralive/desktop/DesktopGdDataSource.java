@@ -7,8 +7,11 @@ import org.happysanta.gdtralive.game.api.model.Score;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class DesktopGdDataSource implements GdDataSource {
+ModEntity level;
+
     @Override
     public void open() throws Exception {
 
@@ -26,19 +29,20 @@ public class DesktopGdDataSource implements GdDataSource {
 
     @Override
     public void updateMod(ModEntity level) {
-
+        this.level = level;
     }
 
     @Override
     public java.util.List<ModEntity> getAllLevels() {
-        return null;
+        ArrayList<ModEntity> list = new ArrayList<>();
+        list.add(level);
+        return list;
     }
 
     @Override
     public ModEntity getMod(long id) {
-        ModEntity modEntity = new ModEntity();
-        modEntity.setId(id);
-        return modEntity;
+        level.setId(id);
+        return level;
     }
 
     @Override
@@ -48,7 +52,24 @@ public class DesktopGdDataSource implements GdDataSource {
 
     @Override
     public HighScores getHighScores(String levelGuid, int league) {
-        return null;
+        HighScores highScores = new HighScores(league);
+        List<Score> scores = highScores.get(league);
+        scores.add(getScore(levelGuid, league));
+        scores.add(getScore(levelGuid, league));
+        scores.add(getScore(levelGuid, league));
+        scores.add(getScore(levelGuid, league));
+        scores.add(getScore(levelGuid, league));
+        scores.add(getScore(levelGuid, league));
+        return highScores;
+    }
+
+    private static Score getScore(String levelGuid, int league) {
+        Score t = new Score();
+        t.setLeague(league);
+        t.setLevelGuid(levelGuid);
+        t.setName("AAA");
+        t.setTime(123);
+        return t;
     }
 
     @Override
@@ -78,12 +99,15 @@ public class DesktopGdDataSource implements GdDataSource {
 
     @Override
     public ModEntity getMod(String guid) {
-        return null;
+        level.setGuid(guid);
+        return level;
     }
 
     @Override
     public java.util.List<ModEntity> getLevels(int offset, int count) {
-        return null;
+        ArrayList<ModEntity> list = new ArrayList<>();
+        list.add(level);
+        return list;
     }
 
     @Override
@@ -96,6 +120,7 @@ public class DesktopGdDataSource implements GdDataSource {
     public ModEntity createMod(ModEntity mod) {
         i =i + 1;
         mod.setId(i);
-        return mod;
+        level = mod;
+        return level;
     }
 }

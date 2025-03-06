@@ -1,5 +1,6 @@
 package org.happysanta.gdtralive.desktop;
 
+import org.happysanta.gdtralive.game.Application;
 import org.happysanta.gdtralive.game.Game;
 import org.happysanta.gdtralive.game.KeyboardHandler;
 
@@ -7,10 +8,12 @@ import java.awt.event.KeyEvent;
 
 public class DesktopKeyboardController {
 
+    private final Application application;
     private final Game game;
 
-    public DesktopKeyboardController(Game game) {
-        this.game = game;
+    public DesktopKeyboardController(Application application) {
+        this.game = application.getGame();
+        this.application = application;
     }
 
     public void keyPressed(KeyEvent e) {
@@ -31,8 +34,12 @@ public class DesktopKeyboardController {
             case KeyEvent.VK_0:
                 startTrack(0);
                 break;
-            case KeyEvent.VK_1:
-                startTrack(1);
+            case KeyEvent.VK_ESCAPE:
+                if (application.isMenuShown()) {
+                    application.menuToGame();
+                } else {
+                    application.gameToMenu();
+                }
                 break;
             case KeyEvent.VK_2:
                 startTrack(2);

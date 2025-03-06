@@ -17,6 +17,7 @@ import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,10 +30,15 @@ public class DesktopCanvas implements GdCanvas {
     private Map<Sprite, Image> sprites = new HashMap<>();
     private Map<Sprite, BufferedImage> spritesBuffered = new HashMap<>();
     private Map<Sprite, Integer> spritesSizes = new HashMap<>();
-    private final Font font;
+    private Font font;
 
     public DesktopCanvas() {
-        font = new Font(null, Font.PLAIN, 20);
+        try {
+        //todo from resources
+            font = Font.createFont(0, new File("/Users/semen/Documents/projects/MY/GDTR_Alive/app/src/main/assets/RobotoCondensed-Regular.ttf"));
+        } catch (Exception e) {
+            font = new Font(null, Font.PLAIN, 20);
+        }
         String base = "sprites/";
         sprites.put(Sprite.ENGINE, new ImageIcon(readBytes(base + "s_engine.png")).getImage());
         sprites.put(Sprite.FENDER, new ImageIcon(readBytes(base + "s_fender.png")).getImage());
@@ -169,14 +175,14 @@ public class DesktopCanvas implements GdCanvas {
 
     public void drawInfoMessage2(String message, Color color, ViewState view) {
         FontMetrics metrics = canvas.getFontMetrics(font);
-        canvas.setFont(font);
+        canvas.setFont(font.deriveFont(25f));
         canvas.setColor(java.awt.Color.BLACK);
         canvas.drawString(message, (view.width / 2) - (metrics.stringWidth(message) / 2), view.height / 2 - 100);
     }
 
     public void drawTimer2(int color, String time, ViewState view) {
-        Font font = new Font(null, Font.PLAIN, 20);
-        canvas.setFont(font);
+//        Font font = new Font(null, Font.PLAIN, 20);
+        canvas.setFont(font.deriveFont(25f));
         canvas.setColor(java.awt.Color.BLACK);
         int x = (int) (view.width - view.width / ZOOM);
         int y = (int) (view.height - view.height / ZOOM);

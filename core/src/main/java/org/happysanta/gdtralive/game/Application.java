@@ -28,9 +28,9 @@ public class Application {
     private boolean wasPaused = false;
     private boolean wasStarted = false;
     private boolean wasDestroyed = false;
-    private boolean alive = false;
-    private boolean pause = true;
-    private boolean menuShown = false;
+    private volatile boolean alive = false;
+    private volatile boolean pause = true;
+    private volatile boolean menuShown = false;
     private boolean fullResetting = false;
     private boolean exiting = false;
 
@@ -269,8 +269,6 @@ public class Application {
 
     
     public void menuToGame() {
-        game.resume();
-
         menuShown = false;
         if (!settings.isKeyboardInMenuEnabled())
             platform.hideKeyboardLayout();
@@ -278,6 +276,7 @@ public class Application {
             platform.showKeyboardLayout();
 
         platform.menuToGameUpdateUi();
+        game.resume();
     }
 
     

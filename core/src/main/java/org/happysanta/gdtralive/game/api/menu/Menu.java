@@ -132,8 +132,6 @@ public class Menu<T> implements GdMenu<T> {
         this.setCurrentMenu(currentMenu.getParent());
     }
 
-    //this is magic
-    //I am unable to understand and refactor this
     @Override
     public void setCurrentMenu(MenuScreen<T> newMenu) {
         menuDisabled = false;

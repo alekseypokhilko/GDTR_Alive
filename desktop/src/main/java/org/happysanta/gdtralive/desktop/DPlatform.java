@@ -3,24 +3,42 @@ package org.happysanta.gdtralive.desktop;
 import static org.happysanta.gdtralive.DesktopGdView.application;
 import static org.happysanta.gdtralive.DesktopGdView.platform;
 
+import org.happysanta.gdtralive.GdDesktopApp;
 import org.happysanta.gdtralive.game.api.external.GdMenu;
 import org.happysanta.gdtralive.game.api.external.GdPlatform;
 import org.happysanta.gdtralive.game.api.menu.Menu;
 import org.happysanta.gdtralive.game.api.menu.MenuFactory;
 import org.happysanta.gdtralive.game.api.menu.MenuScreen;
 
+import java.awt.Component;
+
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+
 public class DPlatform implements GdPlatform {
-    Menu<Object> menu;
+    private Menu<JComponent> menu;
+
     @Override
     public void init() {
-        DPlatformMenuElementFactory dPlatformMenuElementFactory = new DPlatformMenuElementFactory();
-        MenuFactory<Object> objectMenuFactory = new MenuFactory<>(application, platform, dPlatformMenuElementFactory);
-        menu = new Menu<>(application, objectMenuFactory);
+        DPlatformMenuElementFactory<JComponent> dPlatformMenuElementFactory = new DPlatformMenuElementFactory<>(application);
+        MenuFactory<JComponent> menuFactory = new MenuFactory<>(application, platform, dPlatformMenuElementFactory);
+        menu = new Menu<>(application, menuFactory);
+        dPlatformMenuElementFactory.setMenu(menu);
+        menuFactory.init(menu, null, application.getGame());
         application.setMenu(menu);
     }
 
     @Override
     public void setMenu(MenuScreen menu) {
+        for (Component c : GdDesktopApp.menu.getComponents()) {
+            GdDesktopApp.menu.remove(c);
+        }
+        if (menu != null) {
+            GdDesktopApp.menu.add(((MenuScreen<JComponent>) menu).getLayout());
+        }
+
+        GdDesktopApp.instance.revalidate();
+        GdDesktopApp.instance.repaint();
     }
 
     @Override
@@ -50,7 +68,7 @@ public class DPlatform implements GdPlatform {
 
     @Override
     public void runOnUiThread(Runnable action) {
-
+        action.run();
     }
 
     @Override
@@ -80,12 +98,23 @@ public class DPlatform implements GdPlatform {
 
     @Override
     public void gameToMenuUpdateUi() {
-
+        setMenu(this.menu.getCurrentMenu());
     }
 
     @Override
     public void menuToGameUpdateUi() {
+        JPanel menu = GdDesktopApp.menu;
+        if (menu != null) {
+            for (Component c : menu.getComponents()) {
+                menu.remove(c);
+            }
+            menu.revalidate();
+            menu.repaint();
+        }
 
+        this.menu.setMenuDisabled(true);
+        GdDesktopApp.instance.revalidate();
+        GdDesktopApp.instance.repaint();
     }
 
     @Override

@@ -67,8 +67,8 @@ public class MenuFactory<T> {
     private MenuScreen<T> trackSelectorCurrentMenu;
     private GdTrackEditor trackEditor;
 
-    private String[] leagueNames;
-    private String[] difficultyLevels;
+    private String[] leagueNames = new String[10];
+    private String[] difficultyLevels = new String[10];
     private final int[] selectedTrack = new int[100];
     private List<String> modNames = new ArrayList<>(); //todo remove
     public List<String> themeNames = new ArrayList<>(); //todo remove
@@ -95,8 +95,8 @@ public class MenuFactory<T> {
     public MenuScreen<T> get(MenuType type) {
         MenuScreen<T> screen = menus.get(type);
         if (screen == null) {
-            return new FakeMenuScreen<T>(menu);
-//            throw new IllegalStateException("FIX ME: no " + type); //todo remove
+//            return new FakeMenuScreen<T>(menu);
+            throw new IllegalStateException("FIX ME: no " + type); //todo remove
         }
         return screen;
     }
@@ -638,7 +638,9 @@ public class MenuFactory<T> {
 
     private MenuScreen<T> createInGameCampaign(Map<MenuType, MenuScreen<T>> r) {
         MenuScreen<T> inGame = e.screen(str.s(S.ingame), r.get(MenuType.CAMPAIGN));
-        inGame.add(e.actionContinue(__ -> application.menuToGame()));
+        inGame.add(e.actionContinue(__ -> {
+            application.menuToGame();
+        }));
         inGame.add(e.reatart(Fmt.colon(str.s(S.restart), ""), item -> menu.menuToGame()));
         inGame.add(e.action(str.s(S.training_mode), __ -> {
             application.trainingMode();
@@ -717,9 +719,10 @@ public class MenuFactory<T> {
                 ex.printStackTrace();
             }
         } else {
-            this.get(MenuType.IN_GAME_CAMPAIGN)
-                    .getActions(RESTART)
-                    .setText(Fmt.colon(str.s(S.restart), data.getTrackName()));
+            MenuElement<T> restartAction = this.get(MenuType.IN_GAME_CAMPAIGN).getActions(RESTART);
+            if (restartAction != null) {
+                restartAction.setText(Fmt.colon(str.s(S.restart), data.getTrackName()));
+            }
 
             finishedMenu.add(e.action(Fmt.colon(str.s(S.next), modManager.getTrackName(data.getSelectedLevel(), data.getNewSelectedTrack())), NEXT,
                     item -> {
@@ -891,6 +894,9 @@ public class MenuFactory<T> {
     }
 
     public void resetSelectors() {
+        if (leagueSelector == null || levelSelector == null || trackSelector == null) {
+            return;
+        }
         ModManager modManager = application.getModManager();
         ModEntity modEntity = getLevel();
         leagueSelector.setUnlockedCount(modEntity.getUnlockedLeagues());

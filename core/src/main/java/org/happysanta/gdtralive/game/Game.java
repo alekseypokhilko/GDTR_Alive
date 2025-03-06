@@ -180,7 +180,7 @@ public class Game {
                         break;
                     }
                     try {
-                        Thread.sleep(100L);
+                        Thread.sleep(25L);
                     } catch (InterruptedException ignored) {
                     }
                 }

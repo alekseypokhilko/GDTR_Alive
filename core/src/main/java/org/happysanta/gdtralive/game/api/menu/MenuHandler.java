@@ -14,5 +14,5 @@ public interface MenuHandler<T> {
 
     }
 
-    default void menuBack() {};
+    default void menuBack() {}
 }
