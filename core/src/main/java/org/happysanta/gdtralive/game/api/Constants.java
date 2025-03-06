@@ -34,6 +34,7 @@ public class Constants {
     static {
         IGNORE_SAVE.add(ORIGINAL_MOD);
         IGNORE_SAVE.add(DEFAULT_MOD);
+        IGNORE_SAVE.add("GDTR Black");
         IGNORE_SAVE.add("GDTR ULTIMATE Δ");
         IGNORE_SAVE.add("GDTR ULTIMATE β");
         IGNORE_SAVE.add("GDTR ULTIMATE π");

@@ -266,10 +266,15 @@ public class ModManager {
         return Utils.getLevelTrackNames(currentMod.getLevels().get(league).getTracks());
     }
 
-    public void installTheme(String name) {
+    public void installTheme(Theme theme) {
+        String name = theme.getHeader().getName();
+        if (!Constants.IGNORE_SAVE.contains(name)) {
+            fileStorage.save(theme, GDFile.THEME, name);
+        }
         this.theme = loadTheme(name);
-        settings.setSelectedTheme(theme.getHeader().getName());
+        settings.setSelectedTheme(name);
         reloadTheme();
+        Achievement.achievements.get(Achievement.Type.ESTHETE).increment();
     }
 
     public float getInterfaceDensity() {

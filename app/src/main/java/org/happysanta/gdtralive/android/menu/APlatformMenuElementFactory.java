@@ -95,7 +95,9 @@ public class APlatformMenuElementFactory<T> implements PlatformMenuElementFactor
 
     protected static final int TEXT_COLOR = 0xff000000;
     public MenuElement<T> text(String title) {
-        return new TextMenuElement<>(getMenuTextView(SpannedString.valueOf(title), context));
+        IMenuTextView<T> textView = getMenuTextView(SpannedString.valueOf(title), context);
+        ((MenuTextView) textView).setTextSize(15);
+        return new TextMenuElement<>(textView);
     }
 
     public IMenuItemElement<T> menu(String title, MenuScreen<T> parent) {
@@ -169,11 +171,15 @@ public class APlatformMenuElementFactory<T> implements PlatformMenuElementFactor
     }
 
     public MenuElement<T> textHtmlBold(String key, String value) {
-        return new TextMenuElement<>(getMenuTextView(Html.fromHtml(String.format("<b>%s</b>: %s", key, value == null ? "" : value)), context));
+        IMenuTextView<T> textView = getMenuTextView(Html.fromHtml(String.format("<b>%s</b>: %s", key, value == null ? "" : value)), context);
+        ((MenuTextView) textView).setTextSize(15);
+        return new TextMenuElement<>(textView);
     }
 
     public MenuElement<T> textHtml(String text) {
-        return new TextMenuElement<>(getMenuTextView(Html.fromHtml(text), context));
+        IMenuTextView<T> textView = getMenuTextView(Html.fromHtml(text), context);
+        ((MenuTextView) textView).setTextSize(15);
+        return new TextMenuElement<>(textView);
     }
 
     public IMenuItemElement<T> menu(String title, MenuScreen<T> parent, ActionHandler<IMenuItemElement<T>> handler) {
@@ -266,7 +272,7 @@ public class APlatformMenuElementFactory<T> implements PlatformMenuElementFactor
         image.setVisibility(View.GONE);
         // textView was already created in super constructor
         textView.setLineSpacing(0, 1);
-        textView.setTextSize(!padding ? SUBTITLE_TEXT_SIZE : TEXT_SIZE);
+        textView.setTextSize(TEXT_SIZE);
 
         LinearLayout.LayoutParams textViewLayoutParams1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         // textViewLayoutParams.setMargins(getDp(TEXT_LEFT_MARGIN), 0, 0, 0);
@@ -307,10 +313,10 @@ public class APlatformMenuElementFactory<T> implements PlatformMenuElementFactor
         // textViewLayoutParams.setMargins(getDp(TEXT_LEFT_MARGIN), 0, 0, 0);
         textView.setLayoutParams(textViewLayoutParams1);
 
+        textView.setTextSize(TEXT_SIZE);
+        textView.setTypeface(Global.robotoCondensedTypeface);
         layout.addView(image, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT));
         layout.addView(textView);
-        textView.setTextSize(padding ? SUBTITLE_TEXT_SIZE : TEXT_SIZE);
-        textView.setTypeface(Global.robotoCondensedTypeface);
 
         LinearLayout.LayoutParams textViewLayoutParams = (LinearLayout.LayoutParams) textView.getLayoutParams();
         textViewLayoutParams.setMargins(!padding && false/*showMedal*/ ? getDp(TEXT_LEFT_MARGIN) : 0, 0, 0, padding ? getDp(SUBTITLE_MARGIN_BOTTOM) : 0);

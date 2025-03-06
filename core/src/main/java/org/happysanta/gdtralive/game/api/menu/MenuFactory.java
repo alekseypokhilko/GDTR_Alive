@@ -271,14 +271,8 @@ public class MenuFactory<T> {
             s.add(e.textHtmlBold(str.s(S.author), header.getAuthor()));
             s.add(e.textHtmlBold(str.s(S.date), header.getDate()));
             s.add(e.emptyLine(true));
-
-            //todo move to method
-            s.add(e.action(str.s(S.install), __ -> {
-                application.getFileStorage().save(theme, GDFile.THEME, theme.getHeader().getName()); //todo move to method
-                application.getModManager().installTheme(theme.getHeader().getName());
-                Achievement.achievements.get(Achievement.Type.ESTHETE).increment();
-            }));
-            s.add(e.action(str.s(S.save), __ -> application.getFileStorage().save(theme, GDFile.THEME, theme.getHeader().getName())));
+            s.add(e.action(str.s(S.install), __ -> application.getModManager().installTheme(theme)));
+            //s.add(e.action(str.s(S.save), __ -> application.getFileStorage().save(theme, GDFile.THEME, theme.getHeader().getName())));
             s.add(e.action(str.s(S.delete), __ -> this.application.getFileStorage().delete(GDFile.THEME, theme.getHeader().getName())));
             s.add(e.backAction(() -> this.get(MenuType.THEMES).build()));
             return s;
