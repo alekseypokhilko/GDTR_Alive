@@ -7,15 +7,15 @@ public class InterfaceTheme {
     private Color progressBackgroundColor = new Color(196, 196, 196);
     private Color progressColor = new Color(41, 170, 39);
     private Color splashColor = new Color(255, 255, 255);
-    private int lockSkinIndex =  0;
-    private int menuBackgroundColor = 0x00ffffff;
-    private int keyboardTextColor = 0xff000000;
-    private int keyboardBackgroundColor = 0x00ffffff;
-    private int menuTitleTextColor = 0xff000000;
-    private int menuTitleBackgroundColor = 0x00ffffff;
-    private int frameBackgroundColor = 0x00ffffff;
-    private int mainMenuBackgroundColor = 0x00ffffff;
-    private int textColor = 0xff000000;
+    private int lockSkinIndex = 0;
+    private Color menuBackgroundColor = Color.of("0x00ffffff");
+    private Color keyboardTextColor = Color.of("0xff000000");
+    private Color keyboardBackgroundColor = Color.of("0x00ffffff");
+    private Color menuTitleTextColor = Color.of("0xff000000");
+    private Color menuTitleBackgroundColor = Color.of("0x00ffffff");
+    private Color frameBackgroundColor = Color.of("0x00ffffff");
+    private Color mainMenuBackgroundColor = Color.of("0x00ffffff");
+    private Color textColor = Color.of("0xff000000");
 
     public Color getInfoMessageColor() {
         return infoMessageColor;
@@ -37,35 +37,47 @@ public class InterfaceTheme {
         return lockSkinIndex;
     }
 
-    public int getMenuBackgroundColor() {
-        return menuBackgroundColor;
+    public int getMenuBackgroundColorInt() {
+        return menuBackgroundColor.intValue();
     }
 
-    public int getKeyboardTextColor() {
+    public int getKeyboardTextColorInt() {
+        return keyboardTextColor.intValue();
+    }
+
+    public Color getKeyboardTextColor() {
         return keyboardTextColor;
     }
 
     public int getKeyboardBackgroundColor() {
-        return keyboardBackgroundColor;
+        return keyboardBackgroundColor.intValue();
     }
 
-    public int getMenuTitleTextColor() {
+    public int getMenuTitleTextColorInt() {
+        return menuTitleTextColor.intValue();
+    }
+
+    public Color getMenuTitleTextColor() {
         return menuTitleTextColor;
     }
 
     public int getMenuTitleBackgroundColor() {
-        return menuTitleBackgroundColor;
+        return menuTitleBackgroundColor.intValue();
     }
 
     public int getFrameBackgroundColor() {
-        return frameBackgroundColor;
+        return frameBackgroundColor.intValue();
     }
 
     public int getMainMenuBackgroundColor() {
-        return mainMenuBackgroundColor;
+        return mainMenuBackgroundColor.intValue();
     }
 
-    public int getTextColor() {
+    public int getTextColorInt() {
+        return textColor.intValue();
+    }
+
+    public Color getTextColor() {
         return textColor;
     }
 
@@ -89,35 +101,35 @@ public class InterfaceTheme {
         this.lockSkinIndex = lockSkinIndex;
     }
 
-    public void setMenuBackgroundColor(int menuBackgroundColor) {
+    public void setMenuBackgroundColor(Color menuBackgroundColor) {
         this.menuBackgroundColor = menuBackgroundColor;
     }
 
-    public void setKeyboardTextColor(int keyboardTextColor) {
+    public void setKeyboardTextColor(Color keyboardTextColor) {
         this.keyboardTextColor = keyboardTextColor;
     }
 
-    public void setKeyboardBackgroundColor(int keyboardBackgroundColor) {
+    public void setKeyboardBackgroundColor(Color keyboardBackgroundColor) {
         this.keyboardBackgroundColor = keyboardBackgroundColor;
     }
 
-    public void setMenuTitleTextColor(int menuTitleTextColor) {
+    public void setMenuTitleTextColor(Color menuTitleTextColor) {
         this.menuTitleTextColor = menuTitleTextColor;
     }
 
-    public void setMenuTitleBackgroundColor(int menuTitleBackgroundColor) {
+    public void setMenuTitleBackgroundColor(Color menuTitleBackgroundColor) {
         this.menuTitleBackgroundColor = menuTitleBackgroundColor;
     }
 
-    public void setFrameBackgroundColor(int frameBackgroundColor) {
+    public void setFrameBackgroundColor(Color frameBackgroundColor) {
         this.frameBackgroundColor = frameBackgroundColor;
     }
 
-    public void setMainMenuBackgroundColor(int mainMenuBackgroundColor) {
+    public void setMainMenuBackgroundColor(Color mainMenuBackgroundColor) {
         this.mainMenuBackgroundColor = mainMenuBackgroundColor;
     }
 
-    public void setTextColor(int textColor) {
+    public void setTextColor(Color textColor) {
         this.textColor = textColor;
     }
 }

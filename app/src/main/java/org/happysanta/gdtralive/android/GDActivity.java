@@ -115,7 +115,7 @@ public class GDActivity extends Activity implements GdPlatform {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         scrollView = new ObservableScrollView(this);
-        scrollView.setBackgroundColor(modManager.getInterfaceTheme().getMenuBackgroundColor());
+        scrollView.setBackgroundColor(modManager.getInterfaceTheme().getMenuBackgroundColorInt());
         scrollView.setFillViewport(true);
         scrollView.setOnScrollListener((scrollView, x, y, oldx, oldy) -> {
             if (application.isMenuShown() && menu != null && !menu.isCurrentMenuEmpty()) {
@@ -143,7 +143,7 @@ public class GDActivity extends Activity implements GdPlatform {
 
         menuTitleTextView = new TextView(this);
         menuTitleTextView.setText(getString(R.string.main));
-        menuTitleTextView.setTextColor(modManager.getInterfaceTheme().getMenuTitleTextColor());
+        menuTitleTextView.setTextColor(modManager.getInterfaceTheme().getMenuTitleTextColorInt());
         menuTitleTextView.setTypeface(Global.robotoCondensedTypeface);
         menuTitleTextView.setTextSize(Theme.MENU_TITLE_FONT_SIZE);
         menuTitleTextView.setLineSpacing(0f, 1.1f);
@@ -174,7 +174,7 @@ public class GDActivity extends Activity implements GdPlatform {
                 LinearLayout btn = new LinearLayout(this);
                 TextView btnText = new TextView(this);
                 btnText.setText(String.valueOf(i * 3 + j + 1));
-                btnText.setTextColor(modManager.getInterfaceTheme().getKeyboardTextColor());
+                btnText.setTextColor(modManager.getInterfaceTheme().getKeyboardTextColorInt());
                 btnText.setTextSize(17);
                 ThemeObjectsReference.keyboardButtonsRef[(i * 3 + j + 1) - 1] = btnText;
                 btn.setBackgroundResource(getResources().getIdentifier(Constants.BUTTON_RESOURCES[i * 3 + j], "drawable", getPackageName()));
@@ -257,12 +257,12 @@ public class GDActivity extends Activity implements GdPlatform {
             scrollView.setBackgroundColor(modManager.getInterfaceTheme().getMainMenuBackgroundColor());
             frame.setBackgroundColor(modManager.getInterfaceTheme().getFrameBackgroundColor());
             titleLayout.setBackgroundColor(modManager.getInterfaceTheme().getMenuTitleBackgroundColor());
-            menuTitleTextView.setTextColor(modManager.getInterfaceTheme().getMenuTitleTextColor());
+            menuTitleTextView.setTextColor(modManager.getInterfaceTheme().getMenuTitleTextColorInt());
             actionButton.setImageBitmap(ACanvas.getInterfaceSprite(Sprite.SAVEPOINT).bitmap);
-            if (ThemeObjectsReference.keyboardButtonsColor != modManager.getInterfaceTheme().getKeyboardTextColor()) {
-                ThemeObjectsReference.keyboardButtonsColor = modManager.getInterfaceTheme().getKeyboardTextColor();
+            if (ThemeObjectsReference.keyboardButtonsColor != modManager.getInterfaceTheme().getKeyboardTextColorInt()) {
+                ThemeObjectsReference.keyboardButtonsColor = modManager.getInterfaceTheme().getKeyboardTextColorInt();
                 for (int i = 0; i < ThemeObjectsReference.keyboardButtonsRef.length; i++) {
-                    ThemeObjectsReference.keyboardButtonsRef[i].setTextColor(modManager.getInterfaceTheme().getKeyboardTextColor());
+                    ThemeObjectsReference.keyboardButtonsRef[i].setTextColor(modManager.getInterfaceTheme().getKeyboardTextColorInt());
                 }
             }
             if (ThemeObjectsReference.keyboardBackgroundColor != modManager.getInterfaceTheme().getKeyboardBackgroundColor()) {

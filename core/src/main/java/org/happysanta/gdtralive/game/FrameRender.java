@@ -734,6 +734,6 @@ public class FrameRender {
     }
 
     public void drawTimer(long millis, ViewState view) {
-        canvas.drawTimer2(mm().getInterfaceTheme().getTextColor(), Fmt.durationString(millis), view);
+        canvas.drawTimer2(mm().getInterfaceTheme().getTextColorInt(), Fmt.durationString(millis), view);
     }
 }

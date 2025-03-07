@@ -53,6 +53,7 @@ public class AStr implements GdStr {
         strings.put(S.date, R.string.date);
         strings.put(S.install, R.string.install);
         strings.put(S.copy, R.string.copy);
+        strings.put(S.edit, R.string.edit);
         strings.put(S.rename, R.string.rename);
         strings.put(S.delete, R.string.delete);
         strings.put(S.mod, R.string.mod);

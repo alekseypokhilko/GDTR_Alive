@@ -39,7 +39,7 @@ public class BadgeWithTextElement<T> implements MenuElement<T> {
 
 		optionTextView = new MenuTextView(getGDActivity());
 		optionTextView.setText(title);
-        optionTextView.setTextColor(Helpers.getModManager().getInterfaceTheme().getTextColor());
+        optionTextView.setTextColor(Helpers.getModManager().getInterfaceTheme().getTextColorInt());
 		optionTextView.setTextSize(TEXT_SIZE);
 		optionTextView.setTypeface(Global.robotoCondensedTypeface);
 		optionTextView.setLayoutParams(new LinearLayout.LayoutParams(
@@ -92,6 +92,6 @@ public class BadgeWithTextElement<T> implements MenuElement<T> {
 	}
 
 	public void onThemeReload() {
-        optionTextView.setTextColor(Helpers.getModManager().getInterfaceTheme().getTextColor());
+        optionTextView.setTextColor(Helpers.getModManager().getInterfaceTheme().getTextColorInt());
 	}
 }

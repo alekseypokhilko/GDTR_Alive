@@ -11,6 +11,7 @@ public enum MenuType {
     MOD_OPTIONS,
     THEMES,
     THEME_OPTIONS,
+    THEME_EDITOR,
     TRACK_EDITOR,
     TRACK_EDITOR_OPTIONS,
     HIGH_SCORE,

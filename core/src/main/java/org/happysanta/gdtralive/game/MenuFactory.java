@@ -6,6 +6,8 @@ import org.happysanta.gdtralive.game.api.GameMode;
 import org.happysanta.gdtralive.game.api.MenuType;
 import org.happysanta.gdtralive.game.api.Platform;
 import org.happysanta.gdtralive.game.api.S;
+import org.happysanta.gdtralive.game.api.dto.GameTheme;
+import org.happysanta.gdtralive.game.api.dto.InterfaceTheme;
 import org.happysanta.gdtralive.game.api.dto.Theme;
 import org.happysanta.gdtralive.game.api.dto.ThemeHeader;
 import org.happysanta.gdtralive.game.api.dto.TrackParams;
@@ -18,6 +20,7 @@ import org.happysanta.gdtralive.game.api.menu.PlatformMenuElementFactory;
 import org.happysanta.gdtralive.game.api.menu.element.IInputTextElement;
 import org.happysanta.gdtralive.game.api.menu.element.IMenuItemElement;
 import org.happysanta.gdtralive.game.api.menu.element.IOptionsMenuElement;
+import org.happysanta.gdtralive.game.api.model.Color;
 import org.happysanta.gdtralive.game.api.model.GameParams;
 import org.happysanta.gdtralive.game.api.model.MenuData;
 import org.happysanta.gdtralive.game.api.model.Mod;
@@ -25,10 +28,12 @@ import org.happysanta.gdtralive.game.api.model.ModEntity;
 import org.happysanta.gdtralive.game.api.model.TrackRecord;
 import org.happysanta.gdtralive.game.api.util.Consumer;
 import org.happysanta.gdtralive.game.api.util.Function;
+import org.happysanta.gdtralive.game.util.ColorUtil;
 import org.happysanta.gdtralive.game.util.Fmt;
 import org.happysanta.gdtralive.game.util.Utils;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -125,6 +130,7 @@ public class MenuFactory<T> {
         add(MenuType.MOD_OPTIONS, this::createModOptions);
         add(MenuType.THEMES, this::createThemes);
         add(MenuType.THEME_OPTIONS, this::createThemeOptions);
+        add(MenuType.THEME_EDITOR, this::createThemeEditor);
 
         add(MenuType.TRACK_EDITOR_OPTIONS, this::createTrackOptions);
         add(MenuType.IN_GAME_TRACK_EDITOR, this::createInGameEditor);
@@ -279,27 +285,105 @@ public class MenuFactory<T> {
             s.add(e.textHtmlBold(str.s(S.date), header.getDate()));
             s.add(e.emptyLine(true));
             s.add(e.action(str.s(S.install), __ -> application.getModManager().installTheme(theme)));
+            if (!Constants.IGNORE_SAVE.contains(name)) {
+                s.add(e.menu(str.s(S.edit), this.get(MenuType.THEME_EDITOR), __ -> this.get(MenuType.THEME_EDITOR).setParent(s).build(new MenuData(theme, theme.getHeader().getName()))));
+                s.add(e.action(str.s(S.rename), __ -> {
+                    MenuData menuData = new MenuData(header.getName());
+                    menuData.setHandler(o -> {
+                        String newName = Utils.fixFileName((String) o);
+                        header.setName(newName);
+                        application.notify("Renamed");
+                        s.build(new MenuData(theme, newName));
+                        menu.back();
+                    });
+                    MenuScreen<T> build = this.get(MenuType.RENAME).setParent(s).build(menuData);
+                    menu.setCurrentMenu(build);
+                }));
+            }
             s.add(e.action(str.s(S.copy), __ -> {
                 header.setName(header.getName() + "-copy-" + System.currentTimeMillis());
                 header.setGuid(UUID.randomUUID().toString());
+                header.setAuthor(application.getSettings().getPlayerName());
+                header.setDate(new Date().toString());
                 application.getFileStorage().save(theme, GDFile.THEME, header.getName());
             }));
-            s.add(e.action(str.s(S.rename), __ -> {
-                MenuData menuData = new MenuData(header.getName());
-                menuData.setHandler(o -> {
-                    String newName = Utils.fixFileName((String) o);
-                    header.setName(newName);
-                    application.notify("Renamed");
-                    s.build(new MenuData(theme, newName));
-                    menu.back();
-                });
-                MenuScreen<T> build = this.get(MenuType.RENAME).setParent(s).build(menuData);
-                menu.setCurrentMenu(build);
-            }));
-            s.add(e.action(str.s(S.delete), __ -> this.application.getFileStorage().delete(GDFile.THEME, header.getName())));
+            if (!Constants.IGNORE_SAVE.contains(name)) {
+                s.add(e.action(str.s(S.delete), __ -> this.application.getFileStorage().delete(GDFile.THEME, header.getName())));
+            }
             s.add(e.backAction(() -> this.get(MenuType.THEMES).build()));
             return s;
         });
+    }
+
+    private MenuScreen<T> createThemeEditor(Map<MenuType, MenuScreen<T>> r) {
+        return e.screen(str.s(S.theme), r.get(MenuType.THEME_OPTIONS)).builder((s, data) -> {
+            Theme theme = data.getTheme();
+            ThemeHeader header = theme.getHeader();
+            s.clear();
+            s.add(e.backAction(() -> r.get(MenuType.THEME_OPTIONS).build(new MenuData(theme, header.getName()))));
+            s.add(e.textHtmlBold(str.s(S.name), header.getName()));
+            s.add(e.textHtmlBold(str.s(S.description), header.getDescription()));
+            s.add(e.textHtmlBold(str.s(S.guid), header.getGuid()));
+            s.add(e.textHtmlBold(str.s(S.author), header.getAuthor()));
+
+            Map<String, Color> colors = ColorUtil.colors;
+            String[] colorNames = ColorUtil.colorNames;
+
+            GameTheme gt = theme.getGameTheme();
+            s.add(e.selector("Track color", ColorUtil.indexOf(gt.getTrackLineColor()), colorNames, s, item -> {
+                gt.setTrackLineColor(colors.get(colorNames[item.getSelectedOption()]));
+                reloadTheme(theme);
+            }));
+            s.add(e.selector("Perspective color", ColorUtil.indexOf(gt.getPerspectiveColor()), colorNames, s, item -> {
+                gt.setPerspectiveColor(colors.get(colorNames[item.getSelectedOption()]));
+                reloadTheme(theme);
+            }));
+            s.add(e.selector("Background color", ColorUtil.indexOf(gt.getGameBackgroundColor()), colorNames, s, item -> {
+                gt.setGameBackgroundColor(colors.get(colorNames[item.getSelectedOption()]));
+                reloadTheme(theme);
+            }));
+            s.add(e.selector("Start flag color", ColorUtil.indexOf(gt.getStartFlagColor()), colorNames, s, item -> {
+                gt.setStartFlagColor(colors.get(colorNames[item.getSelectedOption()]));
+                reloadTheme(theme);
+            }));
+            s.add(e.selector("Finish flag color", ColorUtil.indexOf(gt.getFinishFlagColor()), colorNames, s, item -> {
+                gt.setFinishFlagColor(colors.get(colorNames[item.getSelectedOption()]));
+                reloadTheme(theme);
+            }));
+
+            InterfaceTheme it = theme.getInterfaceTheme();
+            s.add(e.selector("Info message color", ColorUtil.indexOf(it.getInfoMessageColor()), colorNames, s, item -> {
+                it.setInfoMessageColor(colors.get(colorNames[item.getSelectedOption()]));
+                reloadTheme(theme);
+            }));
+            s.add(e.selector("Progress color", ColorUtil.indexOf(it.getProgressColor()), colorNames, s, item -> {
+                it.setProgressColor(colors.get(colorNames[item.getSelectedOption()]));
+                reloadTheme(theme);
+            }));
+            s.add(e.selector("Progress BG color", ColorUtil.indexOf(it.getProgressBackgroundColor()), colorNames, s, item -> {
+                it.setProgressBackgroundColor(colors.get(colorNames[item.getSelectedOption()]));
+                reloadTheme(theme);
+            }));
+            s.add(e.selector("Text color", ColorUtil.indexOf(it.getTextColor()), colorNames, s, item -> {
+                it.setTextColor(colors.get(colorNames[item.getSelectedOption()]));
+                reloadTheme(theme);
+            }));
+            s.add(e.selector("Menu title color", ColorUtil.indexOf(it.getMenuTitleTextColor()), colorNames, s, item -> {
+                it.setMenuTitleTextColor(colors.get(colorNames[item.getSelectedOption()]));
+                reloadTheme(theme);
+            }));
+            s.add(e.selector("Keyboard text color", ColorUtil.indexOf(it.getKeyboardTextColor()), colorNames, s, item -> {
+                it.setKeyboardTextColor(colors.get(colorNames[item.getSelectedOption()]));
+                reloadTheme(theme);
+            }));
+
+            return s;
+        });
+    }
+
+    private void reloadTheme(Theme theme) {
+        application.getModManager().setTheme(theme);
+        application.getModManager().reloadTheme();
     }
 
     private MenuScreen<T> createModOptions(Map<MenuType, MenuScreen<T>> r) {

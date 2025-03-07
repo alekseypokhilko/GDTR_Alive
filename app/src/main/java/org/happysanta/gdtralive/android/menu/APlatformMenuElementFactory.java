@@ -18,7 +18,6 @@ import android.widget.LinearLayout;
 import org.happysanta.gdtralive.R;
 import org.happysanta.gdtralive.android.GDActivity;
 import org.happysanta.gdtralive.android.Global;
-import org.happysanta.gdtralive.android.Helpers;
 import org.happysanta.gdtralive.android.menu.views.MenuLinearLayout;
 import org.happysanta.gdtralive.game.api.menu.element.OptionsMenuElement;
 import org.happysanta.gdtralive.android.menu.element.BadgeWithTextElement;
@@ -210,7 +209,7 @@ public class APlatformMenuElementFactory<T> implements PlatformMenuElementFactor
 
         MenuTextView<T> optionTextView = new MenuTextView<>(getGDActivity());
         optionTextView.setText(textValue);
-        optionTextView.setTextColor(modManager.getInterfaceTheme().getTextColor());
+        optionTextView.setTextColor(modManager.getInterfaceTheme().getTextColorInt());
         optionTextView.setTextSize(TEXT_SIZE);
         optionTextView.setTypeface(Global.robotoCondensedTypeface);
         optionTextView.setLayoutParams(new LinearLayout.LayoutParams(
@@ -226,8 +225,8 @@ public class APlatformMenuElementFactory<T> implements PlatformMenuElementFactor
 
         IMenuEditTextView<T> editText = new MenuEditTextView<>(context);
         EditText editTextView = (EditText) editText.getView();
-        editTextView.setTextColor(modManager.getInterfaceTheme().getTextColor());
-        editTextView.setBackgroundColor(modManager.getInterfaceTheme().getMenuBackgroundColor());
+        editTextView.setTextColor(modManager.getInterfaceTheme().getTextColorInt());
+        editTextView.setBackgroundColor(modManager.getInterfaceTheme().getMenuBackgroundColorInt());
         editTextView.setText(value);
         editTextView.setLines(1);
 
@@ -235,10 +234,10 @@ public class APlatformMenuElementFactory<T> implements PlatformMenuElementFactor
 
         modManager.registerThemeReloadHandler(() -> {
             InterfaceTheme interfaceTheme = modManager.getInterfaceTheme();
-            optionTextView.setTextColor(interfaceTheme.getTextColor());
-            editText.setTextColor(interfaceTheme.getTextColor());
-            editTextView.setTextColor(interfaceTheme.getTextColor());
-            editTextView.setBackgroundColor(interfaceTheme.getMenuBackgroundColor());
+            optionTextView.setTextColor(interfaceTheme.getTextColorInt());
+            editText.setTextColor(interfaceTheme.getTextColorInt());
+            editTextView.setTextColor(interfaceTheme.getTextColorInt());
+            editTextView.setBackgroundColor(interfaceTheme.getMenuBackgroundColorInt());
         });
 
         textView.addView(optionTextView);
@@ -444,19 +443,19 @@ public class APlatformMenuElementFactory<T> implements PlatformMenuElementFactor
         mtv.setTextColor(getGDActivity().getResources().getColorStateList(R.drawable.menu_item_color));
         mtv.setTypeface(Global.robotoCondensedTypeface);
         mtv.setTextSize(TEXT_SIZE);
-        mtv.setTextColor(modManager.getInterfaceTheme().getTextColor());
+        mtv.setTextColor(modManager.getInterfaceTheme().getTextColorInt());
         mtv.setLayoutParams(new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
         ));
         mtv.setPadding(0, getDp(PADDING_TOP), 0, getDp(PADDING_TOP));
-        modManager.registerThemeReloadHandler(() -> mtv.setTextColor(modManager.getInterfaceTheme().getTextColor()));
+        modManager.registerThemeReloadHandler(() -> mtv.setTextColor(modManager.getInterfaceTheme().getTextColorInt()));
         return mtv;
     }
 
     private IMenuTextView<T> createOptionsTextView(Context context, MenuTextView<T> textView) {
         MenuTextView<T> optionTextView = new MenuTextView<>(context);
-        optionTextView.setTextColor(modManager.getInterfaceTheme().getTextColor());
+        optionTextView.setTextColor(modManager.getInterfaceTheme().getTextColorInt());
         optionTextView.setTextSize(TEXT_SIZE);
         optionTextView.setTypeface(Global.robotoCondensedTypeface);
         optionTextView.setLayoutParams(new LinearLayout.LayoutParams(
@@ -469,7 +468,7 @@ public class APlatformMenuElementFactory<T> implements PlatformMenuElementFactor
                 ((MenuTextView) textView.getView()).getPaddingRight(),
                 ((MenuTextView) textView.getView()).getPaddingBottom()
         );
-        modManager.registerThemeReloadHandler(() -> optionTextView.setTextColor(modManager.getInterfaceTheme().getTextColor()));
+        modManager.registerThemeReloadHandler(() -> optionTextView.setTextColor(modManager.getInterfaceTheme().getTextColorInt()));
         return optionTextView;
     }
 
@@ -509,8 +508,8 @@ public class APlatformMenuElementFactory<T> implements PlatformMenuElementFactor
         textView1.setText(text);
         textView1.setTextColor(TEXT_COLOR);
         textView1.setTextSize(TEXT_SIZE);
-        textView1.setTextColor(modManager.getInterfaceTheme().getTextColor());
-        modManager.registerThemeReloadHandler(() -> textView1.setTextColor(modManager.getInterfaceTheme().getTextColor()));
+        textView1.setTextColor(modManager.getInterfaceTheme().getTextColorInt());
+        modManager.registerThemeReloadHandler(() -> textView1.setTextColor(modManager.getInterfaceTheme().getTextColorInt()));
         textView1.setLineSpacing(0f, 1.5f);
         textView1.setLayoutParams(new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,

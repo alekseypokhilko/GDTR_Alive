@@ -107,14 +107,14 @@ public class Theme {
         itheme.setInfoMessageColor(new Color(255, 255, 255));
         itheme.setProgressBackgroundColor(new Color(0, 0, 0));
         itheme.setProgressColor(new Color(41, 170, 39));
-        itheme.setMenuBackgroundColor(0x00ffffff);
-        itheme.setKeyboardBackgroundColor(0x00ffffff);
-        itheme.setKeyboardTextColor(0xffffffff);
-        itheme.setMenuTitleTextColor(0xffffffff);
-        itheme.setMenuTitleBackgroundColor(0x00ffffff);
-        itheme.setFrameBackgroundColor(0x00ffffff);
-        itheme.setMainMenuBackgroundColor(0x00ffffff);
-        itheme.setTextColor(0xffffffff);
+        itheme.setMenuBackgroundColor(Color.of("0x00ffffff"));
+        itheme.setKeyboardBackgroundColor(Color.of("0x00ffffff"));
+        itheme.setKeyboardTextColor(Color.of("0xffffffff"));
+        itheme.setMenuTitleTextColor(Color.of("0xffffffff"));
+        itheme.setMenuTitleBackgroundColor(Color.of("0x00ffffff"));
+        itheme.setFrameBackgroundColor(Color.of("0x00ffffff"));
+        itheme.setMainMenuBackgroundColor(Color.of("0x00ffffff"));
+        itheme.setTextColor(Color.of("0xffffffff"));
         itheme.setSplashColor(new Color(255, 255, 255));
         itheme.setLockSkinIndex(2);
 

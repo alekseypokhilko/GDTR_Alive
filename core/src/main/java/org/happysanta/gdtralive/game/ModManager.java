@@ -322,8 +322,13 @@ public class ModManager {
         } else if ("GDTR Black".equals(name)) {
             theme = Theme.amoledMod();
         } else {
-            Theme fromStorage = fileStorage.readTheme(name);
-            theme = fromStorage == null ? Theme.defaultTheme() : fromStorage;
+            try {
+                Theme fromStorage = fileStorage.readTheme(name);
+                theme = fromStorage == null ? Theme.defaultTheme() : fromStorage;
+            } catch (Exception e) {
+                e.printStackTrace();
+                theme = Theme.defaultTheme();
+            }
         }
         return theme;
     }
@@ -373,5 +378,9 @@ public class ModManager {
         modState.setUnlockedTracks(level, unlockedTracksCount + 1);
         modState.setSelectedTrack(Math.min(unlockedTracksCount + 1, modState.getTracksCount(level) - 1));
         dataSource.updateMod(modState);
+    }
+
+    public void setTheme(Theme theme) {
+        this.theme = theme;
     }
 }
