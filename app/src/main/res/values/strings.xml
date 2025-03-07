@@ -113,6 +113,7 @@
 	<string name="reset_text">Master reset. Application will be restarted.</string>
 	<string name="unlock_all">Unlock all</string>
 	<string name="skip_track">Skip track</string>
+	<string name="skip_track_text">Locked track at this level will be unlocked.</string>
 	<string name="unlock_all_text">All difficulties, tracks and leagues will be unlocked temporally. Use this option if you are already an experienced player and are looking for something new. Try to beat the game yourself or play on a random track.</string>
 
 	<string name="installed_mods">Installed mods</string>

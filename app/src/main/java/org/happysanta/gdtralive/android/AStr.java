@@ -73,6 +73,7 @@ public class AStr implements GdStr {
         strings.put(S.create_new_track, R.string.create_new_track);
         strings.put(S.finished, R.string.finished);
         strings.put(S.restart, R.string.restart);
+        strings.put(S.coming_soon, R.string.coming_soon);
         strings.put(S.ingame, R.string.ingame);
         strings.put(S.training_mode, R.string.training_mode);
         strings.put(S.competition, R.string.competition);
@@ -123,6 +124,7 @@ public class AStr implements GdStr {
         strings.put(S.complete_to_unlock, R.string.complete_to_unlock);
         strings.put(S.unlock_all, R.string.unlock_all);
         strings.put(S.skip_track, R.string.skip_track);
+        strings.put(S.skip_track_text, R.string.skip_track_text);
         strings.put(S.god_mode, R.string.god_mode);
         strings.put(S.unlock_all_text, R.string.unlock_all_text);
         strings.put(S.level, R.string.level);

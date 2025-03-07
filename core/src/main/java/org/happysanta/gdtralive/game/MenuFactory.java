@@ -577,8 +577,8 @@ public class MenuFactory<T> {
 
     private void transformWorkshop(MenuScreen<T> s) {
         s.add(e.action(Fmt.ra(str.s(S.create_new_track)), item -> {
-            application.notify("Coming soon");
-            trackEditor.createNew(application.getSettings().getPlayerName());
+            application.notify(str.s(S.coming_soon));
+//            trackEditor.createNew(application.getSettings().getPlayerName());
         }));
         s.add(e.menu(str.s(S.mod_packs), this.get(MenuType.MODS), __ -> this.get(MenuType.MODS).build()));
         s.add(e.menu(str.s(S.themes), this.get(MenuType.THEMES), __ -> this.get(MenuType.THEMES).build()));
@@ -919,10 +919,11 @@ public class MenuFactory<T> {
         s.add(trackSelector);
         s.add(leagueSelector);
         s.add(e.menu(str.s(S.highscores), this.get(MenuType.HIGH_SCORE), null));
-        s.add(e.action(Fmt.ra(str.s(S.skip_track)), item -> {
+        s.add(e.action(Fmt.ra(str.s(S.skip_track)), item -> application.getPlatform().showConfirm(str.s(S.skip_track), str.s(S.skip_track_text), () -> {
             application.getModManager().skipTrack(levelSelector.getSelectedOption());
             resetSelectors();
-        }));
+        }, () -> {
+        })));
         s.add(e.action(Fmt.ra(str.s(S.unlock_all)), item -> application.getPlatform().showConfirm(str.s(S.unlock_all), str.s(S.unlock_all_text), () -> {
             application.getModManager().setTemporallyUnlockedAll(true);
             int leaguesCount = application.getModManager().getLeagueThemes().size();
