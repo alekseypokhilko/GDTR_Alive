@@ -11,7 +11,6 @@ import org.happysanta.gdtralive.game.api.exception.InvalidTrackException;
 import org.happysanta.gdtralive.game.api.external.GdDataSource;
 import org.happysanta.gdtralive.game.api.external.GdFileStorage;
 import org.happysanta.gdtralive.game.api.external.GdSettings;
-import org.happysanta.gdtralive.game.api.model.Color;
 import org.happysanta.gdtralive.game.api.model.Mod;
 import org.happysanta.gdtralive.game.api.model.ModEntity;
 import org.happysanta.gdtralive.game.api.model.TrackData;
@@ -142,45 +141,9 @@ public class ModManager {
 
     private void setCurrentMod(Mod mod, ModEntity state) {
         modState = state;
-        currentMod = mod.unpack();//testTheme(mod);
+        currentMod = mod.unpack();
         currentTrackTheme = null;
         settings.setLevelId(modState.getId());
-    }
-
-    private Mod testTheme(Mod mod) {
-        List<String> levelNames = new ArrayList<>();
-        levelNames.add("Легко");
-        levelNames.add("Средне");
-        levelNames.add("Тяжело");
-        levelNames.add("Экстрим");
-        mod.setLevelNames(levelNames);
-
-        List<LeagueTheme> leagueThemes = Theme.defaultTheme().getLeagueThemes();
-        leagueThemes.get(1).setBackWheelDotColor(new Color(0, 255, 255));
-        leagueThemes.get(1).setName("Дырчик");
-        mod.setLeagueThemes(leagueThemes);
-
-        GameTheme track1Theme = new GameTheme();
-        track1Theme.setTrackLineColor(new Color(255, 0, 0));
-        track1Theme.setPerspectiveColor(new Color(170, 0, 0));
-        mod.getLevels().get(0).getTracks().get(0).setGameTheme(track1Theme);
-        GameTheme track2Theme = new GameTheme();
-        track2Theme.setTrackLineColor(new Color(255, 0, 255));
-        track2Theme.setPerspectiveColor(new Color(170, 0, 170));
-        mod.getLevels().get(0).getTracks().get(1).setGameTheme(track2Theme);
-        GameTheme track3Theme = new GameTheme();
-        track3Theme.setTrackLineColor(new Color(0, 255, 255));
-        track3Theme.setPerspectiveColor(new Color(0, 170, 170));
-        mod.getLevels().get(0).getTracks().get(2).setGameTheme(track3Theme);
-        GameTheme track4Theme = new GameTheme();
-        track4Theme.setTrackLineColor(new Color(0, 0, 255));
-        track4Theme.setGameBackgroundColor(new Color(215, 215, 215));
-        track4Theme.setPerspectiveColor(new Color(0, 0, 170));
-        mod.getLevels().get(0).getTracks().get(3).setGameTheme(track4Theme);
-
-        mod.getLevels().add(mod.getLevels().get(2));
-        String json = Utils.toJson(mod);
-        return mod;
     }
 
     public ModEntity getModState() {

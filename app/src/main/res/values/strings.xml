@@ -10,7 +10,7 @@
 	<string name="on">On</string>
 	<string name="off">Off</string>
 
-	<string name="app_name">GDTR Alive</string>
+	<string name="app_name">GDTR Alive!</string>
 	<string name="action_settings">Settings</string>
 	<string name="exit">Exit Game</string>
 	<string name="main">Main</string>
@@ -204,6 +204,9 @@
 		Lets you clear the highscores. Here you can also do a "Full Reset" which will reset the game to original state (clear settings, highscores, unlocked levels and leagues).
 	]]></string>
 	<string name="about_text"><![CDATA[
+		<b>GDTR Alive!</b> by Aleksey Pokhilko<br/>
+		https://github.com/alekseypokhilko/GDTR_Alive \u00A9 2025<br/><br/>
+
 		<b>Gravity Defied Classic</b> ported to Android by Gregory Klyushnikov and Eugene Zinoviev<br/>
 		Кузница винрара<br/>
 		Happy Santa LLC<br/>

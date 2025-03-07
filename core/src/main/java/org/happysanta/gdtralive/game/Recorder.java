@@ -56,7 +56,7 @@ public class Recorder {
         try {
             TrackRecord trackRecord = new TrackRecord(engine.getTrackPhysic().getTrack(), time, engine.league, settings.getPlayerName());
             trackRecord.setStates(states);
-            fileStorage.save(trackRecord, GDFile.RECORD, Fmt.recordName(trackRecord));
+            new Thread(() -> fileStorage.save(trackRecord, GDFile.RECORD, Fmt.recordName(trackRecord))).start();
         } catch (Exception ignore) {
         }
 

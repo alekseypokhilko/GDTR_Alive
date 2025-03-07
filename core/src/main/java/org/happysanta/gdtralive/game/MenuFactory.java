@@ -628,7 +628,7 @@ public class MenuFactory<T> {
         s.add(e.menu(str.s(S.competition), this.get(MenuType.PLAY), __ -> this.get(MenuType.PLAY).build()));
         s.add(e.menu(str.s(S.workshop), this.get(MenuType.WORKSHOP)));
         s.add(e.menu(str.s(S.profile), this.get(MenuType.PROFILE)));
-        s.add(e.menu(str.s(S.achievements), this.get(MenuType.ACHIEVEMENTS), __ -> this.get(MenuType.ACHIEVEMENTS).build()));
+        //s.add(e.menu(str.s(S.achievements), this.get(MenuType.ACHIEVEMENTS), __ -> this.get(MenuType.ACHIEVEMENTS).build()));
         s.add(e.menu(str.s(S.options), this.get(MenuType.OPTIONS)));
         s.add(e.menu(str.s(S.help), this.get(MenuType.HELP)));
         s.add(e.menu(str.s(S.about), this.get(MenuType.ABOUT)));

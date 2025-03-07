@@ -370,7 +370,11 @@ public class GDActivity extends Activity implements GdPlatform {
 
     @Override
     public void notify(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+        try {
+            Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void setMenu(final MenuScreen menu) {
