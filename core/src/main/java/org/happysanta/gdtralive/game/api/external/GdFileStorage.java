@@ -6,6 +6,7 @@ import org.happysanta.gdtralive.game.api.dto.Theme;
 import org.happysanta.gdtralive.game.api.model.Mod;
 import org.happysanta.gdtralive.game.api.model.TrackRecord;
 
+import java.io.File;
 import java.util.List;
 
 public interface GdFileStorage {
@@ -24,4 +25,6 @@ public interface GdFileStorage {
     void delete(GDFile gdFile, String name);
 
     void setApplication(Application application);
+
+    File getFile(GDFile gdFile, String name);
 }

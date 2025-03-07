@@ -1,5 +1,6 @@
 package org.happysanta.gdtralive.game.api.external;
 
+import org.happysanta.gdtralive.game.api.GDFile;
 import org.happysanta.gdtralive.game.api.Platform;
 import org.happysanta.gdtralive.game.api.menu.MenuScreen;
 
@@ -31,4 +32,5 @@ public interface GdPlatform {
     void trainingMode();
 
     String getAppVersion();
+    void share(GDFile gdFile, String name);
 }

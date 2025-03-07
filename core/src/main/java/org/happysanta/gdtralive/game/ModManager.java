@@ -143,6 +143,7 @@ public class ModManager {
     private void setCurrentMod(Mod mod, ModEntity state) {
         modState = state;
         currentMod = mod.unpack();//testTheme(mod);
+        currentTrackTheme = null;
         settings.setLevelId(modState.getId());
     }
 

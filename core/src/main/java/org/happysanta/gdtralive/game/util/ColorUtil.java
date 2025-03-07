@@ -23,6 +23,7 @@ public class ColorUtil {
         colors.put("progressBG", new Color(196, 196, 196));
         colors.put("fork", new Color(228, 228, 228));
         colors.put("head", new Color(156, 0, 0));
+
         colors.put("maroon", new Color(128, 0, 0));
         colors.put("darkred", new Color(139, 0, 0));
         colors.put("brown", new Color(165, 42, 42));

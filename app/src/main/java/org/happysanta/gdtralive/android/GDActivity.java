@@ -10,6 +10,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Rect;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -26,6 +27,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.core.content.FileProvider;
+
 import org.happysanta.gdtralive.R;
 import org.happysanta.gdtralive.android.menu.APlatformMenuElementFactory;
 import org.happysanta.gdtralive.android.menu.KeyboardController;
@@ -35,6 +38,8 @@ import org.happysanta.gdtralive.android.menu.views.MenuLinearLayout;
 import org.happysanta.gdtralive.android.menu.views.MenuTitleLinearLayout;
 import org.happysanta.gdtralive.android.menu.views.ObservableScrollView;
 import org.happysanta.gdtralive.game.Application;
+import org.happysanta.gdtralive.game.Menu;
+import org.happysanta.gdtralive.game.MenuFactory;
 import org.happysanta.gdtralive.game.ModManager;
 import org.happysanta.gdtralive.game.api.Constants;
 import org.happysanta.gdtralive.game.api.GDFile;
@@ -49,8 +54,6 @@ import org.happysanta.gdtralive.game.api.external.GdFileStorage;
 import org.happysanta.gdtralive.game.api.external.GdMenu;
 import org.happysanta.gdtralive.game.api.external.GdPlatform;
 import org.happysanta.gdtralive.game.api.external.GdStr;
-import org.happysanta.gdtralive.game.Menu;
-import org.happysanta.gdtralive.game.MenuFactory;
 import org.happysanta.gdtralive.game.api.menu.MenuScreen;
 import org.happysanta.gdtralive.game.api.model.GameParams;
 import org.happysanta.gdtralive.game.api.model.MenuData;
@@ -621,5 +624,23 @@ public class GDActivity extends Activity implements GdPlatform {
         } catch (PackageManager.NameNotFoundException e) {
         }
         return v;
+    }
+
+    @Override
+    public void share(GDFile gdFile, String name) {
+        try {
+            Intent shareIntent = new Intent();
+            shareIntent.setAction(Intent.ACTION_SEND);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                Uri uri = FileProvider.getUriForFile(
+                        this, "org.happysanta.gdtralive.android.MyFileProvider.provider",
+                        application.getFileStorage().getFile(gdFile, name));
+                shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
+                shareIntent.setType("text/plain");
+                startActivity(Intent.createChooser(shareIntent, null));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

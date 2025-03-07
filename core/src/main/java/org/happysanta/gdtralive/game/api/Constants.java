@@ -16,7 +16,7 @@ public class Constants {
     public static final int PICKFILE_TRACK_RESULT_CODE = 465134;
     public static int RECORD_COUNT = 5;
     public static final long WAIT_TIME = 30L;
-    public static final long IMAGES_DELAY = 10L; //todo 1000L;
+    public static final long IMAGES_DELAY = 500L; //todo 1000L;
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy.MM.dd", Locale.US);
     public static final SimpleDateFormat DATE_TIME_FORMAT = new SimpleDateFormat("yyyy.MM.dd-HH.mm.ss", Locale.US);
 

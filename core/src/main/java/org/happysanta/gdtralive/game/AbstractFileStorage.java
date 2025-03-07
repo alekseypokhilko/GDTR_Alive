@@ -36,6 +36,11 @@ public abstract class AbstractFileStorage implements GdFileStorage {
     }
 
     @Override
+    public File getFile(GDFile gdFile, String name) {
+        return new File(Fmt.slash(appFolder.getAbsolutePath(), gdFile.folder), gdFile.addExtension(name));
+    }
+
+    @Override
     public Mod readMod(String name) {
         return read(name, GDFile.MOD);
     }

@@ -7,6 +7,7 @@ import org.happysanta.gdtralive.desktop.DesktopGdDataSource;
 import org.happysanta.gdtralive.desktop.DesktopGdStr;
 import org.happysanta.gdtralive.desktop.DesktopKeyboardController;
 import org.happysanta.gdtralive.game.Application;
+import org.happysanta.gdtralive.game.api.GDFile;
 import org.happysanta.gdtralive.game.api.Platform;
 import org.happysanta.gdtralive.game.api.external.GdMenu;
 import org.happysanta.gdtralive.game.api.external.GdPlatform;
@@ -209,5 +210,10 @@ public class GdDesktopApp extends JFrame implements GdPlatform {
     @Override
     public String getAppVersion() {
         return "";
+    }
+
+    @Override
+    public void share(GDFile gdFile, String name) {
+
     }
 }

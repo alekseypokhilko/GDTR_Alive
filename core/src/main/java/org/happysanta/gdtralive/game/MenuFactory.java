@@ -286,7 +286,10 @@ public class MenuFactory<T> {
             s.add(e.emptyLine(true));
             s.add(e.action(str.s(S.install), __ -> application.getModManager().installTheme(theme)));
             if (!Constants.IGNORE_SAVE.contains(name)) {
-                s.add(e.menu(str.s(S.edit), this.get(MenuType.THEME_EDITOR), __ -> this.get(MenuType.THEME_EDITOR).setParent(s).build(new MenuData(theme, theme.getHeader().getName()))));
+                s.add(e.menu(str.s(S.edit), this.get(MenuType.THEME_EDITOR), __ -> {
+                    application.getModManager().activateMod(Constants.ORIGINAL_MOD);
+                    this.get(MenuType.THEME_EDITOR).setParent(s).build(new MenuData(theme, theme.getHeader().getName()));
+                }));
                 s.add(e.action(str.s(S.rename), __ -> {
                     MenuData menuData = new MenuData(header.getName());
                     menuData.setHandler(o -> {
@@ -308,6 +311,7 @@ public class MenuFactory<T> {
                 application.getFileStorage().save(theme, GDFile.THEME, header.getName());
             }));
             if (!Constants.IGNORE_SAVE.contains(name)) {
+                s.add(e.action(str.s(S.share), __ -> application.getPlatform().share(GDFile.THEME, header.getName())));
                 s.add(e.action(str.s(S.delete), __ -> this.application.getFileStorage().delete(GDFile.THEME, header.getName())));
             }
             s.add(e.backAction(() -> this.get(MenuType.THEMES).build()));
@@ -320,7 +324,10 @@ public class MenuFactory<T> {
             Theme theme = data.getTheme();
             ThemeHeader header = theme.getHeader();
             s.clear();
-            s.add(e.backAction(() -> r.get(MenuType.THEME_OPTIONS).build(new MenuData(theme, header.getName()))));
+            s.add(e.backAction(() -> {
+                application.getFileStorage().save(theme, GDFile.THEME, theme.getHeader().getName());
+                r.get(MenuType.THEME_OPTIONS).build(new MenuData(theme, header.getName()));
+            }));
             s.add(e.textHtmlBold(str.s(S.name), header.getName()));
             s.add(e.textHtmlBold(str.s(S.description), header.getDescription()));
             s.add(e.textHtmlBold(str.s(S.guid), header.getGuid()));
@@ -405,18 +412,28 @@ public class MenuFactory<T> {
                 resetSelectors();
                 s.highlightElement();
             }));
-            s.add(e.action(str.s(S.rename), __ -> {
-                MenuData menuData = new MenuData(mod.getName());
-                menuData.setHandler(o -> {
-                    String newName = Utils.fixFileName((String) o);
-                    mod.setName(newName);
-                    application.notify("Renamed");
-                    s.build(new MenuData(mod, null));
-                    menu.back();
-                });
-                MenuScreen<T> build = this.get(MenuType.RENAME).setParent(s).build(menuData);
-                menu.setCurrentMenu(build);
+            s.add(e.action(str.s(S.copy), __ -> {
+                mod.setName(mod.getName() + "-copy-" + System.currentTimeMillis());
+                mod.setGuid(UUID.randomUUID().toString());
+                mod.setAuthor(application.getSettings().getPlayerName());
+                mod.setDate(new Date().toString());
+                application.getFileStorage().save(mod, GDFile.MOD, mod.getName());
             }));
+            if (!Constants.IGNORE_SAVE.contains(mod.getName())) {
+                s.add(e.action(str.s(S.rename), __ -> {
+                    MenuData menuData = new MenuData(mod.getName());
+                    menuData.setHandler(o -> {
+                        String newName = Utils.fixFileName((String) o);
+                        mod.setName(newName);
+                        application.notify("Renamed");
+                        s.build(new MenuData(mod, null));
+                        menu.back();
+                    });
+                    MenuScreen<T> build = this.get(MenuType.RENAME).setParent(s).build(menuData);
+                    menu.setCurrentMenu(build);
+                }));
+                s.add(e.action(str.s(S.share), __ -> application.getPlatform().share(GDFile.MOD, mod.getName())));
+            }
             s.add(e.action(str.s(S.delete), -1, __ -> this.application.getModManager().deleteMod(mod.getName())));
             s.add(e.backAction(() -> this.get(MenuType.MODS).build()));
             return s;
@@ -492,15 +509,13 @@ public class MenuFactory<T> {
             }));
             s.add(campaignSelector);
             s.add(e.action(Fmt.ra(str.s(S.random_track)), __ -> game.startTrack(GameParams.of(GameMode.RANDOM, modManager.getRandomTrack()))));
-            s.add(e.action(Fmt.ra(str.s(S.tracks)), __ -> application.notify("Coming soon")));
-            s.add(e.menu(str.s(S.achievements), this.get(MenuType.ACHIEVEMENTS), __ -> this.get(MenuType.ACHIEVEMENTS).build()));
             s.add(e.backAction(game::resetState));
             return s;
         });
     }
 
     private MenuScreen<T> createAchievements(Map<MenuType, MenuScreen<T>> r) {
-        return e.screen(str.s(S.achievements), r.get(MenuType.PLAY)).builder((s, data) -> {
+        return e.screen(str.s(S.achievements), r.get(MenuType.MAIN)).builder((s, data) -> {
             s.clear();
             for (Achievement achievement : Achievement.achievements.values()) {
                 String title = Fmt.sp(str.s(achievement.getName()), achievement.getProgressFormatted());
@@ -596,7 +611,6 @@ public class MenuFactory<T> {
             application.trainingMode();
             application.menuToGame();
         }));
-        ig.add(e.createAction(LIKE, item -> application.notify("Coming soon")));
         ig.add(e.menu(str.s(S.options), r.get(MenuType.OPTIONS), null));
         ig.add(e.backAction(game::resetState));
         ig.builder((s, data) -> {
@@ -614,6 +628,7 @@ public class MenuFactory<T> {
         s.add(e.menu(str.s(S.competition), this.get(MenuType.PLAY), __ -> this.get(MenuType.PLAY).build()));
         s.add(e.menu(str.s(S.workshop), this.get(MenuType.WORKSHOP)));
         s.add(e.menu(str.s(S.profile), this.get(MenuType.PROFILE)));
+        s.add(e.menu(str.s(S.achievements), this.get(MenuType.ACHIEVEMENTS), __ -> this.get(MenuType.ACHIEVEMENTS).build()));
         s.add(e.menu(str.s(S.options), this.get(MenuType.OPTIONS)));
         s.add(e.menu(str.s(S.help), this.get(MenuType.HELP)));
         s.add(e.menu(str.s(S.about), this.get(MenuType.ABOUT)));
@@ -750,7 +765,6 @@ public class MenuFactory<T> {
             application.trainingMode();
             application.menuToGame();
         }));
-        inGame.add(e.createAction(LIKE, item -> application.notify("Coming soon")));
         inGame.add(e.menu(str.s(S.options), r.get(MenuType.OPTIONS), null));
         inGame.add(e.menu(str.s(S.help), r.get(MenuType.HELP), null));
         inGame.add(e.createAction(PLAY_MENU, item -> actionGoToPlayMenu()));
