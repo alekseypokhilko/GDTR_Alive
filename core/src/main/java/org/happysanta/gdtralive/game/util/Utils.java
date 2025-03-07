@@ -129,10 +129,6 @@ public class Utils {
         return (i << 3) >> 16;
     }
 
-    public static String getDurationString(long millis) {
-        return String.format("%d:%02d.%03d", millis / 60000, (millis / 1000) % 60, millis % 1000);
-    }
-
     public static byte[] readAllBytes(InputStream in) {
         try {
             byte[] bytes = new byte[5242880]; //todo read length from file
@@ -348,5 +344,13 @@ public class Utils {
             }
         }
         return fromMod;
+    }
+
+    public static String[] getScaleOptions() {
+        String[] scaleOptions = new String[401];
+        for (int i = 0; i < scaleOptions.length; i++) {
+            scaleOptions[i] = "" + i;
+        }
+        return scaleOptions;
     }
 }

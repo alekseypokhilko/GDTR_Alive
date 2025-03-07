@@ -6,7 +6,7 @@ import org.happysanta.gdtralive.game.api.external.GdSettings;
 import org.happysanta.gdtralive.game.api.model.EngineStateRecord;
 import org.happysanta.gdtralive.game.api.model.TrackRecord;
 import org.happysanta.gdtralive.game.engine.Engine;
-import org.happysanta.gdtralive.game.util.Utils;
+import org.happysanta.gdtralive.game.util.Fmt;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,8 +56,7 @@ public class Recorder {
         try {
             TrackRecord trackRecord = new TrackRecord(engine.getTrackPhysic().getTrack(), time, engine.league, settings.getPlayerName());
             trackRecord.setStates(states);
-            String fileNmae = String.format("[%s] %s", Utils.getDurationString(trackRecord.getTime()), trackRecord.getTrackName());
-            fileStorage.save(trackRecord, GDFile.RECORD, fileNmae);
+            fileStorage.save(trackRecord, GDFile.RECORD, Fmt.recordName(trackRecord));
         } catch (Exception ignore) {
         }
 

@@ -2,6 +2,7 @@ package org.happysanta.gdtralive.game.util;
 
 import org.happysanta.gdtralive.game.api.model.Mod;
 import org.happysanta.gdtralive.game.api.dto.LevelPack;
+import org.happysanta.gdtralive.game.api.model.TrackRecord;
 
 public class Fmt {
     public static String colon(String label, String name) {
@@ -42,5 +43,14 @@ public class Fmt {
             s.append(level.getTracks().size()).append(" ");
         }
         return s.toString().trim();
+    }
+
+    public static String recordName(TrackRecord trackRecord) {
+        long millis = trackRecord.getTime();
+        return Utils.fixFileName(String.format("[%s] %s", durationString(millis), trackRecord.getTrackName()));
+    }
+
+    public static String durationString(long millis) {
+        return String.format("%d:%02d.%03d", millis / 60000, (millis / 1000) % 60, millis % 1000);
     }
 }

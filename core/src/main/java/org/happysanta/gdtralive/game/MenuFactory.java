@@ -447,10 +447,11 @@ public class MenuFactory<T> {
             s.add(e.textHtmlBold(str.s(S.name), rec.getTrackName()));
             s.add(e.textHtmlBold(str.s(S.guid), rec.getTrackGuid()));
             s.add(e.textHtmlBold(str.s(S.league), "" + rec.getLeague()));
-            s.add(e.textHtmlBold(str.s(S.time), Utils.getDurationString(rec.getTime())));
+            s.add(e.textHtmlBold(str.s(S.time), Fmt.durationString(rec.getTime())));
             s.add(e.textHtmlBold(str.s(S.date), rec.getDate()));
             s.add(e.emptyLine(true));
             s.add(e.action(str.s(S.replay), -1, item1 -> game.startTrack(GameParams.of(rec))));
+            s.add(e.action(str.s(S.save), __ -> this.application.getFileStorage().save(rec, GDFile.RECORD, Fmt.recordName(rec))));
             s.add(e.action(str.s(S.delete), __ -> this.application.getFileStorage().delete(GDFile.RECORD, data.getValue())));
             s.add(e.backAction(() -> {
                 this.get(MenuType.RECORDINGS).build();
@@ -475,7 +476,8 @@ public class MenuFactory<T> {
     private MenuScreen<T> createFinishedRandom(Map<MenuType, MenuScreen<T>> r) {
         return e.screen(str.s(S.finished), r.get(MenuType.PLAY)).builder((finishedMenu, data) -> {
             finishedMenu.clear();
-            finishedMenu.add(e.textHtmlBold(str.s(S.time), Utils.getDurationString(data.getLastTrackTime())));
+            long millis = data.getLastTrackTime();
+            finishedMenu.add(e.textHtmlBold(str.s(S.time), Fmt.durationString(millis)));
             for (String s : application.getHighScoreManager().getFormattedScores(data.getTrackGuid(), data.getSelectedLeague())) {
                 finishedMenu.add(e.text(s));
             }
@@ -522,10 +524,7 @@ public class MenuFactory<T> {
     private MenuScreen<T> createOptionsScreen(Map<MenuType, MenuScreen<T>> r) {
         MenuScreen<T> screen = e.screen(str.s(S.options), r.get(MenuType.MAIN));
         String[] keySetStrings = str.getStringArray(S.keyset);
-        String[] scaleOptions = new String[401];
-        for (int i = 0; i < scaleOptions.length; i++) {
-            scaleOptions[i] = "" + i;
-        }
+        String[] scaleOptions = Utils.getScaleOptions();
 
         screen.add(e.selector(str.s(S.scale), application.getSettings().getScale(), scaleOptions, screen,
                 item -> {
@@ -689,7 +688,7 @@ public class MenuFactory<T> {
                 finishedMenu.clear();
                 finishedMenu.add(e.highScore(str.getStringArray(S.finished_places)[place], place, false));
                 long millis = data.getLastTrackTime();
-                finishedMenu.add(e.text(Utils.getDurationString(millis)));
+                finishedMenu.add(e.text(Fmt.durationString(millis)));
                 finishedMenu.add(e.createAction(OK, item -> showFinishMenu(finishedMenu, data)));
                 menu.m_blZ = false;
                 return finishedMenu;
@@ -703,7 +702,7 @@ public class MenuFactory<T> {
     private MenuScreen<T> showFinishMenu(MenuScreen<T> finishedMenu, MenuData data) {
         finishedMenu.clear();
         long millis = data.getLastTrackTime();
-        finishedMenu.add(e.textHtml(String.format("<b>%s</b>: %s", str.s(S.time), Utils.getDurationString(millis))));
+        finishedMenu.add(e.textHtml(String.format("<b>%s</b>: %s", str.s(S.time), Fmt.durationString(millis))));
         for (String s : application.getHighScoreManager().getFormattedScores(data.getTrackGuid(), data.getSelectedLeague())) {
             finishedMenu.add(e.text(s));
         }

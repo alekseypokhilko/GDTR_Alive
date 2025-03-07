@@ -2,6 +2,7 @@ package org.happysanta.gdtralive.game;
 
 import org.happysanta.gdtralive.game.api.Sprite;
 import org.happysanta.gdtralive.game.api.model.ViewState;
+import org.happysanta.gdtralive.game.util.Fmt;
 import org.happysanta.gdtralive.game.util.Utils;
 import org.happysanta.gdtralive.game.engine.Engine;
 import org.happysanta.gdtralive.game.util.FPMath;
@@ -733,6 +734,6 @@ public class FrameRender {
     }
 
     public void drawTimer(long millis, ViewState view) {
-        canvas.drawTimer2(mm().getInterfaceTheme().getTextColor(), Utils.getDurationString(millis), view);
+        canvas.drawTimer2(mm().getInterfaceTheme().getTextColor(), Fmt.durationString(millis), view);
     }
 }

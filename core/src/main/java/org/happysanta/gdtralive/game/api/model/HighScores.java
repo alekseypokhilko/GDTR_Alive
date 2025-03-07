@@ -1,7 +1,6 @@
 package org.happysanta.gdtralive.game.api.model;
 
-import org.happysanta.gdtralive.game.api.model.Score;
-import org.happysanta.gdtralive.game.util.Utils;
+import org.happysanta.gdtralive.game.util.Fmt;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,7 +28,7 @@ public class HighScores {
                 continue;
             }
             long millis = score.getTime();
-            String time = Utils.getDurationString(millis);
+            String time = Fmt.durationString(millis);
             formattedScores.add("" + i + ". "+ time + " - " + score.getName() + " - " + score.getDate());
             i++;
         }

@@ -11,7 +11,7 @@ public class GdSettingsImpl implements GdSettings {
     private static final String PERSPECTIVE_ENABLED = "perspective_enabled";
     private static final boolean PERSPECTIVE_ENABLED_DEFAULT = true;
 
-    private static final String RECORDING_ENABLED = "perspective_enabled";
+    private static final String RECORDING_ENABLED = "recording_enabled";
     private static final boolean RECORDING_ENABLED_DEFAULT = false;
 
     private static final String GOD_MODE_ENABLED = "god_mode_enabled";
