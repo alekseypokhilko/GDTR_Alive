@@ -25,6 +25,7 @@ public enum MenuType {
     IN_GAME_TRACK_EDITOR,
     IN_GAME_SINGLE,
     IN_GAME_PLAY,
+    IN_GAME_RANDOM,
     IN_GAME_REPLAY,
     CAMPAIGN,
     OPTIONS,
@@ -33,5 +34,5 @@ public enum MenuType {
     FINISHED_TOD,
     FINISHED_EDIT,
     FINISHED_SINGLE,
-    FINISHED_PLAY
+    FINISHED_RANDOM
 }

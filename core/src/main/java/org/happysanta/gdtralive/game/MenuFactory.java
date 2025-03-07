@@ -117,8 +117,8 @@ public class MenuFactory<T> {
         add(MenuType.OPTIONS, this::createOptionsScreen);
         add(MenuType.CAMPAIGN, this::createPlayCampaign);
 
-        add(MenuType.FINISHED_PLAY, this::createFinishedPlay);
-        add(MenuType.IN_GAME_PLAY, this::createInGamePlay);
+        add(MenuType.FINISHED_RANDOM, this::createFinishedRandom);
+        add(MenuType.IN_GAME_RANDOM, this::createInGameRandom);
         add(MenuType.WORKSHOP, r -> e.screen(str.s(S.workshop), r.get(MenuType.MAIN)));
         add(MenuType.MODS, this::createMods);
         add(MenuType.MOD_OPTIONS, this::createModOptions);
@@ -472,7 +472,7 @@ public class MenuFactory<T> {
         s.add(e.backAction());
     }
 
-    private MenuScreen<T> createFinishedPlay(Map<MenuType, MenuScreen<T>> r) {
+    private MenuScreen<T> createFinishedRandom(Map<MenuType, MenuScreen<T>> r) {
         return e.screen(str.s(S.finished), r.get(MenuType.PLAY)).builder((finishedMenu, data) -> {
             finishedMenu.clear();
             finishedMenu.add(e.textHtmlBold(str.s(S.time), Utils.getDurationString(data.getLastTrackTime())));
@@ -486,15 +486,17 @@ public class MenuFactory<T> {
         });
     }
 
-    private MenuScreen<T> createInGamePlay(Map<MenuType, MenuScreen<T>> r) {
+    private MenuScreen<T> createInGameRandom(Map<MenuType, MenuScreen<T>> r) {
         MenuScreen<T> ig = e.screen(str.s(S.ingame), r.get(MenuType.PLAY));
         ig.add(e.actionContinue(__ -> application.menuToGame()));
+        ig.add(e.restartAction("Name", __ -> game.restart()));
+        ig.add(e.action(Fmt.ra(str.s(S.random_track)), __ -> game.startTrack(GameParams.of(GameMode.RANDOM, application.getModManager().getRandomTrack()))));
         ig.add(e.action(str.s(S.training_mode), __ -> {
             application.trainingMode();
             application.menuToGame();
         }));
-        ig.add(e.restartAction("Name", __ -> game.restart()));
         ig.add(e.createAction(LIKE, item -> application.notify("Coming soon")));
+        ig.add(e.menu(str.s(S.options), r.get(MenuType.OPTIONS), null));
         ig.add(e.backAction(game::resetState));
         ig.builder((s, data) -> {
             if (data != null) {

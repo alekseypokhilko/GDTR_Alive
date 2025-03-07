@@ -8,7 +8,7 @@ public enum GameMode {
     TRACK_EDITOR(MenuType.IN_GAME_TRACK_EDITOR, MenuType.FINISHED_EDIT),
     TRACK_EDITOR_PLAY(MenuType.IN_GAME_TRACK_EDITOR, MenuType.FINISHED_EDIT),
     SINGLE_TRACK(MenuType.IN_GAME_SINGLE, MenuType.FINISHED_SINGLE),
-    RANDOM(MenuType.IN_GAME_PLAY, MenuType.FINISHED_PLAY);
+    RANDOM(MenuType.IN_GAME_RANDOM, MenuType.FINISHED_RANDOM);
 
     public final MenuType inGame;
     public final MenuType finished;
