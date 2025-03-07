@@ -276,6 +276,7 @@
 	<string name="install_kb">Install (%1$s Kb)</string>
 	<string name="install">Install</string>
 	<string name="rename">Rename</string>
+	<string name="copy">Copy</string>
 	<string name="installing">Installing..</string>
 	<string name="load_this_game">Load this game</string>
 	<string name="enter_levels_name_title">Levels name</string>

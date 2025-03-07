@@ -46,6 +46,7 @@ public enum S {
     description,
     date,
     install,
+    copy,
     rename,
     delete,
     mod,

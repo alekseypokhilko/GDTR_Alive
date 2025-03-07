@@ -50,7 +50,7 @@ public class ModManager {
         this.theme = loadTheme(settings.getSelectedTheme());
 
         initMod();
-        adjustScale();
+        adjustScale(null);
     }
 
     private void initMod() {
@@ -291,7 +291,10 @@ public class ModManager {
         return defaultDensity;
     }
 
-    public void adjustScale() {
+    public void adjustScale(Integer value) {
+        if (value != null) {
+            settings.setScale(value);
+        }
         this.gameDensity = defaultDensity * settings.getScale() / 100;
     }
 

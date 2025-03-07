@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class MenuFactory<T> {
     public static final int OK = 0;
@@ -278,8 +279,24 @@ public class MenuFactory<T> {
             s.add(e.textHtmlBold(str.s(S.date), header.getDate()));
             s.add(e.emptyLine(true));
             s.add(e.action(str.s(S.install), __ -> application.getModManager().installTheme(theme)));
-            //s.add(e.action(str.s(S.save), __ -> application.getFileStorage().save(theme, GDFile.THEME, theme.getHeader().getName())));
-            s.add(e.action(str.s(S.delete), __ -> this.application.getFileStorage().delete(GDFile.THEME, theme.getHeader().getName())));
+            s.add(e.action(str.s(S.copy), __ -> {
+                header.setName(header.getName() + "-copy-" + System.currentTimeMillis());
+                header.setGuid(UUID.randomUUID().toString());
+                application.getFileStorage().save(theme, GDFile.THEME, header.getName());
+            }));
+            s.add(e.action(str.s(S.rename), __ -> {
+                MenuData menuData = new MenuData(header.getName());
+                menuData.setHandler(o -> {
+                    String newName = Utils.fixFileName((String) o);
+                    header.setName(newName);
+                    application.notify("Renamed");
+                    s.build(new MenuData(theme, newName));
+                    menu.back();
+                });
+                MenuScreen<T> build = this.get(MenuType.RENAME).setParent(s).build(menuData);
+                menu.setCurrentMenu(build);
+            }));
+            s.add(e.action(str.s(S.delete), __ -> this.application.getFileStorage().delete(GDFile.THEME, header.getName())));
             s.add(e.backAction(() -> this.get(MenuType.THEMES).build()));
             return s;
         });
@@ -307,7 +324,7 @@ public class MenuFactory<T> {
             s.add(e.action(str.s(S.rename), __ -> {
                 MenuData menuData = new MenuData(mod.getName());
                 menuData.setHandler(o -> {
-                    String newName = (String) o;
+                    String newName = Utils.fixFileName((String) o);
                     mod.setName(newName);
                     application.notify("Renamed");
                     s.build(new MenuData(mod, null));
@@ -424,9 +441,7 @@ public class MenuFactory<T> {
             for (String name : application.getFileStorage().listFiles(GDFile.RECORD)) {
                 try {
                     IMenuItemElement<T> options = e.menu(GDFile.RECORD.cutExtension(name), this.get(MenuType.RECORDING_OPTIONS),
-                            item -> {
-                                this.get(MenuType.RECORDING_OPTIONS).build(new MenuData((TrackRecord) null, GDFile.RECORD.cutExtension(name)));
-                            });
+                            item -> this.get(MenuType.RECORDING_OPTIONS).build(new MenuData((TrackRecord) null, GDFile.RECORD.cutExtension(name))));
                     options.setValue(i);
                     s.add(options);
                     i++;
@@ -527,10 +542,7 @@ public class MenuFactory<T> {
         String[] scaleOptions = Utils.getScaleOptions();
 
         screen.add(e.selector(str.s(S.scale), application.getSettings().getScale(), scaleOptions, screen,
-                item -> {
-                    application.getSettings().setScale(item.getSelectedOption());
-                    application.getModManager().adjustScale();
-                }));
+                item -> application.getModManager().adjustScale(item.getSelectedOption())));
         screen.add(e.toggle(str.s(S.recording_enabled), application.getSettings().isRecordingEnabled() ? 0 : 1,
                 item -> game.setRecordingEnabled(item.getSelectedOption() == 0)));
         screen.add(e.toggle(str.s(S.god_mode), application.getSettings().isGodModeEnabled() ? 0 : 1,
@@ -578,14 +590,7 @@ public class MenuFactory<T> {
         resetScreen.add(e.emptyLine(true));
         resetScreen.add(e.createAction(NO, item -> menu.menuBack()));
         resetScreen.add(e.createAction(YES, item -> {
-            application.getPlatform().showAlert(str.s(S.reset), str.s(S.reset_text), () -> {
-                application.getSettings().resetAll();
-                application.getHighScoreManager().resetAllLevelsSettings();
-                application.getHighScoreManager().clearAllHighScores();
-
-                application.setFullResetting(true);
-                application.destroyApp(true);
-            });
+            application.getPlatform().showAlert(str.s(S.reset), str.s(S.reset_text), application::fullReset);
             menu.menuBack();
         }));
 
@@ -655,9 +660,7 @@ public class MenuFactory<T> {
 
     private MenuScreen<T> createInGameCampaign(Map<MenuType, MenuScreen<T>> r) {
         MenuScreen<T> inGame = e.screen(str.s(S.ingame), r.get(MenuType.CAMPAIGN));
-        inGame.add(e.actionContinue(__ -> {
-            application.menuToGame();
-        }));
+        inGame.add(e.actionContinue(__ -> application.menuToGame()));
         inGame.add(e.reatart(Fmt.colon(str.s(S.restart), ""), item -> menu.menuToGame()));
         inGame.add(e.action(str.s(S.training_mode), __ -> {
             application.trainingMode();

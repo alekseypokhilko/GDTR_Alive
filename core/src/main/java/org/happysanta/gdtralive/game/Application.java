@@ -304,8 +304,12 @@ public class Application {
         platform.hideKeyboardLayout();
     }
 
-    
-    public boolean isInited() {
-        return inited;
+    public void fullReset() {
+        settings.resetAll();
+        highScoreManager.resetAllLevelsSettings();
+        highScoreManager.clearAllHighScores();
+
+        setFullResetting(true);
+        destroyApp(true);
     }
 }
