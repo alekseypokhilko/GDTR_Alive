@@ -489,7 +489,7 @@ public class Engine {
     public int currentX_MAYBE() {
         if (replay && replayState != null) {
             //todo BUG when replay on other device?
-            return (replayState.elements()[0].x() + replayState.X << 2) >> 16;
+            return (replayState.elements()[0].x() + replayState.getX() << 2) >> 16;
         }
         if (edit) {
             return (element0().x + deltaX << 2) >> 16;
@@ -505,7 +505,7 @@ public class Engine {
 
     public int currentY_MAYBE() {
         if (replay && replayState != null) {
-            return (replayState.elements()[0].y() + replayState.Y << 2) >> 16;
+            return (replayState.elements()[0].y() + replayState.getY() << 2) >> 16;
         }
         if (edit) {
             return (element0().y + deltaY << 2) >> 16;
@@ -821,7 +821,7 @@ public class Engine {
 
     public int getProgress() {
         if (replay && replayState != null) {
-            return replayState.p;
+            return replayState.getP();
         }
         int j = Math.max(frontWheel().x, backWheel().x);
         if (crashedInAir_MAYBE)
@@ -1008,22 +1008,21 @@ public class Engine {
         state.shadowsEnabled = trackPhysic.isShadowsEnabled();
         state.elements = list.toArray(new Element[6]);
         state.e = e.toArray(e.toArray(new ElementRecord[0]));
-        state.I = m_TI_biker;
+        state.I = m_TI_biker == 0 ? null : m_TI_biker;
         state.L = league;
-        state.t = timerTime;
+        state.t = timerTime == 0 ? null : timerTime;
         state.l = Utils.copyArray(leftWheelParams);
-        state.X = deltaX;
-        state.Y = deltaY;
+        state.X = deltaX == 0 ? null : deltaX;
+        state.Y = deltaY == 0 ? null : deltaY;
         state.ft = flagTwitch;
 
-        state.p = getProgress();
-        state.c = String.format(
-                "%s%s%s%s",
-                gasPressed ? "w" : "_",
-                leansBackPressed ? "a" : "_",
-                stopPressed ? "s" : "_",
-                leansForwardPressed ? "d" : "_"
-        );
+        int progress = getProgress();
+        state.p = progress == 0 ? null : progress;
+        String controls = (gasPressed ? "w" : "")
+                + (leansBackPressed ? "a" : "")
+                + (stopPressed ? "s" : "")
+                + (leansForwardPressed ? "d" : "");
+        state.c = controls.isEmpty() ? null : controls;
         return state;
     }
 
@@ -1040,15 +1039,16 @@ public class Engine {
         state.shadowsEnabled = trackPhysic.isShadowsEnabled();
         state.elements = elements;
         state.e = elements;
-        state.I = m_TI_biker;
+        state.I = m_TI_biker == 0 ? null : m_TI_biker;
         state.L = league;
-        state.t = timerTime;
+        state.t = timerTime == 0 ? null : timerTime;
         state.l = leftWheelParams;
-        state.X = deltaX;
-        state.Y = deltaY;
+        state.X = deltaX == 0 ? null : deltaX;
+        state.Y = deltaY == 0 ? null : deltaY;
         state.ft = flagTwitch;
 
-        state.p = getProgress();
+        int progress = getProgress();
+        state.p = progress == 0 ? null : progress;
         return state;
     }
 

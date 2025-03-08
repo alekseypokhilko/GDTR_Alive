@@ -28,6 +28,7 @@ public class Recorder {
     public void captureState() {
         if (capturing) {
             EngineStateRecord state = engine.getState();
+            state.setLeague(null);
             states.add(state);
         }
     }

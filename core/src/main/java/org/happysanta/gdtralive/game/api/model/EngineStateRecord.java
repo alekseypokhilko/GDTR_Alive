@@ -11,15 +11,15 @@ public class EngineStateRecord implements Serializable {
     // === render
     public IElement[] e;
     //    public int aI; //m_Hak1m_aI
-    public int L; //league
+    public Integer L; //league
     //    public int q; //m_IZ
-    public int I; //m_TI
+    public Integer I; //m_TI //Ускорение
 
     // === for replay
-    public int X; //deltaX
-    public int Y; //deltaY
-    public long t; //timer time
-    public int p; //progress
+    public Integer X; //deltaX
+    public Integer Y; //deltaY
+    public Long t; //timer time
+    public Integer p; //progress
     public String c; //controls w/a/s/d
 
     // === other
@@ -59,5 +59,29 @@ public class EngineStateRecord implements Serializable {
 
     public IElement backWheel() {
         return elements()[BACK_WHEEL_CIRCLE];
+    }
+
+    public int getX() {
+        return X == null ? 0 : X;
+    }
+
+    public int getY() {
+        return Y == null ? 0 : Y;
+    }
+
+    public int getP() {
+        return p == null ? 0 : p;
+    }
+
+    public Integer getI() {
+        return I == null ? 0 : I;
+    }
+
+    public Integer league() {
+        return L;
+    }
+
+    public void setLeague(Integer l) {
+        L = l;
     }
 }

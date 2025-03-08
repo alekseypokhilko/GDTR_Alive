@@ -121,9 +121,9 @@ public class FrameRender {
         drawBackWheelsSprite(state, view);
         drawWheelsLines(state, view);
         if (view.drawBike == 1) {
-            setColor(mm().getLeagueTheme(state.L).getBikeColor());
+            setColor(mm().getLeagueTheme(state.league()).getBikeColor());
         } else {
-            setColor(mm().getLeagueTheme(state.L).getBikeLinesColor());
+            setColor(mm().getLeagueTheme(state.league()).getBikeLinesColor());
         }
 //        _ifIIIV((state.frontWheel().x() << 2) >> 16,
 //                (state.frontWheel().y() << 2) >> 16,
@@ -163,9 +163,9 @@ public class FrameRender {
         drawBackWheelsSprite(state, view);
         drawWheelsLines(state, view);
         if (view.drawBike == 1) {
-            setColor(mm().getLeagueTheme(state.L).getBikeColor());
+            setColor(mm().getLeagueTheme(state.league()).getBikeColor());
         } else {
-            setColor(mm().getLeagueTheme(state.L).getBikeLinesColor());
+            setColor(mm().getLeagueTheme(state.league()).getBikeLinesColor());
         }
         //todo WHY front wheel only?
 //        _ifIIIV((state.frontWheel().x() << 2) >> 16,
@@ -369,14 +369,14 @@ public class FrameRender {
     }
 
     private void drawFork(EngineStateRecord state, ViewState view) {
-        setColor(mm().getLeagueTheme(state.L).getForkColor());
+        setColor(mm().getLeagueTheme(state.league()).getForkColor());
         canvas.drawLine(state.engine().x(), state.engine().y(), state.frontWheel().x(), state.frontWheel().y(), view);
     }
 
     private void drawBackWheelsSprite(EngineStateRecord state, ViewState view) {
         int i1 = 1;
         int j1 = 1;
-        switch (state.L) {
+        switch (state.league()) {
             case 2: // '\002'
             case 3: // '\003'
                 i1 = j1 = 0;
@@ -416,14 +416,14 @@ public class FrameRender {
         int j1 = (int) ((long) (i1 = 114688/*state.aI*/) * 58982L >> 16);
         int k1 = (int) ((long) i1 * 45875L >> 16);
 
-        if (mm().getTheme().getLeagueThemes().get(state.L).isDrawWheelLines()) {
-            Color frontWheelsColor = mm().getTheme().getLeagueThemes().get(state.L).getFrontWheelsColor();
+        if (mm().getTheme().getLeagueThemes().get(state.league()).isDrawWheelLines()) {
+            Color frontWheelsColor = mm().getTheme().getLeagueThemes().get(state.league()).getFrontWheelsColor();
             if (frontWheelsColor != null) {
                 setColor(frontWheelsColor);
                 drawLineWheel((state.frontWheel().x() << 2) >> 16, (state.frontWheel().y() << 2) >> 16, (i1 + i1 << 2) >> 16, view);
                 drawLineWheel((state.frontWheel().x() << 2) >> 16, (state.frontWheel().y() << 2) >> 16, (j1 + j1 << 2) >> 16, view);
             }
-            Color backWheelsColor = mm().getTheme().getLeagueThemes().get(state.L).getBackWheelsColor();
+            Color backWheelsColor = mm().getTheme().getLeagueThemes().get(state.league()).getBackWheelsColor();
             if (backWheelsColor != null) {
                 setColor(backWheelsColor);
                 drawLineWheel((state.backWheel().x() << 2) >> 16, (state.backWheel().y() << 2) >> 16, (i1 + i1 << 2) >> 16, view);
@@ -444,7 +444,7 @@ public class FrameRender {
         l2 = FPMath.sin(j2);
         for (int k3 = 0; k3 < 5; k3++) {
             //spokes
-            setColor(mm().getTheme().getLeagueThemes().get(state.L).getBackWheelsSpokeColor());
+            setColor(mm().getTheme().getLeagueThemes().get(state.league()).getBackWheelsSpokeColor());
             canvas.drawLine(state.frontWheel().x(), state.frontWheel().y(), state.frontWheel().x() + l1, state.frontWheel().y() + i2, view);
             i3 = l1;
             l1 = (int) ((long) k2 * (long) l1 >> 16) + (int) ((long) (-l2) * (long) i2 >> 16);
@@ -472,20 +472,20 @@ public class FrameRender {
                 l[l3][2] = state.backWheel().x() + l1;
                 l[l3][3] = state.backWheel().y() + i2;
             }
-            setColor(mm().getTheme().getLeagueThemes().get(state.L).getFrontWheelsSpokeColor());
+            setColor(mm().getTheme().getLeagueThemes().get(state.league()).getFrontWheelsSpokeColor());
             canvas.drawLine(l[l3][0], l[l3][1], l[l3][2], l[l3][3], view);
             int j3 = l1;
             l1 = (int) ((long) k2 * (long) l1 >> 16) + (int) ((long) (-l2) * (long) i2 >> 16);
             i2 = (int) ((long) l2 * (long) j3 >> 16) + (int) ((long) k2 * (long) i2 >> 16);
         }
 
-        if (state.L < mm().getLeagueThemes().size()) {
-            Color backWheelDotColor = mm().getLeagueTheme(state.L).getBackWheelDotColor();
+        if (state.league() < mm().getLeagueThemes().size()) {
+            Color backWheelDotColor = mm().getLeagueTheme(state.league()).getBackWheelDotColor();
             if (backWheelDotColor != null) {
                 setColor(backWheelDotColor);
                 drawLineWheel((state.backWheel().x() << 2) / (float) 0xFFFF, (state.backWheel().y() << 2) / (float) 0xFFFF, 4, view);
             }
-            Color frontWheelDotColor = mm().getLeagueTheme(state.L).getFrontWheelDotColor();
+            Color frontWheelDotColor = mm().getLeagueTheme(state.league()).getFrontWheelDotColor();
             if (frontWheelDotColor != null) {
                 setColor(frontWheelDotColor);
                 drawLineWheel((state.frontWheel().x() << 2) / (float) 0xFFFF, (state.frontWheel().y() << 2) / (float) 0xFFFF, 4, view);
@@ -518,27 +518,27 @@ public class FrameRender {
         int[][] ai1 = (int[][]) null;
         int[][] ai2 = (int[][]) null;
         if (view.drawBiker == 1) {
-            if (state.I < 32768) {
+            if (state.getI() < 32768) {
                 ai1 = m_ucaaI;
                 ai2 = m_KaaI;
-                j2 = (int) ((long) state.I * 0x20000L >> 16);
-            } else if (state.I > 32768) {
+                j2 = (int) ((long) state.getI() * 0x20000L >> 16);
+            } else if (state.getI() > 32768) {
                 i2 = 1;
                 ai1 = m_KaaI;
                 ai2 = m_SaaI;
-                j2 = (int) ((long) (state.I - 32768) * 0x20000L >> 16);
+                j2 = (int) ((long) (state.getI() - 32768) * 0x20000L >> 16);
             } else {
                 ai = m_KaaI;
             }
-        } else if (state.I < 32768) {
+        } else if (state.getI() < 32768) {
             ai1 = m_DaaI;
             ai2 = m_wcaaI;
-            j2 = (int) ((long) state.I * 0x20000L >> 16);
-        } else if (state.I > 32768) {
+            j2 = (int) ((long) state.getI() * 0x20000L >> 16);
+        } else if (state.getI() > 32768) {
             i2 = 1;
             ai1 = m_wcaaI;
             ai2 = m_MaaI;
-            j2 = (int) ((long) (state.I - 32768) * 0x20000L >> 16);
+            j2 = (int) ((long) (state.getI() - 32768) * 0x20000L >> 16);
         } else {
             ai = m_wcaaI;
         }
@@ -604,23 +604,23 @@ public class FrameRender {
             drawBikerPart(i5 << 2, j5 << 2, k5 << 2, l5 << 2, 2, i7, view, state);
             _aIIIV(k5 << 2, l5 << 2, k6 << 2, l6 << 2, 0, view, state);
             int k7 = FPMath.angle(i1, j1);
-            if (state.I > 32768)
+            if (state.getI() > 32768)
                 k7 += 20588;
             drawHelmet((i6 << 2) / (float) 0xFFFF, (j6 << 2) / (float) 0xFFFF, k7, view, state);
         } else {
-            setColor(mm().getLeagueTheme(state.L).getBikerLegColor());
+            setColor(mm().getLeagueTheme(state.league()).getBikerLegColor());
             canvas.drawLine(k3, l3, k4, l4, view);
             canvas.drawLine(k4, l4, i5, j5, view);
-            setColor(mm().getLeagueTheme(state.L).getBikerBodyColor());
+            setColor(mm().getLeagueTheme(state.league()).getBikerBodyColor());
             canvas.drawLine(i5, j5, k5, l5, view);
             canvas.drawLine(k5, l5, k6, l6, view);
             canvas.drawLine(k6, l6, i3, j3, view);
             int l7 = 0x10000;
-            setColor(mm().getLeagueTheme(state.L).getBikerHeadColor());
+            setColor(mm().getLeagueTheme(state.league()).getBikerHeadColor());
             drawLineWheel((i6 << 2) >> 16, (j6 << 2) >> 16, (l7 + l7 << 2) >> 16, view);
         }
 
-        setColor(mm().getLeagueTheme(state.L).getSteeringColor());
+        setColor(mm().getLeagueTheme(state.league()).getSteeringColor());
         drawSteering((i3 << 2) >> 16, (j3 << 2) >> 16, view, state);
         drawSteering((i4 << 2) >> 16, (j4 << 2) >> 16, view, state);
     }
@@ -661,7 +661,7 @@ public class FrameRender {
         int i9 = (i8 + (int) ((long) k1 * 0x1c000L >> 16)) - (int) ((long) i1 * 32768L >> 16);
         int j9 = (j8 + (int) ((long) l1 * 0x1c000L >> 16)) - (int) ((long) j1 * 32768L >> 16);
 
-        setColor(mm().getLeagueTheme(state.L).getBikeLinesColor());
+        setColor(mm().getLeagueTheme(state.league()).getBikeLinesColor());
         drawLineWheel((k5 << 2) >> 16, (l5 << 2) >> 16, (32768 + 32768 << 2) >> 16, view);
         if (view.drawBiker2 == 0) {
             canvas.drawLine(k2, l2, k4, l4, view);
@@ -710,7 +710,7 @@ public class FrameRender {
         int j2 = FPMath.angle(l - j, i1 - k);
 
         float fAngleDeg = (float) (j2 / (float) 0xFFFF / Math.PI * 180) - 180;
-        canvas.drawBodySprite(BODY_SPRITES[j1], l1, i2, fAngleDeg, state.L);
+        canvas.drawBodySprite(BODY_SPRITES[j1], l1, i2, fAngleDeg, state.league());
     }
 
     public void drawInfoMessage(String message, ViewState view) {

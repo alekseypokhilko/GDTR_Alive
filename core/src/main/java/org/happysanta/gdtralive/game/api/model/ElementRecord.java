@@ -1,12 +1,18 @@
 package org.happysanta.gdtralive.game.api.model;
 
+import org.happysanta.gdtralive.game.util.Utils;
+
 import java.io.Serializable;
 
+/**
+ * Represent position of player/bike part
+ * Used for replay file
+ */
 public class ElementRecord implements IElement, Serializable {
 
-    public int x;
-    public int y;
-    public int r; // rotation?
+    public Integer x;
+    public Integer y;
+    public Integer r; // rotation?
 
     public ElementRecord() {
         init();
@@ -18,24 +24,24 @@ public class ElementRecord implements IElement, Serializable {
 
     public static ElementRecord from(Element e) {
         ElementRecord rec = new ElementRecord();
-        rec.x = e.x;
-        rec.y = e.y;
-        rec.r = e.r;
+        rec.x = e.x == 0 ? null : Utils.packInt(e.x);
+        rec.y = e.y == 0 ? null : Utils.packInt(e.y);
+        rec.r = e.r == 0 ? null : Utils.packInt(e.r);
         return rec;
     }
 
     @Override
     public int x() {
-        return x;
+        return x == null ? 0 : Utils.unpackInt(x);
     }
 
     @Override
     public int y() {
-        return y;
+        return y == null ? 0 : Utils.unpackInt(y);
     }
 
     @Override
     public int r() {
-        return r;
+        return r == null ? 0 : Utils.unpackInt(r);
     }
 }

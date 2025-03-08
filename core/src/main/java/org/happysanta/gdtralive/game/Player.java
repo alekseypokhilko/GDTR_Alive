@@ -11,7 +11,7 @@ public class Player {
 
     private int index;
     private TrackRecord trackRecord;
-    private Runnable restartMethod;
+    private final Runnable restartMethod;
 
     public Player(Engine engine, Runnable restartMethod) {
         this.engine = engine;
@@ -27,9 +27,10 @@ public class Player {
             state.replay = true;
             state.track = trackRecord.getTrack();
             state.perspectiveEnabled = true;
+            state.setLeague(trackRecord.getLeague());
             engine.setReplayState(state);
             engine.setReplayMode(true);
-            engine.timerTime = state.t;
+            engine.timerTime = state.t == null ? 0 : state.t;
             index++;
         } else {
             index = 0;
