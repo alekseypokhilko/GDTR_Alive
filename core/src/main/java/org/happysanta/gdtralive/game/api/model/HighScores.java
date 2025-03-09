@@ -29,7 +29,7 @@ public class HighScores {
             }
             long millis = score.getTime();
             String time = Fmt.durationString(millis);
-            formattedScores.add("" + i + ". "+ time + " - " + score.getName() + " - " + score.getDate());
+            formattedScores.add(String.format("%d. %s - %s - %s", i, time, score.getName(), score.getDate()));
             i++;
         }
         return formattedScores;

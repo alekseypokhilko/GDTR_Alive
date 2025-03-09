@@ -23,6 +23,8 @@ import org.happysanta.gdtralive.game.api.model.TrackData;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
@@ -34,6 +36,9 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 public class Utils {
     public static final Pattern UUID_REGEX =
@@ -380,5 +385,39 @@ public class Utils {
             stringBuilder.append(Arrays.toString(point));
         }
         return md5(stringBuilder.toString());
+    }
+
+    public static void writeZip(File file, byte[] content) {
+        try (FileOutputStream fos = new FileOutputStream(file)) {
+            try (ZipOutputStream zipOut = new ZipOutputStream(fos)) {
+                zipOut.setLevel(ZipOutputStream.DEFLATED);
+                ZipEntry zipEntry = new ZipEntry("content.json");
+                zipOut.putNextEntry(zipEntry);
+                zipOut.write(content, 0, content.length);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static byte[] unzip(File file) {
+        ByteArrayOutputStream outputStream = null;
+        try (FileInputStream inputStream = new FileInputStream(file)) {
+            try (ZipInputStream zis = new ZipInputStream(inputStream)) {
+                zis.getNextEntry();
+                byte[] buff = new byte[1024];
+                outputStream = new ByteArrayOutputStream();
+                int l;
+                while ((l = zis.read(buff)) > 0) {
+                    outputStream.write(buff, 0, l);
+                }
+                zis.closeEntry();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return outputStream == null ? null : outputStream.toByteArray();
     }
 }

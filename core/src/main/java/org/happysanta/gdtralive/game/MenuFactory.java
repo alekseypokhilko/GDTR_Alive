@@ -577,7 +577,7 @@ public class MenuFactory<T> {
                     : application.getFileStorage().readRecord(data.getValue());
             s.clear();
             s.add(e.textHtmlBold(str.s(S.name), rec.getTrackName()));
-            s.add(e.textHtmlBold(str.s(S.guid), rec.getTrackGuid()));
+            s.add(e.textHtmlBold(str.s(S.guid), Utils.getTrackId(rec.getTrack())));
             s.add(e.textHtmlBold(str.s(S.league), application.getModManager().getLeagueNames()[rec.getLeague()]));
             s.add(e.textHtmlBold(str.s(S.time), Fmt.durationString(rec.getTime())));
             s.add(e.textHtmlBold(str.s(S.date), rec.getDate()));

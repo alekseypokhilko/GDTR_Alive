@@ -55,6 +55,7 @@ public class Player {
 
     public void reset() {
         index = 0;
+        trackRecord = null;
         engine.setRespawn(null);
         engine.setReplayMode(false);
     }

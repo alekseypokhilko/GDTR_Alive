@@ -302,7 +302,6 @@ public class Game {
         trainer.stop();
         trainer.prepare();
         if (params != null && params.getMode() != GameMode.REPLAY) {
-            player.reset();
             setGhost(engine.getTrackPhysic().getTrack());
         }
     }
@@ -430,6 +429,7 @@ public class Game {
     }
 
     private void setGhost(TrackData track) {
+        player.reset();
         try {
             if (!settings.isGhostEnabled()) {
                 return;

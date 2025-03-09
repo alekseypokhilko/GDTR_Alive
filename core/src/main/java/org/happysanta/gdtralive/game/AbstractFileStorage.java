@@ -13,6 +13,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -52,7 +53,16 @@ public abstract class AbstractFileStorage implements GdFileStorage {
 
     @Override
     public TrackRecord readRecord(String name) {
-        return read(name, GDFile.RECORD);
+        GDFile gdFile = GDFile.RECORD;
+        String folderPath = folders.get(gdFile).getAbsolutePath();
+        try {
+            byte[] res = Utils.unzip(new File(Fmt.slash(folderPath, gdFile.addExtension(name))));
+            return Utils.fromJson(new String(res, StandardCharsets.UTF_8), gdFile);
+        } catch (Exception e) {
+            e.printStackTrace();
+            notify("Error: " + e.getMessage());
+            return read(name, GDFile.RECORD);
+        }
     }
 
     @Override
@@ -83,14 +93,18 @@ public abstract class AbstractFileStorage implements GdFileStorage {
         String sanitizedName = Utils.fixFileName(Fmt.dot(fileName, fileType.extension));
         File file = new File(Fmt.slash(appFolder.getAbsolutePath(), fileType.folder), sanitizedName);
         if (file != null) {
-            try (PrintStream out = new PrintStream(file)) {
-                String content = Utils.toJson(obj);
-                out.print(content);
-                out.flush();
-                out.close();
-                notify("Saved");
-            } catch (Exception e) {
-                notify("Error: " + e.getMessage());
+            String content = Utils.toJson(obj);
+            if (GDFile.RECORD == fileType) {
+                Utils.writeZip(file, content.getBytes(StandardCharsets.UTF_8));
+            } else {
+                try (PrintStream out = new PrintStream(file)) {
+                    out.print(content);
+                    out.flush();
+                    out.close();
+                    notify("Saved");
+                } catch (Exception e) {
+                    notify("Error: " + e.getMessage());
+                }
             }
         }
     }
