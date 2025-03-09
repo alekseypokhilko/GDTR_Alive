@@ -11,7 +11,7 @@ public class MenuData {
     private GameMode gameMode;
     private long lastTrackTime;
     private String trackName;
-    private String trackGuid;
+    private String trackId;
     private int selectedLevel;
     private int selectedTrack;
     private int selectedLeague;
@@ -96,12 +96,12 @@ public class MenuData {
         this.trackName = trackName;
     }
 
-    public String getTrackGuid() {
-        return trackGuid;
+    public String getTrackId() {
+        return trackId;
     }
 
-    public void setTrackGuid(String trackGuid) {
-        this.trackGuid = trackGuid;
+    public void setTrackId(String trackId) {
+        this.trackId = trackId;
     }
 
     public int getSelectedLevel() {
@@ -211,7 +211,7 @@ public class MenuData {
                 ", gameMode=" + gameMode +
                 ", lastTrackTime=" + lastTrackTime +
                 ", trackName='" + trackName + '\'' +
-                ", trackGuid='" + trackGuid + '\'' +
+                ", trackGuid='" + trackId + '\'' +
                 ", selectedLevel=" + selectedLevel +
                 ", selectedTrack=" + selectedTrack +
                 ", selectedLeague=" + selectedLeague +

@@ -25,7 +25,7 @@ public class HighScoreManager {
     }
 
     public List<String> getFormattedScores(int league, int level, int track) {
-        return getHighScores(application.getModManager().getTrackGuid(level, track), league).getFormattedScores(league);
+        return getHighScores(application.getModManager().getTrackId(level, track), league).getFormattedScores(league);
     }
 
     public void saveHighScore(Score score) {

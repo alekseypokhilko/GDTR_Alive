@@ -599,7 +599,7 @@ public class MenuFactory<T> {
             finishedMenu.clear();
             long millis = data.getLastTrackTime();
             finishedMenu.add(e.textHtmlBold(str.s(S.time), Fmt.durationString(millis)));
-            for (String s : application.getHighScoreManager().getFormattedScores(data.getTrackGuid(), data.getSelectedLeague())) {
+            for (String s : application.getHighScoreManager().getFormattedScores(data.getTrackId(), data.getSelectedLeague())) {
                 finishedMenu.add(e.text(s));
             }
             finishedMenu.add(e.action(Fmt.ra(str.s(S.random_track)), __ -> game.startTrack(GameParams.of(GameMode.RANDOM, application.getModManager().getRandomTrack()))));
@@ -793,7 +793,7 @@ public class MenuFactory<T> {
         finished.builder((finishedMenu, data) -> {
             resetSelectors();
             int place = application.getHighScoreManager()
-                    .getHighScores(data.getTrackGuid(), data.getSelectedLeague())
+                    .getHighScores(data.getTrackId(), data.getSelectedLeague())
                     .getPlace(data.getSelectedLeague(), data.getLastTrackTime()); //todo npe?
             if (place >= 0 && place <= 2) {
                 finishedMenu.clear();
@@ -814,7 +814,7 @@ public class MenuFactory<T> {
         finishedMenu.clear();
         long millis = data.getLastTrackTime();
         finishedMenu.add(e.textHtml(String.format("<b>%s</b>: %s", str.s(S.time), Fmt.durationString(millis))));
-        for (String s : application.getHighScoreManager().getFormattedScores(data.getTrackGuid(), data.getSelectedLeague())) {
+        for (String s : application.getHighScoreManager().getFormattedScores(data.getTrackId(), data.getSelectedLeague())) {
             finishedMenu.add(e.text(s));
         }
 

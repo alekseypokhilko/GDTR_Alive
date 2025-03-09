@@ -20,7 +20,7 @@ public class Mapper {
         data.setMenuMode(MenuMode.FINISHED);
         data.setGameMode(params.getMode());
         data.setTrackName(params.getTrackParams().name);
-        data.setTrackGuid(params.getTrackParams().getGuid());
+        data.setTrackId(Utils.getTrackId(params.getTrackParams()));
         data.setLastTrackTime(lastTrackTime);
         data.setSelectedLevel(params.getLevel());
         data.setSelectedTrack(params.getTrack());

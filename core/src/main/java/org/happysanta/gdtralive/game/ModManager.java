@@ -319,8 +319,8 @@ public class ModManager {
         return trackParams.getData();
     }
 
-    public String getTrackGuid(int level, int track) {
-        return currentMod.getLevels().get(level).getTracks().get(track).getData().getGuid();
+    public String getTrackId(int level, int track) {
+        return Utils.getTrackId(currentMod.getLevels().get(level).getTracks().get(track).getData());
     }
 
     public String getTrackName(int level, int track) {

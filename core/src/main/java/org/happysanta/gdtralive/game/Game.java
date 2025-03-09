@@ -366,7 +366,7 @@ public class Game {
             return;
         }
         Score score = new Score();
-        score.setLevelGuid(params.getTrackParams().getGuid());
+        score.setLevelGuid(Utils.getTrackId(engine.getTrackPhysic().getTrack()));
         score.setLeague(params.getLeague());
         score.setTime(lastTrackTime);
         score.setName(settings.getPlayerName());
@@ -434,11 +434,11 @@ public class Game {
             if (!settings.isGhostEnabled()) {
                 return;
             }
+            String trackId = Utils.getTrackId(track);
             Score score = application.getHighScoreManager()
-                    .getHighScores(engine.getTrackPhysic().track.getGuid(), engine.league)
+                    .getHighScores(trackId, engine.league)
                     .get(engine.league)
                     .get(0);
-            String trackId = Utils.getTrackId(track);
             String fileName = Fmt.recordName(track.getName(), score.getTime(), engine.league, trackId);
             TrackRecord trackRecord = application.getFileStorage().readRecord(fileName);
             player.setTrackRecord(trackRecord);
