@@ -45,9 +45,9 @@ public class Fmt {
         return s.toString().trim();
     }
 
-    public static String recordName(TrackRecord trackRecord) {
-        long millis = trackRecord.getTime();
-        return Utils.fixFileName(String.format("[%s] %s", durationString(millis), trackRecord.getTrackName()));
+    public static String recordName(TrackRecord tr) {
+        return Utils.fixFileName(String.format("%s[%s_%s_%s]",
+                tr.getTrackName(), tr.getTime(), tr.getLeague(), Utils.getTrackId(tr.getTrack())));
     }
 
     public static String durationString(long millis) {

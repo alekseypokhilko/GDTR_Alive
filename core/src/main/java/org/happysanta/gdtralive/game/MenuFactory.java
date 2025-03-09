@@ -537,10 +537,16 @@ public class MenuFactory<T> {
             s.add(e.emptyLine(false));
             s.add(e.emptyLine(false));
             int i = 0;
+            String[] leagueNames = application.getModManager().getLeagueNames();
             for (String name : application.getFileStorage().listFiles(GDFile.RECORD)) {
                 try {
-                    IMenuItemElement<T> options = e.menu(GDFile.RECORD.cutExtension(name), this.get(MenuType.RECORDING_OPTIONS),
-                            item -> this.get(MenuType.RECORDING_OPTIONS).build(new MenuData((TrackRecord) null, GDFile.RECORD.cutExtension(name))));
+                    String title = GDFile.RECORD.cutExtension(name);
+                    String trackName = title.substring(0, title.lastIndexOf("["));
+                    String meta = title.substring(title.lastIndexOf("[") + 1, title.lastIndexOf("]"));
+                    String league = leagueNames[Integer.parseInt(meta.substring(meta.indexOf("_") +1, meta.lastIndexOf("_")))];
+                    String time = Fmt.durationString(Long.parseLong(meta.substring(0, meta.indexOf("_"))));
+                    IMenuItemElement<T> options = e.menu(String.format("%s %s %s",trackName, league, time), this.get(MenuType.RECORDING_OPTIONS),
+                            item -> this.get(MenuType.RECORDING_OPTIONS).build(new MenuData((TrackRecord) null, title)));
                     options.setValue(i);
                     s.add(options);
                     i++;
@@ -560,7 +566,7 @@ public class MenuFactory<T> {
             s.clear();
             s.add(e.textHtmlBold(str.s(S.name), rec.getTrackName()));
             s.add(e.textHtmlBold(str.s(S.guid), rec.getTrackGuid()));
-            s.add(e.textHtmlBold(str.s(S.league), "" + rec.getLeague()));
+            s.add(e.textHtmlBold(str.s(S.league), application.getModManager().getLeagueNames()[rec.getLeague()]));
             s.add(e.textHtmlBold(str.s(S.time), Fmt.durationString(rec.getTime())));
             s.add(e.textHtmlBold(str.s(S.date), rec.getDate()));
             s.add(e.emptyLine(true));

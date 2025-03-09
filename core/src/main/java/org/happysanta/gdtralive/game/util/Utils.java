@@ -26,6 +26,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -352,5 +354,31 @@ public class Utils {
             scaleOptions[i] = "" + i;
         }
         return scaleOptions;
+    }
+
+    public static String md5(String value) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            md.update(value.getBytes(StandardCharsets.UTF_8));
+            StringBuilder hexString = new StringBuilder();
+            for (byte aMessageDigest : md.digest()) {
+                String h = Integer.toHexString(0xFF & aMessageDigest);
+                while (h.length() < 2)
+                    h = "0" + h;
+                hexString.append(h);
+            }
+            return hexString.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
+
+    public static String getTrackId(TrackData track) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int[] point : track.getPoints()) {
+            stringBuilder.append(Arrays.toString(point));
+        }
+        return md5(stringBuilder.toString());
     }
 }
