@@ -14,6 +14,9 @@ public class GdSettingsImpl implements GdSettings {
     private static final String RECORDING_ENABLED = "recording_enabled";
     private static final boolean RECORDING_ENABLED_DEFAULT = false;
 
+    private static final String GHOST_ENABLED = "ghost_enabled";
+    private static final boolean GHOST_ENABLED_DEFAULT = false;
+
     private static final String GOD_MODE_ENABLED = "god_mode_enabled";
     private static final boolean GOD_MODE_ENABLED_DEFAULT = false;
 
@@ -57,6 +60,7 @@ public class GdSettingsImpl implements GdSettings {
 
     public void resetAll() {
         setRecordingEnabled(RECORDING_ENABLED_DEFAULT);
+        setGhostEnabled(GHOST_ENABLED_DEFAULT);
         setGodModeEnabled(GOD_MODE_ENABLED_DEFAULT);
         setPerspectiveEnabled(PERSPECTIVE_ENABLED_DEFAULT);
         setShadowsEnabled(SHADOWS_ENABLED_DEFAULT);
@@ -93,6 +97,14 @@ public class GdSettingsImpl implements GdSettings {
 
     public void setRecordingEnabled(boolean enabled) {
         storage.setBoolean(RECORDING_ENABLED, enabled);
+    }
+
+    public boolean isGhostEnabled() {
+        return storage.getBoolean(GHOST_ENABLED, GHOST_ENABLED_DEFAULT);
+    }
+
+    public void setGhostEnabled(boolean enabled) {
+        storage.setBoolean(GHOST_ENABLED, enabled);
     }
 
     @Override

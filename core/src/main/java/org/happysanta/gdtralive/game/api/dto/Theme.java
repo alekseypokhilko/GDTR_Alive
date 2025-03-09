@@ -122,28 +122,28 @@ public class Theme {
         league100.setBackWheelsColor(new Color(255, 255, 255));
         league100.setBackWheelsSpokeColor(new Color(255, 255, 255));
         league100.setFrontWheelsColor(new Color(255, 255, 255));
-        league100.setForkColor(new Color(228, 228, 228));
+        league100.setFrontWheelsSpokeColor(new Color(255, 255, 255));
+        league100.setForkColor(new Color(255, 255, 255));
         league100.setDrawWheelLines(true);
         league100.setBikeLinesColor(new Color(255, 255, 255));
-        league100.setBikerHeadColor(new Color(156, 0, 0));
-        league100.setBikerLegColor(new Color(0, 0, 0));
-        league100.setBikerBodyColor(new Color(0, 0, 128));
-        league100.setSteeringColor(new Color(0, 0, 0));
+        league100.setBikerHeadColor(new Color(255, 255, 255));
+        league100.setBikerLegColor(new Color(255, 255, 255));
+        league100.setBikerBodyColor(new Color(255, 255, 255));
+        league100.setSteeringColor(new Color(255, 255, 255));
         league100.setBikeColor(new Color(255, 255, 255));
-        league100.setFrontWheelsSpokeColor(new Color(255, 255, 255));
 
         LeagueTheme league175 = theme.getLeagueThemes().get(1);
         league175.setBackWheelsColor(new Color(255, 255, 255));
         league175.setBackWheelsSpokeColor(new Color(255, 255, 255));
         league175.setFrontWheelsColor(new Color(255, 255, 255));
         league175.setFrontWheelsSpokeColor(new Color(255, 255, 255));
-        league175.setForkColor(new Color(228, 228, 228));
+        league175.setForkColor(new Color(255, 255, 255));
         league175.setDrawWheelLines(true);
         league175.setBikeLinesColor(new Color(255, 255, 255));
-        league175.setBikerHeadColor(new Color(156, 0, 0));
-        league175.setBikerLegColor(new Color(0, 0, 0));
-        league175.setBikerBodyColor(new Color(0, 0, 128));
-        league175.setSteeringColor(new Color(0, 0, 0));
+        league175.setBikerHeadColor(new Color(255, 255, 255));
+        league175.setBikerLegColor(new Color(255, 255, 255));
+        league175.setBikerBodyColor(new Color(255, 255, 255));
+        league175.setSteeringColor(new Color(255, 255, 255));
         league175.setBikeColor(new Color(255, 255, 255));
 
         LeagueTheme league220 = theme.getLeagueThemes().get(2);
@@ -151,13 +151,13 @@ public class Theme {
         league220.setBackWheelsSpokeColor(new Color(255, 255, 255));
         league220.setFrontWheelsColor(new Color(255, 255, 255));
         league220.setFrontWheelsSpokeColor(new Color(255, 255, 255));
-        league220.setForkColor(new Color(228, 228, 228));
+        league220.setForkColor(new Color(255, 255, 255));
         league220.setDrawWheelLines(true);
         league220.setBikeLinesColor(new Color(255, 255, 255));
-        league220.setBikerHeadColor(new Color(156, 0, 0));
-        league220.setBikerLegColor(new Color(0, 0, 0));
-        league220.setBikerBodyColor(new Color(0, 0, 128));
-        league220.setSteeringColor(new Color(0, 0, 0));
+        league220.setBikerHeadColor(new Color(255, 255, 255));
+        league220.setBikerLegColor(new Color(255, 255, 255));
+        league220.setBikerBodyColor(new Color(255, 255, 255));
+        league220.setSteeringColor(new Color(255, 255, 255));
         league220.setBikeColor(new Color(255, 255, 255));
 
         LeagueTheme league325 = theme.getLeagueThemes().get(3);
@@ -165,13 +165,13 @@ public class Theme {
         league325.setBackWheelsSpokeColor(new Color(255, 255, 255));
         league325.setFrontWheelsColor(new Color(255, 255, 255));
         league325.setFrontWheelsSpokeColor(new Color(255, 255, 255));
-        league325.setForkColor(new Color(228, 228, 228));
+        league325.setForkColor(new Color(255, 255, 255));
         league325.setDrawWheelLines(true);
         league325.setBikeLinesColor(new Color(255, 255, 255));
-        league325.setBikerHeadColor(new Color(156, 0, 0));
-        league325.setBikerLegColor(new Color(0, 0, 0));
-        league325.setBikerBodyColor(new Color(0, 0, 128));
-        league325.setSteeringColor(new Color(0, 0, 0));
+        league325.setBikerHeadColor(new Color(255, 255, 255));
+        league325.setBikerLegColor(new Color(255, 255, 255));
+        league325.setBikerBodyColor(new Color(255, 255, 255));
+        league325.setSteeringColor(new Color(255, 255, 255));
         league325.setBikeColor(new Color(255, 255, 255));
 
         return theme;

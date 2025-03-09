@@ -97,7 +97,8 @@
 
 
 	<string name="recording_enabled">Запись уровней</string>
-	<string name="god_mode">Режим бога</string>
+    <string name="ghost_enabled">Призрак</string>
+    <string name="god_mode">Режим бога</string>
 	<string name="perspective">Перспектива</string>
 	<string name="shadows">Тени</string>
 	<string name="driver_sprite">Скин водителя</string>

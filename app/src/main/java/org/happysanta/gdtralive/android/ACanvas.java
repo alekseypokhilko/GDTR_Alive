@@ -83,6 +83,10 @@ public class ACanvas implements GdCanvas {
         paint.setColor(0xFF000000 | (r << 16) | (g << 8) | b);
     }
 
+    public void setColorDimmed(int r, int g, int b) {
+        paint.setColor(0x55000000 | (r << 16) | (g << 8) | b);
+    }
+
     public void drawRect(int left, int top, int right, int bottom, ViewState view) {
         canvas.drawRect(left, top, right, bottom, paint);
     }

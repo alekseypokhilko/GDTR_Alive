@@ -46,8 +46,11 @@ public class Fmt {
     }
 
     public static String recordName(TrackRecord tr) {
-        return Utils.fixFileName(String.format("%s[%s_%s_%s]",
-                tr.getTrackName(), tr.getTime(), tr.getLeague(), Utils.getTrackId(tr.getTrack())));
+        return recordName(tr.getTrackName(), tr.getTime(), tr.getLeague(), Utils.getTrackId(tr.getTrack()));
+    }
+
+    public static String recordName(String name, long time, int league, String trackId) {
+        return Utils.fixFileName(String.format("%s[%s_%s_%s]", name, time, league, trackId));
     }
 
     public static String durationString(long millis) {

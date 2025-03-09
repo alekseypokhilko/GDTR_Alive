@@ -29,14 +29,14 @@ public class Trainer {
         }
         states.add(engine.getFullState());
         engine.setRespawn(engine.getState());
-        view.showInfoMessage(str.s(S.ATTEMPT) + attempt, 1000);
+        view.showInfoMessage(str.s(S.ATTEMPT) + " " + attempt, 1000);
     }
 
     public void onCrash(Runnable execution) {
         if (trainingMode) {
             engine.setState(states.get(states.size() - 1));
             attempt++;
-            view.showInfoMessage(str.s(S.ATTEMPT) + " " + attempt, 1000);
+            view.showInfoMessage(String.format("%s %d", str.s(S.ATTEMPT), attempt), 1000);
             Achievement.achievements.get(Achievement.Type.BACK_TO_SCHOOL).increment();
         } else {
             execution.run();

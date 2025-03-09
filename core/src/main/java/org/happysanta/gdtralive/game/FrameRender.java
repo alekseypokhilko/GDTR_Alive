@@ -79,6 +79,7 @@ public class FrameRender {
 
     private final ModManager mm;
     private GdCanvas canvas;
+    private boolean dimmed = false;
 
     public FrameRender(ModManager modManager) {
         this.mm = modManager;
@@ -89,7 +90,11 @@ public class FrameRender {
     }
 
     public void setColor(Color color) {
-        canvas.setColor(color.r, color.g, color.b);
+        if (dimmed) {
+            canvas.setColorDimmed(color.r, color.g, color.b);
+        } else {
+            canvas.setColor(color.r, color.g, color.b);
+        }
     }
 
     public void setCanvas(GdCanvas canvas) {
@@ -106,6 +111,7 @@ public class FrameRender {
         view.drawBike = 0;
         view.drawBiker2 = 0;
         view.drawBiker = 0;
+        dimmed = true;
         int i1 = state.engine().x() - state.fender().x();
         int j1 = state.engine().y() - state.fender().y();
         int k1;
@@ -117,22 +123,16 @@ public class FrameRender {
         int i2 = i1;
 
 
-        if (view.drawBike == 1) drawBike(i1, j1, state, view);
-        drawBackWheelsSprite(state, view);
         drawWheelsLines(state, view);
         if (view.drawBike == 1) {
             setColor(mm().getLeagueTheme(state.league()).getBikeColor());
         } else {
             setColor(mm().getLeagueTheme(state.league()).getBikeLinesColor());
         }
-//        _ifIIIV((state.frontWheel().x() << 2) >> 16,
-//                (state.frontWheel().y() << 2) >> 16,
-//                (Constants.m_foraI[0] << 2) >> 16,
-//                FPMath.angle(i1, j1), view
-//        );
-        if (view.drawBiker2 == 0) drawFork(state, view);
+        drawFork(state, view);
         drawDriver(state, view, i1, j1, l1, i2);
-        if (!(view.drawBike == 1)) drawBikeLines(state, view, i1, j1, l1, i2);
+        drawBikeLines(state, view, i1, j1, l1, i2);
+        dimmed = false;
     }
 
     public void drawFrame(ViewState view, EngineStateRecord state) {

@@ -98,6 +98,7 @@
 
 
 	<string name="recording_enabled">Recorder</string>
+	<string name="ghost_enabled">Ghost</string>
 	<string name="god_mode">God mode</string>
 	<string name="perspective">Perspective</string>
 	<string name="shadows">Shadows</string>

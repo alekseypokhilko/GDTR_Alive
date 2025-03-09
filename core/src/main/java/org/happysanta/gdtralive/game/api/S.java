@@ -76,6 +76,7 @@ public enum S {
     about,
     scale,
     recording_enabled,
+    ghost_enabled,
     god_mode,
     perspective,
     shadows,

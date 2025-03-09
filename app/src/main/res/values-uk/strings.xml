@@ -1,310 +1,238 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-	<string name="no">Ні</string>
-	<string name="yes">Так</string>
-	<string name="back">Спинка</string>
-	<string name="ok">Добре</string>
-	<string name="cancel">Скасувати</string>
-	<string name="go_to_main">Перейдіть до Майн</string>
-	<string name="on">Вкл</string>
-	<string name="off">Выкл</string>
-
-	<string name="app_name">GDTR Alive!</string>
-	<string name="action_settings">Налаштування</string>
-	<string name="exit">Гра виходу</string>
-	<string name="main">Головний</string>
-	<string name="campaign">Кампанія</string>
-	<string name="campaign_select">Виберіть кампанію</string>
-	<string name="competition">Гра</string>
-	<string name="workshop">Семінар</string>
-	<string name="profile">Профіл</string>
-	<string name="options">Варіанти</string>
-	<string name="help">Допомога</string>
-	<string name="about">Про</string>
-
-	<string name="daily_challenge">Щоденний виклик</string>
-	<string name="pack_editor">Редактор упаковки</string>
-
-
-	<string name="play">Гра</string>
-	<string name="start">Почати</string>
-	<string name="random_track">Випадковий трек</string>
-	<string name="track_of_day">Трек дня</string>
-	<string name="track_of_day_description">Сьогодні конкуренція</string>
-	<string name="track_of_day_objective">Покажіть усім, на що ви здатні! Завершіть трек найшвидше, і ваше ім’я в історії зійде в історії.</string>
-	<string name="my_time">Мій час</string>
-	<string name="daily_objective">Повні виклики та отримайте винагороду</string>
-	<string name="daily_tracks_description">\"Залишайтеся навчанням. Повні щоденні доріжки\"</string>
-
-	<string name="customisation">Налаштування</string>
-	<string name="highscores">Високі бали</string>
-	<string name="finished">Закувай!</string>
-	<string name="ingame">У грі</string>
-	<string name="enter_name">Введіть назву</string>
-	<string name="confirm_clear">Підтвердити чітко</string>
-	<string name="confirm_reset">Підтвердити скидання</string>
-	<string name="level">Рівень</string>
-	<string name="tracks">Трек</string>
-	<string name="track">Трек</string>
-	<string name="attempt">Спроба</string>
-	<string name="training_mode">Режим навчання</string>
-	<string name="league">Ліга</string>
-	<string name="restart">Перезапустити</string>
-	<string name="restart_with_new_level">Перезавантажте з новим рівнем</string>
-	<string name="send_logs">Надіслати журнали</string>
-	<string name="like">Як</string>
-	<string name="next">Наступний</string>
-	<string name="_continue">Продовжувати</string>
-	<string name="name">Назва</string>
-	<string name="time">Час</string>
-	<string name="scale">Масштаб</string>
-
-	<string name="guid">Guid</string>
-	<string name="date">Дата</string>
-	<string name="author">Автор</string>
-	<string name="description">Опис</string>
-
-	<string name="track_editor">Редактор треку</string>
-	<string name="edit">Редагувати</string>
-	<string name="exit_editor">Редактор виходу</string>
-	<string name="create_new_track">Створити новий трек</string>
-	<string name="track_options">Параметри відстеження</string>
-	<string name="league_properties">Властивості ліги</string>
-	<string name="track_properties">Властивості відстеження</string>
-	<string name="game_properties">Властивості гри</string>
-	<string name="mode">Режим</string>
-	<string name="offset">Компенсація</string>
-	<string name="mode_start_point_move">Початковий переміщення точки</string>
-	<string name="mode_start_flag_move">Почати прапор переміщення</string>
-	<string name="mode_finish_flag_move">Закінчити прапор переміщення</string>
-	<string name="mode_point_selection">Вибір точки</string>
-	<string name="mode_point_move">Точковий хід</string>
-	<string name="mode_camera_move">Переміщення камери</string>
-
-	<string name="achievements">Досягнення</string>
-	<string name="trial_master">Пробний майстер</string>
-	<string name="trial_master_description">Завершіть треки</string>
-	<string name="back_to_school">Назад до школи</string>
-	<string name="back_to_school_description">Практикуйте на треку в режимі навчання</string>
-	<string name="gambler">Азарт</string>
-	<string name="gambler_description">Завершіть випадкові треки</string>
-	<string name="developer">Розробник</string>
-	<string name="developer_description">Створити моди</string>
-	<string name="series_lover">Коханий серії</string>
-	<string name="series_lover_description">Дивіться записи треків</string>
-	<string name="esthete">Естет</string>
-	<string name="esthete_description">Створіть теми</string>
-
-
-	<string name="recording_enabled">Рекордер</string>
-	<string name="god_mode">Режим бога</string>
-	<string name="perspective">Перспектива</string>
-	<string name="shadows">Тіні</string>
-	<string name="driver_sprite">Спрайт водія</string>
-	<string name="bike_sprite">Велосипедний спрайт</string>
-	<string name="input">Введення</string>
-	<string name="active_camera">Активна камера</string>
-	<string name="vibrate_on_touch">Вібрати на дотик</string>
-	<string name="show_keyboard">Показати клавіатуру</string>
-	<string name="clear_highscore">Чіткий високий штак</string>
-	<string name="full_reset">Повне скидання</string>
-	<string name="reset">Скинути</string>
-	<string name="reset_text">Майстер скидання. Застосування буде перезапущено.</string>
-	<string name="unlock_all">Розблокувати все</string>
-	<string name="skip_track">Пропустити трек</string>
-	<string name="skip_track_text">Заблокированный трек на этом уровне будет разблокирован.</string>
-	<string name="unlock_all_text">Усі труднощі, доріжки та ліги будуть розблоковані тимчасово. Використовуйте цей варіант, якщо ви вже досвідчений гравець і шукаєте щось нове. Спробуйте самостійно перемогти гру або грати на випадковому треку.</string>
-
-	<string name="installed_mods">Встановлені моди</string>
-	<string name="download_mods">Завантажити моди</string>
-	<string name="download_options">Варіанти завантаження</string>
-	<string name="install_mrg">Встановити рівень.mrg</string>
-	<string name="import_mrg">Імпорт рівнів.mrg</string>
-	<string name="import_mod">Мод імпорту (.gdmod)</string>
-	<string name="import_theme">\"Імпортувати тему (.gdtheme)\"</string>
-	<string name="import_record">\"Імпорт запису (.gdrecord)\"</string>
-	<string name="levels">\"Доріжки\"</string>
-	<string name="recordings">Записи</string>
-	<string name="record_option">Запис доріжок</string>
-	<string name="share">Share</string>
-	<string name="save">Save</string>
-	<string name="value">Value</string>
-	<string name="saved">Saved</string>
-	<string name="replay">Replay</string>
-
-	<string name="mod_packs">Mods</string>
-	<string name="mod">Mod</string>
-	<string name="mod_activated">Activated mod</string>
-	<string name="themes">Themes</string>
-	<string name="theme">Theme</string>
-	<string name="installed_levels_text">Here you can manage installed levels.</string>
-	<string name="download_levels_text">Here you can download and install new levels.</string>
-
-	<string name="cleared">Cleared</string>
-	<string name="cleared_text">Highscores have been cleared</string>
-	<string name="erase_text1">Clearing the highscores cannot be undone. It will remove all the registered times on all tracks.</string>
-	<string name="erase_text2">Would you like to clear the highscores?</string>
-	<string name="reset_text1">A full reset cannot be undone. It will relock all tracks and leagues and clear back all settings to default. A full reset will restart the application.</string>
-	<string name="reset_text2">Would you like to do a full reset?</string>
-
-	<string name="coming_soon">Coming soon....</string>
-	<string name="objective">Objective</string>
-	<string name="objective_text">Race to the finish line as fast as you can without crashing. By leaning forward and backward you can adjust the rotation of your bike. By landing on both wheels after jumping, your bike won\'t crash as easily. Beware, the levels tend to get harder and harder...</string>
-
-	<string name="keys">Keys</string>
-	<string name="keyset_text"><![CDATA[
-		<b>Keyset 1</b><br/>
-		2 accelerates, 8 brakes, 6 leans forward and 4 leans backward. 1 accelerates and leans backward. 3 accelerates and leans forward. 7 brakes and leans backward. 9 brakes and leans forward.<br/><br/>
-		<b>Keyset 2</b><br/>
-		1 accelerates, 4 brakes, 6 leans forward and 5 leans backward.<br/><br/>
-		<b>Keyset 3</b><br/>
-		3 accelerates, 6 brakes, 5 leans forward and 4 leans backward.
-	]]></string>
-
-	<string name="unlocking">Unlocking</string>
-	<string name="unlocking_text">By completing the easier levels, new levels will be unlocked. You will also gain access to higher leagues where more advanced bikes with different characteristics are available.</string>
-
-	<string name="highscore_text">The three best times on every track are saved for each league. When beating a time on a track you will be asked to enter your name. The highscores can be viewed from the Play Menu. By pressing left and right in the highscore view you can view the highscore for a specific league. The highscore can be cleared from the options menu.</string>
-	<string name="no_highscores">No Highscores</string>
-
-	<string name="options_text"><![CDATA[
-		<b>Perspective: On/Off</b><br/>
-		Default: &lt;On&gt;<br/>
-		Turns on and off the perspective view of the tracks.<br/><br/>
-
-		<b>Shadows: On/Off</b><br/>
-		Default: &lt;On&gt;<br/>
-		Turns on and off the shadows.<br/><br/>
-
-		<b>Driver Sprite: On / Off</b><br/>
-		Default: &lt;On&gt;<br/>
-		&lt;On&gt; uses a texture for the driver. &lt;.Off&gt; uses line graphics.<br/><br/>
-
-		<b>Bike Sprite: On / Off</b><br/>
-		Default: &lt;On&gt;<br/>
-		&lt;On&gt; uses a texture for the bike. &lt;Off&gt; uses line graphics.<br/><br/>
-
-		<b>Input: Keyset 1,2,3</b><br/>
-		Default: &lt;1&gt;<br/>
-		Determines which type of input should be used when playing. See "Keys" in the help menu for more info.<br/><br/>
-
-		<b>Look ahead: On/Off</b><br/>
-		Default: &lt;On&gt;<br/>
-		Turns on and off smart camera movement.<br/><br/>
-
-		<b>Vibrate on touch: On/Off</b><br/>
-		Default: &lt;On&gt;<br/>
-		Enables haptic feedback when you press control keys.<br/><br/>
-
-		<b>Keyboard in menu: On/Off</b><br/>
-		Default: &lt;On&gt;<br/>
-		Turns on and off keyboard in menu.<br/><br/>
-
-		<b>Clear highscore</b><br/>
-		Lets you clear the highscores. Here you can also do a "Full Reset" which will reset the game to original state (clear settings, highscores, unlocked levels and leagues).
-	]]></string>
-	<string name="about_text"><![CDATA[
-		<b>GDTR Alive!</b> by Aleksey Pokhilko<br/>
-		https://github.com/alekseypokhilko/GDTR_Alive \u00A9 2025<br/><br/>
-
-		<b>Gravity Defied Classic</b> ported to Android by Gregory Klyushnikov and Eugene Zinoviev<br/>
-		Кузница винрара<br/>
-		Happy Santa LLC<br/>
-		http://gdtr.net \u00A9 2014<br/><br/>
-
-		<b>Gravity Defied - Trial Racing</b> by Codebrew Software<br/>
-		http://codebrew.se \u00A9 2004
-		]]></string>
-	<string name="ported_text"><![CDATA[
-		<font color="#999999">Ported by</font><br/>
-		<font color="#000000">Кузница винрара</font><br/>
-		<font color="#999999">and</font><br/>
-		<font color="#000000">Happy Santa LLC</font>
-	]]></string>
-
-	<string name="crashed">Crashed</string>
-	<string name="wheelie">Wheelie!</string>
-	<string name="finished1">Finished</string>
-	<string name="enjoy">Enjoy...</string>
-	<string name="congratulations">Congratulations! You have successfully unlocked a new league: </string>
-	<string name="league_unlocked">League unlocked</string>
-	<string name="league_unlocked_text">You have successfully unlocked a new league: </string>
-	<string name="level_completed_text">You have completed all tracks at this level.</string>
-	<string name="complete_to_unlock">Complete more tracks to unlock this track/league combo.</string>
-	<string name="tracks_completed_tpl"><![CDATA[%1$d of %2$d tracks in <b>%3$s</b> completed.]]></string>
-
-	<string name="LEAGUE">LEAGUE</string>
-
-	<string-array name="finished_places">
-		<item>First place!</item>
-		<item>Second place!</item>
-		<item>Third place!</item>
-	</string-array>
-
-	<string-array name="on_off">
-		<item>На</item>
-		<item>Не вистачати</item>
-	</string-array>
-
-	<string-array name="keyset">
-		<item>Keyset 1</item>
-		<item>Keyset 2</item>
-		<item>Keyset 3</item>
-	</string-array>
-
-	<string-array name="difficulty">
-		<item>Easy</item>
-		<item>Medium</item>
-		<item>Hard</item>
-	</string-array>
-
-	<string name="download_error">Cannot download levels list.</string>
-	<string name="no_internet_connection">No internet connection</string>
-	<string name="waiting_for_network">Waiting for network connection&#8230;</string>
-	<string name="levels_count_tpl"><![CDATA[%1$s <font color="#909090">(%2$s)</font>]]></string>
-	<string name="active_name_tpl"><![CDATA[%1$s <font color="#00a000">(Active)</font>]]></string>
-
-	<string name="sort_by">Sort by:</string>
-	<string-array name="sort_variants">
-		<item>Popularity</item>
-		<item>Most recent</item>
-		<item>Oldest</item>
-		<item>Tracks count</item>
-	</string-array>
-
-	<string name="author_tpl"><![CDATA[<font color="#888888">Author:</font> %1$s]]></string>
-	<string name="added_tpl"><![CDATA[<font color="#888888">Added:</font> %1$s]]></string>
-	<string name="installed_tpl"><![CDATA[<font color="#888888">Installed:</font> %1$s]]></string>
-	<string name="tracks_tpl"><![CDATA[<font color="#888888">Tracks:</font> %1$s]]></string>
-	<string name="install_kb">Install (%1$s Kb)</string>
-	<string name="install">Install</string>
-	<string name="rename">Rename</string>
-	<string name="copy">Copy</string>
-	<string name="installing">Installing..</string>
-	<string name="load_this_game">Load this game</string>
-	<string name="enter_levels_name_title">Levels name</string>
-	<string name="enter_levels_name">Enter levels mod name:</string>
-	<string name="error">Error</string>
-	<string name="invalid_value">"Invalid value"</string>
-	<string name="oops">Oops..</string>
-	<string name="please_wait">Please wait..</string>
-	<string name="success">Success</string>
-	<string name="successfully_installed">Levels successfully installed.</string>
-	<string name="open_installed">Open installed</string>
-	<string name="installed">Installed</string>
-	<string name="delete">Delete</string>
-	<string name="deleting">Deleting..</string>
-	<string name="downloading">Downloading..</string>
-	<string name="delete_levels">Delete levels</string>
-	<string name="delete_levels_confirmation">Are you sure you want to delete these levels? This action cannot be undone.</string>
-	<string name="active">Active</string>
-	<string name="unlock_next">Unlock next level</string>
-
-	<string name="e_external_storage_is_not_readable">External storage is not readable. Grant permission "Read all files"</string>
-	<string name="e_downloading_was_interrupted">Downloading was interrupted</string>
-	<string name="e_no_space_left">No space left on device</string>
-	<string name="e_cannot_save_level">Cannot save level into database</string>
-	<string name="e_no_network_connection">No network connection.</string>
-	<string name="e_level_damaged">Looks like this level is damaged.\nYou can skip it and unlock next level.</string>
-
+    <string name="LEAGUE">Ліга</string>
+    <string name="_continue">Продовжити</string>
+    <string name="abc_action_bar_home_description">На головний екран</string>
+    <string name="abc_action_bar_up_description">Перейти вверх</string>
+    <string name="abc_action_menu_overflow_description">Ще</string>
+    <string name="abc_action_mode_done">Готово</string>
+    <string name="abc_activity_chooser_view_see_all">Показати всі</string>
+    <string name="abc_activitychooserview_choose_application">Виберіть додаток</string>
+    <string name="abc_capital_off">ВИМК.</string>
+    <string name="abc_capital_on">УВІМК.</string>
+    <string name="abc_menu_alt_shortcut_label">Alt+</string>
+    <string name="abc_menu_ctrl_shortcut_label">Ctrl+</string>
+    <string name="abc_menu_delete_shortcut_label">Видалити</string>
+    <string name="abc_menu_enter_shortcut_label">Ввід</string>
+    <string name="abc_menu_function_shortcut_label">Fn +</string>
+    <string name="abc_menu_meta_shortcut_label">Meta +</string>
+    <string name="abc_menu_shift_shortcut_label">Shift +</string>
+    <string name="abc_menu_space_shortcut_label">Пробіл</string>
+    <string name="abc_menu_sym_shortcut_label">Sym +</string>
+    <string name="abc_prepend_shortcut_label">Меню +</string>
+    <string name="abc_search_hint">Пошук...</string>
+    <string name="abc_searchview_description_clear">Видалити запит</string>
+    <string name="abc_searchview_description_query">Пошуковий запит</string>
+    <string name="abc_searchview_description_search">Пошук</string>
+    <string name="abc_searchview_description_submit">Подати запит</string>
+    <string name="abc_searchview_description_voice">Голосовий пошук</string>
+    <string name="abc_shareactionprovider_share_with">Поділитися через..</string>
+    <string name="abc_shareactionprovider_share_with_application">Поділитися через %s</string>
+    <string name="abc_toolbar_collapse_description">Згорнути</string>
+    <string name="about">Інформація</string>
+    <string name="about_text">&lt;b>GDTR Alive!&lt;/b> by Aleksey Pokhilko&lt;br/> https://github.com/alekseypokhilko/GDTR_Alive © 2025&lt;br/>&lt;br/> &lt;b>Gravity Defied Classic&lt;/b> ported to Android by Gregory Klyushnikov and Eugene Zinoviev&lt;br/> Кузница винрара&lt;br/> Happy Santa LLC&lt;br/> http://gdtr.net © 2014&lt;br/>&lt;br/> &lt;b>Gravity Defied - Trial Racing&lt;/b> by Codebrew Software&lt;br/> http://codebrew.se © 2004</string>
+    <string name="achievements">Досягнення</string>
+    <string name="action_settings">Налаштування</string>
+    <string name="active">Активний</string>
+    <string name="active_camera">Активна камера</string>
+    <string name="active_name_tpl">%1$s &lt;font color =#00a000> (Активний) &lt;/font></string>
+    <string name="added_tpl">&lt;font color =#888888> Додано: &lt;/font> %1$s</string>
+    <string name="androidx_startup">androidx.startup</string>
+    <string name="app_name">GDTR Alive!</string>
+    <string name="attempt">"Спроба "</string>
+    <string name="author">Автор</string>
+    <string name="author_tpl">&lt;font Color =#888888> Автор: &lt;/font> %1$s</string>
+    <string name="back">Назад</string>
+    <string name="back_to_school">Назад до школи</string>
+    <string name="back_to_school_description">Практикуйтесь на треку в режимі навчання</string>
+    <string name="bike_sprite">Скін мотоцикла</string>
+    <string name="call_notification_answer_action">Відповісти</string>
+    <string name="call_notification_answer_video_action">Відео</string>
+    <string name="call_notification_decline_action">Відхилити</string>
+    <string name="call_notification_hang_up_action">Завершити</string>
+    <string name="call_notification_incoming_text">Вхідний дзвінок</string>
+    <string name="call_notification_ongoing_text">Теперішній дзвінок</string>
+    <string name="call_notification_screening_text">Фільтрація вхідного дзвінка</string>
+    <string name="campaign">Кампанія</string>
+    <string name="campaign_select">Виберіть кампанію</string>
+    <string name="cancel">Скасувати</string>
+    <string name="clear_highscore">Стерти рекорди</string>
+    <string name="cleared">Стерто</string>
+    <string name="cleared_text">Рекорди було стерто</string>
+    <string name="coming_soon">Незабаром...</string>
+    <string name="competition">Грати</string>
+    <string name="complete_to_unlock">Пройдіть більше треків, щоб розблокувати</string>
+    <string name="confirm_clear">Підтвердіть стирання</string>
+    <string name="confirm_reset">Підтвердіть скидання</string>
+    <string name="congratulations">Вітаємо! Ви успішно розблокували нову лігу:</string>
+    <string name="copy">Копіювати</string>
+    <string name="crashed">Розбився</string>
+    <string name="create_new_track">Створити новий трек</string>
+    <string name="customisation">Налаштування</string>
+    <string name="daily_challenge">Щоденний виклик</string>
+    <string name="daily_objective">Виконуйте завдання та отримуйте нагороди</string>
+    <string name="daily_tracks_description">Залишайтеся тренованими. Проходьте щоденні треки</string>
+    <string name="date">Дата</string>
+    <string name="delete">Видалити</string>
+    <string name="delete_levels">Видалити рівні</string>
+    <string name="delete_levels_confirmation">Ви впевнені, що хочете видалити ці рівні? Цю дію не можна скасувати.</string>
+    <string name="deleting">Видалення..</string>
+    <string name="description">Опис</string>
+    <string name="developer">Розробник</string>
+    <string name="developer_description">Створити мод</string>
+    <string name="download_error">Не вдається завантажити список рівнів.</string>
+    <string name="download_levels_text">Тут ви можете завантажити та встановити нові рівні.</string>
+    <string name="download_mods">Завантажити моди</string>
+    <string name="download_options">Параметри завантаження</string>
+    <string name="downloading">Завантаження ..</string>
+    <string name="driver_sprite">Скін водія</string>
+    <string name="e_cannot_save_level">Не вдається зберегти рівень в базу даних</string>
+    <string name="e_downloading_was_interrupted">Завантаження було перервано</string>
+    <string name="e_external_storage_is_not_readable">Зовнішнє сховище не доступне. Надайте дозвіл на читання всіх файлів в налаштуваннях пристрою</string>
+    <string name="e_level_damaged">"Схоже, цей рівень пошкоджений.
+Ви можете пропустити його і розблокувати наступний рівень."</string>
+    <string name="e_no_network_connection">"Немає мережевого з'єднання."</string>
+    <string name="e_no_space_left">На пристрої немає вільного місця</string>
+    <string name="edit">Редагувати</string>
+    <string name="enjoy">Насолоджуйтесь...</string>
+    <string name="enter_levels_name">Введіть назву моду рівнів:</string>
+    <string name="enter_levels_name_title">Назва рівнів</string>
+    <string name="enter_name">"Введіть ім'я"</string>
+    <string name="erase_text1">Стирання рекордів не можна скасувати. Це видалить усі зареєстровані рекорди на всіх треках.</string>
+    <string name="erase_text2">"Хочете скинути рекорди? "</string>
+    <string name="error">Помилка</string>
+    <string name="esthete">Створення</string>
+    <string name="esthete_description">Створіть тему</string>
+    <string name="exit">Вийти з гри</string>
+    <string name="exit_editor">Вийти з редактору</string>
+    <string name="finished">Завершено!</string>
+    <string name="finished1">Пройдено</string>
+    <string name="full_reset">Повне скидання</string>
+    <string name="gambler">Азартний гравець</string>
+    <string name="gambler_description">Пройдіть випадкові треки</string>
+    <string name="game_properties">Властивості гри</string>
+    <string name="go_to_main">Перейти в меню</string>
+    <string name="ghost_enabled">Призрак</string>
+    <string name="god_mode">Режим бога</string>
+    <string name="guid">guid</string>
+    <string name="help">Допомога</string>
+    <string name="highscore_text">"Час з п'яти найкращих заїздів на кожному треку зберігаються для кожної ліги окремо. Рекорди можна переглянути з меню. Натиснувши ліворуч та праворуч під час перегляду рекордів треку, ви можете переглянути рекорди для певної ліги. Рекорди можна стерти з меню параметрів."</string>
+    <string name="highscores">Рекорди</string>
+    <string name="import_mod">Імпортувати мод (.gdmod)</string>
+    <string name="import_mrg">Імпортувати levels.mrg</string>
+    <string name="import_record">Імпортувати запис (.gdrecord)</string>
+    <string name="import_theme">Імпортувати тему (.gdtheme)</string>
+    <string name="ingame">В грі</string>
+    <string name="input">Керування</string>
+    <string name="install">Встановити</string>
+    <string name="install_kb">Встановити (%1$s KB)</string>
+    <string name="install_mrg">Встановити levels.mrg</string>
+    <string name="installed">Встановлено</string>
+    <string name="installed_levels_text">Тут ви можете керувати встановленими рівнями.</string>
+    <string name="installed_mods">Встановлені моди</string>
+    <string name="installed_tpl">&lt;font Color =#888888> Встановлено: &lt;/font> %1$s</string>
+    <string name="installing">Встановлення ..</string>
+    <string name="invalid_value">Недійсне значення</string>
+    <string name="keys">Керування</string>
+    <string name="keyset_text">&lt;b> Клавіші 1 &lt;/b> &lt;br/> 2 прискорення, 8 гальма, 6 нахилитись вперед і 4 нахилитись назад. 1 прискоритись і нахилитись назад. 3 прискоритись і нахилитись вперед. 7 гальмувати і нахилятися назад. 9 гальмувати і нахилятися вперед. &lt;br/> &lt;br/> &lt;b> Клавіші 2 &lt;/b> &lt;br/> 1 прискорення, 4 гальма, 6 нахилитися вперед і 5 нахилитися назад. &lt;br/> &lt;br/> &lt;b> Клавіші 3 &lt;/b> &lt;br/> 3 прискорення, 6 гальма, 5 нахилитися вперед і 4 нахилитися назад.</string>
+    <string name="league">Ліга</string>
+    <string name="league_properties">Властивості ліги</string>
+    <string name="league_unlocked">Ліга розблокована</string>
+    <string name="league_unlocked_text">Ви успішно розблокували нову лігу:</string>
+    <string name="level">Рівень</string>
+    <string name="level_completed_text">Ви завершили всі треки на цьому рівні.</string>
+    <string name="levels">Пакети треків</string>
+    <string name="levels_count_tpl">%1$s &lt;font color=#909090>(%2$s)&lt;/font></string>
+    <string name="like">Лайкнути</string>
+    <string name="load_this_game">Завантажити цю гру</string>
+    <string name="main">Меню</string>
+    <string name="mod">Мод</string>
+    <string name="mod_activated">Активований мод</string>
+    <string name="mod_packs">Моди</string>
+    <string name="mode">Режим</string>
+    <string name="mode_camera_move">Переміщення камери</string>
+    <string name="mode_finish_flag_move">Позиція прапорця фінішу</string>
+    <string name="mode_point_move">Приміщення точки</string>
+    <string name="mode_point_selection">Вибір точки</string>
+    <string name="mode_start_flag_move">Позиція прапорця старту</string>
+    <string name="mode_start_point_move">Позиція старту</string>
+    <string name="my_time">Мій час</string>
+    <string name="name">"Ім'я"</string>
+    <string name="next">Наступний</string>
+    <string name="no">Ні</string>
+    <string name="no_highscores">Немає рекордів</string>
+    <string name="no_internet_connection">Немає підключення до Інтернету</string>
+    <string name="objective">Мета</string>
+    <string name="objective_text">Мчіться до фінішної лінії так швидко, як тільки можете, не розбиваючись. Нахиляючись вперед і назад, ви можете регулювати нахил мотоциклу. Приземляючись на обидва колеса після стрибків, ваш мотоцикл не так легко розбивається. Будьте обережні, рівні, як правило, з часом стають все важче і важче...</string>
+    <string name="off">Вимк.</string>
+    <string name="offset">Зсув</string>
+    <string name="ok">Ок</string>
+    <string name="on">Увімк.</string>
+    <string name="oops">Упс..</string>
+    <string name="open_installed">Відкрити встановлені</string>
+    <string name="options">Параметри</string>
+    <string name="options_text">"&lt;b>Перспектива: Увімк./Вимк.&lt;/b>&lt;br/> За замовчуванням: &amp;lt;Увімк.&amp;gt;&lt;br/> Вмикає та вимикає перспективу вигляду доріжок.&lt;br/>&lt;br/> &lt;b>Тіні:  Увімк./Вимк.&lt;/b>&lt;br/> За замовчуванням: &amp;lt;Увімк.&amp;gt;&lt;br/> Вмикає та вимикає тіні.&lt;br/>&lt;br/> &lt;b>Скін водія: Увімк./Вимк.&lt;/b>&lt;br/> За замовчуванням: &amp;lt;Увімк.&amp;gt;&lt;br/> &amp;lt;Увімк.&amp;gt;  використовує текстуру для водія.  &amp;lt;Вимк.&amp;gt;  використовує лінійну графіку.&lt;br/>&lt;br/> &lt;b>Скін мотоцикла: Увімк./Вимк.&lt;/b>&lt;br/> За замовчуванням: &amp;lt;Увімк.&amp;gt;&lt;br/> &amp;lt;Увімк.&amp;gt;  використовує текстуру для мотоцикла. &lt;br/> &amp;lt;Вимк.&amp;gt;  використовує лінійну графіку.&lt;br/>&lt;br/> &lt;b>Керування: Клавіші 1,2,3&lt;/b>&lt;br/> За замовчуванням: &amp;lt;1&amp;gt;&lt;br/> Визначає, який тип керування слід використовувати в грі.  Перегляньте клавіші в меню довідки, щоб отримати докладнішу інформацію.&lt;br/>&lt;br/> &lt;b>Активна камера: увімк./вимк.&lt;/b>&lt;br/> За умовчанням: &amp;lt;вимк.&amp;gt;&lt;br/> Вмикає та вимикає активний рух камери.&lt;br/>&lt;br/> &lt;b>Вібрація під час дотику: увімк./вимк.&lt;/b>&lt;br/> За замовчуванням: &amp;lt;увімк.&amp;gt;&lt;br/> Вмикає тактильний відгук, коли ви натискаєте клавіші керування.&lt;br/>&lt;br/> &lt;b>Клавіатура в меню: Увімк./Вимк.&lt;/b>&lt;br/> За умовчанням: &amp;lt;Увімк.&amp;gt;&lt;br/> Вмикає та вимикає клавіатуру в меню та в грі.&lt;br/>&lt;br/>  &lt;b>Очистити рекорд&lt;/b>&lt;br/> Дозволяє очистити рекорди.  Тут ви також можете виконати повне скидання, яке поверне гру до початкового стану (очистить налаштування, рекорди, розблоковані рівні та розблокований транспорт)."</string>
+    <string name="pack_editor">Редактор паку</string>
+    <string name="perspective">Перспектива</string>
+    <string name="play">Грати</string>
+    <string name="please_wait">Зачекайте..</string>
+    <string name="ported_text">" &lt;font color=#999999>Ported by&lt;/font>&lt;br/> &lt;font color=#000000>Кузница винрара&lt;/font>&lt;br/> &lt;font color=#999999>and&lt;/font>&lt;br/> &lt;font color=#000000>Happy Santa LLC&lt;/font> "</string>
+    <string name="profile">Профіль</string>
+    <string name="random_track">Випадковий трек</string>
+    <string name="record_option">Запис треку</string>
+    <string name="recording_enabled">Запис рівнів</string>
+    <string name="recordings">Записи</string>
+    <string name="rename">Перейменувати</string>
+    <string name="replay">Відтворити</string>
+    <string name="reset">Скинути</string>
+    <string name="reset_text">Повне скидання. Додаток буде перезапущено</string>
+    <string name="reset_text1">Повне скидання не можна скасувати. Воно видалить усі ркорди, усі відкриті доріжки та ліги, а також очистить усі налаштування за замовчуванням. Повне скидання перезапустить додаток.</string>
+    <string name="reset_text2">Ви хотіли б зробити повне скидання?</string>
+    <string name="restart">Перезапустити</string>
+    <string name="restart_with_new_level">Перезапустити з новим рівнем</string>
+    <string name="save">Зберегти</string>
+    <string name="saved">Збережено</string>
+    <string name="scale">Масштаб</string>
+    <string name="screen_type">Телефон</string>
+    <string name="search_menu_title">Пошук</string>
+    <string name="send_logs">Надіслати журнали</string>
+    <string name="series_lover">Поціновувач серіалів</string>
+    <string name="series_lover_description">Дивіться записи треків</string>
+    <string name="shadows">Тіні</string>
+    <string name="share">Поділитися через..</string>
+    <string name="show_keyboard">Показати клавіатуру</string>
+    <string name="skip_track">Пропустити трек</string>
+    <string name="skip_track_text">Заблокований трек на цьому рівні буде розблоковано.</string>
+    <string name="sort_by">Сортувати:</string>
+    <string name="start">Старт</string>
+    <string name="status_bar_notification_info_overflow">999+</string>
+    <string name="success">Успішно</string>
+    <string name="successfully_installed">Рівні успішно встановлені.</string>
+    <string name="theme">Тема</string>
+    <string name="themes">Теми</string>
+    <string name="time">Час</string>
+    <string name="track">Трек</string>
+    <string name="track_editor">Редактор треку</string>
+    <string name="track_of_day">Трек дня</string>
+    <string name="track_of_day_description">Сьогодняшнє змагання</string>
+    <string name="track_of_day_objective">Покажіть усім, на що ви здатні! Завершіть трек найшвидше, і ваше ім’я буде вписано в історію.</string>
+    <string name="track_options">Параметри треку</string>
+    <string name="track_properties">Властивості треку</string>
+    <string name="tracks">Треки</string>
+    <string name="tracks_completed_tpl">%1$d з %2$d треків у &lt;b> %3$s &lt;/b> завершено.</string>
+    <string name="tracks_tpl">&lt;font color=#888888>Треки:&lt;/font> %1$s</string>
+    <string name="training_mode">Режим тренування</string>
+    <string name="trial_master">Майстер тріалу</string>
+    <string name="trial_master_description">Завершіть треки</string>
+    <string name="unlock_all">Розблокувати все</string>
+    <string name="unlock_all_text">Усі рівні, треки та ліги будуть тимчасово розблоковані. Використовуйте цей варіант, якщо ви вже досвідчений гравець і шукаєте щось нове. Спробуйте самостійно пройти гру, або грати на випадковому треку.</string>
+    <string name="unlock_next">Розблокувати наступний рівень</string>
+    <string name="unlocking">Розблокування</string>
+    <string name="unlocking_text">Завершуючи простіші рівні, будуть розблоковані нові, складніші. Ви також отримаєте доступ до вищих ліг, де доступні більш вдосконалені мотоцикли з різними характеристиками.</string>
+    <string name="value">Значення</string>
+    <string name="vibrate_on_touch">Вібрувати при дотику</string>
+    <string name="waiting_for_network">"Чекаємо на мережеве з'єднання..."</string>
+    <string name="wheelie">На задньому колесі!</string>
+    <string name="workshop">Майстерня</string>
+    <string name="yes">Так</string>
 </resources>

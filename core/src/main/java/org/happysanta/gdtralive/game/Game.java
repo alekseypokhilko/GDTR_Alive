@@ -1,21 +1,23 @@
 package org.happysanta.gdtralive.game;
 
 import org.happysanta.gdtralive.game.api.Constants;
-import org.happysanta.gdtralive.game.engine.Engine;
+import org.happysanta.gdtralive.game.api.GameMode;
 import org.happysanta.gdtralive.game.api.LevelState;
+import org.happysanta.gdtralive.game.api.S;
+import org.happysanta.gdtralive.game.api.exception.InvalidTrackException;
 import org.happysanta.gdtralive.game.api.external.GdMenu;
 import org.happysanta.gdtralive.game.api.external.GdSettings;
 import org.happysanta.gdtralive.game.api.external.GdStr;
-import org.happysanta.gdtralive.game.api.exception.InvalidTrackException;
-import org.happysanta.gdtralive.game.api.model.TrackData;
-import org.happysanta.gdtralive.game.api.GameMode;
-import org.happysanta.gdtralive.game.api.model.MenuData;
-import org.happysanta.gdtralive.game.util.Mapper;
 import org.happysanta.gdtralive.game.api.model.GameParams;
+import org.happysanta.gdtralive.game.api.model.MenuData;
 import org.happysanta.gdtralive.game.api.model.ModEntity;
 import org.happysanta.gdtralive.game.api.model.Score;
+import org.happysanta.gdtralive.game.api.model.TrackData;
+import org.happysanta.gdtralive.game.api.model.TrackRecord;
+import org.happysanta.gdtralive.game.engine.Engine;
+import org.happysanta.gdtralive.game.util.Fmt;
+import org.happysanta.gdtralive.game.util.Mapper;
 import org.happysanta.gdtralive.game.util.Utils;
-import org.happysanta.gdtralive.game.api.S;
 
 /**
  * Core game logic
@@ -272,6 +274,13 @@ public class Game {
                     recorder.captureState();
                 }
             }
+            if (!trainer.isTrainingMode()) {
+                if (engine.timerTime > 0) {
+                    player.nextGhostState();
+                } else {
+                    player.reset();
+                }
+            }
         } else {
             recorder.setCapturingMode(false);
             trainer.stop();
@@ -290,7 +299,12 @@ public class Game {
             view.showInfoMessage(engine.getTrackPhysic().getTrack().name, 3000);
         engine.resetControls();
         keyboardHandler.resetButtonsTouch();
+        trainer.stop();
         trainer.prepare();
+        if (params != null && params.getMode() != GameMode.REPLAY) {
+            player.reset();
+            setGhost(engine.getTrackPhysic().getTrack());
+        }
     }
 
     //fromMenu
@@ -409,9 +423,28 @@ public class Game {
         } else {
             engine.setLeague(track.getLeague());
         }
+        setGhost(track);
         engine.unlockKeys();
         view.setDrawTimer(true);
         menu.menuToGame();
+    }
+
+    private void setGhost(TrackData track) {
+        try {
+            if (!settings.isGhostEnabled()) {
+                return;
+            }
+            Score score = application.getHighScoreManager()
+                    .getHighScores(engine.getTrackPhysic().track.getGuid(), engine.league)
+                    .get(engine.league)
+                    .get(0);
+            String trackId = Utils.getTrackId(track);
+            String fileName = Fmt.recordName(track.getName(), score.getTime(), engine.league, trackId);
+            TrackRecord trackRecord = application.getFileStorage().readRecord(fileName);
+            player.setTrackRecord(trackRecord);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void startAutoplay(boolean resetPlayer) {
@@ -477,6 +510,7 @@ public class Game {
     }
 
     public void handleSetSavepointAction() {
+        player.reset();
         trainer.setSavepoint();
     }
 

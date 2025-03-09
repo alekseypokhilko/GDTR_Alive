@@ -7,6 +7,8 @@ public interface GdSettings {
     void setLevelId(long levelId);
     boolean isRecordingEnabled();
     void setRecordingEnabled(boolean enabled);
+    boolean isGhostEnabled();
+    void setGhostEnabled(boolean enabled);
     boolean isGodModeEnabled();
     void setGodModeEnabled(boolean enabled);
     boolean isPerspectiveEnabled();

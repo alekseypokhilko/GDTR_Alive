@@ -18,6 +18,18 @@ public class Player {
         this.restartMethod = restartMethod;
     }
 
+    public void nextGhostState() {
+        if (trackRecord != null
+                && index < trackRecord.getStates().size()) {
+            EngineStateRecord state = trackRecord.getStates().get(index);
+            state.replay = true;
+            state.track = engine.getTrackPhysic().getTrack();
+            state.setLeague(trackRecord.getLeague());
+            engine.setRespawn(state);
+            index++;
+        }
+    }
+
     public void replay(GameMode mode) {
         if (GameMode.REPLAY != mode) {
             return;
@@ -43,6 +55,7 @@ public class Player {
 
     public void reset() {
         index = 0;
+        engine.setRespawn(null);
         engine.setReplayMode(false);
     }
 

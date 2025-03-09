@@ -39,8 +39,8 @@ public class HighScores {
         List<Score> list = Objects.requireNonNull(scores.get(league));
         for (int i = 0; i < list.size(); i++) {
             Score score = list.get(i);
-            if (score.getTime() > time) {
-                return i + 1;
+            if (time <= score.getTime()) {
+                return i;
             }
         }
         return 10;

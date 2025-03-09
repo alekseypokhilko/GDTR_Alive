@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="difficulty">
+        <item>Легкий</item>
+        <item>Середній</item>
+        <item>Тяжкий</item>
+    </string-array>
+    <string-array name="finished_places">
+        <item>Перше місце!</item>
+        <item>Друге місце!</item>
+        <item>Третє місце!</item>
+    </string-array>
+    <string-array name="keyset">
+        <item>Клавіші 1</item>
+        <item>Клавіші 2</item>
+        <item>Клавіші 3</item>
+    </string-array>
+    <string-array name="on_off">
+        <item>Увімк.</item>
+        <item>Вимк.</item>
+    </string-array>
+    <string-array name="sort_variants">
+        <item>Популярні</item>
+        <item>Найновіші</item>
+        <item>Найстаріші</item>
+        <item>Кількість треків</item>
+    </string-array>
+</resources>

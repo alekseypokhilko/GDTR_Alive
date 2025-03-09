@@ -11,6 +11,8 @@ public interface GdCanvas {
 
     void setColor(int r, int g, int b);
 
+    void setColorDimmed(int r, int g, int b);
+
     void drawRect(int left, int top, int right, int bottom, ViewState view);
 
     void drawLine(int j, int k, int l, int i1, ViewState view);
