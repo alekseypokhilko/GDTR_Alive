@@ -261,9 +261,13 @@ public class Game {
     private void captureOrPlay() {
         if (GameMode.REPLAY != params.getMode()) {
             if (recorder.isCapturing()) {
-                recorder.captureState();
+                if (engine.timerTime > 0) {
+                    recorder.captureState();
+                } else {
+                    recorder.startCapture();
+                }
             } else {
-                if (settings.isRecordingEnabled()) {
+                if (settings.isRecordingEnabled() && engine.timerTime > 0) {
                     recorder.startCapture();
                     recorder.captureState();
                 }
