@@ -339,48 +339,59 @@ public class MenuFactory<T> {
 
             GameTheme gt = theme.getGameTheme();
             s.add(e.selector("Track color", ColorUtil.indexOf(gt.getTrackLineColor()), colorNames, s, item -> {
+                if (item._charvZ()) menu.setCurrentMenu(item.getCurrentMenu());
                 gt.setTrackLineColor(colors.get(colorNames[item.getSelectedOption()]));
                 reloadTheme(theme);
             }));
             s.add(e.selector("Perspective color", ColorUtil.indexOf(gt.getPerspectiveColor()), colorNames, s, item -> {
+                if (item._charvZ()) menu.setCurrentMenu(item.getCurrentMenu());
                 gt.setPerspectiveColor(colors.get(colorNames[item.getSelectedOption()]));
                 reloadTheme(theme);
             }));
             s.add(e.selector("Background color", ColorUtil.indexOf(gt.getGameBackgroundColor()), colorNames, s, item -> {
+                if (item._charvZ()) menu.setCurrentMenu(item.getCurrentMenu());
                 gt.setGameBackgroundColor(colors.get(colorNames[item.getSelectedOption()]));
                 reloadTheme(theme);
             }));
             s.add(e.selector("Start flag color", ColorUtil.indexOf(gt.getStartFlagColor()), colorNames, s, item -> {
+                if (item._charvZ()) menu.setCurrentMenu(item.getCurrentMenu());
                 gt.setStartFlagColor(colors.get(colorNames[item.getSelectedOption()]));
                 reloadTheme(theme);
             }));
             s.add(e.selector("Finish flag color", ColorUtil.indexOf(gt.getFinishFlagColor()), colorNames, s, item -> {
+                if (item._charvZ()) menu.setCurrentMenu(item.getCurrentMenu());
                 gt.setFinishFlagColor(colors.get(colorNames[item.getSelectedOption()]));
                 reloadTheme(theme);
             }));
 
             InterfaceTheme it = theme.getInterfaceTheme();
             s.add(e.selector("Info message color", ColorUtil.indexOf(it.getInfoMessageColor()), colorNames, s, item -> {
+                if (item._charvZ()) menu.setCurrentMenu(item.getCurrentMenu());
                 it.setInfoMessageColor(colors.get(colorNames[item.getSelectedOption()]));
                 reloadTheme(theme);
             }));
             s.add(e.selector("Progress color", ColorUtil.indexOf(it.getProgressColor()), colorNames, s, item -> {
+                if (item._charvZ()) menu.setCurrentMenu(item.getCurrentMenu());
                 it.setProgressColor(colors.get(colorNames[item.getSelectedOption()]));
                 reloadTheme(theme);
             }));
             s.add(e.selector("Progress BG color", ColorUtil.indexOf(it.getProgressBackgroundColor()), colorNames, s, item -> {
+                if (item._charvZ()) menu.setCurrentMenu(item.getCurrentMenu());
                 it.setProgressBackgroundColor(colors.get(colorNames[item.getSelectedOption()]));
                 reloadTheme(theme);
             }));
             s.add(e.selector("Text color", ColorUtil.indexOf(it.getTextColor()), colorNames, s, item -> {
+                if (item._charvZ()) menu.setCurrentMenu(item.getCurrentMenu());
                 it.setTextColor(colors.get(colorNames[item.getSelectedOption()]));
                 reloadTheme(theme);
             }));
             s.add(e.selector("Menu title color", ColorUtil.indexOf(it.getMenuTitleTextColor()), colorNames, s, item -> {
+                if (item._charvZ()) menu.setCurrentMenu(item.getCurrentMenu());
                 it.setMenuTitleTextColor(colors.get(colorNames[item.getSelectedOption()]));
                 reloadTheme(theme);
             }));
             s.add(e.selector("Keyboard text color", ColorUtil.indexOf(it.getKeyboardTextColor()), colorNames, s, item -> {
+                if (item._charvZ()) menu.setCurrentMenu(item.getCurrentMenu());
                 it.setKeyboardTextColor(colors.get(colorNames[item.getSelectedOption()]));
                 reloadTheme(theme);
             }));
