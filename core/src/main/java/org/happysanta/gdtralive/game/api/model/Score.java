@@ -5,10 +5,10 @@ import org.happysanta.gdtralive.game.api.Constants;
 import java.util.Date;
 
 public class Score {
+    private String trackId; //Utils.getTrackId()
     private int league;
-    private String levelGuid;
-    private String name;
     private long time;
+    private String name;
     private String date;
 
     public Score() {
@@ -23,12 +23,12 @@ public class Score {
         this.league = league;
     }
 
-    public String getLevelGuid() {
-        return levelGuid;
+    public String getTrackId() {
+        return trackId;
     }
 
-    public void setLevelGuid(String levelGuid) {
-        this.levelGuid = levelGuid;
+    public void setTrackId(String trackId) {
+        this.trackId = trackId;
     }
 
     public String getName() {

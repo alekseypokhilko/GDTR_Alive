@@ -365,7 +365,7 @@ public class Game {
             return;
         }
         Score score = new Score();
-        score.setLevelGuid(Utils.getTrackId(engine.getTrackPhysic().getTrack()));
+        score.setTrackId(Utils.getTrackId(engine.getTrackPhysic().getTrack()));
         score.setLeague(params.getLeague());
         score.setTime(lastTrackTime);
         score.setName(settings.getPlayerName());

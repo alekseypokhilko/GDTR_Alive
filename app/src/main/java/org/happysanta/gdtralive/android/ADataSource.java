@@ -209,7 +209,7 @@ public class ADataSource implements GdDataSource {
         if (cursor.getCount() > 0) {
             while (!cursor.isAfterLast()) {
                 Score score = new Score();
-                score.setLevelGuid(cursor.getString(cursor.getColumnIndex(Sql.SCORES_COLUMN_LEVEL_GUID)));
+                score.setTrackId(cursor.getString(cursor.getColumnIndex(Sql.SCORES_COLUMN_LEVEL_GUID)));
                 score.setLeague(cursor.getInt(cursor.getColumnIndex(Sql.SCORES_COLUMN_LEAGUE)));
                 score.setTime(cursor.getLong(cursor.getColumnIndex(Sql.SCORES_COLUMN_TIME)));
                 score.setDate(cursor.getString(cursor.getColumnIndex(Sql.SCORES_COLUMN_DATE)));
@@ -228,7 +228,7 @@ public class ADataSource implements GdDataSource {
 
     public synchronized void saveHighScore(Score score) {
         ContentValues values = new ContentValues();
-        values.put(Sql.SCORES_COLUMN_LEVEL_GUID, score.getLevelGuid());
+        values.put(Sql.SCORES_COLUMN_LEVEL_GUID, score.getTrackId());
         values.put(Sql.SCORES_COLUMN_LEAGUE, score.getLeague());
         values.put(Sql.SCORES_COLUMN_TIME, score.getTime());
         values.put(Sql.SCORES_COLUMN_NAME, score.getName());

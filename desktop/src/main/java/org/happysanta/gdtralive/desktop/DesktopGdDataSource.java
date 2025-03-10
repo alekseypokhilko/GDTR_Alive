@@ -66,7 +66,7 @@ public class DesktopGdDataSource implements GdDataSource {
     private static Score getScore(String levelGuid, int league) {
         Score t = new Score();
         t.setLeague(league);
-        t.setLevelGuid(levelGuid);
+        t.setTrackId(levelGuid);
         t.setName("AAA");
         t.setTime(123);
         return t;
