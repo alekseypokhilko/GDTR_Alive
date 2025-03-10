@@ -382,7 +382,7 @@ public class Game {
             scoreDto.setTrackId(score.getTrackId());
 
             String url = application.getServerConfig().url();
-            String scoreGuid = APIClient.serverCall(url, serverApi -> serverApi.sendScore(scoreDto));
+            new Thread(() -> APIClient.serverCall(url, serverApi -> serverApi.sendScore(scoreDto))).start();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -453,7 +453,7 @@ public class Game {
             }
             String trackId = Utils.getTrackId(track);
             Score score = application.getHighScoreManager()
-                    .getHighScores(trackId, engine.league)
+                    .getLocalHighScores(trackId, engine.league)
                     .get(engine.league)
                     .get(0);
             String fileName = Fmt.recordName(track.getName(), score.getTime(), engine.league, trackId);

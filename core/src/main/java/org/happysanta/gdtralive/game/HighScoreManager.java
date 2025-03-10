@@ -7,6 +7,8 @@ import org.happysanta.gdtralive.game.api.model.Score;
 import org.happysanta.gdtralive.game.http.APIClient;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 public class HighScoreManager {
 
@@ -21,7 +23,8 @@ public class HighScoreManager {
     public HighScores getHighScores(String trackId, int league) {
         try {
             String url = application.getServerConfig().url();
-            List<ScoreDto> scoreDtos = APIClient.serverCall(url, serverApi -> serverApi.trackScores(trackId, league));
+            CompletableFuture<List<ScoreDto>> future = CompletableFuture.supplyAsync(() -> APIClient.serverCall(url, serverApi -> serverApi.trackScores(trackId, league)));
+            List<ScoreDto> scoreDtos = future.get(3, TimeUnit.SECONDS);
             HighScores highScores = new HighScores(league);
             List<Score> scores = highScores.get(league);
             for (ScoreDto dto : scoreDtos) {
@@ -37,6 +40,10 @@ public class HighScoreManager {
         } catch (Exception e) {
             e.printStackTrace(); //todo
         }
+        return getLocalHighScores(trackId, league);
+    }
+
+    public HighScores getLocalHighScores(String trackId, int league) {
         return dataSource.getHighScores(trackId, league);
     }
 

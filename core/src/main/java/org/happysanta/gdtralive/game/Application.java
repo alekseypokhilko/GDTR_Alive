@@ -51,11 +51,14 @@ public class Application {
         this.str = str;
         this.fileStorage = fileStorage;
         this.dataSource = dataSource;
-        try {
-            this.serverConfig = APIClient.fetchConfig(ConfigApi::serverConfig);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        new Thread(() -> {
+            try {
+                this.serverConfig = APIClient.fetchConfig(ConfigApi::serverConfig);
+            } catch (Exception e) {
+                e.printStackTrace();
+                this.serverConfig = new ServerConfig("185.242.86.223", 28080);
+            }
+        }).start();
 
         fileStorage.setApplication(this);
         thread = null;

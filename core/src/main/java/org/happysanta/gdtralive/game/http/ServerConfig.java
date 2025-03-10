@@ -4,6 +4,14 @@ public class ServerConfig {
     private String host;
     private Integer port;
 
+    public ServerConfig() {
+    }
+
+    public ServerConfig(String host, Integer port) {
+        this.host = host;
+        this.port = port;
+    }
+
     public String getHost() {
         return host;
     }
