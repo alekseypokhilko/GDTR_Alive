@@ -106,8 +106,8 @@ public class Game {
         }
 
         for (int i1 = settings.getGameSpeed(); i1 > 0; i1--) {
-            captureOrPlay();
             engine.timerTime = Utils.calculateTimerTime(startedTime, finishedTime, pausedTime, currentTimeMillis);
+            captureOrPlay();
             LevelState levelState = engine.getLevelState();
             if (LevelState.CRASHED_IN_AIR == levelState && delayedRestartAtTime == 0L) {
                 trainer.onCrash(() -> {
@@ -261,30 +261,30 @@ public class Game {
     }
 
     private void captureOrPlay() {
-        if (GameMode.REPLAY != params.getMode()) {
-            if (recorder.isCapturing()) {
-                if (engine.timerTime > 0) {
-                    recorder.captureState();
-                } else {
-                    recorder.startCapture();
-                }
-            } else {
-                if (settings.isRecordingEnabled() && engine.timerTime > 0) {
-                    recorder.startCapture();
-                    recorder.captureState();
-                }
-            }
-            if (!trainer.isTrainingMode()) {
-                if (engine.timerTime > 0) {
-                    player.nextGhostState();
-                } else {
-                    player.reset();
-                }
-            }
-        } else {
+        if (GameMode.REPLAY == params.getMode()) {
             recorder.setCapturingMode(false);
             trainer.stop();
             player.replay(params.getMode());
+            return;
+        }
+        if (!trainer.isTrainingMode()) {
+            if (engine.timerTime > 0) {
+                player.nextGhostState();
+            } else {
+                player.reset();
+            }
+        }
+        if (recorder.isCapturing()) {
+            if (engine.timerTime > 0) {
+                recorder.captureState();
+            } else {
+                recorder.startCapture();
+            }
+        } else {
+            if (settings.isRecordingEnabled() && engine.timerTime > 0) {
+                recorder.startCapture();
+                recorder.captureState();
+            }
         }
     }
 
@@ -429,6 +429,7 @@ public class Game {
     }
 
     private void setGhost(TrackData track) {
+        player.setTrackRecord(null);
         player.reset();
         try {
             if (!settings.isGhostEnabled()) {
@@ -503,7 +504,7 @@ public class Game {
         keyboardHandler.setInputOption(option);
         settings.setInputOption(option);
     }
-    // ======= settings =======
+// ======= settings =======
 
     public void pause() {
         pausedTimeStarted = System.currentTimeMillis();

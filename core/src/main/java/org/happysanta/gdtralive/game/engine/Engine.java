@@ -166,6 +166,8 @@ public class Engine {
 
     public void resetToStart_MAYBE() {
         setStartCoordinates_MAYBE(trackPhysic.getStartX(), trackPhysic.getStartY());
+        timerTime = 0;
+        respawn = null;
         acceleration = 0;
         m_kI = 0;
         crashedInAir_MAYBE = false;
