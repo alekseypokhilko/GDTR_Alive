@@ -4,6 +4,7 @@ import org.happysanta.gdtralive.game.api.Constants;
 import org.happysanta.gdtralive.game.api.GameMode;
 import org.happysanta.gdtralive.game.api.LevelState;
 import org.happysanta.gdtralive.game.api.S;
+import org.happysanta.gdtralive.game.api.dto.ScoreDto;
 import org.happysanta.gdtralive.game.api.exception.InvalidTrackException;
 import org.happysanta.gdtralive.game.api.external.GdMenu;
 import org.happysanta.gdtralive.game.api.external.GdSettings;
@@ -15,6 +16,7 @@ import org.happysanta.gdtralive.game.api.model.Score;
 import org.happysanta.gdtralive.game.api.model.TrackData;
 import org.happysanta.gdtralive.game.api.model.TrackRecord;
 import org.happysanta.gdtralive.game.engine.Engine;
+import org.happysanta.gdtralive.game.http.APIClient;
 import org.happysanta.gdtralive.game.util.Fmt;
 import org.happysanta.gdtralive.game.util.Mapper;
 import org.happysanta.gdtralive.game.util.Utils;
@@ -370,6 +372,20 @@ public class Game {
         score.setTime(lastTrackTime);
         score.setName(settings.getPlayerName());
         application.getHighScoreManager().saveHighScore(score);
+
+        try {
+            ScoreDto scoreDto = new ScoreDto();
+            scoreDto.setDate(score.getDate());
+            scoreDto.setName(score.getName());
+            scoreDto.setTime(score.getTime());
+            scoreDto.setLeague(score.getLeague());
+            scoreDto.setTrackId(score.getTrackId());
+
+            String url = application.getServerConfig().url();
+            String scoreGuid = APIClient.serverCall(url, serverApi -> serverApi.sendScore(scoreDto));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         Achievement.achievements.get(Achievement.Type.TRIAL_MASTER).increment();
     }
 

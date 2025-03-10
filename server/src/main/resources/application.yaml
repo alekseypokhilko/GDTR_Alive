@@ -1,0 +1,19 @@
+server:
+  port: 28080
+
+spring:
+  application:
+    name: GdtrAliveServer
+  datasource:
+    url: jdbc:h2:mem:db;NON_KEYWORDS=user
+    username: sa
+    password: sa
+    driverClassName: org.h2.Driver
+    jpa:
+      hibernate:
+        ddl-auto: create-drop
+      open-in-view: false
+      properties:
+        hibernate:
+          globally_quoted_identifiers: true
+      spring.jpa.database-platform: org.hibernate.dialect.H2Dialect

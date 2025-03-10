@@ -108,6 +108,11 @@ public class DesktopCanvas implements GdCanvas {
         canvas.setColor(new java.awt.Color(r, g, b));
     }
 
+    @Override
+    public void setColorDimmed(int r, int g, int b) {
+
+    }
+
     public void drawRect(int left, int top, int right, int bottom, ViewState view) {
         canvas.fillRect(left, top, right, bottom);
     }

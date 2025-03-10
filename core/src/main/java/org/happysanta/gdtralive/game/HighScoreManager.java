@@ -1,8 +1,10 @@
 package org.happysanta.gdtralive.game;
 
+import org.happysanta.gdtralive.game.api.dto.ScoreDto;
 import org.happysanta.gdtralive.game.api.external.GdDataSource;
 import org.happysanta.gdtralive.game.api.model.HighScores;
 import org.happysanta.gdtralive.game.api.model.Score;
+import org.happysanta.gdtralive.game.http.APIClient;
 
 import java.util.List;
 
@@ -16,8 +18,26 @@ public class HighScoreManager {
         this.application = application;
     }
 
-    public HighScores getHighScores(String levelGuid, int league) {
-        return dataSource.getHighScores(levelGuid, league);
+    public HighScores getHighScores(String trackId, int league) {
+        try {
+            String url = application.getServerConfig().url();
+            List<ScoreDto> scoreDtos = APIClient.serverCall(url, serverApi -> serverApi.trackScores(trackId, league));
+            HighScores highScores = new HighScores(league);
+            List<Score> scores = highScores.get(league);
+            for (ScoreDto dto : scoreDtos) {
+                Score score = new Score();
+                score.setTrackId(dto.getTrackId());
+                score.setLeague(dto.getLeague());
+                score.setTime(dto.getTime());
+                score.setName(dto.getName());
+                score.setDate(dto.getDate());
+                scores.add(score);
+            }
+            return highScores;
+        } catch (Exception e) {
+            e.printStackTrace(); //todo
+        }
+        return dataSource.getHighScores(trackId, league);
     }
 
     public List<String> getFormattedScores(String trackGuid, int league) {

@@ -8,6 +8,9 @@ import org.happysanta.gdtralive.game.api.external.GdPlatform;
 import org.happysanta.gdtralive.game.api.external.GdSettings;
 import org.happysanta.gdtralive.game.api.external.GdSettingsStorage;
 import org.happysanta.gdtralive.game.api.external.GdStr;
+import org.happysanta.gdtralive.game.http.APIClient;
+import org.happysanta.gdtralive.game.http.ConfigApi;
+import org.happysanta.gdtralive.game.http.ServerConfig;
 
 /**
  * Core application logic
@@ -15,6 +18,7 @@ import org.happysanta.gdtralive.game.api.external.GdStr;
 public class Application {
     private Game game;
     private GdMenu menu;
+    private ServerConfig serverConfig;
 
     private final GdPlatform platform;
     private final GdSettings settings;
@@ -47,6 +51,11 @@ public class Application {
         this.str = str;
         this.fileStorage = fileStorage;
         this.dataSource = dataSource;
+        try {
+            this.serverConfig = APIClient.fetchConfig(ConfigApi::serverConfig);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         fileStorage.setApplication(this);
         thread = null;
@@ -96,7 +105,10 @@ public class Application {
         destroyApp(false);
     }
 
-    
+    public ServerConfig getServerConfig() {
+        return serverConfig;
+    }
+
     public void onResume() {
         if (wasPaused && wasStarted) {
             pause = false;
