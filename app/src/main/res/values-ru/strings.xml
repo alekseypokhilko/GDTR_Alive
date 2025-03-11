@@ -73,6 +73,7 @@
 	<string name="track_properties">Свойства трека</string>
     <string name="interface_properties">Свойства интерфейса</string>
     <string name="game_properties">Свойства игры</string>
+	<string name="finishFlagColor">Финиш</string>
 	<string name="mode">Режим</string>
 	<string name="offset">Сдвиг</string>
 	<string name="mode_start_point_move">Позиция старта</string>
@@ -264,4 +265,29 @@
 		<item>Самые старые</item>
 		<item>Количество треков</item>
 	</string-array>
+	<string name="backWheelsColor">Заднее колесо</string>
+	<string name="backWheelDotColor">Точка заднего колеса</string>
+	<string name="frontWheelDotColor">Точка переднего колеса</string>
+	<string name="backWheelsSpokeColor">Задние спицы</string>
+	<string name="frontWheelsColor">Переднее колесо</string>
+	<string name="frontWheelsSpokeColor">Передние спицы</string>
+	<string name="forkColor">Вилка</string>
+	<string name="drawWheelLines">Линии колес</string>
+	<string name="drawWheelSprite">Спрайт колес</string>
+	<string name="bikeLinesColor">Линии байка</string>
+	<string name="bikeColor">Байк</string>
+	<string name="bikerHeadColor">Голова</string>
+	<string name="bikerLegColor">Нога</string>
+	<string name="bikerBodyColor">Тело</string>
+	<string name="steeringColor">Руль</string>
+	<string name="infoMessageColor">Сообщение</string>
+	<string name="progressBackgroundColor">Задник прогресса</string>
+	<string name="progressColor">Прогресс</string>
+	<string name="keyboardTextColor">Цифры клавиатуры</string>
+	<string name="menuTitleTextColor">Заголовок меню</string>
+	<string name="textColor">Текст</string>
+	<string name="gameBackgroundColor">Фон</string>
+	<string name="trackLineColor">Трек</string>
+	<string name="perspectiveColor">Перспектива</string>
+	<string name="startFlagColor">Старт</string>
 </resources>

@@ -134,6 +134,40 @@ public class AStr implements GdStr {
         strings.put(S.finished_places, R.array.finished_places);
         strings.put(S.keyset, R.array.keyset);
         strings.put(S.on_off, R.array.on_off);
+
+        strings.put(S.backWheelDotColor, R.string.backWheelDotColor);
+        strings.put(S.frontWheelDotColor, R.string.frontWheelDotColor);
+        strings.put(S.backWheelsColor, R.string.backWheelsColor);
+        strings.put(S.backWheelsSpokeColor, R.string.backWheelsSpokeColor);
+        strings.put(S.frontWheelsColor, R.string.frontWheelsColor);
+        strings.put(S.frontWheelsSpokeColor, R.string.frontWheelsSpokeColor);
+        strings.put(S.forkColor, R.string.forkColor);
+        strings.put(S.drawWheelLines, R.string.drawWheelLines);
+        strings.put(S.drawWheelSprite, R.string.drawWheelSprite);
+        strings.put(S.bikeLinesColor, R.string.bikeLinesColor);
+        strings.put(S.bikeColor, R.string.bikeColor);
+        strings.put(S.bikerHeadColor, R.string.bikerHeadColor);
+        strings.put(S.bikerLegColor, R.string.bikerLegColor);
+        strings.put(S.bikerBodyColor, R.string.bikerBodyColor);
+        strings.put(S.steeringColor, R.string.steeringColor);
+        strings.put(S.infoMessageColor, R.string.infoMessageColor);
+        strings.put(S.progressBackgroundColor, R.string.progressBackgroundColor);
+        strings.put(S.progressColor, R.string.progressColor);
+        strings.put(S.splashColor, R.string.splashColor);
+        strings.put(S.lockSkinIndex, R.string.lockSkinIndex);
+        strings.put(S.menuBackgroundColor, R.string.menuBackgroundColor);
+        strings.put(S.keyboardTextColor, R.string.keyboardTextColor);
+        strings.put(S.keyboardBackgroundColor, R.string.keyboardBackgroundColor);
+        strings.put(S.menuTitleTextColor, R.string.menuTitleTextColor);
+        strings.put(S.menuTitleBackgroundColor, R.string.menuTitleBackgroundColor);
+        strings.put(S.frameBackgroundColor, R.string.frameBackgroundColor);
+        strings.put(S.mainMenuBackgroundColor, R.string.mainMenuBackgroundColor);
+        strings.put(S.textColor, R.string.textColor);
+        strings.put(S.gameBackgroundColor, R.string.gameBackgroundColor);
+        strings.put(S.trackLineColor, R.string.trackLineColor);
+        strings.put(S.perspectiveColor, R.string.perspectiveColor);
+        strings.put(S.startFlagColor, R.string.startFlagColor);
+        strings.put(S.finishFlagColor, R.string.finishFlagColor);
     }
 
     public String s(Integer r) {

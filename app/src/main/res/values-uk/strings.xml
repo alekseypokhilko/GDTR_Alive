@@ -115,6 +115,7 @@
     <string name="mod">Мод</string>
     <string name="mod_activated">Активований мод</string>
     <string name="mod_packs">Моди</string>
+    <string name="finishFlagColor">Финиш</string>
     <string name="mode">Режим</string>
     <string name="mode_camera_move">Переміщення камери</string>
     <string name="mode_finish_flag_move">Позиція прапорця фінішу</string>
@@ -199,4 +200,29 @@
     <string name="wheelie">На задньому колесі!</string>
     <string name="workshop">Майстерня</string>
     <string name="yes">Так</string>
+    <string name="backWheelDotColor">Точка заднего колеса</string>
+    <string name="frontWheelDotColor">Точка переднего колеса</string>
+    <string name="backWheelsSpokeColor">Задние спицы</string>
+    <string name="frontWheelsColor">Переднее колесо</string>
+    <string name="frontWheelsSpokeColor">Передние спицы</string>
+    <string name="forkColor">Вилка</string>
+    <string name="drawWheelLines">Линии колес</string>
+    <string name="drawWheelSprite">Спрайт колес</string>
+    <string name="bikeLinesColor">Линии байка</string>
+    <string name="bikeColor">Байк</string>
+    <string name="bikerHeadColor">Голова</string>
+    <string name="bikerLegColor">Нога</string>
+    <string name="bikerBodyColor">Тело</string>
+    <string name="steeringColor">Руль</string>
+    <string name="infoMessageColor">Сообщение</string>
+    <string name="progressBackgroundColor">Задник прогресса</string>
+    <string name="progressColor">Прогресс</string>
+    <string name="keyboardTextColor">Цифры клавиатуры</string>
+    <string name="menuTitleTextColor">Заголовок меню</string>
+    <string name="textColor">Текст</string>
+    <string name="gameBackgroundColor">Фон</string>
+    <string name="trackLineColor">Трек</string>
+    <string name="perspectiveColor">Перспектива</string>
+    <string name="startFlagColor">Старт</string>
+    <string name="backWheelsColor">Заднее колесо</string>
 </resources>
