@@ -36,6 +36,7 @@ public interface PlatformMenuElementFactory<T> {
 
     IMenuActionElement<T> action(String title, int action, ActionHandler<IMenuActionElement<T>> handler);
 
+    IMenuActionElement<T> action(String title, ActionHandler<IMenuActionElement<T>> handler, boolean reloadTheme);
     IMenuActionElement<T> action(String title, ActionHandler<IMenuActionElement<T>> handler);
 
     MenuElement<T> textHtmlBold(String key, String value);
@@ -53,6 +54,7 @@ public interface PlatformMenuElementFactory<T> {
     MenuElement<T> getItem(String text, boolean padding);
 
     IOptionsMenuElement<T> selector(String title, int selected, String[] options, MenuScreen<T> parent, ActionHandler<IOptionsMenuElement<T>> handler);
+    IOptionsMenuElement<T> color(String title, int selected, MenuScreen<T> parent, ActionHandler<IOptionsMenuElement<T>> handler);
 
     IToggleMenuElement<T> toggle(String title, int selected, ActionHandler<IToggleMenuElement<T>> action);
 }

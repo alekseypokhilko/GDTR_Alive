@@ -9,7 +9,9 @@ import org.happysanta.gdtralive.game.api.menu.TouchInterceptor;
 import org.happysanta.gdtralive.game.api.menu.view.IMenuHelmetView;
 import org.happysanta.gdtralive.game.api.menu.view.IMenuImageView;
 import org.happysanta.gdtralive.game.api.menu.view.IMenuTextView;
+import org.happysanta.gdtralive.game.api.model.Color;
 import org.happysanta.gdtralive.game.api.util.ActionHandler;
+import org.happysanta.gdtralive.game.util.ColorUtil;
 import org.happysanta.gdtralive.game.util.Fmt;
 
 public class OptionsMenuElement<T>
@@ -119,7 +121,14 @@ public class OptionsMenuElement<T>
         optionsScreen = factory.screen(text, screen);
         optionsScreenItems = new IMenuActionElement[options.length];
         for (int k = 0; k < optionsScreenItems.length; k++) {
-            optionsScreenItems[k] = factory.action(options[k], this);
+            optionsScreenItems[k] = factory.action(options[k], this, false);
+            try {
+                Color color = ColorUtil.colors.get(options[k]);
+                if (color != null) {
+                    optionsScreenItems[k].setColor(color);
+                }
+            } catch (Exception ignore) {
+            }
             if (k > unlockedCount) {
                 optionsScreenItems[k].setLock(true, true);
             }

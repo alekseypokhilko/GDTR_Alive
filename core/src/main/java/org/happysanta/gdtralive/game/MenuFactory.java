@@ -343,27 +343,27 @@ public class MenuFactory<T> {
             s.add(e.emptyLine(true));
             s.add(e.textHtmlBold(str.s(S.track_properties), null));
             GameTheme gt = theme.getGameTheme();
-            s.add(e.selector(str.s(S.trackLineColor), ColorUtil.indexOf(gt.getTrackLineColor()), colorNames, s, item -> {
+            s.add(e.color(str.s(S.trackLineColor), ColorUtil.indexOf(gt.getTrackLineColor()), s, item -> {
                 if (item._charvZ()) menu.setCurrentMenu(item.getCurrentMenu());
                 gt.setTrackLineColor(colors.get(colorNames[item.getSelectedOption()]));
                 reloadTheme(theme);
             }));
-            s.add(e.selector(str.s(S.perspectiveColor), ColorUtil.indexOf(gt.getPerspectiveColor()), colorNames, s, item -> {
+            s.add(e.color(str.s(S.perspectiveColor), ColorUtil.indexOf(gt.getPerspectiveColor()), s, item -> {
                 if (item._charvZ()) menu.setCurrentMenu(item.getCurrentMenu());
                 gt.setPerspectiveColor(colors.get(colorNames[item.getSelectedOption()]));
                 reloadTheme(theme);
             }));
-            s.add(e.selector(str.s(S.gameBackgroundColor), ColorUtil.indexOf(gt.getGameBackgroundColor()), colorNames, s, item -> {
+            s.add(e.color(str.s(S.gameBackgroundColor), ColorUtil.indexOf(gt.getGameBackgroundColor()), s, item -> {
                 if (item._charvZ()) menu.setCurrentMenu(item.getCurrentMenu());
                 gt.setGameBackgroundColor(colors.get(colorNames[item.getSelectedOption()]));
                 reloadTheme(theme);
             }));
-            s.add(e.selector(str.s(S.startFlagColor), ColorUtil.indexOf(gt.getStartFlagColor()), colorNames, s, item -> {
+            s.add(e.color(str.s(S.startFlagColor), ColorUtil.indexOf(gt.getStartFlagColor()), s, item -> {
                 if (item._charvZ()) menu.setCurrentMenu(item.getCurrentMenu());
                 gt.setStartFlagColor(colors.get(colorNames[item.getSelectedOption()]));
                 reloadTheme(theme);
             }));
-            s.add(e.selector(str.s(S.finishFlagColor), ColorUtil.indexOf(gt.getFinishFlagColor()), colorNames, s, item -> {
+            s.add(e.color(str.s(S.finishFlagColor), ColorUtil.indexOf(gt.getFinishFlagColor()), s, item -> {
                 if (item._charvZ()) menu.setCurrentMenu(item.getCurrentMenu());
                 gt.setFinishFlagColor(colors.get(colorNames[item.getSelectedOption()]));
                 reloadTheme(theme);
@@ -372,32 +372,32 @@ public class MenuFactory<T> {
             s.add(e.emptyLine(true));
             s.add(e.textHtmlBold(str.s(S.interface_properties), null));
             InterfaceTheme it = theme.getInterfaceTheme();
-            s.add(e.selector(str.s(S.infoMessageColor), ColorUtil.indexOf(it.getInfoMessageColor()), colorNames, s, item -> {
+            s.add(e.color(str.s(S.infoMessageColor), ColorUtil.indexOf(it.getInfoMessageColor()), s, item -> {
                 if (item._charvZ()) menu.setCurrentMenu(item.getCurrentMenu());
                 it.setInfoMessageColor(colors.get(colorNames[item.getSelectedOption()]));
                 reloadTheme(theme);
             }));
-            s.add(e.selector(str.s(S.progressColor), ColorUtil.indexOf(it.getProgressColor()), colorNames, s, item -> {
+            s.add(e.color(str.s(S.progressColor), ColorUtil.indexOf(it.getProgressColor()), s, item -> {
                 if (item._charvZ()) menu.setCurrentMenu(item.getCurrentMenu());
                 it.setProgressColor(colors.get(colorNames[item.getSelectedOption()]));
                 reloadTheme(theme);
             }));
-            s.add(e.selector(str.s(S.progressBackgroundColor), ColorUtil.indexOf(it.getProgressBackgroundColor()), colorNames, s, item -> {
+            s.add(e.color(str.s(S.progressBackgroundColor), ColorUtil.indexOf(it.getProgressBackgroundColor()), s, item -> {
                 if (item._charvZ()) menu.setCurrentMenu(item.getCurrentMenu());
                 it.setProgressBackgroundColor(colors.get(colorNames[item.getSelectedOption()]));
                 reloadTheme(theme);
             }));
-            s.add(e.selector(str.s(S.textColor), ColorUtil.indexOf(it.getTextColor()), colorNames, s, item -> {
+            s.add(e.color(str.s(S.textColor), ColorUtil.indexOf(it.getTextColor()), s, item -> {
                 if (item._charvZ()) menu.setCurrentMenu(item.getCurrentMenu());
                 it.setTextColor(colors.get(colorNames[item.getSelectedOption()]));
                 reloadTheme(theme);
             }));
-            s.add(e.selector(str.s(S.menuTitleTextColor), ColorUtil.indexOf(it.getMenuTitleTextColor()), colorNames, s, item -> {
+            s.add(e.color(str.s(S.menuTitleTextColor), ColorUtil.indexOf(it.getMenuTitleTextColor()), s, item -> {
                 if (item._charvZ()) menu.setCurrentMenu(item.getCurrentMenu());
                 it.setMenuTitleTextColor(colors.get(colorNames[item.getSelectedOption()]));
                 reloadTheme(theme);
             }));
-            s.add(e.selector(str.s(S.keyboardTextColor), ColorUtil.indexOf(it.getKeyboardTextColor()), colorNames, s, item -> {
+            s.add(e.color(str.s(S.keyboardTextColor), ColorUtil.indexOf(it.getKeyboardTextColor()), s, item -> {
                 if (item._charvZ()) menu.setCurrentMenu(item.getCurrentMenu());
                 it.setKeyboardTextColor(colors.get(colorNames[item.getSelectedOption()]));
                 reloadTheme(theme);
@@ -421,32 +421,32 @@ public class MenuFactory<T> {
             int selectedLeague = themeEditorLeagueSelector.getSelectedOption();
             application.getGame().getEngine().league = selectedLeague;
             LeagueTheme lt = theme.getLeagueThemes().get(selectedLeague);
-            s.add(e.selector(str.s(S.backWheelsColor), ColorUtil.indexOf(lt.getBackWheelsColor()), colorNames, s, item -> {
+            s.add(e.color(str.s(S.backWheelsColor), ColorUtil.indexOf(lt.getBackWheelsColor()), s, item -> {
                 if (item._charvZ()) menu.setCurrentMenu(item.getCurrentMenu());
                 lt.setBackWheelsColor(colors.get(colorNames[item.getSelectedOption()]));
                 reloadTheme(theme);
             }));
-            s.add(e.selector(str.s(S.backWheelDotColor), ColorUtil.indexOf(lt.getBackWheelDotColor()), colorNames, s, item -> {
+            s.add(e.color(str.s(S.backWheelDotColor), ColorUtil.indexOf(lt.getBackWheelDotColor()), s, item -> {
                 if (item._charvZ()) menu.setCurrentMenu(item.getCurrentMenu());
                 lt.setBackWheelDotColor(colors.get(colorNames[item.getSelectedOption()]));
                 reloadTheme(theme);
             }));
-            s.add(e.selector(str.s(S.backWheelsSpokeColor), ColorUtil.indexOf(lt.getBackWheelsSpokeColor()), colorNames, s, item -> {
+            s.add(e.color(str.s(S.backWheelsSpokeColor), ColorUtil.indexOf(lt.getBackWheelsSpokeColor()), s, item -> {
                 if (item._charvZ()) menu.setCurrentMenu(item.getCurrentMenu());
                 lt.setBackWheelsSpokeColor(colors.get(colorNames[item.getSelectedOption()]));
                 reloadTheme(theme);
             }));
-            s.add(e.selector(str.s(S.frontWheelsColor), ColorUtil.indexOf(lt.getFrontWheelsColor()), colorNames, s, item -> {
+            s.add(e.color(str.s(S.frontWheelsColor), ColorUtil.indexOf(lt.getFrontWheelsColor()), s, item -> {
                 if (item._charvZ()) menu.setCurrentMenu(item.getCurrentMenu());
                 lt.setFrontWheelsColor(colors.get(colorNames[item.getSelectedOption()]));
                 reloadTheme(theme);
             }));
-            s.add(e.selector(str.s(S.frontWheelDotColor), ColorUtil.indexOf(lt.getFrontWheelDotColor()), colorNames, s, item -> {
+            s.add(e.color(str.s(S.frontWheelDotColor), ColorUtil.indexOf(lt.getFrontWheelDotColor()), s, item -> {
                 if (item._charvZ()) menu.setCurrentMenu(item.getCurrentMenu());
                 lt.setFrontWheelDotColor(colors.get(colorNames[item.getSelectedOption()]));
                 reloadTheme(theme);
             }));
-            s.add(e.selector(str.s(S.frontWheelsSpokeColor), ColorUtil.indexOf(lt.getFrontWheelsSpokeColor()), colorNames, s, item -> {
+            s.add(e.color(str.s(S.frontWheelsSpokeColor), ColorUtil.indexOf(lt.getFrontWheelsSpokeColor()), s, item -> {
                 if (item._charvZ()) menu.setCurrentMenu(item.getCurrentMenu());
                 lt.setFrontWheelsSpokeColor(colors.get(colorNames[item.getSelectedOption()]));
                 reloadTheme(theme);
@@ -459,37 +459,37 @@ public class MenuFactory<T> {
                 lt.setDrawWheelSprite(item.getSelectedOption() == 0);
                 reloadTheme(theme);
             }));
-            s.add(e.selector(str.s(S.bikeColor), ColorUtil.indexOf(lt.getBikeColor()), colorNames, s, item -> {
+            s.add(e.color(str.s(S.bikeColor), ColorUtil.indexOf(lt.getBikeColor()), s, item -> {
                 if (item._charvZ()) menu.setCurrentMenu(item.getCurrentMenu());
                 lt.setBikeColor(colors.get(colorNames[item.getSelectedOption()]));
                 reloadTheme(theme);
             }));
-            s.add(e.selector(str.s(S.bikeLinesColor), ColorUtil.indexOf(lt.getBikeLinesColor()), colorNames, s, item -> {
+            s.add(e.color(str.s(S.bikeLinesColor), ColorUtil.indexOf(lt.getBikeLinesColor()), s, item -> {
                 if (item._charvZ()) menu.setCurrentMenu(item.getCurrentMenu());
                 lt.setBikeLinesColor(colors.get(colorNames[item.getSelectedOption()]));
                 reloadTheme(theme);
             }));
-            s.add(e.selector(str.s(S.forkColor), ColorUtil.indexOf(lt.getForkColor()), colorNames, s, item -> {
+            s.add(e.color(str.s(S.forkColor), ColorUtil.indexOf(lt.getForkColor()), s, item -> {
                 if (item._charvZ()) menu.setCurrentMenu(item.getCurrentMenu());
                 lt.setForkColor(colors.get(colorNames[item.getSelectedOption()]));
                 reloadTheme(theme);
             }));
-            s.add(e.selector(str.s(S.steeringColor), ColorUtil.indexOf(lt.getSteeringColor()), colorNames, s, item -> {
+            s.add(e.color(str.s(S.steeringColor), ColorUtil.indexOf(lt.getSteeringColor()), s, item -> {
                 if (item._charvZ()) menu.setCurrentMenu(item.getCurrentMenu());
                 lt.setSteeringColor(colors.get(colorNames[item.getSelectedOption()]));
                 reloadTheme(theme);
             }));
-            s.add(e.selector(str.s(S.bikerHeadColor), ColorUtil.indexOf(lt.getBikerHeadColor()), colorNames, s, item -> {
+            s.add(e.color(str.s(S.bikerHeadColor), ColorUtil.indexOf(lt.getBikerHeadColor()), s, item -> {
                 if (item._charvZ()) menu.setCurrentMenu(item.getCurrentMenu());
                 lt.setBikerHeadColor(colors.get(colorNames[item.getSelectedOption()]));
                 reloadTheme(theme);
             }));
-            s.add(e.selector(str.s(S.bikerBodyColor), ColorUtil.indexOf(lt.getBikerBodyColor()), colorNames, s, item -> {
+            s.add(e.color(str.s(S.bikerBodyColor), ColorUtil.indexOf(lt.getBikerBodyColor()), s, item -> {
                 if (item._charvZ()) menu.setCurrentMenu(item.getCurrentMenu());
                 lt.setBikerBodyColor(colors.get(colorNames[item.getSelectedOption()]));
                 reloadTheme(theme);
             }));
-            s.add(e.selector(str.s(S.bikerLegColor), ColorUtil.indexOf(lt.getBikerLegColor()), colorNames, s, item -> {
+            s.add(e.color(str.s(S.bikerLegColor), ColorUtil.indexOf(lt.getBikerLegColor()), s, item -> {
                 if (item._charvZ()) menu.setCurrentMenu(item.getCurrentMenu());
                 lt.setBikerLegColor(colors.get(colorNames[item.getSelectedOption()]));
                 reloadTheme(theme);

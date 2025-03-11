@@ -53,6 +53,7 @@ import org.happysanta.gdtralive.game.api.menu.view.IMenuHelmetView;
 import org.happysanta.gdtralive.game.api.menu.view.IMenuImageView;
 import org.happysanta.gdtralive.game.api.menu.view.IMenuTextView;
 import org.happysanta.gdtralive.game.api.util.ActionHandler;
+import org.happysanta.gdtralive.game.util.ColorUtil;
 import org.happysanta.gdtralive.game.util.Fmt;
 
 public class APlatformMenuElementFactory<T> implements PlatformMenuElementFactory<T> {
@@ -93,6 +94,7 @@ public class APlatformMenuElementFactory<T> implements PlatformMenuElementFactor
     }
 
     protected static final int TEXT_COLOR = 0xff000000;
+
     public MenuElement<T> text(String title) {
         IMenuTextView<T> textView = getMenuTextView(SpannedString.valueOf(title), context);
         ((MenuTextView) textView).setTextSize(15);
@@ -159,14 +161,18 @@ public class APlatformMenuElementFactory<T> implements PlatformMenuElementFactor
         return new MenuActionElement<>(title, action, handler, helmetView, textView, touchInterceptor, layout, lockImage, this);
     }
 
-    public IMenuActionElement<T> action(String title, ActionHandler<IMenuActionElement<T>> handler) {
+    public IMenuActionElement<T> action(String title, ActionHandler<IMenuActionElement<T>> handler, boolean reloadTheme) {
         IMenuHelmetView<T> helmetView = createHelmetView(context);
-        MenuTextView<T> textView = createTextView(context);
+        MenuTextView<T> textView = createTextView(context, reloadTheme);
         TouchInterceptor<T> touchInterceptor = new TouchInterceptor<>();
         T layout = createLayout(context, helmetView, textView, createOnTouchListener(touchInterceptor));
         IMenuImageView<T> lockImage = getMenuImageView(context);
         ((LinearLayout) layout).addView((View) lockImage, 1);
         return new MenuActionElement<>(title, -1, handler, helmetView, textView, touchInterceptor, layout, lockImage, this);
+    }
+
+    public IMenuActionElement<T> action(String title, ActionHandler<IMenuActionElement<T>> handler) {
+        return action(title, handler, true);
     }
 
     public MenuElement<T> textHtmlBold(String key, String value) {
@@ -281,7 +287,7 @@ public class APlatformMenuElementFactory<T> implements PlatformMenuElementFactor
 
         layout.addView(image, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT));
         layout.addView(textView);
-        if (place >=0 && place <= 2) {
+        if (place >= 0 && place <= 2) {
             image.setVisibility(true);
             image.setImageResource(medals[place]);
 
@@ -299,7 +305,7 @@ public class APlatformMenuElementFactory<T> implements PlatformMenuElementFactor
         int SUBTITLE_TEXT_SIZE = 20;
         int LAYOUT_PADDING = 3;
         int TEXT_SIZE = 15;
-        MenuTextView textView = (MenuTextView)getMenuTextView(Html.fromHtml(text), context);
+        MenuTextView textView = (MenuTextView) getMenuTextView(Html.fromHtml(text), context);
         MenuLinearLayout layout = new MenuLinearLayout(context);
         layout.setOrientation(LinearLayout.HORIZONTAL);
         layout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
@@ -340,6 +346,25 @@ public class APlatformMenuElementFactory<T> implements PlatformMenuElementFactor
         ((LinearLayout) layout).addView((View) optionsTextView.getView());
         return new OptionsMenuElement<>(
                 title, selected, menu, options, parent, action, helmetView,
+                textView, touchInterceptor, layout, optionsTextView, lockImage, this
+        );
+    }
+
+    public IOptionsMenuElement<T> color(String title, int selected, MenuScreen<T> parent, ActionHandler<IOptionsMenuElement<T>> action) {
+        IMenuHelmetView<T> helmetView = createHelmetView(context);
+        MenuTextView<T> textView = createTextView(context);
+        ((MenuTextView<T>) textView.getView()).setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        ));
+        TouchInterceptor<T> touchInterceptor = new TouchInterceptor<>();
+        IMenuTextView<T> optionsTextView = createOptionsTextView(context, textView);
+        IMenuImageView<T> lockImage = getMenuImageView(context);
+        T layout = createLayout(context, helmetView, textView, createOnTouchListener(touchInterceptor));
+        ((LinearLayout) layout).addView((View) lockImage);
+        ((LinearLayout) layout).addView((View) optionsTextView.getView());
+        return new OptionsMenuElement<>(
+                title, selected, menu, ColorUtil.colorNames, parent, action, helmetView,
                 textView, touchInterceptor, layout, optionsTextView, lockImage, this
         );
     }
@@ -438,6 +463,10 @@ public class APlatformMenuElementFactory<T> implements PlatformMenuElementFactor
     public static final int PADDING_TOP = 5;
 
     protected MenuTextView<T> createTextView(Context context) {
+        return createTextView(this.context, true);
+    }
+
+    protected MenuTextView<T> createTextView(Context context, boolean reloadTheme) {
         MenuTextView<T> mtv = new MenuTextView<>(context);
 //        mtv.setText(getTextForView());
         mtv.setTextColor(getGDActivity().getResources().getColorStateList(R.drawable.menu_item_color));
@@ -449,7 +478,9 @@ public class APlatformMenuElementFactory<T> implements PlatformMenuElementFactor
                 ViewGroup.LayoutParams.WRAP_CONTENT
         ));
         mtv.setPadding(0, getDp(PADDING_TOP), 0, getDp(PADDING_TOP));
-        modManager.registerThemeReloadHandler(() -> mtv.setTextColor(modManager.getInterfaceTheme().getTextColorInt()));
+        if (reloadTheme) {
+            modManager.registerThemeReloadHandler(() -> mtv.setTextColor(modManager.getInterfaceTheme().getTextColorInt()));
+        }
         return mtv;
     }
 

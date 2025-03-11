@@ -6,6 +6,7 @@ import org.happysanta.gdtralive.game.api.menu.TouchInterceptor;
 import org.happysanta.gdtralive.game.api.menu.view.IMenuHelmetView;
 import org.happysanta.gdtralive.game.api.menu.view.IMenuImageView;
 import org.happysanta.gdtralive.game.api.menu.view.IMenuTextView;
+import org.happysanta.gdtralive.game.api.model.Color;
 import org.happysanta.gdtralive.game.api.util.ActionHandler;
 
 public class MenuActionElement<T> extends ClickableMenuElement<T> implements IMenuActionElement<T> {
@@ -43,6 +44,14 @@ public class MenuActionElement<T> extends ClickableMenuElement<T> implements IMe
         if (lockImage != null) {
             lockImage.setVisibility(isLocked);
             lockImage.setLock(isBlackLock ? factory.getModManager().getInterfaceTheme().getLockSkinIndex() : 1);
+        }
+    }
+
+    @Override
+    public void setColor(Color color) {
+        try {
+            super.textView.setTextColor(color.intValue());
+        } catch (Exception ignore) {
         }
     }
 

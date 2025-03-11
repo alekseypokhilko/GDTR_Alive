@@ -55,7 +55,7 @@ public class MenuTextView<T> extends TextView implements IMenuTextView<T> {
 
 	@Override
 	public void setTextColor(int color) {
-		super.setTextColor(color);
+		runOnUiThread(() -> super.setTextColor(color));
 	}
 
 	@Override
