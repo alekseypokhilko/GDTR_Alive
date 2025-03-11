@@ -78,9 +78,9 @@
     <string name="interface_properties">Властивості интерфейса</string>
     <string name="game_properties">Властивості гри</string>
     <string name="go_to_main">Перейти в меню</string>
-    <string name="ghost_enabled">Призрак</string>
+    <string name="ghost_enabled">Привид</string>
     <string name="god_mode">Режим бога</string>
-    <string name="guid">guid</string>
+    <string name="guid">Guid</string>
     <string name="help">Допомога</string>
     <string name="highscore_text">"Час з п'яти найкращих заїздів на кожному треку зберігаються для кожної ліги окремо. Рекорди можна переглянути з меню. Натиснувши ліворуч та праворуч під час перегляду рекордів треку, ви можете переглянути рекорди для певної ліги. Рекорди можна стерти з меню параметрів."</string>
     <string name="highscores">Рекорди</string>
@@ -137,12 +137,12 @@
     <string name="oops">Упс..</string>
     <string name="open_installed">Відкрити встановлені</string>
     <string name="options">Параметри</string>
-    <string name="options_text">"&lt;b>Перспектива: Увімк./Вимк.&lt;/b>&lt;br/> За замовчуванням: &amp;lt;Увімк.&amp;gt;&lt;br/> Вмикає та вимикає перспективу вигляду доріжок.&lt;br/>&lt;br/> &lt;b>Тіні:  Увімк./Вимк.&lt;/b>&lt;br/> За замовчуванням: &amp;lt;Увімк.&amp;gt;&lt;br/> Вмикає та вимикає тіні.&lt;br/>&lt;br/> &lt;b>Скін водія: Увімк./Вимк.&lt;/b>&lt;br/> За замовчуванням: &amp;lt;Увімк.&amp;gt;&lt;br/> &amp;lt;Увімк.&amp;gt;  використовує текстуру для водія.  &amp;lt;Вимк.&amp;gt;  використовує лінійну графіку.&lt;br/>&lt;br/> &lt;b>Скін мотоцикла: Увімк./Вимк.&lt;/b>&lt;br/> За замовчуванням: &amp;lt;Увімк.&amp;gt;&lt;br/> &amp;lt;Увімк.&amp;gt;  використовує текстуру для мотоцикла. &lt;br/> &amp;lt;Вимк.&amp;gt;  використовує лінійну графіку.&lt;br/>&lt;br/> &lt;b>Керування: Клавіші 1,2,3&lt;/b>&lt;br/> За замовчуванням: &amp;lt;1&amp;gt;&lt;br/> Визначає, який тип керування слід використовувати в грі.  Перегляньте клавіші в меню довідки, щоб отримати докладнішу інформацію.&lt;br/>&lt;br/> &lt;b>Активна камера: увімк./вимк.&lt;/b>&lt;br/> За умовчанням: &amp;lt;вимк.&amp;gt;&lt;br/> Вмикає та вимикає активний рух камери.&lt;br/>&lt;br/> &lt;b>Вібрація під час дотику: увімк./вимк.&lt;/b>&lt;br/> За замовчуванням: &amp;lt;увімк.&amp;gt;&lt;br/> Вмикає тактильний відгук, коли ви натискаєте клавіші керування.&lt;br/>&lt;br/> &lt;b>Клавіатура в меню: Увімк./Вимк.&lt;/b>&lt;br/> За умовчанням: &amp;lt;Увімк.&amp;gt;&lt;br/> Вмикає та вимикає клавіатуру в меню та в грі.&lt;br/>&lt;br/>  &lt;b>Очистити рекорд&lt;/b>&lt;br/> Дозволяє очистити рекорди.  Тут ви також можете виконати повне скидання, яке поверне гру до початкового стану (очистить налаштування, рекорди, розблоковані рівні та розблокований транспорт)."</string>
+    <string name="options_text">&lt;b>Перспектива: Увімк./Вимк.&lt;/b>&lt;br/> За замовчуванням: &amp;lt;Увімк.&amp;gt;&lt;br/> Вмикає та вимикає перспективний вигляд доріжок.&lt;br/>&lt;br/> &lt;b>Тіні:  Увімк./Вимк.&lt;/b>&lt;br/> За замовчуванням: &amp;lt;Увімк.&amp;gt;&lt;br/> Вмикає та вимикає тіні.&lt;br/>&lt;br/> &lt;b>Скін водія: Увімк./Вимк.&lt;/b>&lt;br/> За замовчуванням: &amp;lt;Увімк.&amp;gt;&lt;br/> &amp;lt;Увімк.&amp;gt;  використовує текстуру для водія.  &amp;lt;Вимк.&amp;gt;  використовує лінійну графіку.&lt;br/>&lt;br/> &lt;b>Скін мотоцикла: Увімк./Вимк.&lt;/b>&lt;br/> За замовчуванням: &amp;lt;Увімк.&amp;gt;&lt;br/> &amp;lt;Увімк.&amp;gt;  використовує текстуру для мотоцикла.&lt;br/>&amp;lt;Вимк.&amp;gt;  використовує лінійну графіку.&lt;br/>&lt;br/> &lt;b>Керування: Клавіші 1,2,3&lt;/b>&lt;br/> За замовчуванням: &amp;lt;1&amp;gt;&lt;br/> Визначає, який тип керування слід використовувати в грі. Докладнішу інформацію дивіться в меню \"Допомога\", пункт \"Керування\".&lt;br/>&lt;br/> &lt;b>Активна камера: Увімк./Вимк.&lt;/b>&lt;br/> За замовчуванням: &amp;lt;Вимк.&amp;gt;&lt;br/> Вмикає та вимикає розумний рух камери.&lt;br/>&lt;br/> &lt;b>Вібрація при дотику: Увімк./Вимк.&lt;/b>&lt;br/> За замовчуванням: &amp;lt;Увімк.&amp;gt;&lt;br/> Вмикає та вимикає тактильний відгук, коли ви натискаєте клавіші керування.&lt;br/>&lt;br/> &lt;b>Клавіатура: Увімк./Вимк.&lt;/b>&lt;br/> За замовчуванням: &amp;lt;Увімк.&amp;gt;&lt;br/> Вмикає та вимикає клавіатуру в грі та меню.&lt;br/>&lt;br/>  &lt;b>Очистити рекорди&lt;/b>&lt;br/> Дозволяє очистити всі рекорди.  Тут ви також можете виконати повне скидання, яке поверне гру до початкового стану (очистить всі налаштування, рекорди, розблоковані рівні та розблоковані ліги).</string>
     <string name="pack_editor">Редактор паку</string>
     <string name="perspective">Перспектива</string>
     <string name="play">Грати</string>
     <string name="please_wait">Зачекайте..</string>
-    <string name="ported_text">" &lt;font color=#999999>Ported by&lt;/font>&lt;br/> &lt;font color=#000000>Кузница винрара&lt;/font>&lt;br/> &lt;font color=#999999>and&lt;/font>&lt;br/> &lt;font color=#000000>Happy Santa LLC&lt;/font> "</string>
+    <string name="ported_text">&lt;font color=#999999>Ported by&lt;/font>&lt;br/> &lt;font color=#000000>Кузница винрара&lt;/font>&lt;br/> &lt;font color=#999999>and&lt;/font>&lt;br/> &lt;font color=#000000>Happy Santa LLC&lt;/font></string>
     <string name="profile">Профіль</string>
     <string name="random_track">Випадковий трек</string>
     <string name="record_option">Запис треку</string>

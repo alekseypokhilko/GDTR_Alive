@@ -108,7 +108,7 @@
 	<string name="input">Input</string>
 	<string name="active_camera">Active camera</string>
 	<string name="vibrate_on_touch">Vibrate on touch</string>
-	<string name="show_keyboard">Show keyboard</string>
+	<string name="show_keyboard">Keyboard</string>
 	<string name="clear_highscore">Clear highscore</string>
 	<string name="full_reset">Full Reset</string>
 	<string name="reset">Reset</string>
@@ -191,7 +191,7 @@
 		Default: &lt;1&gt;<br/>
 		Determines which type of input should be used when playing. See "Keys" in the help menu for more info.<br/><br/>
 
-		<b>Look ahead: On/Off</b><br/>
+		<b>Active camera: On/Off</b><br/>
 		Default: &lt;On&gt;<br/>
 		Turns on and off smart camera movement.<br/><br/>
 
@@ -199,9 +199,9 @@
 		Default: &lt;On&gt;<br/>
 		Enables haptic feedback when you press control keys.<br/><br/>
 
-		<b>Keyboard in menu: On/Off</b><br/>
+		<b>Keyboard: On/Off</b><br/>
 		Default: &lt;On&gt;<br/>
-		Turns on and off keyboard in menu.<br/><br/>
+		Turns on and off keyboard in menu and game.<br/><br/>
 
 		<b>Clear highscore</b><br/>
 		Lets you clear the highscores. Here you can also do a "Full Reset" which will reset the game to original state (clear settings, highscores, unlocked levels and leagues).
@@ -236,7 +236,7 @@
 	<string name="complete_to_unlock">Complete more tracks to unlock this track/league combo.</string>
 	<string name="tracks_completed_tpl"><![CDATA[%1$d of %2$d tracks in <b>%3$s</b> completed.]]></string>
 
-	<string name="LEAGUE">LEAGUE</string>
+	<string name="LEAGUE">League</string>
 
 	<string-array name="finished_places">
 		<item>First place!</item>
