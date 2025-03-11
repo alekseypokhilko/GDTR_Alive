@@ -15,6 +15,7 @@ public class LeagueTheme {
     private Color frontWheelsSpokeColor = new Color(0, 0, 0);
     private Color forkColor = new Color(128, 128, 128);
     private boolean drawWheelLines = false;
+    private boolean drawWheelSprite = true;
     private Color bikeLinesColor = new Color(50, 50, 50);
     private Color bikeColor = new Color(170, 0, 0);
     private Color bikerHeadColor = new Color(156, 0, 0);
@@ -56,6 +57,10 @@ public class LeagueTheme {
 
     public boolean isDrawWheelLines() {
         return drawWheelLines;
+    }
+
+    public boolean isDrawWheelSprite() {
+        return drawWheelSprite;
     }
 
     public Color getBikeLinesColor() {
@@ -116,6 +121,10 @@ public class LeagueTheme {
 
     public void setDrawWheelLines(boolean drawWheelLines) {
         this.drawWheelLines = drawWheelLines;
+    }
+
+    public void setDrawWheelSprite(boolean drawWheelSprite) {
+        this.drawWheelSprite = drawWheelSprite;
     }
 
     public void setBikeLinesColor(Color bikeLinesColor) {

@@ -8,6 +8,7 @@ import org.happysanta.gdtralive.game.api.Platform;
 import org.happysanta.gdtralive.game.api.S;
 import org.happysanta.gdtralive.game.api.dto.GameTheme;
 import org.happysanta.gdtralive.game.api.dto.InterfaceTheme;
+import org.happysanta.gdtralive.game.api.dto.LeagueTheme;
 import org.happysanta.gdtralive.game.api.dto.Theme;
 import org.happysanta.gdtralive.game.api.dto.ThemeHeader;
 import org.happysanta.gdtralive.game.api.dto.TrackParams;
@@ -72,6 +73,7 @@ public class MenuFactory<T> {
     private IOptionsMenuElement<T> leagueSelector;
     private IOptionsMenuElement<T> trackSelector;
     private MenuScreen<T> trackSelectorCurrentMenu;
+    private IOptionsMenuElement<T> themeEditorLeagueSelector;
     private GdTrackEditor trackEditor;
 
     private String[] leagueNames = new String[10];
@@ -323,6 +325,7 @@ public class MenuFactory<T> {
     private MenuScreen<T> createThemeEditor(Map<MenuType, MenuScreen<T>> r) {
         return e.screen(str.s(S.theme), r.get(MenuType.THEME_OPTIONS)).builder((s, data) -> {
             Theme theme = data.getTheme();
+            reloadTheme(theme);
             ThemeHeader header = theme.getHeader();
             s.clear();
             s.add(e.backAction(() -> {
@@ -337,6 +340,8 @@ public class MenuFactory<T> {
             Map<String, Color> colors = ColorUtil.colors;
             String[] colorNames = ColorUtil.colorNames;
 
+            s.add(e.emptyLine(true));
+            s.add(e.textHtmlBold(str.s(S.track_properties), null));
             GameTheme gt = theme.getGameTheme();
             s.add(e.selector("Track color", ColorUtil.indexOf(gt.getTrackLineColor()), colorNames, s, item -> {
                 if (item._charvZ()) menu.setCurrentMenu(item.getCurrentMenu());
@@ -364,6 +369,8 @@ public class MenuFactory<T> {
                 reloadTheme(theme);
             }));
 
+            s.add(e.emptyLine(true));
+            s.add(e.textHtmlBold(str.s(S.interface_properties), null));
             InterfaceTheme it = theme.getInterfaceTheme();
             s.add(e.selector("Info message color", ColorUtil.indexOf(it.getInfoMessageColor()), colorNames, s, item -> {
                 if (item._charvZ()) menu.setCurrentMenu(item.getCurrentMenu());
@@ -396,6 +403,97 @@ public class MenuFactory<T> {
                 reloadTheme(theme);
             }));
 
+            s.add(e.emptyLine(true));
+            s.add(e.textHtmlBold(str.s(S.league_properties), null));
+            if (themeEditorLeagueSelector == null) {
+                themeEditorLeagueSelector = e.selector(str.s(S.league), 0, application.getModManager().getLeagueNames(), r.get(MenuType.THEME_EDITOR), item -> {
+                    if (item._charvZ()) {
+                        MenuScreen<T> leagueSelectorCurrentMenu = item.getCurrentMenu();
+                        item.setScreen(menu.getCurrentMenu());
+                        menu.setCurrentMenu(leagueSelectorCurrentMenu);
+                    } else {
+                        this.get(MenuType.THEME_EDITOR).build(new MenuData(theme, theme.getHeader().getName()));
+                    }
+                });
+            }
+            s.add(themeEditorLeagueSelector);
+
+            int selectedLeague = themeEditorLeagueSelector.getSelectedOption();
+            application.getGame().getEngine().league = selectedLeague;
+            LeagueTheme lt = theme.getLeagueThemes().get(selectedLeague);
+            s.add(e.selector("Back wheel color", ColorUtil.indexOf(lt.getBackWheelsColor()), colorNames, s, item -> {
+                if (item._charvZ()) menu.setCurrentMenu(item.getCurrentMenu());
+                lt.setBackWheelsColor(colors.get(colorNames[item.getSelectedOption()]));
+                reloadTheme(theme);
+            }));
+            s.add(e.selector("Back wheel dot color", ColorUtil.indexOf(lt.getBackWheelDotColor()), colorNames, s, item -> {
+                if (item._charvZ()) menu.setCurrentMenu(item.getCurrentMenu());
+                lt.setBackWheelDotColor(colors.get(colorNames[item.getSelectedOption()]));
+                reloadTheme(theme);
+            }));
+            s.add(e.selector("Back wheel spoke color", ColorUtil.indexOf(lt.getBackWheelsSpokeColor()), colorNames, s, item -> {
+                if (item._charvZ()) menu.setCurrentMenu(item.getCurrentMenu());
+                lt.setBackWheelsSpokeColor(colors.get(colorNames[item.getSelectedOption()]));
+                reloadTheme(theme);
+            }));
+            s.add(e.selector("Front wheel color", ColorUtil.indexOf(lt.getFrontWheelsColor()), colorNames, s, item -> {
+                if (item._charvZ()) menu.setCurrentMenu(item.getCurrentMenu());
+                lt.setFrontWheelsColor(colors.get(colorNames[item.getSelectedOption()]));
+                reloadTheme(theme);
+            }));
+            s.add(e.selector("Front wheel dot color", ColorUtil.indexOf(lt.getFrontWheelDotColor()), colorNames, s, item -> {
+                if (item._charvZ()) menu.setCurrentMenu(item.getCurrentMenu());
+                lt.setFrontWheelDotColor(colors.get(colorNames[item.getSelectedOption()]));
+                reloadTheme(theme);
+            }));
+            s.add(e.selector("Front wheel spoke color", ColorUtil.indexOf(lt.getFrontWheelsSpokeColor()), colorNames, s, item -> {
+                if (item._charvZ()) menu.setCurrentMenu(item.getCurrentMenu());
+                lt.setFrontWheelsSpokeColor(colors.get(colorNames[item.getSelectedOption()]));
+                reloadTheme(theme);
+            }));
+            s.add(e.toggle("Draw wheel line", lt.isDrawWheelLines() ? 0 : 1, item -> {
+                lt.setDrawWheelLines(item.getSelectedOption() == 0);
+                reloadTheme(theme);
+            }));
+            s.add(e.toggle("Draw wheel sprite", lt.isDrawWheelSprite() ? 0 : 1, item -> {
+                lt.setDrawWheelSprite(item.getSelectedOption() == 0);
+                reloadTheme(theme);
+            }));
+            s.add(e.selector("Bike color", ColorUtil.indexOf(lt.getBikeColor()), colorNames, s, item -> {
+                if (item._charvZ()) menu.setCurrentMenu(item.getCurrentMenu());
+                lt.setBikeColor(colors.get(colorNames[item.getSelectedOption()]));
+                reloadTheme(theme);
+            }));
+            s.add(e.selector("Bike lines color", ColorUtil.indexOf(lt.getBikeLinesColor()), colorNames, s, item -> {
+                if (item._charvZ()) menu.setCurrentMenu(item.getCurrentMenu());
+                lt.setBikeLinesColor(colors.get(colorNames[item.getSelectedOption()]));
+                reloadTheme(theme);
+            }));
+            s.add(e.selector("Fork color", ColorUtil.indexOf(lt.getForkColor()), colorNames, s, item -> {
+                if (item._charvZ()) menu.setCurrentMenu(item.getCurrentMenu());
+                lt.setForkColor(colors.get(colorNames[item.getSelectedOption()]));
+                reloadTheme(theme);
+            }));
+            s.add(e.selector("Steering color", ColorUtil.indexOf(lt.getSteeringColor()), colorNames, s, item -> {
+                if (item._charvZ()) menu.setCurrentMenu(item.getCurrentMenu());
+                lt.setSteeringColor(colors.get(colorNames[item.getSelectedOption()]));
+                reloadTheme(theme);
+            }));
+            s.add(e.selector("Biker head color", ColorUtil.indexOf(lt.getBikerHeadColor()), colorNames, s, item -> {
+                if (item._charvZ()) menu.setCurrentMenu(item.getCurrentMenu());
+                lt.setBikerHeadColor(colors.get(colorNames[item.getSelectedOption()]));
+                reloadTheme(theme);
+            }));
+            s.add(e.selector("Biker body color", ColorUtil.indexOf(lt.getBikerBodyColor()), colorNames, s, item -> {
+                if (item._charvZ()) menu.setCurrentMenu(item.getCurrentMenu());
+                lt.setBikerBodyColor(colors.get(colorNames[item.getSelectedOption()]));
+                reloadTheme(theme);
+            }));
+            s.add(e.selector("Biker leg color", ColorUtil.indexOf(lt.getBikerLegColor()), colorNames, s, item -> {
+                if (item._charvZ()) menu.setCurrentMenu(item.getCurrentMenu());
+                lt.setBikerLegColor(colors.get(colorNames[item.getSelectedOption()]));
+                reloadTheme(theme);
+            }));
             return s;
         });
     }

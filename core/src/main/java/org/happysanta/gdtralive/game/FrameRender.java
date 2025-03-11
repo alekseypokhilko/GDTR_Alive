@@ -160,7 +160,9 @@ public class FrameRender {
         if (state.perspectiveEnabled)
             drawPerspective(state.element0().x(), state.element0().y(), view, state);
         if (view.drawBike == 1) drawBike(i1, j1, state, view);
-        drawBackWheelsSprite(state, view);
+        if (mm().getLeagueTheme(state.league()).isDrawWheelSprite()) {
+            drawBackWheelsSprite(state, view);
+        }
         drawWheelsLines(state, view);
         if (view.drawBike == 1) {
             setColor(mm().getLeagueTheme(state.league()).getBikeColor());

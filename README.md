@@ -13,6 +13,8 @@ Based on https://github.com/evgenyzinoviev/gravitydefied with new features:
 - Themes and theme editor
 - New mod format
 - God mode
+- Ghost
+- Global high scores
 - Landscape mode
 - Random track mode
 - Unlock all

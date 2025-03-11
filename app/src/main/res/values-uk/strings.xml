@@ -75,6 +75,7 @@
     <string name="full_reset">Повне скидання</string>
     <string name="gambler">Азартний гравець</string>
     <string name="gambler_description">Пройдіть випадкові треки</string>
+    <string name="interface_properties">Властивості интерфейса</string>
     <string name="game_properties">Властивості гри</string>
     <string name="go_to_main">Перейти в меню</string>
     <string name="ghost_enabled">Призрак</string>

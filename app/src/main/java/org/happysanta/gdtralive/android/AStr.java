@@ -46,6 +46,7 @@ public class AStr implements GdStr {
         strings.put(S.league_properties, R.string.league_properties);
         strings.put(S.league, R.string.league);
         strings.put(S.track_properties, R.string.track_properties);
+        strings.put(S.interface_properties, R.string.interface_properties);
         strings.put(S.themes, R.string.themes);
         strings.put(S.import_theme, R.string.import_theme);
         strings.put(S.theme, R.string.theme);

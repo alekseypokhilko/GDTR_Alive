@@ -72,6 +72,7 @@
 	<string name="track_options">Track options</string>
 	<string name="league_properties">League properties</string>
 	<string name="track_properties">Track properties</string>
+	<string name="interface_properties">Interface properties</string>
 	<string name="game_properties">Game properties</string>
 	<string name="mode">Mode</string>
 	<string name="offset">Offset</string>
