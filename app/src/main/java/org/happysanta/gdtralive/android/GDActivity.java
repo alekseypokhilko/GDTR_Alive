@@ -276,11 +276,12 @@ public class GDActivity extends Activity implements GdPlatform {
                                 int shiftX = -(touchX - rawX) / 2;
                                 int shiftY = -(touchY - rawY) / 2;
                                 //System.out.println("shiftX= " + shiftX + " shiftY=" + shiftY);
-                                if (trackEditor.editorMode == EditorMode.CAMERA_MOVE) {
+                                EditorMode editorMode = trackEditor.editorMode;
+                                if (editorMode == EditorMode.CAMERA_MOVE) {
                                     gameView.getGdView().shift(shiftX, shiftY);
-                                } else if (trackEditor.editorMode == EditorMode.POINT_MOVE) {
+                                } else if (editorMode == EditorMode.POINT_MOVE || editorMode == EditorMode.POINT_SELECTION) {
                                     trackEditor.shiftTrackPoint(Utils.unpackInt(shiftX), Utils.unpackInt(-shiftY));
-                                } else if (trackEditor.editorMode == EditorMode.START_POINT_MOVE) {
+                                } else if (editorMode == EditorMode.START_POINT_MOVE) {
                                     trackEditor.shiftStartPoint(Utils.unpackInt(shiftX), Utils.unpackInt(-shiftY));
                                 }
                                 this.touchX = rawX;

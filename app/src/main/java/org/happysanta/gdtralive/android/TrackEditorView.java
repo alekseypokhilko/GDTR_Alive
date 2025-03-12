@@ -76,7 +76,7 @@ public class TrackEditorView implements GdTrackEditor {
         MenuImageView add = button(R.drawable.c_add, v -> handleAddButton());
         MenuImageView remove = button(R.drawable.c_delete, v -> handleRemoveButton());
         MenuImageView invisible = button(R.drawable.c_invisible, v -> handleInvisibleButton());
-//        MenuImageView cameraMoveMode = button(R.drawable.c_camera, v -> handleCameraModeButton());
+        MenuImageView cameraMoveMode = button(R.drawable.c_camera, v -> handleCameraModeButton());
         MenuImageView pointModeSelection = button(R.drawable.c_points, v -> handleTrackMoveModeButton());
         MenuImageView objectEditModeSelection = button(R.drawable.c_objects, v -> handleObjectEditMode());
         IInputTextElement offsetInput = application.getPlatform().getPlatformMenuElementFactory().editText(Fmt.colon(s(R.string.offset)), "" + DEFAULT_OFFSET, this::saveOffset);
@@ -89,8 +89,9 @@ public class TrackEditorView implements GdTrackEditor {
         LinearLayout modeRow = new LinearLayout(gd);
         modeRow.setPadding(Helpers.getDp(KeyboardController.PADDING), Helpers.getDp(KeyboardController.PADDING), Helpers.getDp(KeyboardController.PADDING), 0);
         modeRow.setOrientation(LinearLayout.VERTICAL);
-//        modeRow.addView(cameraMoveMode, getLayoutParams());
+        modeRow.addView(cameraMoveMode, getLayoutParams());
         modeRow.addView(objectEditModeSelection, getLayoutParams());
+        modeRow.addView(pointModeSelection, getLayoutParams());
         modeLayout.setOrientation(LinearLayout.VERTICAL);
         modeLayout.addView(modeRow);
         modeLayout.setGravity(Gravity.TOP);
@@ -110,7 +111,7 @@ public class TrackEditorView implements GdTrackEditor {
         LinearLayout actionRow = new LinearLayout(gd);
         actionRow.setPadding(Helpers.getDp(KeyboardController.PADDING), Helpers.getDp(KeyboardController.PADDING), Helpers.getDp(KeyboardController.PADDING), 0);
         actionRow.setOrientation(LinearLayout.VERTICAL);
-        actionRow.addView(pointModeSelection, getLayoutParams());
+//        actionRow.addView(pointModeSelection, getLayoutParams());
         actionRow.addView(add, getLayoutParams());
         actionRow.addView(remove, getLayoutParams());
         actionRow.addView(invisible, getLayoutParams());
@@ -204,6 +205,18 @@ public class TrackEditorView implements GdTrackEditor {
         }
     }
 
+    private void handleCameraModeButton() {
+        showMode(R.string.mode_camera_move);
+        editorMode = EditorMode.CAMERA_MOVE;
+        left.setOnClickListener(v -> engine.deltaX -= offset * 10);
+        right.setOnClickListener(v -> engine.deltaX += offset * 10);
+        up.setOnClickListener(v -> engine.deltaY += offset * 10);
+        down.setOnClickListener(v -> engine.deltaY -= offset * 10);
+
+        up.setVisibility(View.VISIBLE);
+        down.setVisibility(View.VISIBLE);
+    }
+
     private void finishFlagForward() {
         if (track().finishPointIndex < track().pointsCount - 1) {
             track().finishPointIndex++;
@@ -221,7 +234,7 @@ public class TrackEditorView implements GdTrackEditor {
     }
 
     private void startFlagForward() {
-        if (track().startPointIndex > 0) {
+        if (track().startPointIndex >= 0) {
             track().startPointIndex++;
         }
     }
@@ -262,15 +275,7 @@ public class TrackEditorView implements GdTrackEditor {
             down.setVisibility(View.VISIBLE);
         }
         if (MOVE_EDIT_MODES[currentEditMode] == EditorMode.CAMERA_MOVE) {
-            showMode(R.string.mode_camera_move);
-            editorMode = EditorMode.CAMERA_MOVE;
-            left.setOnClickListener(v -> engine.deltaX -= offset * 10);
-            right.setOnClickListener(v -> engine.deltaX += offset * 10);
-            up.setOnClickListener(v -> engine.deltaY += offset * 10);
-            down.setOnClickListener(v -> engine.deltaY -= offset * 10);
-
-            up.setVisibility(View.VISIBLE);
-            down.setVisibility(View.VISIBLE);
+            handleCameraModeButton();
         }
     }
 
