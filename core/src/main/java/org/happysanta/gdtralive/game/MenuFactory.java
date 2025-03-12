@@ -680,7 +680,8 @@ public class MenuFactory<T> {
             s.add(e.textHtmlBold(str.s(S.time), Fmt.durationString(rec.getTime())));
             s.add(e.textHtmlBold(str.s(S.date), rec.getDate()));
             s.add(e.emptyLine(true));
-            s.add(e.action(str.s(S.replay), -1, item1 -> game.startTrack(GameParams.of(rec))));
+            s.add(e.action(str.s(S.replay), __ -> game.startTrack(GameParams.of(rec))));
+            s.add(e.action(str.s(S.share), __ -> application.getPlatform().share(GDFile.RECORD, data.getValue())));
             s.add(e.action(str.s(S.save), __ -> this.application.getFileStorage().save(rec, GDFile.RECORD, Fmt.recordName(rec))));
             s.add(e.action(str.s(S.delete), __ -> this.application.getFileStorage().delete(GDFile.RECORD, data.getValue())));
             s.add(e.backAction(() -> {
