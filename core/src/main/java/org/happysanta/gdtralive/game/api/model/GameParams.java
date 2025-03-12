@@ -1,10 +1,12 @@
 package org.happysanta.gdtralive.game.api.model;
 
 import org.happysanta.gdtralive.game.api.GameMode;
+import org.happysanta.gdtralive.game.api.dto.TrackParams;
 
 public class GameParams {
     private final GameMode mode;
     private final TrackData trackData;
+    private final TrackParams trackParams;
     private final int league;
 
     private TrackRecord trackRecord;
@@ -17,12 +19,21 @@ public class GameParams {
         this.league = league;
         this.level = level;
         this.track = track;
+        this.trackParams = null;
     }
 
     private GameParams(GameMode mode, TrackData trackData) {
         this.mode = mode;
         this.league = trackData.getLeague();
         this.trackData = trackData;
+        this.trackParams = null;
+    }
+
+    private GameParams(GameMode mode, TrackParams trackParams) {
+        this.mode = mode;
+        this.league = trackParams.getData().getLeague();
+        this.trackData = trackParams.getData();
+        this.trackParams = trackParams;
     }
 
     private GameParams(TrackRecord trackRecord) {
@@ -30,6 +41,7 @@ public class GameParams {
         this.mode = GameMode.REPLAY;
         this.league = trackRecord.getLeague();
         this.trackData = trackRecord.getTrack();
+        this.trackParams = null;
     }
 
     public static GameParams of(GameMode mode, TrackData trackData, int league, int level, int track) {
@@ -44,12 +56,20 @@ public class GameParams {
         return new GameParams(trackRecord);
     }
 
+    public static GameParams of(GameMode gameMode, TrackParams track) {
+        return new GameParams(gameMode, track);
+    }
+
     public GameMode getMode() {
         return mode;
     }
 
-    public TrackData getTrackParams() {
+    public TrackData getTrackData() {
         return trackData;
+    }
+
+    public TrackParams getTrackParams() {
+        return trackParams;
     }
 
     public TrackRecord getTrackRecord() {

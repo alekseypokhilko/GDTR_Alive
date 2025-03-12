@@ -2,6 +2,7 @@ package org.happysanta.gdtralive.game.util;
 
 import org.happysanta.gdtralive.game.api.model.Mod;
 import org.happysanta.gdtralive.game.api.dto.LevelPack;
+import org.happysanta.gdtralive.game.api.model.TrackData;
 import org.happysanta.gdtralive.game.api.model.TrackRecord;
 
 public class Fmt {
@@ -55,5 +56,30 @@ public class Fmt {
 
     public static String durationString(long millis) {
         return String.format("%d:%02d.%03d", millis / 60000, (millis / 1000) % 60, millis % 1000);
+    }
+
+    public static String trackName(TrackData data) {
+        return String.format("%s[%s_%s]", data.getName(), Utils.getTrackId(data), data.getLeague());
+    }
+
+    public static String copy(String name) {
+        return String.format("%s-copy-%s", name, ("" + System.currentTimeMillis()).substring(7));
+    }
+
+    public static String trackNameTitle(String name, String[] leagueNames) {
+        try {
+            String league = leagueNames[Integer.parseInt(name.substring(name.lastIndexOf("_") + 1, name.lastIndexOf("]")))];
+            return name.substring(0, name.lastIndexOf("[")) + " " + league;
+        } catch (Exception e) {
+            return name;
+        }
+    }
+
+    public static String recordTitle(String title, String[] leagueNames) {
+        String trackName = title.substring(0, title.lastIndexOf("["));
+        String meta = title.substring(title.lastIndexOf("[") + 1, title.lastIndexOf("]"));
+        String league = leagueNames[Integer.parseInt(meta.substring(meta.indexOf("_") + 1, meta.lastIndexOf("_")))];
+        String time = Fmt.durationString(Long.parseLong(meta.substring(0, meta.indexOf("_"))));
+        return String.format("%s %s %s", trackName, league, time);
     }
 }

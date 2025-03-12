@@ -4,7 +4,6 @@ import static org.happysanta.gdtralive.android.Helpers.s;
 
 import android.view.Gravity;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -41,6 +40,8 @@ public class TrackEditorView implements GdTrackEditor {
             EditorMode.START_FLAG_MOVE,
             EditorMode.FINISH_FLAG_MOVE
     };
+
+    private final View.OnClickListener NO_OP = v -> {};
 
     private Game game;
     private Engine engine;
@@ -100,7 +101,7 @@ public class TrackEditorView implements GdTrackEditor {
         inputLayout.setOrientation(LinearLayout.VERTICAL);
         inputLayout.addView(inputRow);
         inputLayout.setGravity(Gravity.TOP | Gravity.CENTER);
-        inputLayout.setPadding(0, 0, 0, Helpers.getDp(KeyboardController.PADDING));
+        inputLayout.setPadding(0, 40, 0, Helpers.getDp(KeyboardController.PADDING));
         inputLayout.setLayoutParams(getFrameParams(Gravity.TOP | Gravity.CENTER));
         //initTrackEditButtons
         LinearLayout actionRow = new LinearLayout(gd);
@@ -170,50 +171,59 @@ public class TrackEditorView implements GdTrackEditor {
             showMode(R.string.mode_start_point_move);
             left.setOnClickListener(v -> engine.getTrackPhysic().track.startX -= offset);
             right.setOnClickListener(v -> engine.getTrackPhysic().track.startX += offset);
-            up.setOnClickListener(v -> engine.getTrackPhysic().getTrack().startY += offset);
-            down.setOnClickListener(v -> engine.getTrackPhysic().getTrack().startY -= offset);
+            up.setOnClickListener(v -> track().startY += offset);
+            down.setOnClickListener(v -> track().startY -= offset);
 
             up.setVisibility(View.VISIBLE);
             down.setVisibility(View.VISIBLE);
         }
         if (OBJECT_EDIT_MODES[currentEditMode] == EditorMode.START_FLAG_MOVE) {
             showMode(R.string.mode_start_flag_move);
-            left.setOnClickListener(v -> {
-                if (engine.getTrackPhysic().getTrack().startPointIndex > 0) {
-                    engine.getTrackPhysic().getTrack().startPointIndex--;
-                }
-            });
-            right.setOnClickListener(v -> {
-                if (engine.getTrackPhysic().getTrack().startPointIndex < engine.getTrackPhysic().getTrack().pointsCount - 1) {
-                    engine.getTrackPhysic().getTrack().startPointIndex++;
-                }
-            });
-            up.setOnClickListener(v -> {
-            });
-            down.setOnClickListener(v -> {
-            });
+            left.setOnClickListener(v -> startFlagBack());
+            right.setOnClickListener(v -> startFlagForward());
+            up.setOnClickListener(NO_OP);
+            down.setOnClickListener(NO_OP);
 
             up.setVisibility(View.GONE);
             down.setVisibility(View.GONE);
         }
         if (OBJECT_EDIT_MODES[currentEditMode] == EditorMode.FINISH_FLAG_MOVE) {
             showMode(R.string.mode_finish_flag_move);
-            left.setOnClickListener(v -> {
-                if (engine.getTrackPhysic().getTrack().finishPointIndex > 0) {
-                    engine.getTrackPhysic().getTrack().finishPointIndex--;
-                }
-            });
-            right.setOnClickListener(v -> {
-                if (engine.getTrackPhysic().getTrack().finishPointIndex < engine.getTrackPhysic().getTrack().pointsCount - 1) {
-                    engine.getTrackPhysic().getTrack().finishPointIndex++;
-                }
-            });
-            up.setOnClickListener(v -> {
-            });
-            down.setOnClickListener(v -> {
-            });
+            left.setOnClickListener(v -> finishFlagBack());
+            right.setOnClickListener(v -> finishFlagForward());
+            up.setOnClickListener(NO_OP);
+            down.setOnClickListener(NO_OP);
+
             up.setVisibility(View.GONE);
             down.setVisibility(View.GONE);
+        }
+    }
+
+    private void finishFlagForward() {
+        if (track().finishPointIndex < track().pointsCount - 1) {
+            track().finishPointIndex++;
+        }
+    }
+
+    private TrackData track() {
+        return engine.getTrackPhysic().getTrack();
+    }
+
+    private void finishFlagBack() {
+        if (track().finishPointIndex > 0) {
+            track().finishPointIndex--;
+        }
+    }
+
+    private void startFlagForward() {
+        if (track().startPointIndex > 0) {
+            track().startPointIndex++;
+        }
+    }
+
+    private void startFlagBack() {
+        if (track().startPointIndex < track().pointsCount - 1) {
+            track().startPointIndex--;
         }
     }
 
@@ -225,33 +235,28 @@ public class TrackEditorView implements GdTrackEditor {
         }
         if (POINT_EDIT_MODES[currentEditMode] == EditorMode.POINT_SELECTION) {
             showMode(R.string.mode_point_selection);
-            left.setOnClickListener(v -> {
-                if (selectedPointIndex > 0) {
-                    selectedPointIndex--;
-                    engine.selectedPointIndex = selectedPointIndex;
-                }
-            });
-            right.setOnClickListener(v -> {
-                if (selectedPointIndex < engine.getTrackPhysic().getTrack().pointsCount - 1) {
-                    selectedPointIndex++;
-                    engine.selectedPointIndex = selectedPointIndex;
-                }
-            });
-            up.setOnClickListener(v -> {
-            });
-            down.setOnClickListener(v -> {
-            });
+            left.setOnClickListener(v -> selectPreviousPoint());
+            right.setOnClickListener(v -> selectNextPoint());
+            up.setOnClickListener(NO_OP);
+            down.setOnClickListener(NO_OP);
             up.setVisibility(View.GONE);
             down.setVisibility(View.GONE);
         }
         if (POINT_EDIT_MODES[currentEditMode] == EditorMode.POINT_MOVE) {
             showMode(R.string.mode_point_move);
-            left.setOnClickListener(v -> engine.getTrackPhysic().getTrack().points[selectedPointIndex][0] -= offset);
-            right.setOnClickListener(v -> engine.getTrackPhysic().getTrack().points[selectedPointIndex][0] += offset);
-            up.setOnClickListener(v -> engine.getTrackPhysic().getTrack().points[selectedPointIndex][1] += offset);
-            down.setOnClickListener(v -> engine.getTrackPhysic().getTrack().points[selectedPointIndex][1] -= offset);
+            left.setOnClickListener(v -> track().points[selectedPointIndex][0] -= offset);
+            right.setOnClickListener(v -> track().points[selectedPointIndex][0] += offset);
+            up.setOnClickListener(v -> track().points[selectedPointIndex][1] += offset);
+            down.setOnClickListener(v -> track().points[selectedPointIndex][1] -= offset);
             up.setVisibility(View.VISIBLE);
             down.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void selectPreviousPoint() {
+        if (selectedPointIndex > 0) {
+            selectedPointIndex--;
+            engine.selectedPointIndex = selectedPointIndex;
         }
     }
 
@@ -261,21 +266,22 @@ public class TrackEditorView implements GdTrackEditor {
         right.setOnClickListener(v -> engine.deltaX += offset * 10);
         up.setOnClickListener(v -> engine.deltaY += offset * 10);
         down.setOnClickListener(v -> engine.deltaY -= offset * 10);
+
         up.setVisibility(View.VISIBLE);
         down.setVisibility(View.VISIBLE);
     }
 
     private void handleInvisibleButton() {
-        if (engine.getTrackPhysic().getTrack().invisible.contains(selectedPointIndex)) {
-            engine.getTrackPhysic().getTrack().invisible.remove(selectedPointIndex);
+        if (track().invisible.contains(selectedPointIndex)) {
+            track().invisible.remove(selectedPointIndex);
         } else {
-            engine.getTrackPhysic().getTrack().invisible.add(selectedPointIndex);
+            track().invisible.add(selectedPointIndex);
         }
     }
 
     private void saveOffset(Object et) {
         try {
-            String value = ((EditText)et).getText().toString();
+            String value = ((IInputTextElement) et).getText();
             int i = Integer.parseInt(value);
             offset = Utils.unpackInt(i);
         } catch (Exception e) {
@@ -285,8 +291,8 @@ public class TrackEditorView implements GdTrackEditor {
 
     private void handleRemoveButton() {
         try {
-            engine.getTrackPhysic().getTrack().points = Utils.removeElement(engine.getTrackPhysic().getTrack().points, selectedPointIndex);
-            engine.getTrackPhysic().getTrack().pointsCount--;
+            track().points = Utils.removeElement(track().points, selectedPointIndex);
+            track().pointsCount--;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -295,25 +301,31 @@ public class TrackEditorView implements GdTrackEditor {
     private void handleAddButton() {
         try {
             int[] point = new int[]{
-                    engine.getTrackPhysic().getTrack().points[selectedPointIndex][0] + offset,
-                    engine.getTrackPhysic().getTrack().points[selectedPointIndex][1] + offset
+                    track().points[selectedPointIndex][0] + offset,
+                    track().points[selectedPointIndex][1]
             };
-            engine.getTrackPhysic().getTrack().points = Utils.addPos(engine.getTrackPhysic().getTrack().points, selectedPointIndex, point);
-            engine.getTrackPhysic().getTrack().pointsCount++;
-            //todo add to the end
+            track().points = Utils.addPos(track().points, selectedPointIndex + 1, point);
+            track().pointsCount++;
+            selectNextPoint();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    private void selectNextPoint() {
+        if (selectedPointIndex < track().pointsCount - 1) {
+            selectedPointIndex++;
+            engine.selectedPointIndex = selectedPointIndex;
+        }
+    }
+
     private void showMode(int modeId) {
-        game.showInfoMessage(Fmt.colon(s(R.string.mode), s(modeId)), 5000000);
+        game.showInfoMessage(Fmt.colon(s(R.string.mode), s(modeId)), 10000);
     }
 
     public void createNew(String playerName) {
         try {
             this.currentTrack = Utils.initTrackTemplate(playerName);
-//            modManager.setTrackTheme(currentTrack);
         } catch (Exception e) {
             e.printStackTrace();//todo
         }
@@ -321,10 +333,12 @@ public class TrackEditorView implements GdTrackEditor {
     }
 
     public void startEditing() {
-        TrackData data = currentTrack.getData();
-        game.startTrack(GameParams.of(GameMode.TRACK_EDITOR, data));
+        if (currentTrack == null) {
+            currentTrack = game.getParams().getTrackParams();
+        }
+        game.startTrack(GameParams.of(GameMode.TRACK_EDITOR, currentTrack.getData()));
         application.editMode();
-        showLayout(); //todo fix timer
+        showLayout();
     }
 
     public void exitEditor() {
@@ -337,15 +351,18 @@ public class TrackEditorView implements GdTrackEditor {
     }
 
     public void playTrack() {
+        if (currentTrack == null) {
+            currentTrack = game.getParams().getTrackParams();
+        }
         modManager.setTrackTheme(currentTrack);
         game.startTrack(GameParams.of(GameMode.TRACK_EDITOR_PLAY, currentTrack.getData()));
-        Helpers.getGDActivity().exitEditMode(); //todo
+        application.getPlatform().exitEditMode();
     }
 
     public void saveLeagueInput(int league) {
         try {
             currentTrack.getData().league = league;
-            engine.getTrackPhysic().getTrack().league = league;
+            track().league = league;
             engine.setLeague(league);
             //currentTrack.setLeagueTheme(Theme.defaultTheme().getLeagueThemes().get(league));
         } catch (Exception e) {
@@ -355,12 +372,17 @@ public class TrackEditorView implements GdTrackEditor {
 
     public void saveTrack() {
         //todo pack level props and unpack on loading
-        //copy level object
-        application.getFileStorage().save(currentTrack, GDFile.TRACK, Fmt.us(currentTrack.getData().getGuid(), currentTrack.getData().getName()));
+        String trackName = Fmt.trackName(currentTrack.getData());
+        application.getFileStorage().save(currentTrack, GDFile.TRACK, trackName);
     }
 
     public TrackParams getCurrentTrack() {
         return currentTrack;
+    }
+
+    @Override
+    public void setCurrentTrack(TrackParams currentTrack) {
+        this.currentTrack = currentTrack;
     }
 
     public MenuLinearLayout[] getViews() {

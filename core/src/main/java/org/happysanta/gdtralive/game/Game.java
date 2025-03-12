@@ -403,7 +403,7 @@ public class Game {
             player.reset();
             player.setTrackRecord(params.getTrackRecord());
             Achievement.achievements.get(Achievement.Type.SERIES_LOVER).increment();
-            loadTrack(params.getTrackParams());
+            loadTrack(params.getTrackData());
             engine.setReplayMode(true);
             engine.setGodMode(true);
             engine.startAutoplay();
@@ -420,10 +420,10 @@ public class Game {
             recorder.reset();
             engine.setEditMode(true);
             view.setDrawTimer(false);
-            loadTrack(params.getTrackParams());
+            loadTrack(params.getTrackData());
             return;
         }
-        TrackData track = params.getTrackParams();
+        TrackData track = params.getTrackData();
         engine.setEditMode(false);
         loadTrack(track);
         if (GameMode.CAMPAIGN == params.getMode()) {
@@ -536,6 +536,10 @@ public class Game {
         trainer.stop();
         recorder.reset();
         player.reset();
+    }
+
+    public GameParams getParams() {
+        return params;
     }
 
     public KeyboardHandler getKeyboardHandler() {

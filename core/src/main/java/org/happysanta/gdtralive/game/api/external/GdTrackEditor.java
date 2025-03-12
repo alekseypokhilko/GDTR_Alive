@@ -18,6 +18,7 @@ public interface GdTrackEditor {
     void saveTrack();
 
     TrackParams getCurrentTrack();
+    void setCurrentTrack(TrackParams params);
 
     void showLayout();
 

@@ -134,6 +134,7 @@ public class MenuFactory<T> {
         add(MenuType.MOD_OPTIONS, this::createModOptions);
         add(MenuType.TRACKS, this::createTracks);
         add(MenuType.TRACK_OPTIONS, this::createTrackOptions);
+//        add(MenuType.FINISHED_SINGLE, this::createFinishedSingle);
         add(MenuType.THEMES, this::createThemes);
         add(MenuType.THEME_OPTIONS, this::createThemeOptions);
         add(MenuType.THEME_EDITOR, this::createThemeEditor);
@@ -190,14 +191,20 @@ public class MenuFactory<T> {
     }
 
     private MenuScreen<T> createInGameEditor(Map<MenuType, MenuScreen<T>> r) {
-        return e.screen(str.s(S.track_editor), r.get(MenuType.WORKSHOP)).builder((s, data) -> {
+        return e.screen(str.s(S.track_editor), r.get(MenuType.TRACKS)).builder((s, data) -> {
             s.clear();
+            TrackParams currentTrack = trackEditor.getCurrentTrack();
+            trackEditor.setCurrentTrack(currentTrack == null ? game.getParams().getTrackParams() : currentTrack);
             s.add(e.action(str.s(S.back), __ -> trackEditor.startEditing()));
             s.add(e.action(str.s(S.play), __ -> trackEditor.playTrack()));
-            s.add(e.menu(str.s(S.track_options), this.get(MenuType.TRACK_EDITOR_OPTIONS), item -> this.get(MenuType.TRACK_EDITOR_OPTIONS).build(new MenuData(trackEditor.getCurrentTrack()))));
+            s.add(e.menu(str.s(S.track_options), this.get(MenuType.TRACK_EDITOR_OPTIONS),
+                    __ -> this.get(MenuType.TRACK_EDITOR_OPTIONS).build(new MenuData(trackEditor.getCurrentTrack()))));
             s.add(e.menu(str.s(S.options), this.get(MenuType.OPTIONS), null));
             s.add(e.action(str.s(S.save), __ -> trackEditor.saveTrack()));
-            s.add(e.action(str.s(S.exit_editor), __ -> trackEditor.exitEditor()));
+            s.add(e.action(str.s(S.exit_editor), __ -> {
+                this.get(MenuType.TRACKS).build();
+                trackEditor.exitEditor();
+            }));
             s.resetHighlighted();
             trackEditor.hideLayout();
             return s;
@@ -225,9 +232,6 @@ public class MenuFactory<T> {
                     this.get(MenuType.TRACK_EDITOR_OPTIONS).build(new MenuData(trackEditor.getCurrentTrack()));
                 }
             }));
-            s.add(e.emptyLine(false));
-            s.add(e.textHtmlBold(str.s(S.track_properties), null));
-            platform.hideKeyboardLayout();
             System.gc(); //hopefully
             return s;
         });
@@ -298,7 +302,7 @@ public class MenuFactory<T> {
                 }));
             }
             s.add(e.action(str.s(S.copy), __ -> {
-                header.setName(header.getName() + "-copy-" + System.currentTimeMillis());
+                header.setName(Fmt.copy(header.getName()));
                 header.setGuid(UUID.randomUUID().toString());
                 header.setAuthor(application.getSettings().getPlayerName());
                 header.setDate(new Date().toString());
@@ -514,7 +518,7 @@ public class MenuFactory<T> {
                 s.highlightElement();
             }));
             s.add(e.action(str.s(S.copy), __ -> {
-                mod.setName(mod.getName() + "-copy-" + System.currentTimeMillis());
+                mod.setName(Fmt.copy(mod.getName()));
                 mod.setGuid(UUID.randomUUID().toString());
                 mod.setAuthor(application.getSettings().getPlayerName());
                 mod.setDate(new Date().toString());
@@ -544,30 +548,36 @@ public class MenuFactory<T> {
     private MenuScreen<T> createTrackOptions(Map<MenuType, MenuScreen<T>> r) {
         return e.screen(str.s(S.track), r.get(MenuType.TRACKS)).builder((s, data) -> {
             TrackParams track = data.getTrackRef();
+            trackEditor.setCurrentTrack(track);
             s.clear();
             s.add(e.textHtmlBold(str.s(S.name), track.getData().getName()));
             s.add(e.textHtmlBold(str.s(S.guid), Utils.getTrackId(track.getData())));
             s.add(e.textHtmlBold(str.s(S.author), track.getData().getAuthor()));
             s.add(e.emptyLine(false));
-
-            s.add(e.action(str.s(S.play), __ -> {
-            }));
+            s.add(e.action(str.s(S.play), __ -> game.startTrack(GameParams.of(GameMode.TRACK_EDITOR_PLAY, track))));
+            s.add(e.action(str.s(S.edit), __ -> trackEditor.startEditing()));
             s.add(e.action(str.s(S.copy), __ -> {
+                track.getData().setName(Fmt.copy(track.getData().getName()));
+                track.getData().setGuid(UUID.randomUUID().toString());
+                track.getData().setAuthor(application.getSettings().getPlayerName());
+                application.getFileStorage().save(track, GDFile.TRACK, Fmt.trackName(track.getData()));
             }));
             s.add(e.action(str.s(S.rename), __ -> {
                 MenuData menuData = new MenuData(track.getData().getName());
                 menuData.setHandler(o -> {
                     String newName = Utils.fixFileName((String) o);
                     track.getData().setName(newName);
-                    application.notify("Renamed");
+                    application.getFileStorage().save(track, GDFile.TRACK, Fmt.trackName(track.getData()));
                     s.build(new MenuData(track));
                     menu.back();
                 });
                 MenuScreen<T> build = this.get(MenuType.RENAME).setParent(s).build(menuData);
                 menu.setCurrentMenu(build);
             }));
-            s.add(e.action(str.s(S.share), __ -> application.getPlatform().share(GDFile.TRACK, track.getData().getName())));
-            s.add(e.action(str.s(S.delete), -1, __ -> this.application.getModManager().deleteMod(track.getData().getName())));
+            if (data.getValue() != null) {
+                s.add(e.action(str.s(S.share), __ -> application.getPlatform().share(GDFile.TRACK, data.getValue())));
+                s.add(e.action(str.s(S.delete), -1, __ -> this.application.getFileStorage().delete(GDFile.TRACK, data.getValue())));
+            }
             s.add(e.backAction(() -> this.get(MenuType.TRACKS).build()));
             return s;
         });
@@ -624,15 +634,16 @@ public class MenuFactory<T> {
             s.add(e.emptyLine(true));
             int i = 0;
             List<String> list = application.getFileStorage().listFiles(GDFile.TRACK);
+            String[] leagueNames = application.getModManager().getLeagueNames();
             for (String filename : list) {
                 String name = GDFile.TRACK.cutExtension(filename);
                 trackNames.add(name);
-                IMenuItemElement<T> options = e.menu(name, this.get(MenuType.TRACK_OPTIONS),
+                IMenuItemElement<T> options = e.menu(Fmt.trackNameTitle(name, leagueNames), this.get(MenuType.TRACK_OPTIONS),
                         item -> {
                             try {
                                 TrackParams trackParams = this.application.getFileStorage().readTrack(trackNames.get(item.getValue()));
                                 if (trackParams != null) {
-                                    this.get(MenuType.TRACK_OPTIONS).build(new MenuData(trackParams));
+                                    this.get(MenuType.TRACK_OPTIONS).build(new MenuData(trackParams, name));
                                 } else {
                                     menu.back();
                                 }
@@ -714,11 +725,7 @@ public class MenuFactory<T> {
             for (String name : application.getFileStorage().listFiles(GDFile.RECORD)) {
                 try {
                     String title = GDFile.RECORD.cutExtension(name);
-                    String trackName = title.substring(0, title.lastIndexOf("["));
-                    String meta = title.substring(title.lastIndexOf("[") + 1, title.lastIndexOf("]"));
-                    String league = leagueNames[Integer.parseInt(meta.substring(meta.indexOf("_") + 1, meta.lastIndexOf("_")))];
-                    String time = Fmt.durationString(Long.parseLong(meta.substring(0, meta.indexOf("_"))));
-                    IMenuItemElement<T> options = e.menu(String.format("%s %s %s", trackName, league, time), this.get(MenuType.RECORDING_OPTIONS),
+                    IMenuItemElement<T> options = e.menu(Fmt.recordTitle(title, leagueNames), this.get(MenuType.RECORDING_OPTIONS),
                             item -> this.get(MenuType.RECORDING_OPTIONS).build(new MenuData((TrackRecord) null, title)));
                     options.setValue(i);
                     s.add(options);

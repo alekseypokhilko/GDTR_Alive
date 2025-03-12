@@ -11,7 +11,7 @@ public class Mapper {
         MenuData inGameMenu = new MenuData();
         inGameMenu.setMenuMode(MenuMode.IN_GAME);
         inGameMenu.setGameMode(params.getMode());
-        inGameMenu.setTrackName(params.getTrackParams().name);
+        inGameMenu.setTrackName(params.getTrackData().name);
         return inGameMenu;
     }
 
@@ -19,8 +19,8 @@ public class Mapper {
         MenuData data = new MenuData();
         data.setMenuMode(MenuMode.FINISHED);
         data.setGameMode(params.getMode());
-        data.setTrackName(params.getTrackParams().name);
-        data.setTrackId(Utils.getTrackId(params.getTrackParams()));
+        data.setTrackName(params.getTrackData().name);
+        data.setTrackId(Utils.getTrackId(params.getTrackData()));
         data.setLastTrackTime(lastTrackTime);
         data.setSelectedLevel(params.getLevel());
         data.setSelectedTrack(params.getTrack());

@@ -33,6 +33,8 @@ public interface GdPlatform {
 
     void trainingMode();
 
+    void exitEditMode();
+
     String getAppVersion();
     void share(GDFile gdFile, String name);
 }

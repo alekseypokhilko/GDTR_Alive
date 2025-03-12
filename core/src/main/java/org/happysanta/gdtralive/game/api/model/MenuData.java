@@ -54,6 +54,11 @@ public class MenuData {
         this.trackRef = track;
     }
 
+    public MenuData(TrackParams track, String filename) {
+        this.trackRef = track;
+        this.value = filename;
+    }
+
     public MenuData(Consumer<Object> handler) {
         this.handler = handler;
     }
