@@ -23,6 +23,9 @@ public class GdView {
     private int cameraX;
     private int cameraY;
 
+    private int shiftX;
+    private int shiftY;
+
     private boolean infoMessageNeedDeleting;
     private String infoMessage;
     private int infoMessageIndex;
@@ -39,6 +42,8 @@ public class GdView {
         infoMessageIndex = 0;
         timer = new Timer();
         cameraX = 0;
+        shiftX = 0;
+        shiftY = 0;
         this.cameraY = height;
         this.engine = engine;
         this.engine.calculateDelta(Math.min(width, height));
@@ -81,8 +86,8 @@ public class GdView {
 
         engine.updateElementPosition();
         double yOffset = height > width ? 2 : (platform.getPlatform() == Platform.MOBILE ? 1.3 : 1.7);
-        moveTrack(-engine.currentX_MAYBE() + width / 2,
-                (int) (engine.currentY_MAYBE() + height / yOffset), width);
+        moveTrack(-engine.currentX_MAYBE() + width / 2 + shiftX,
+                (int) (engine.currentY_MAYBE() + height / yOffset + shiftY), width);
 
         EngineStateRecord engineState = engine.getStateReference();
         ViewState viewState = getViewState(width, height);
@@ -127,5 +132,15 @@ public class GdView {
             timer.purge();
             timer = null;
         }
+    }
+
+    public void shift(int shiftX, int shiftY) {
+        this.shiftX += shiftX;
+        this.shiftY += shiftY;
+    }
+
+    public void resetShift() {
+        this.shiftX = 0;
+        this.shiftY = 0;
     }
 }

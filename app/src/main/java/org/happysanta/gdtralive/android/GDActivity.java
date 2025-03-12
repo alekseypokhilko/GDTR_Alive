@@ -14,6 +14,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewManager;
@@ -42,6 +43,7 @@ import org.happysanta.gdtralive.game.Menu;
 import org.happysanta.gdtralive.game.MenuFactory;
 import org.happysanta.gdtralive.game.ModManager;
 import org.happysanta.gdtralive.game.api.Constants;
+import org.happysanta.gdtralive.game.api.EditorMode;
 import org.happysanta.gdtralive.game.api.GDFile;
 import org.happysanta.gdtralive.game.api.GameMode;
 import org.happysanta.gdtralive.game.api.MenuType;
@@ -91,6 +93,9 @@ public class GDActivity extends Activity implements GdPlatform {
     public TextView menuTitleTextView;
     private MenuLinearLayout keyboardLayout;
     private int buttonHeight = 60;
+
+    private Integer touchX = null;
+    private Integer touchY = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -248,6 +253,44 @@ public class GDActivity extends Activity implements GdPlatform {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+            }
+
+            try {
+                if (application.getGame().getParams().getMode() == GameMode.TRACK_EDITOR) {
+                    switch (event.getAction()) {
+                        case MotionEvent.ACTION_DOWN:
+                            this.touchX = (int) event.getRawX();
+                            this.touchY = (int) event.getRawY();
+                            break;
+
+                        case MotionEvent.ACTION_CANCEL:
+                        case MotionEvent.ACTION_UP:
+                            this.touchX = null;
+                            this.touchY = null;
+                            break;
+                        case MotionEvent.ACTION_MOVE:
+                            if (touchX != null && touchY != null) {
+                                int rawX = (int) event.getRawX();
+                                int rawY = (int) event.getRawY();
+                                //System.out.println("x= " + rawX + " y=" + rawY);
+                                int shiftX = -(touchX - rawX) / 2;
+                                int shiftY = -(touchY - rawY) / 2;
+                                //System.out.println("shiftX= " + shiftX + " shiftY=" + shiftY);
+                                if (trackEditor.editorMode == EditorMode.CAMERA_MOVE) {
+                                    gameView.getGdView().shift(shiftX, shiftY);
+                                } else if (trackEditor.editorMode == EditorMode.POINT_MOVE) {
+                                    trackEditor.shiftTrackPoint(Utils.unpackInt(shiftX), Utils.unpackInt(-shiftY));
+                                } else if (trackEditor.editorMode == EditorMode.START_POINT_MOVE) {
+                                    trackEditor.shiftStartPoint(Utils.unpackInt(shiftX), Utils.unpackInt(-shiftY));
+                                }
+                                this.touchX = rawX;
+                                this.touchY = rawY;
+                            }
+                            break;
+                    }
+                }
+            } catch (Exception e) {
+                //e.printStackTrace();
             }
             return true;
         });
