@@ -403,21 +403,25 @@ public class Utils {
     }
 
     public static byte[] unzip(File file) {
-        ByteArrayOutputStream outputStream = null;
         try (FileInputStream inputStream = new FileInputStream(file)) {
-            try (ZipInputStream zis = new ZipInputStream(inputStream)) {
-                zis.getNextEntry();
-                byte[] buff = new byte[1024];
-                outputStream = new ByteArrayOutputStream();
-                int l;
-                while ((l = zis.read(buff)) > 0) {
-                    outputStream.write(buff, 0, l);
-                }
-                zis.closeEntry();
-            }
+            return unzip(inputStream);
         } catch (Exception e) {
             e.printStackTrace();
+            return null;
         }
-        return outputStream == null ? null : outputStream.toByteArray();
+    }
+
+    public static byte[] unzip(InputStream inputStream) throws IOException {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        try (ZipInputStream zis = new ZipInputStream(inputStream)) {
+            zis.getNextEntry();
+            byte[] buff = new byte[1024];
+            int l;
+            while ((l = zis.read(buff)) > 0) {
+                outputStream.write(buff, 0, l);
+            }
+            zis.closeEntry();
+        }
+        return outputStream.toByteArray();
     }
 }

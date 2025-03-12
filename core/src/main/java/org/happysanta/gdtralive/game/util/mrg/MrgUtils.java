@@ -1,5 +1,6 @@
 package org.happysanta.gdtralive.game.util.mrg;
 
+import org.happysanta.gdtralive.game.AbstractFileStorage;
 import org.happysanta.gdtralive.game.api.Constants;
 import org.happysanta.gdtralive.game.api.GDFile;
 import org.happysanta.gdtralive.game.api.dto.LevelPack;
@@ -14,6 +15,8 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,6 +33,43 @@ public class MrgUtils {
     static String MULTIGOD = "10_391_Gravity Defied MultiGOD [323.263.452]Sewer MC.mrg";
 
     public static void main(String[] args) {
+
+        String[] modNmaes = new String[]{
+                "GDTR Alive",
+                "GDTR Original",
+                "GDTR ULTIMATE α",
+                "GDTR ULTIMATE β",
+                "GDTR ULTIMATE γ",
+                "GDTR ULTIMATE Δ",
+                "GDTR ULTIMATE λ",
+                "GDTR ULTIMATE μ",
+                "GDTR ULTIMATE Ξ",
+                "GDTR ULTIMATE π",
+                "GDTR ULTIMATE Ω"
+        };
+
+        File appFolder = new File("/Users/semen/Documents/projects/MY/GDTR_Alive/app/src/main/assets");
+        Map<GDFile, File> folders = new HashMap<>();
+        folders.put(GDFile.MOD, new File("/Users/semen/Documents/projects/MY/GDTR_Alive/app/src/main/assets/mods"));
+        AbstractFileStorage fs = new AbstractFileStorage(appFolder, folders) {
+            @Override
+            protected String[] listAssets(GDFile fileType) throws IOException {
+                return null;
+            }
+
+            @Override
+            protected InputStream fromAssets(String folder, String name) throws IOException {
+                return null;
+            }
+        };
+        for (String modPath : modNmaes) {
+            Mod mod = fs.readMod(modPath);
+            fs.save(mod, GDFile.MOD, modPath);
+        }
+
+        if (true) {
+            return;
+        }
         Mod multigod = null;
         Map<String, TrackData> trackToTrackGuid = new HashMap<>();
         for (File file : Objects.requireNonNull(new File(BASE_PATH).listFiles())) {
@@ -97,7 +137,7 @@ public class MrgUtils {
         }
 
         //Α α, Β β, Γ γ, Δ δ, Ε ε, Ζ ζ, Η η, Θ θ, Ι ι, Κ κ, Λ λ, Μ μ, Ν ν, Ξ ξ, Ο ο, Π π, Ρ ρ, Σ σ ς, Τ τ, Υ υ, Φ φ, Χ χ, Ψ ψ, Ω ω.
-        String[] ch = new String[]{"α", "β", "Δ", "Σ", "Ω", "λ", "μ", "π",  "Ξ", "γ", "Θ", "τ", "φ", "Ψ",  "σ"};
+        String[] ch = new String[]{"α", "β", "Δ", "Σ", "Ω", "λ", "μ", "π", "Ξ", "γ", "Θ", "τ", "φ", "Ψ", "σ"};
         int index = 0;
         for (int i = 0; i < 20; i++) {
             Mod mod = new Mod();

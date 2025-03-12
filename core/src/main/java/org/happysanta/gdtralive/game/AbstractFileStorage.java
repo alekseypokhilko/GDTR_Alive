@@ -16,11 +16,21 @@ import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 public abstract class AbstractFileStorage implements GdFileStorage {
+    private static final Set<GDFile> ZIPPED;
+
+    static {
+        ZIPPED = new HashSet<>();
+        ZIPPED.add(GDFile.RECORD);
+        ZIPPED.add(GDFile.MOD);
+    }
+
     // /storage/emulated/0/Android/data/org.happysanta.gdtralive/files/GDTR_Alive
     protected Application application;
     protected final File appFolder;
@@ -43,7 +53,16 @@ public abstract class AbstractFileStorage implements GdFileStorage {
 
     @Override
     public Mod readMod(String name) {
-        return read(name, GDFile.MOD);
+        GDFile gdFile = GDFile.MOD;
+        try {
+            InputStream inputStream = fromAssets(gdFile.folder, gdFile.addExtension(name));
+            byte[] res = Utils.unzip(inputStream);
+            if (res != null && res.length != 0) {
+                return Utils.fromJson(new String(res, StandardCharsets.UTF_8), gdFile);
+            }
+        } catch (IOException e) {
+        }
+        return unzip(name, gdFile);
     }
 
     @Override
@@ -53,16 +72,7 @@ public abstract class AbstractFileStorage implements GdFileStorage {
 
     @Override
     public TrackRecord readRecord(String name) {
-        GDFile gdFile = GDFile.RECORD;
-        String folderPath = folders.get(gdFile).getAbsolutePath();
-        try {
-            byte[] res = Utils.unzip(new File(Fmt.slash(folderPath, gdFile.addExtension(name))));
-            return Utils.fromJson(new String(res, StandardCharsets.UTF_8), gdFile);
-        } catch (Exception e) {
-            e.printStackTrace();
-            notify("Error: " + e.getMessage());
-            return read(name, GDFile.RECORD);
-        }
+        return unzip(name, GDFile.RECORD);
     }
 
     @Override
@@ -94,7 +104,7 @@ public abstract class AbstractFileStorage implements GdFileStorage {
         File file = new File(Fmt.slash(appFolder.getAbsolutePath(), fileType.folder), sanitizedName);
         if (file != null) {
             String content = Utils.toJson(obj);
-            if (GDFile.RECORD == fileType) {
+            if (ZIPPED.contains(fileType)) {
                 Utils.writeZip(file, content.getBytes(StandardCharsets.UTF_8));
             } else {
                 try (PrintStream out = new PrintStream(file)) {
@@ -123,7 +133,10 @@ public abstract class AbstractFileStorage implements GdFileStorage {
 
     private <T> T read(String name, GDFile gdFile) {
         try {
-            return (T) Utils.read(fromAssets(gdFile.folder, gdFile.addExtension(name)), gdFile);
+            InputStream inputStream = fromAssets(gdFile.folder, gdFile.addExtension(name));
+            if (inputStream != null) {
+                return (T) Utils.read(inputStream, gdFile);
+            }
         } catch (IOException e) {
         }
         String modsFolderPath = folders.get(gdFile).getAbsolutePath();
@@ -133,13 +146,27 @@ public abstract class AbstractFileStorage implements GdFileStorage {
             e.printStackTrace();
             notify("Error: " + e.getMessage());
         }
-        notify("Not found");
         return null;
     }
 
     private void notify(String message) {
         if (application != null) {
             application.notify(message);
+        }
+    }
+
+    private <T> T unzip(String name, GDFile gdFile) {
+        String folderPath = folders.get(gdFile).getAbsolutePath();
+        try {
+            byte[] res = Utils.unzip(new File(Fmt.slash(folderPath, gdFile.addExtension(name))));
+            if (res == null || res.length == 0) {
+                return read(name, gdFile);
+            } else {
+                return Utils.fromJson(new String(res, StandardCharsets.UTF_8), gdFile);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return read(name, gdFile);
         }
     }
 
