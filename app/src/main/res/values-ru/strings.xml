@@ -124,8 +124,9 @@
 	<string name="install_mrg">Установить levels.mrg</string>
 	<string name="import_mrg">Импортировать levels.mrg</string>
 	<string name="import_mod">Импортировать мод (.gdmod)</string>
-	<string name="import_theme">Импортировать тему (.gdtheme)\"</string>
-	<string name="import_record">Импортировать запись (.gdrecord)\"</string>
+	<string name="import_theme">Импортировать тему (.gdtheme)</string>
+	<string name="import_record">Импортировать запись (.gdrecord)</string>
+	<string name="import_track">Импортировать трек (.gdtrack)</string>
 	<string name="levels">\"Трековые пакеты\"</string>
 	<string name="recordings">Записи</string>
 	<string name="record_option">Запись трека</string>

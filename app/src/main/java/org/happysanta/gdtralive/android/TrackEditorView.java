@@ -19,10 +19,11 @@ import org.happysanta.gdtralive.game.ModManager;
 import org.happysanta.gdtralive.game.api.EditorMode;
 import org.happysanta.gdtralive.game.api.GDFile;
 import org.happysanta.gdtralive.game.api.GameMode;
-import org.happysanta.gdtralive.game.api.dto.Theme;
 import org.happysanta.gdtralive.game.api.dto.TrackParams;
 import org.happysanta.gdtralive.game.api.external.GdTrackEditor;
+import org.happysanta.gdtralive.game.api.menu.element.IInputTextElement;
 import org.happysanta.gdtralive.game.api.model.GameParams;
+import org.happysanta.gdtralive.game.api.model.TrackData;
 import org.happysanta.gdtralive.game.engine.Engine;
 import org.happysanta.gdtralive.game.util.Fmt;
 import org.happysanta.gdtralive.game.util.Utils;
@@ -74,7 +75,7 @@ public class TrackEditorView implements GdTrackEditor {
         MenuImageView cameraMoveMode = button(R.drawable.c_camera, v -> handleCameraModeButton());
         MenuImageView pointModeSelection = button(R.drawable.c_points, v -> handleTrackEditModeButton());
         MenuImageView objectEditModeSelection = button(R.drawable.c_objects, v -> handleObjectEditMode());
-//        InputTextElement offsetInput = new InputTextElement(Fmt.colon(s(R.string.offset)), "" + DEFAULT_OFFSET, this::saveOffset, new IMenuTextView());
+        IInputTextElement offsetInput = application.getPlatform().getPlatformMenuElementFactory().editText(Fmt.colon(s(R.string.offset)), "" + DEFAULT_OFFSET, this::saveOffset);
 
         modeLayout = new MenuLinearLayout(gd, false);
         inputLayout = new MenuLinearLayout(gd, false);
@@ -95,7 +96,7 @@ public class TrackEditorView implements GdTrackEditor {
         LinearLayout inputRow = new LinearLayout(gd);
         inputRow.setPadding(Helpers.getDp(KeyboardController.PADDING), Helpers.getDp(KeyboardController.PADDING), Helpers.getDp(KeyboardController.PADDING), 0);
         inputRow.setOrientation(LinearLayout.VERTICAL);
-//        inputRow.addView((View) offsetInput.getView());
+        inputRow.addView((View) offsetInput.getView());
         inputLayout.setOrientation(LinearLayout.VERTICAL);
         inputLayout.addView(inputRow);
         inputLayout.setGravity(Gravity.TOP | Gravity.CENTER);
@@ -283,8 +284,12 @@ public class TrackEditorView implements GdTrackEditor {
     }
 
     private void handleRemoveButton() {
-        engine.getTrackPhysic().getTrack().points = Utils.removeElement(engine.getTrackPhysic().getTrack().points, selectedPointIndex);
-        engine.getTrackPhysic().getTrack().pointsCount--;
+        try {
+            engine.getTrackPhysic().getTrack().points = Utils.removeElement(engine.getTrackPhysic().getTrack().points, selectedPointIndex);
+            engine.getTrackPhysic().getTrack().pointsCount--;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void handleAddButton() {
@@ -308,7 +313,7 @@ public class TrackEditorView implements GdTrackEditor {
     public void createNew(String playerName) {
         try {
             this.currentTrack = Utils.initTrackTemplate(playerName);
-            modManager.setTrackTheme(currentTrack);
+//            modManager.setTrackTheme(currentTrack);
         } catch (Exception e) {
             e.printStackTrace();//todo
         }
@@ -316,7 +321,8 @@ public class TrackEditorView implements GdTrackEditor {
     }
 
     public void startEditing() {
-        game.startTrack(GameParams.of(GameMode.TRACK_EDITOR, currentTrack.getData()));
+        TrackData data = currentTrack.getData();
+        game.startTrack(GameParams.of(GameMode.TRACK_EDITOR, data));
         application.editMode();
         showLayout(); //todo fix timer
     }
@@ -341,7 +347,7 @@ public class TrackEditorView implements GdTrackEditor {
             currentTrack.getData().league = league;
             engine.getTrackPhysic().getTrack().league = league;
             engine.setLeague(league);
-            currentTrack.setLeagueTheme(Theme.defaultTheme().getLeagueThemes().get(league));
+            //currentTrack.setLeagueTheme(Theme.defaultTheme().getLeagueThemes().get(league));
         } catch (Exception e) {
             e.printStackTrace();
         }

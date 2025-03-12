@@ -2,6 +2,7 @@ package org.happysanta.gdtralive.game;
 
 import org.happysanta.gdtralive.game.api.GDFile;
 import org.happysanta.gdtralive.game.api.dto.Theme;
+import org.happysanta.gdtralive.game.api.dto.TrackParams;
 import org.happysanta.gdtralive.game.api.external.GdFileStorage;
 import org.happysanta.gdtralive.game.api.model.Mod;
 import org.happysanta.gdtralive.game.api.model.TrackRecord;
@@ -76,7 +77,7 @@ public abstract class AbstractFileStorage implements GdFileStorage {
     }
 
     @Override
-    public TrackRecord readTrack(String name) {
+    public TrackParams readTrack(String name) {
         return read(name, GDFile.TRACK);
     }
 

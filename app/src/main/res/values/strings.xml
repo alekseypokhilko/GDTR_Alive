@@ -159,6 +159,7 @@
 	<string name="import_mod">Import mod (.gdmod)</string>
 	<string name="import_theme">"Import theme (.gdtheme)"</string>
 	<string name="import_record">"Import Record (.gdrecord)"</string>
+	<string name="import_track">"Import Track (.gdtrack)"</string>
 	<string name="levels">"Track packs"</string>
 	<string name="recordings">Recordings</string>
 	<string name="record_option">Track recording</string>

@@ -240,7 +240,7 @@ public class ModManager {
         this.theme = loadTheme(name);
         settings.setSelectedTheme(name);
         reloadTheme();
-        Achievement.achievements.get(Achievement.Type.ESTHETE).increment();
+        //Achievement.achievements.get(Achievement.Type.ESTHETE).increment();
     }
 
     public float getInterfaceDensity() {

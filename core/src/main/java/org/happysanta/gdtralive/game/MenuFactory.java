@@ -79,8 +79,9 @@ public class MenuFactory<T> {
     private String[] leagueNames = new String[10];
     private String[] difficultyLevels = new String[10];
     private final int[] selectedTrack = new int[100];
-    private List<String> modNames = new ArrayList<>(); //todo remove
-    public List<String> themeNames = new ArrayList<>(); //todo remove
+    private final List<String> modNames = new ArrayList<>(); //todo remove
+    private final List<String> themeNames = new ArrayList<>(); //todo remove
+    private final List<String> trackNames = new ArrayList<>(); //todo remove
 
     public MenuFactory(Application application, GdPlatform platform, PlatformMenuElementFactory<T> platformMenuElementFactory) {
         this.application = application;
@@ -131,14 +132,17 @@ public class MenuFactory<T> {
         add(MenuType.WORKSHOP, r -> e.screen(str.s(S.workshop), r.get(MenuType.MAIN)));
         add(MenuType.MODS, this::createMods);
         add(MenuType.MOD_OPTIONS, this::createModOptions);
+        add(MenuType.TRACKS, this::createTracks);
+        add(MenuType.TRACK_OPTIONS, this::createTrackOptions);
         add(MenuType.THEMES, this::createThemes);
         add(MenuType.THEME_OPTIONS, this::createThemeOptions);
         add(MenuType.THEME_EDITOR, this::createThemeEditor);
 
-        add(MenuType.TRACK_EDITOR_OPTIONS, this::createTrackOptions);
+        add(MenuType.TRACK_EDITOR_OPTIONS, this::createTrackEditorOptions);
         add(MenuType.IN_GAME_TRACK_EDITOR, this::createInGameEditor);
         add(MenuType.RECORDINGS, this::createRecordings);
         transform(MenuType.WORKSHOP, this::transformWorkshop);
+        add(MenuType.FINISHED_EDIT, r -> this.get(MenuType.IN_GAME_TRACK_EDITOR));
 
         //        add(MenuType.DAILY, r -> new Menuel.screen(str.s(Strings.daily_challenge), r.get(MenuType.PLAY)));//todo
 //        DailyMenu dailyMenu = new DailyMenu(menu, playMenuScreen, application, this); //todo
@@ -200,8 +204,8 @@ public class MenuFactory<T> {
         });
     }
 
-    private MenuScreen<T> createTrackOptions(Map<MenuType, MenuScreen<T>> r) {
-        MenuScreen<T> screen = e.screen(str.s(S.track_editor), r.get(MenuType.WORKSHOP));
+    private MenuScreen<T> createTrackEditorOptions(Map<MenuType, MenuScreen<T>> r) {
+        MenuScreen<T> screen = e.screen(str.s(S.track_editor), r.get(MenuType.TRACKS));
         return screen.builder((s, data) -> {
             TrackParams track = data.getTrackRef();
             s.clear();
@@ -221,21 +225,8 @@ public class MenuFactory<T> {
                     this.get(MenuType.TRACK_EDITOR_OPTIONS).build(new MenuData(trackEditor.getCurrentTrack()));
                 }
             }));
-//            for (Map.Entry<String, String> entry : track.getLeagueProperties().entrySet()) {
-//                s.addItem(new PropInput(Fmt.colon(entry.getKey()), entry.getValue(), entry.getKey(), item -> {
-//                    trackEditor.getCurrentTrack().getLeagueProperties().put(item.getKey(), item.getText());
-//                    application.getModManager().setTrackProperties(trackEditor.getCurrentTrack());
-//                }));
-//            }
-
             s.add(e.emptyLine(false));
             s.add(e.textHtmlBold(str.s(S.track_properties), null));
-//            for (Map.Entry<String, String> entry : track.getGameProperties().entrySet()) {
-//                s.addItem(new PropInput(Fmt.colon(entry.getKey()), entry.getValue(), entry.getKey(), item -> {
-//                    trackEditor.getCurrentTrack().getGameProperties().put(item.getKey(), item.getText());
-//                    application.getModManager().setTrackProperties(trackEditor.getCurrentTrack());
-//                }));
-//            }
             platform.hideKeyboardLayout();
             System.gc(); //hopefully
             return s;
@@ -550,6 +541,38 @@ public class MenuFactory<T> {
         });
     }
 
+    private MenuScreen<T> createTrackOptions(Map<MenuType, MenuScreen<T>> r) {
+        return e.screen(str.s(S.track), r.get(MenuType.TRACKS)).builder((s, data) -> {
+            TrackParams track = data.getTrackRef();
+            s.clear();
+            s.add(e.textHtmlBold(str.s(S.name), track.getData().getName()));
+            s.add(e.textHtmlBold(str.s(S.guid), Utils.getTrackId(track.getData())));
+            s.add(e.textHtmlBold(str.s(S.author), track.getData().getAuthor()));
+            s.add(e.emptyLine(false));
+
+            s.add(e.action(str.s(S.play), __ -> {
+            }));
+            s.add(e.action(str.s(S.copy), __ -> {
+            }));
+            s.add(e.action(str.s(S.rename), __ -> {
+                MenuData menuData = new MenuData(track.getData().getName());
+                menuData.setHandler(o -> {
+                    String newName = Utils.fixFileName((String) o);
+                    track.getData().setName(newName);
+                    application.notify("Renamed");
+                    s.build(new MenuData(track));
+                    menu.back();
+                });
+                MenuScreen<T> build = this.get(MenuType.RENAME).setParent(s).build(menuData);
+                menu.setCurrentMenu(build);
+            }));
+            s.add(e.action(str.s(S.share), __ -> application.getPlatform().share(GDFile.TRACK, track.getData().getName())));
+            s.add(e.action(str.s(S.delete), -1, __ -> this.application.getModManager().deleteMod(track.getData().getName())));
+            s.add(e.backAction(() -> this.get(MenuType.TRACKS).build()));
+            return s;
+        });
+    }
+
     private MenuScreen<T> createMods(Map<MenuType, MenuScreen<T>> r) {
         return e.screen(str.s(S.mod_packs), r.get(MenuType.WORKSHOP)).builder((s, data) -> {
             s.clear();
@@ -575,6 +598,46 @@ public class MenuFactory<T> {
                                 }
                             } catch (Exception ex) {
                                 application.notify("Failed to load mod");
+                                menu.back();
+                            }
+                        });
+                options.setValue(i);
+                s.add(options);
+                i++;
+            }
+            s.resetHighlighted();
+            return s;
+        });
+    }
+
+    private MenuScreen<T> createTracks(Map<MenuType, MenuScreen<T>> r) {
+        return e.screen(str.s(S.tracks), r.get(MenuType.WORKSHOP)).builder((s, data) -> {
+            s.clear();
+            trackNames.clear();
+            s.add(e.backAction());
+            s.add(e.action(Fmt.ra(str.s(S.create_new_track)), item -> {
+                application.getModManager().installTheme(Theme.defaultTheme());
+                trackEditor.createNew(application.getSettings().getPlayerName());
+            }));
+            s.add(e.action(str.s(S.import_track), SELECT_FILE, it1 -> platform.pickFile(Constants.PICKFILE_TRACK_RESULT_CODE)));
+            s.add(e.emptyLine(true));
+            s.add(e.emptyLine(true));
+            int i = 0;
+            List<String> list = application.getFileStorage().listFiles(GDFile.TRACK);
+            for (String filename : list) {
+                String name = GDFile.TRACK.cutExtension(filename);
+                trackNames.add(name);
+                IMenuItemElement<T> options = e.menu(name, this.get(MenuType.TRACK_OPTIONS),
+                        item -> {
+                            try {
+                                TrackParams trackParams = this.application.getFileStorage().readTrack(trackNames.get(item.getValue()));
+                                if (trackParams != null) {
+                                    this.get(MenuType.TRACK_OPTIONS).build(new MenuData(trackParams));
+                                } else {
+                                    menu.back();
+                                }
+                            } catch (Exception ex) {
+                                application.notify("Failed to load track");
                                 menu.back();
                             }
                         });
@@ -653,9 +716,9 @@ public class MenuFactory<T> {
                     String title = GDFile.RECORD.cutExtension(name);
                     String trackName = title.substring(0, title.lastIndexOf("["));
                     String meta = title.substring(title.lastIndexOf("[") + 1, title.lastIndexOf("]"));
-                    String league = leagueNames[Integer.parseInt(meta.substring(meta.indexOf("_") +1, meta.lastIndexOf("_")))];
+                    String league = leagueNames[Integer.parseInt(meta.substring(meta.indexOf("_") + 1, meta.lastIndexOf("_")))];
                     String time = Fmt.durationString(Long.parseLong(meta.substring(0, meta.indexOf("_"))));
-                    IMenuItemElement<T> options = e.menu(String.format("%s %s %s",trackName, league, time), this.get(MenuType.RECORDING_OPTIONS),
+                    IMenuItemElement<T> options = e.menu(String.format("%s %s %s", trackName, league, time), this.get(MenuType.RECORDING_OPTIONS),
                             item -> this.get(MenuType.RECORDING_OPTIONS).build(new MenuData((TrackRecord) null, title)));
                     options.setValue(i);
                     s.add(options);
@@ -693,10 +756,7 @@ public class MenuFactory<T> {
     }
 
     private void transformWorkshop(MenuScreen<T> s) {
-        s.add(e.action(Fmt.ra(str.s(S.create_new_track)), item -> {
-            application.notify(str.s(S.coming_soon));
-//            trackEditor.createNew(application.getSettings().getPlayerName());
-        }));
+        s.add(e.menu(str.s(S.tracks), this.get(MenuType.TRACKS), __ -> this.get(MenuType.TRACKS).build()));
         s.add(e.menu(str.s(S.mod_packs), this.get(MenuType.MODS), __ -> this.get(MenuType.MODS).build()));
         s.add(e.menu(str.s(S.themes), this.get(MenuType.THEMES), __ -> this.get(MenuType.THEMES).build()));
         s.add(e.menu(str.s(S.recordings), this.get(MenuType.RECORDINGS), __ -> this.get(MenuType.RECORDINGS).build()));

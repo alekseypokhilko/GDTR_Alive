@@ -69,6 +69,7 @@ public class AStr implements GdStr {
         strings.put(S.achievements, R.string.achievements);
         strings.put(S.recordings, R.string.recordings);
         strings.put(S.import_record, R.string.import_record);
+        strings.put(S.import_track, R.string.import_track);
         strings.put(S.record_option, R.string.record_option);
         strings.put(S.time, R.string.time);
         strings.put(S.create_new_track, R.string.create_new_track);

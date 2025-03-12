@@ -137,8 +137,10 @@ public class Menu<T> implements GdMenu<T> {
         currentMenu = newMenu;
         if (!isCurrentMenuEmpty()) {
             currentMenu.performBeforeShowAction();
-            application.getPlatform().setMenu(currentMenu);
-            currentMenu.onShow();
+            if (currentMenu != null) {
+                application.getPlatform().setMenu(currentMenu);
+                currentMenu.onShow();
+            }
         }
 
         m_blZ = false;

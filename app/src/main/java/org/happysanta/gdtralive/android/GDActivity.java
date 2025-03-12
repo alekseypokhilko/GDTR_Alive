@@ -55,6 +55,7 @@ import org.happysanta.gdtralive.game.api.external.GdMenu;
 import org.happysanta.gdtralive.game.api.external.GdPlatform;
 import org.happysanta.gdtralive.game.api.external.GdStr;
 import org.happysanta.gdtralive.game.api.menu.MenuScreen;
+import org.happysanta.gdtralive.game.api.menu.PlatformMenuElementFactory;
 import org.happysanta.gdtralive.game.api.model.GameParams;
 import org.happysanta.gdtralive.game.api.model.MenuData;
 import org.happysanta.gdtralive.game.api.model.Mod;
@@ -308,6 +309,10 @@ public class GDActivity extends Activity implements GdPlatform {
         return application;
     }
 
+    public PlatformMenuElementFactory getPlatformMenuElementFactory() {
+        return viewPlatformMenuElementFactory;
+    }
+
     @Override
     public GdMenu getMenu() {
         return menu;
@@ -378,6 +383,9 @@ public class GDActivity extends Activity implements GdPlatform {
     }
 
     public void setMenu(final MenuScreen menu) {
+        if (menu == null) {
+            return;
+        }
         LinearLayout layout = (LinearLayout) menu.getLayout();
         setMenu(layout);
     }

@@ -107,6 +107,7 @@
     <string name="league_unlocked_text">Ви успішно розблокували нову лігу:</string>
     <string name="level">Рівень</string>
     <string name="level_completed_text">Ви завершили всі треки на цьому рівні.</string>
+    <string name="import_track">Імпортувати трек (.gdtrack)</string>
     <string name="levels">Пакети треків</string>
     <string name="levels_count_tpl">%1$s &lt;font color=#909090>(%2$s)&lt;/font></string>
     <string name="like">Лайкнути</string>

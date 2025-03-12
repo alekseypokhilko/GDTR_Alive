@@ -3,9 +3,11 @@ package org.happysanta.gdtralive.game.api.external;
 import org.happysanta.gdtralive.game.api.GDFile;
 import org.happysanta.gdtralive.game.api.Platform;
 import org.happysanta.gdtralive.game.api.menu.MenuScreen;
+import org.happysanta.gdtralive.game.api.menu.PlatformMenuElementFactory;
 
 public interface GdPlatform {
     Platform getPlatform();
+    PlatformMenuElementFactory getPlatformMenuElementFactory();
     void init();
     void setMenu(MenuScreen menu);
     GdMenu getMenu(); //todo remove from here

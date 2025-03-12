@@ -403,11 +403,7 @@ public class Game {
             player.reset();
             player.setTrackRecord(params.getTrackRecord());
             Achievement.achievements.get(Achievement.Type.SERIES_LOVER).increment();
-            try {
-                engine.loadTrack(params.getTrackParams());
-            } catch (InvalidTrackException e) {
-                throw new RuntimeException(e); //todo
-            }
+            loadTrack(params.getTrackParams());
             engine.setReplayMode(true);
             engine.setGodMode(true);
             engine.startAutoplay();
@@ -424,15 +420,12 @@ public class Game {
             recorder.reset();
             engine.setEditMode(true);
             view.setDrawTimer(false);
+            loadTrack(params.getTrackParams());
             return;
         }
         TrackData track = params.getTrackParams();
         engine.setEditMode(false);
-        try {
-            engine.loadTrack(track);
-        } catch (InvalidTrackException e) {
-            throw new RuntimeException(e); //todo skip damaged track
-        }
+        loadTrack(track);
         if (GameMode.CAMPAIGN == params.getMode()) {
             engine.setLeague(params.getLeague());
         } else {
@@ -442,6 +435,14 @@ public class Game {
         engine.unlockKeys();
         view.setDrawTimer(true);
         menu.menuToGame();
+    }
+
+    private void loadTrack(TrackData track) {
+        try {
+            engine.loadTrack(track);
+        } catch (InvalidTrackException e) {
+            throw new RuntimeException(e); //todo skip damaged track
+        }
     }
 
     private void setGhost(TrackData track) {
