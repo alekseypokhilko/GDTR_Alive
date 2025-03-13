@@ -20,9 +20,7 @@ public class TextMenuElement<T> implements MenuElement<T> {
 
     @Override
     public void setText(String text) {
-        throw new RuntimeException("org.happysanta.gdtralive.game.api.menu.element.TextMenuElement.setText");
-//        this.spanned = Html.fromHtml(text);
-//        textView.setTextOnUiThread(spanned);
+        textView.setTextOnUiThread(text);
     }
 
     @Override

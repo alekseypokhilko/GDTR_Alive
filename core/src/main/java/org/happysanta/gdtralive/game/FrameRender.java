@@ -302,39 +302,44 @@ public class FrameRender {
 
 
     public void drawShadows(int k, int index, ViewState view, EngineStateRecord state) {
-        if (index <= state.track.pointsCount - 1) {
-            int j1 = Math.max(state.track.shadow_m_gI - (state.track.points[k][1] + state.track.points[index + 1][1] >> 1), 0);
-            if (state.track.shadow_m_gI <= state.track.points[k][1] || state.track.shadow_m_gI <= state.track.points[index + 1][1])
-                j1 = Math.min(j1, 0x50000);
-            state.track.shadow_m_rI = (int) ((long) state.track.shadow_m_rI * 49152L >> 16) + (int) ((long) j1 * 16384L >> 16);
-            if (state.track.shadow_m_rI <= 0x88000) {
-                int k1 = (int) (0x190000L * (long) state.track.shadow_m_rI >> 16) >> 16;
-                canvas.setColor(k1, k1, k1);
-                int l1 = state.track.points[k][0] - state.track.points[k + 1][0];
-                int i2 = (int) (((long) (state.track.points[k][1] - state.track.points[k + 1][1]) << 32) / (long) l1 >> 16);
-                int j2 = state.track.points[k][1] - (int) ((long) state.track.points[k][0] * (long) i2 >> 16);
-                int k2 = (int) ((long) state.track.shadowX * (long) i2 >> 16) + j2;
-                l1 = state.track.points[index][0] - state.track.points[index + 1][0];
-                i2 = (int) (((long) (state.track.points[index][1] - state.track.points[index + 1][1]) << 32) / (long) l1 >> 16);
-                j2 = state.track.points[index][1] - (int) ((long) state.track.points[index][0] * (long) i2 >> 16);
-                int l2 = (int) ((long) state.track.shadowY * (long) i2 >> 16) + j2;
-                if (k == index && !state.track.getInvisible().contains(k)) {
-                    canvas.drawLine2((state.track.shadowX << 3) >> 16, (k2 + 0x10000 << 3) >> 16, (state.track.shadowY << 3) >> 16, (l2 + 0x10000 << 3) >> 16, view);
-                    return;
-                }
-                if (!state.track.getInvisible().contains(k)) {
-                    canvas.drawLine2((state.track.shadowX << 3) >> 16, (k2 + 0x10000 << 3) >> 16, (state.track.points[k + 1][0] << 3) >> 16, (state.track.points[k + 1][1] + 0x10000 << 3) >> 16, view);
-                }
-                for (int i3 = k + 1; i3 < index; i3++) {
-                    if (!state.track.getInvisible().contains(i3)) {
-                        canvas.drawLine2((state.track.points[i3][0] << 3) >> 16, (state.track.points[i3][1] + 0x10000 << 3) >> 16, (state.track.points[i3 + 1][0] << 3) >> 16, (state.track.points[i3 + 1][1] + 0x10000 << 3) >> 16, view);
+        try {
+            if (index <= state.track.pointsCount - 1) {
+                int j1 = Math.max(state.track.shadow_m_gI - (state.track.points[k][1] + state.track.points[index + 1][1] >> 1), 0);
+                if (state.track.shadow_m_gI <= state.track.points[k][1] || state.track.shadow_m_gI <= state.track.points[index + 1][1])
+                    j1 = Math.min(j1, 0x50000);
+                state.track.shadow_m_rI = (int) ((long) state.track.shadow_m_rI * 49152L >> 16) + (int) ((long) j1 * 16384L >> 16);
+                if (state.track.shadow_m_rI <= 0x88000) {
+                    int k1 = (int) (0x190000L * (long) state.track.shadow_m_rI >> 16) >> 16;
+                    canvas.setColor(k1, k1, k1);
+                    int l1 = state.track.points[k][0] - state.track.points[k + 1][0];
+                    //todo java.lang.ArithmeticException: divide by zero
+                    int i2 = (int) (((long) (state.track.points[k][1] - state.track.points[k + 1][1]) << 32) / (long) l1 >> 16);
+                    int j2 = state.track.points[k][1] - (int) ((long) state.track.points[k][0] * (long) i2 >> 16);
+                    int k2 = (int) ((long) state.track.shadowX * (long) i2 >> 16) + j2;
+                    l1 = state.track.points[index][0] - state.track.points[index + 1][0];
+                    i2 = (int) (((long) (state.track.points[index][1] - state.track.points[index + 1][1]) << 32) / (long) l1 >> 16);
+                    j2 = state.track.points[index][1] - (int) ((long) state.track.points[index][0] * (long) i2 >> 16);
+                    int l2 = (int) ((long) state.track.shadowY * (long) i2 >> 16) + j2;
+                    if (k == index && !state.track.getInvisible().contains(k)) {
+                        canvas.drawLine2((state.track.shadowX << 3) >> 16, (k2 + 0x10000 << 3) >> 16, (state.track.shadowY << 3) >> 16, (l2 + 0x10000 << 3) >> 16, view);
+                        return;
+                    }
+                    if (!state.track.getInvisible().contains(k)) {
+                        canvas.drawLine2((state.track.shadowX << 3) >> 16, (k2 + 0x10000 << 3) >> 16, (state.track.points[k + 1][0] << 3) >> 16, (state.track.points[k + 1][1] + 0x10000 << 3) >> 16, view);
+                    }
+                    for (int i3 = k + 1; i3 < index; i3++) {
+                        if (!state.track.getInvisible().contains(i3)) {
+                            canvas.drawLine2((state.track.points[i3][0] << 3) >> 16, (state.track.points[i3][1] + 0x10000 << 3) >> 16, (state.track.points[i3 + 1][0] << 3) >> 16, (state.track.points[i3 + 1][1] + 0x10000 << 3) >> 16, view);
+                        }
+                    }
+
+                    if (!state.track.getInvisible().contains(index)) {
+                        canvas.drawLine2((state.track.points[index][0] << 3) >> 16, (state.track.points[index][1] + 0x10000 << 3) >> 16, (state.track.shadowY << 3) >> 16, (l2 + 0x10000 << 3) >> 16, view);
                     }
                 }
-
-                if (!state.track.getInvisible().contains(index)) {
-                    canvas.drawLine2((state.track.points[index][0] << 3) >> 16, (state.track.points[index][1] + 0x10000 << 3) >> 16, (state.track.shadowY << 3) >> 16, (l2 + 0x10000 << 3) >> 16, view);
-                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
