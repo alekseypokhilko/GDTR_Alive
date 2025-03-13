@@ -7,6 +7,13 @@ public class TrackParams {
     private LeagueTheme leagueTheme;
     private TrackData data;
 
+    public TrackParams() {
+    }
+
+    public TrackParams(TrackData data) {
+        this.data = data;
+    }
+
     public TrackData getData() {
         return data;
     }

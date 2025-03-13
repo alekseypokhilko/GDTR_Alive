@@ -327,9 +327,12 @@ public class FrameRender {
                     if (!state.track.getInvisible().contains(k)) {
                         canvas.drawLine2((state.track.shadowX << 3) >> 16, (k2 + 0x10000 << 3) >> 16, (state.track.points[k + 1][0] << 3) >> 16, (state.track.points[k + 1][1] + 0x10000 << 3) >> 16, view);
                     }
-                    for (int i3 = k + 1; i3 < index; i3++) {
-                        if (!state.track.getInvisible().contains(i3)) {
-                            canvas.drawLine2((state.track.points[i3][0] << 3) >> 16, (state.track.points[i3][1] + 0x10000 << 3) >> 16, (state.track.points[i3 + 1][0] << 3) >> 16, (state.track.points[i3 + 1][1] + 0x10000 << 3) >> 16, view);
+
+                    if (false) {//todo draw shadows on min x point
+                        for (int i3 = k + 1; i3 < index; i3++) {
+                            if (!state.track.getInvisible().contains(i3)) {
+                                canvas.drawLine2((state.track.points[i3][0] << 3) >> 16, (state.track.points[i3][1] + 0x10000 << 3) >> 16, (state.track.points[i3 + 1][0] << 3) >> 16, (state.track.points[i3 + 1][1] + 0x10000 << 3) >> 16, view);
+                            }
                         }
                     }
 

@@ -429,6 +429,7 @@ public class TrackEditorView implements GdTrackEditor {
         game.resetState();
         engine.setEditMode(false);
         currentTrack = null;
+        selectedPointIndex = 0;
         editorMode = null;
         game.getView().resetShift();
         modManager.setTrackTheme(null);
@@ -460,7 +461,8 @@ public class TrackEditorView implements GdTrackEditor {
     public void saveTrack() {
         //todo pack level props and unpack on loading
         String trackName = Fmt.trackName(currentTrack.getData());
-        application.getFileStorage().save(currentTrack, GDFile.TRACK, trackName);
+        TrackParams track = new TrackParams(Utils.packTrack(currentTrack.getData()));
+        application.getFileStorage().save(track, GDFile.TRACK, trackName);
     }
 
     public TrackParams getCurrentTrack() {

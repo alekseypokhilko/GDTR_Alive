@@ -81,6 +81,7 @@ public class TrackPhysic {
                 int k1 = -j1;
                 int i2 = i1;
                 int j2 = Engine._doIII(k1, i2);
+                j2 = j2 == 0 ? 1 : j2; //todo possible bug
                 m_saaI[k][0] = (int) (((long) k1 << 32) / (long) j2 >> 16);
                 m_saaI[k][1] = (int) (((long) i2 << 32) / (long) j2 >> 16);
                 if (track.startPointIndex == 0 && l1.points[k][0] > track.startX)

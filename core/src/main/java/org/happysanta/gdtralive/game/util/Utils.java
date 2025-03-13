@@ -286,38 +286,10 @@ public class Utils {
             List<TrackParams> tracks = new ArrayList<>();
             for (TrackParams track : level.getTracks()) {
                 TrackData from = track.getData();
-
-                TrackData data = new TrackData();
-                data.setName(from.getName());
-                data.setGuid(from.getGuid());
-                data.setAuthor(from.getAuthor());
-                data.setLeague(from.getLeague());
-                data.setStartX(Utils.packInt(from.getStartX()));
-                data.setStartY(Utils.packInt(from.getStartY()));
-                data.setFinishX(Utils.packInt(from.getFinishX()));
-                data.setFinishY(Utils.packInt(from.getFinishY()));
-                data.setStartPointIndex(from.getStartPointIndex());
-                data.setFinishPointIndex(from.getFinishPointIndex());
-                data.setPointsCount(from.getPointsCount());
-                data.setCheckBackwardCollision(from.isCheckBackwardCollision());
-                data.setInvisible(from.getInvisible());
-                data.setDeadlineY(from.getDeadlineY());
-                data.setCheckFinishCoordinates(from.isCheckFinishCoordinates());
-
-                int[][] pointsFrom = from.getPoints();
-                int[][] points = new int[pointsFrom.length][2];
-                for (int i = 0; i < pointsFrom.length; i++) {
-                    int[] X_Y = new int[2];
-                    X_Y[0] = Utils.packInt(pointsFrom[i][0]);
-                    X_Y[1] = Utils.packInt(pointsFrom[i][1]);
-                    points[i] = X_Y;
-                }
-                data.setPoints(points);
-
                 TrackParams tr = new TrackParams();
                 tr.setGameTheme(track.getGameTheme());
                 tr.setLeagueTheme(track.getLeagueTheme());
-                tr.setData(data);
+                tr.setData(packTrack(from));
                 tracks.add(tr);
             }
             levelPack.setTracks(tracks);
@@ -330,27 +302,60 @@ public class Utils {
     public static Mod unpackMod(Mod fromMod) {
         for (LevelPack level : fromMod.getLevels()) {
             for (TrackParams track : level.getTracks()) {
-                TrackData data = track.getData();
-                data.setStartX(Utils.unpackInt(data.getStartX()));
-                data.setStartY(Utils.unpackInt(data.getStartY()));
-                data.setFinishX(Utils.unpackInt(data.getFinishX()));
-                data.setFinishY(Utils.unpackInt(data.getFinishY()));
-                int[][] pointsFrom = data.getPoints();
-                int[][] points = new int[pointsFrom.length][2];
-                for (int i = 0; i < pointsFrom.length; i++) {
-                    try {
-                        int[] X_Y = new int[2];
-                        X_Y[0] = Utils.unpackInt(pointsFrom[i][0]);
-                        X_Y[1] = Utils.unpackInt(pointsFrom[i][1]);
-                        points[i] = X_Y;
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-                data.setPoints(points);
+                unpackTrack(track.getData());
             }
         }
         return fromMod;
+    }
+
+    public static TrackData packTrack(TrackData from) {
+        TrackData data = new TrackData();
+        data.setName(from.getName());
+        data.setGuid(from.getGuid());
+        data.setAuthor(from.getAuthor());
+        data.setLeague(from.getLeague());
+        data.setStartX(Utils.packInt(from.getStartX()));
+        data.setStartY(Utils.packInt(from.getStartY()));
+        data.setFinishX(Utils.packInt(from.getFinishX()));
+        data.setFinishY(Utils.packInt(from.getFinishY()));
+        data.setStartPointIndex(from.getStartPointIndex());
+        data.setFinishPointIndex(from.getFinishPointIndex());
+        data.setPointsCount(from.getPointsCount());
+        data.setCheckBackwardCollision(from.isCheckBackwardCollision());
+        data.setInvisible(from.getInvisible());
+        data.setDeadlineY(from.getDeadlineY());
+        data.setCheckFinishCoordinates(from.isCheckFinishCoordinates());
+
+        int[][] pointsFrom = from.getPoints();
+        int[][] points = new int[pointsFrom.length][2];
+        for (int i = 0; i < pointsFrom.length; i++) {
+            int[] X_Y = new int[2];
+            X_Y[0] = Utils.packInt(pointsFrom[i][0]);
+            X_Y[1] = Utils.packInt(pointsFrom[i][1]);
+            points[i] = X_Y;
+        }
+        data.setPoints(points);
+        return data;
+    }
+
+    public static void unpackTrack(TrackData data) {
+        data.setStartX(Utils.unpackInt(data.getStartX()));
+        data.setStartY(Utils.unpackInt(data.getStartY()));
+        data.setFinishX(Utils.unpackInt(data.getFinishX()));
+        data.setFinishY(Utils.unpackInt(data.getFinishY()));
+        int[][] pointsFrom = data.getPoints();
+        int[][] points = new int[pointsFrom.length][2];
+        for (int i = 0; i < pointsFrom.length; i++) {
+            try {
+                int[] X_Y = new int[2];
+                X_Y[0] = Utils.unpackInt(pointsFrom[i][0]);
+                X_Y[1] = Utils.unpackInt(pointsFrom[i][1]);
+                points[i] = X_Y;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        data.setPoints(points);
     }
 
     public static String[] getScaleOptions() {
