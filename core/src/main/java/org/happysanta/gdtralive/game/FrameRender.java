@@ -318,15 +318,22 @@ public class FrameRender {
                 i2 = (int) (((long) (state.track.points[index][1] - state.track.points[index + 1][1]) << 32) / (long) l1 >> 16);
                 j2 = state.track.points[index][1] - (int) ((long) state.track.points[index][0] * (long) i2 >> 16);
                 int l2 = (int) ((long) state.track.shadowY * (long) i2 >> 16) + j2;
-                if (k == index) {
+                if (k == index && !state.track.getInvisible().contains(k)) {
                     canvas.drawLine2((state.track.shadowX << 3) >> 16, (k2 + 0x10000 << 3) >> 16, (state.track.shadowY << 3) >> 16, (l2 + 0x10000 << 3) >> 16, view);
                     return;
                 }
-                canvas.drawLine2((state.track.shadowX << 3) >> 16, (k2 + 0x10000 << 3) >> 16, (state.track.points[k + 1][0] << 3) >> 16, (state.track.points[k + 1][1] + 0x10000 << 3) >> 16, view);
-                for (int i3 = k + 1; i3 < index; i3++)
-                    canvas.drawLine2((state.track.points[i3][0] << 3) >> 16, (state.track.points[i3][1] + 0x10000 << 3) >> 16, (state.track.points[i3 + 1][0] << 3) >> 16, (state.track.points[i3 + 1][1] + 0x10000 << 3) >> 16, view);
+                if (!state.track.getInvisible().contains(k)) {
+                    canvas.drawLine2((state.track.shadowX << 3) >> 16, (k2 + 0x10000 << 3) >> 16, (state.track.points[k + 1][0] << 3) >> 16, (state.track.points[k + 1][1] + 0x10000 << 3) >> 16, view);
+                }
+                for (int i3 = k + 1; i3 < index; i3++) {
+                    if (!state.track.getInvisible().contains(i3)) {
+                        canvas.drawLine2((state.track.points[i3][0] << 3) >> 16, (state.track.points[i3][1] + 0x10000 << 3) >> 16, (state.track.points[i3 + 1][0] << 3) >> 16, (state.track.points[i3 + 1][1] + 0x10000 << 3) >> 16, view);
+                    }
+                }
 
-                canvas.drawLine2((state.track.points[index][0] << 3) >> 16, (state.track.points[index][1] + 0x10000 << 3) >> 16, (state.track.shadowY << 3) >> 16, (l2 + 0x10000 << 3) >> 16, view);
+                if (!state.track.getInvisible().contains(index)) {
+                    canvas.drawLine2((state.track.points[index][0] << 3) >> 16, (state.track.points[index][1] + 0x10000 << 3) >> 16, (state.track.shadowY << 3) >> 16, (l2 + 0x10000 << 3) >> 16, view);
+                }
             }
         }
     }
