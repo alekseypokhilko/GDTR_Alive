@@ -76,6 +76,7 @@ public class FrameRender {
     public static final Sprite[] BODY_SPRITES = {Sprite.ARM, Sprite.LEG, Sprite.BODY};
     public static final Sprite[] START_FLAG_SPRITES = {Sprite.START_FLAG_2, Sprite.START_FLAG_0, Sprite.START_FLAG_1, Sprite.START_FLAG_0};
     public static final Sprite[] FINISH_FLAG_SPRITES = {Sprite.FINISH_FLAG_1, Sprite.FINISH_FLAG_0, Sprite.FINISH_FLAG_2, Sprite.FINISH_FLAG_0};
+    public static final Sprite[] LEAGUE_FLAG_SPRITES = {Sprite.LEAGUE_FLAG_1, Sprite.LEAGUE_FLAG_0, Sprite.LEAGUE_FLAG_2, Sprite.LEAGUE_FLAG_0};
 
     private final ModManager mm;
     private GdCanvas canvas;
@@ -218,11 +219,11 @@ public class FrameRender {
                         (state.track.points[state.track.startPointIndex][1] << 3) >> 16, view, state);
                 setColor(mm().getGameTheme().getTrackLineColor());
             }
-//            if (state.level.leagueSwitchers.get(index) != null) {
-//                drawStartFlag((state.level.points[index][0] << 3) >> 16,
-//                        (state.level.points[index][1] << 3) >> 16, view, state);
-//                setColor(mm().getGameTheme().getTrackLineColor());
-//            }
+            if (index != 0 && state.track.getLeagueSwitcher(index) != null) {
+                drawLeagueFlag((state.track.points[index][0] << 3) >> 16,
+                        (state.track.points[index][1] << 3) >> 16, view, state);
+                setColor(mm().getGameTheme().getTrackLineColor());
+            }
             if (state.track.finishPointIndex == index) {
                 drawFinishFlag((state.track.points[state.track.finishPointIndex][0] << 3) >> 16,
                         (state.track.points[state.track.finishPointIndex][1] << 3) >> 16, view, state);
@@ -280,6 +281,10 @@ public class FrameRender {
             }
             if (state.track.startPointIndex == index) {
                 drawStartFlag((state.track.points[state.track.startPointIndex][0] + j1 << 3) >> 16, (state.track.points[state.track.startPointIndex][1] + l1 << 3) >> 16, view, state);
+                setColor(mm().getGameTheme().getPerspectiveColor());
+            }
+            if (index != 0 && state.track.getLeagueSwitcher(index) != null) {
+                drawLeagueFlag((state.track.points[index][0] + j1 << 3) >> 16, (state.track.points[index][1] + l1 << 3) >> 16, view, state);
                 setColor(mm().getGameTheme().getPerspectiveColor());
             }
             if (state.track.finishPointIndex == index) {
@@ -643,7 +648,7 @@ public class FrameRender {
     }
 
     public void drawSteering(int j, int k, ViewState view, EngineStateRecord state) {
-        canvas.drawSprite2((float)j, (float)k, view, state, Sprite.STEERING);
+        canvas.drawSprite2((float) j, (float) k, view, state, Sprite.STEERING);
     }
 
     private void drawBikeLines(EngineStateRecord state, ViewState view, int i1, int j1, int k1, int l1) {
@@ -702,6 +707,12 @@ public class FrameRender {
         setColor(mm().getGameTheme().getStartFlagColor());
         canvas.drawLine2(j, k, j, k + 32, view);
         canvas.drawFlag(j, k, view, START_FLAG_SPRITES[state.ft >> 16]);
+    }
+
+    public void drawLeagueFlag(int j, int k, ViewState view, EngineStateRecord state) {
+        setColor(mm().getGameTheme().getStartFlagColor());
+        canvas.drawLine2(j, k, j, k + 32, view);
+        canvas.drawFlag(j, k, view, LEAGUE_FLAG_SPRITES[state.ft >> 16]);
     }
 
     public void drawFinishFlag(int j, int k, ViewState view, EngineStateRecord state) {

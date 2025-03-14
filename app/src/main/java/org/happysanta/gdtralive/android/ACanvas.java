@@ -58,6 +58,9 @@ public class ACanvas implements GdCanvas {
         this.props.put(Sprite.FINISH_FLAG_0.name(), fromDrawable(R.drawable.s_flag_finish0));
         this.props.put(Sprite.FINISH_FLAG_1.name(), fromDrawable(R.drawable.s_flag_finish1));
         this.props.put(Sprite.FINISH_FLAG_2.name(), fromDrawable(R.drawable.s_flag_finish2));
+        this.props.put(Sprite.LEAGUE_FLAG_0.name(), fromDrawable(R.drawable.s_flag_league0));
+        this.props.put(Sprite.LEAGUE_FLAG_1.name(), fromDrawable(R.drawable.s_flag_league1));
+        this.props.put(Sprite.LEAGUE_FLAG_2.name(), fromDrawable(R.drawable.s_flag_league2));
 
         props.put(Sprite.STEERING.name(), ACanvas.fromDrawable(R.drawable.s_steering));
         props.put(Sprite.ENGINE.name(), ACanvas.fromDrawable(R.drawable.s_engine));

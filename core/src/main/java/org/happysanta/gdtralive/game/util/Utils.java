@@ -314,6 +314,7 @@ public class Utils {
         data.setGuid(from.getGuid());
         data.setAuthor(from.getAuthor());
         data.setLeague(from.getLeague());
+        data.setLeagueSwitchers(from.getLeagueSwitchers());
         data.setStartX(Utils.packInt(from.getStartX()));
         data.setStartY(Utils.packInt(from.getStartY()));
         data.setFinishX(Utils.packInt(from.getFinishX()));

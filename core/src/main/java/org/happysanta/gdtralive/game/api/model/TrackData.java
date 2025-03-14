@@ -4,7 +4,9 @@ import org.happysanta.gdtralive.game.util.Utils;
 
 import java.io.DataInputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -33,7 +35,7 @@ public class TrackData implements Serializable {
 	public String name;
 	public String author;
 	public Set<Integer> invisible = new HashSet<>();
-//	public Map<Integer, Integer> leagueSwitchers = new HashMap<>(); // point -> league
+	public List<LeagueSwitcher> leagueSwitchers = new ArrayList<>(); // point -> league
 	public boolean checkFinishCoordinates = false;
 	public boolean checkBackwardCollision = true;
 	public Integer deadlineY;
@@ -46,7 +48,7 @@ public class TrackData implements Serializable {
 		shadow_m_gI = 0;
 		startPointIndex = 0;
 		finishPointIndex = 0;
-		points = (int[][]) null;
+		points = null;
 		name = "Unnamed";
 		shadow_m_rI = 0;
 		clear();
@@ -170,6 +172,14 @@ public class TrackData implements Serializable {
 
 	public void setLeague(int league) {
 		this.league = league;
+	}
+
+	public List<LeagueSwitcher> getLeagueSwitchers() {
+		return leagueSwitchers;
+	}
+
+	public void setLeagueSwitchers(List<LeagueSwitcher> leagueSwitchers) {
+		this.leagueSwitchers = leagueSwitchers;
 	}
 
 	public String getName() {
@@ -330,5 +340,14 @@ public class TrackData implements Serializable {
 
 	public void setDeadlineY(Integer deadlineY) {
 		this.deadlineY = deadlineY;
+	}
+
+	public LeagueSwitcher getLeagueSwitcher(int pointIndex) {
+		for (LeagueSwitcher leagueSwitcher : leagueSwitchers) {
+			if (leagueSwitcher != null && leagueSwitcher.getPointIndex() == pointIndex) {
+				return leagueSwitcher;
+			}
+		}
+		return null;
 	}
 }

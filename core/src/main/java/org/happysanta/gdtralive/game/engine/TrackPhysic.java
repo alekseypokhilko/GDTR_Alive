@@ -3,9 +3,11 @@ package org.happysanta.gdtralive.game.engine;
 import org.happysanta.gdtralive.game.api.Constants;
 import org.happysanta.gdtralive.game.api.exception.InvalidTrackException;
 import org.happysanta.gdtralive.game.api.model.Element;
+import org.happysanta.gdtralive.game.api.model.LeagueSwitcher;
 import org.happysanta.gdtralive.game.api.model.TrackData;
 
 public class TrackPhysic {
+    private final Engine engine;
     public TrackData track;
     private int m_longI;
     public int m_eI;
@@ -13,6 +15,8 @@ public class TrackPhysic {
 
     private boolean perspectiveEnabled = true;
     private boolean shadowsEnabled = true;
+    private int leagueSwitchedAtIndex = 0;
+    private int pointIndexBack = 0;
     private int xPointIndexBack = 0;
     private int xPointIndexFront = 0;
     private int xPointBack = 0;
@@ -22,7 +26,8 @@ public class TrackPhysic {
     private final int[] m_vaI;
     private int m_daI;
 
-    public TrackPhysic() {
+    public TrackPhysic(Engine engine) {
+        this.engine = engine;
         m_saaI = null;
         track = null;
         m_haI = new int[3];
@@ -58,42 +63,47 @@ public class TrackPhysic {
         return track._doII(j >> 1);
     }
 
-    public void load(TrackData l1) throws InvalidTrackException {
+    public void load(TrackData t) throws InvalidTrackException {
         try {
             m_longI = 0x80000000;
-            track = l1;
+            track = t;
             int j = track.pointsCount;
             if (m_saaI == null || m_daI < j) {
-                m_saaI = (int[][]) null;
+                m_saaI = null;
                 // System.gc();
                 m_daI = Math.max(j, 100); //todo pointscount
                 m_saaI = new int[m_daI][2];
             }
+            pointIndexBack = 0;
             xPointIndexBack = 0;
             xPointIndexFront = 0;
-            xPointBack = l1.points[xPointIndexBack][0];
-            xPointFront = l1.points[xPointIndexFront][0];
+            xPointBack = t.points[xPointIndexBack][0];
+            xPointFront = t.points[xPointIndexFront][0];
             for (int k = 0; k < j; k++) {
-                int i1 = l1.points[(k + 1) % j][0] - l1.points[k][0];
-                int j1 = l1.points[(k + 1) % j][1] - l1.points[k][1];
+                int i1 = t.points[(k + 1) % j][0] - t.points[k][0];
+                int j1 = t.points[(k + 1) % j][1] - t.points[k][1];
                 if (k != 0 && k != j - 1)
-                    m_longI = Math.max(m_longI, l1.points[k][0]);
+                    m_longI = Math.max(m_longI, t.points[k][0]);
                 int k1 = -j1;
                 int i2 = i1;
                 int j2 = Engine._doIII(k1, i2);
                 j2 = j2 == 0 ? 1 : j2; //todo possible bug
                 m_saaI[k][0] = (int) (((long) k1 << 32) / (long) j2 >> 16);
                 m_saaI[k][1] = (int) (((long) i2 << 32) / (long) j2 >> 16);
-                if (track.startPointIndex == 0 && l1.points[k][0] > track.startX)
+                if (track.startPointIndex == 0 && t.points[k][0] > track.startX)
                     track.startPointIndex = k + 1;
-                if (track.finishPointIndex == 0 && l1.points[k][0] > track.finishX)
+                if (track.finishPointIndex == 0 && t.points[k][0] > track.finishX)
                     track.finishPointIndex = k;
             }
 
+            pointIndexBack = 0;
             xPointIndexBack = 0;
             xPointIndexFront = 0;
             xPointBack = 0;
             xPointFront = 0;
+            leagueSwitchedAtIndex = 0;
+
+            addDefaultLeagueSwitcher(t);
         } catch (ArithmeticException e) {
             throw new InvalidTrackException(e);
         }
@@ -109,22 +119,24 @@ public class TrackPhysic {
         j >>= 1;
         xPointIndexFront = Math.min(xPointIndexFront, track.pointsCount - 1);
         xPointIndexBack = Math.max(xPointIndexBack, 0);
+        pointIndexBack = Math.max(pointIndexBack, 0);
         if (k > xPointFront)
             while (xPointIndexFront < track.pointsCount - 1 && k > track.points[++xPointIndexFront][0]) ;
         else if (j < xPointBack) {
             while (xPointIndexBack > 0 && j < track.points[--xPointIndexBack][0]) ;
+            while (pointIndexBack > 0 && j < track.points[--pointIndexBack][0]) ;
         } else {
             while (xPointIndexBack < track.pointsCount && j > track.points[++xPointIndexBack][0]) ;
+            while (pointIndexBack < track.pointsCount && j > track.points[++pointIndexBack][0]) ;
             if (xPointIndexBack > 0)
                 xPointIndexBack--;
+            if (pointIndexBack > 0)
+                pointIndexBack--;
             while (xPointIndexFront > 0 && k < track.points[--xPointIndexFront][0]) ;
             xPointIndexFront = Math.min(xPointIndexFront + 1, track.pointsCount - 1);
         }
 
-//        Integer integer = level.leagueSwitchers.get(xPointIndexBack);
-//        if (integer != null) {// && !integer.equals(Helpers.getGDActivity().game.engine.league)) {
-//            Helpers.getGDActivity().game.engine.league = integer;
-//        }
+        switchLeagueIfNeeded();
 
         //for collision checking
         xPointIndexBack = Math.max(xPointIndexBack - 20, 0);
@@ -207,6 +219,40 @@ public class TrackPhysic {
             m_dI = k4;
         }
         return byte1;
+    }
+
+    private void addDefaultLeagueSwitcher(TrackData t) {
+        try {
+            if (!new LeagueSwitcher(0, t.league).equals(track.leagueSwitchers.get(0))) {
+                track.leagueSwitchers.add(0, new LeagueSwitcher(0, t.league));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            track.leagueSwitchers.add(0, new LeagueSwitcher(0, t.league));
+        }
+    }
+
+    private void switchLeagueIfNeeded() {
+        try {
+            int i = 0;
+            for (LeagueSwitcher ls : track.leagueSwitchers) {
+                if (leagueSwitchedAtIndex <= ls.getPointIndex()
+                        && pointIndexBack >= ls.getPointIndex()
+                        && engine.league != ls.getLeague()) {
+
+                    leagueSwitchedAtIndex = pointIndexBack;
+                    engine.league = ls.getLeague();
+                    break;
+                } else {
+                    if (leagueSwitchedAtIndex > pointIndexBack) {
+                        leagueSwitchedAtIndex = i > 1 ? pointIndexBack - 1 : 0;
+                    }
+                }
+                i++;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public boolean isShadowsEnabled() {

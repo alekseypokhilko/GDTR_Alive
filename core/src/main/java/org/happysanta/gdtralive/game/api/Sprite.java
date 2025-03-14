@@ -17,6 +17,9 @@ public enum Sprite {
     FINISH_FLAG_0,// = 6;
     FINISH_FLAG_1,// = 6;
     FINISH_FLAG_2,// = 6;
+    LEAGUE_FLAG_0,
+    LEAGUE_FLAG_1,
+    LEAGUE_FLAG_2,
     LOCKS,// = 7;
     MEDALS,// = 8;
     LEVELS_WHEELS,// = 9;

@@ -96,7 +96,7 @@ public class Engine {
         deltaY = 0;
         delta = 0xa0000;
 
-        this.trackPhysic = new TrackPhysic();
+        this.trackPhysic = new TrackPhysic(this);
     }
 
     public void init(GdSettings settings, TrackData track) throws InvalidTrackException {

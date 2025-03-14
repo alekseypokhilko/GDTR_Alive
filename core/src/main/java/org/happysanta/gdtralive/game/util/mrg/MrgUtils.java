@@ -101,7 +101,7 @@ public class MrgUtils {
                             track.getData().setGuid(inMap.getGuid());
                         } else {
                             try {
-                                new TrackPhysic().load(track.getData()); //assert track is valid
+                                new TrackPhysic(null).load(track.getData()); //assert track is valid
                                 if (track.getData().getStartPointIndex() < track.getData().getFinishPointIndex()) {
                                     trackToTrackGuid.put(trackId, track.getData());
                                 }
