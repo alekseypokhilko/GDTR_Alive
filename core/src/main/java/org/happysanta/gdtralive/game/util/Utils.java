@@ -48,6 +48,7 @@ public class Utils {
     private static final Gson GSON;
     private static final TypeToken<List<Integer>> INT_LIST_TYPE = new TypeToken<List<Integer>>() {
     };
+    private static final Random RANDOM = new Random();
 
     static {
         class IElementJsonAdapter implements JsonDeserializer<IElement> {
@@ -107,7 +108,7 @@ public class Utils {
     }
 
     public static int getRandom(int bound) {
-        return new Random().nextInt(bound);
+        return RANDOM.nextInt(bound);
     }
 
     public static int[][] copyArray(int[][] original) {

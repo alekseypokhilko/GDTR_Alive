@@ -101,7 +101,7 @@ public class DesktopCanvas implements GdCanvas {
     }
 
     public void setColor(Color color) {
-        setColor(color.r, color.g, color.b);
+        setColor(color.r(), color.g(), color.b());
     }
 
     public void setColor(int r, int g, int b) {

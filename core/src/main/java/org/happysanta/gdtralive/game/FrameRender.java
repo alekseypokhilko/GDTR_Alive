@@ -94,9 +94,9 @@ public class FrameRender {
 
     public void setColor(Color color) {
         if (dimmed) {
-            canvas.setColorDimmed(color.r, color.g, color.b);
+            canvas.setColorDimmed(color.r(), color.g(), color.b());
         } else {
-            canvas.setColor(color.r, color.g, color.b);
+            canvas.setColor(color.r(), color.g(), color.b());
         }
     }
 
