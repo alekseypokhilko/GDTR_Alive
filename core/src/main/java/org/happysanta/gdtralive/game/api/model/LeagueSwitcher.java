@@ -2,7 +2,7 @@ package org.happysanta.gdtralive.game.api.model;
 
 public class LeagueSwitcher {
     private final int pi;
-    private final int l;
+    private int l;
 
     public LeagueSwitcher(int pointIndex, int league) {
         this.pi = pointIndex;
@@ -15,6 +15,10 @@ public class LeagueSwitcher {
 
     public int getLeague() {
         return l;
+    }
+
+    public void setLeague(int l) {
+        this.l = l;
     }
 
     @Override

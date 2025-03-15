@@ -451,6 +451,7 @@ public class TrackEditorView implements GdTrackEditor {
         try {
             currentTrack.getData().league = league;
             track().league = league;
+            track().getLeagueSwitchers().get(0).setLeague(league);
             engine.setLeague(league);
             //currentTrack.setLeagueTheme(Theme.defaultTheme().getLeagueThemes().get(league));
         } catch (Exception e) {
@@ -459,9 +460,9 @@ public class TrackEditorView implements GdTrackEditor {
     }
 
     public void saveTrack() {
-        //todo pack level props and unpack on loading
         String trackName = Fmt.trackName(currentTrack.getData());
         TrackParams track = new TrackParams(Utils.packTrack(currentTrack.getData()));
+        track.getData().getLeagueSwitchers().remove(0);
         application.getFileStorage().save(track, GDFile.TRACK, trackName);
     }
 
