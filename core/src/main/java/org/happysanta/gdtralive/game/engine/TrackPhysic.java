@@ -19,6 +19,7 @@ public class TrackPhysic {
     private int pointIndexBack = 0;
     private int xPointIndexBack = 0;
     private int xPointIndexFront = 0;
+    private int pointBack = 0;
     private int xPointBack = 0;
     private int xPointFront = 0;
     private int[][] m_saaI;
@@ -77,6 +78,7 @@ public class TrackPhysic {
             pointIndexBack = 0;
             xPointIndexBack = 0;
             xPointIndexFront = 0;
+            pointBack = t.points[pointIndexBack][0];
             xPointBack = t.points[xPointIndexBack][0];
             xPointFront = t.points[xPointIndexFront][0];
             for (int k = 0; k < j; k++) {
@@ -99,11 +101,11 @@ public class TrackPhysic {
             pointIndexBack = 0;
             xPointIndexBack = 0;
             xPointIndexFront = 0;
+            pointBack = 0;
             xPointBack = 0;
             xPointFront = 0;
             leagueSwitchedAtIndex = 0;
-
-            addDefaultLeagueSwitcher(t);
+            addDefaultLeagueSwitcher();
         } catch (ArithmeticException e) {
             throw new InvalidTrackException(e);
         }
@@ -121,10 +123,15 @@ public class TrackPhysic {
         xPointIndexBack = Math.max(xPointIndexBack, 0);
         pointIndexBack = Math.max(pointIndexBack, 0);
         if (k > xPointFront)
-            while (xPointIndexFront < track.pointsCount - 1 && k > track.points[++xPointIndexFront][0]) ;
-        else if (j < xPointBack) {
-            while (xPointIndexBack > 0 && j < track.points[--xPointIndexBack][0]) ;
-            while (pointIndexBack > 0 && j < track.points[--pointIndexBack][0]) ;
+            while (xPointIndexFront < track.pointsCount - 1 && k > track.points[++xPointIndexFront][0])
+                ;
+        else if (j < xPointBack || j < pointBack) {
+            if (j < xPointBack) {
+                while (xPointIndexBack > 0 && j < track.points[--xPointIndexBack][0]) ;
+            }
+            if (j < pointBack) {
+                while (pointIndexBack > 0 && j < track.points[--pointIndexBack][0]) ;
+            }
         } else {
             while (xPointIndexBack < track.pointsCount && j > track.points[++xPointIndexBack][0]) ;
             while (pointIndexBack < track.pointsCount && j > track.points[++pointIndexBack][0]) ;
@@ -143,6 +150,7 @@ public class TrackPhysic {
         xPointIndexFront = Math.min(xPointIndexFront + 20, track.pointsCount - 1);
         /////
 
+        pointBack = track.points[pointIndexBack][0];
         xPointBack = track.points[xPointIndexBack][0];
         xPointFront = track.points[xPointIndexFront][0];
     }
@@ -221,34 +229,31 @@ public class TrackPhysic {
         return byte1;
     }
 
-    private void addDefaultLeagueSwitcher(TrackData t) {
+    private void addDefaultLeagueSwitcher() {
         try {
-            if (!new LeagueSwitcher(0, t.league).equals(track.leagueSwitchers.get(0))) {
-                track.leagueSwitchers.add(0, new LeagueSwitcher(0, t.league));
+            if (!new LeagueSwitcher(0, engine.league).equals(track.leagueSwitchers.get(0))) {
+                track.leagueSwitchers.add(0, new LeagueSwitcher(0, engine.league));
             }
         } catch (Exception e) {
             e.printStackTrace();
-            track.leagueSwitchers.add(0, new LeagueSwitcher(0, t.league));
+            track.leagueSwitchers.add(0, new LeagueSwitcher(0, engine.league));
         }
     }
 
     private void switchLeagueIfNeeded() {
         try {
-            int i = 0;
-            for (LeagueSwitcher ls : track.leagueSwitchers) {
-                if (leagueSwitchedAtIndex <= ls.getPointIndex()
-                        && pointIndexBack >= ls.getPointIndex()
-                        && engine.league != ls.getLeague()) {
-
-                    leagueSwitchedAtIndex = pointIndexBack;
-                    engine.league = ls.getLeague();
-                    break;
-                } else {
-                    if (leagueSwitchedAtIndex > pointIndexBack) {
-                        leagueSwitchedAtIndex = i > 1 ? pointIndexBack - 1 : 0;
+            for (int i = leagueSwitchedAtIndex; i < track.leagueSwitchers.size(); i++) {
+                LeagueSwitcher ls = track.leagueSwitchers.get(i);
+                if (pointIndexBack >= ls.getPointIndex()) {
+                    if (engine.league != ls.getLeague()) {
+                        engine.league = ls.getLeague();
+                        leagueSwitchedAtIndex = i;
+                        break;
                     }
+                } else {
+                    leagueSwitchedAtIndex = i - 1;
+                    break;
                 }
-                i++;
             }
         } catch (Exception e) {
             e.printStackTrace();

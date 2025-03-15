@@ -403,7 +403,7 @@ public class Game {
             player.reset();
             player.setTrackRecord(params.getTrackRecord());
             Achievement.achievements.get(Achievement.Type.SERIES_LOVER).increment();
-            loadTrack(params.getTrackData());
+            loadTrack(params.getTrackData(), params.getTrackData().league);
             engine.setReplayMode(true);
             engine.setGodMode(true);
             engine.startAutoplay();
@@ -420,25 +420,24 @@ public class Game {
             recorder.reset();
             engine.setEditMode(true);
             view.setDrawTimer(false);
-            loadTrack(params.getTrackData());
+            loadTrack(params.getTrackData(), params.getTrackData().league);
             return;
         }
         TrackData track = params.getTrackData();
         engine.setEditMode(false);
-        loadTrack(track);
-        if (GameMode.CAMPAIGN == params.getMode()) {
-            engine.setLeague(params.getLeague());
-        } else {
-            engine.setLeague(track.getLeague());
-        }
+        int league = GameMode.CAMPAIGN == params.getMode()
+                ? params.getLeague()
+                : track.getLeague();
+        loadTrack(track, league);
         setGhost(track);
         engine.unlockKeys();
         view.setDrawTimer(true);
         menu.menuToGame();
     }
 
-    private void loadTrack(TrackData track) {
+    private void loadTrack(TrackData track, int league) {
         try {
+            engine.setLeague(league);
             engine.loadTrack(track);
         } catch (InvalidTrackException e) {
             throw new RuntimeException(e); //todo skip damaged track
