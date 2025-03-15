@@ -88,7 +88,7 @@ public class TrackPhysic {
                     m_longI = Math.max(m_longI, t.points[k][0]);
                 int k1 = -j1;
                 int i2 = i1;
-                int j2 = Engine._doIII(k1, i2);
+                int j2 = Engine.CALC_MAGIC(k1, i2);
                 j2 = j2 == 0 ? 1 : j2; //todo possible bug
                 m_saaI[k][0] = (int) (((long) k1 << 32) / (long) j2 >> 16);
                 m_saaI[k][1] = (int) (((long) i2 << 32) / (long) j2 >> 16);

@@ -1,14 +1,16 @@
 package org.happysanta.gdtralive.game;
 
+import static org.happysanta.gdtralive.game.util.Utils.packInt;
+
 import org.happysanta.gdtralive.game.api.Sprite;
-import org.happysanta.gdtralive.game.api.model.ViewState;
-import org.happysanta.gdtralive.game.util.Fmt;
-import org.happysanta.gdtralive.game.util.Utils;
-import org.happysanta.gdtralive.game.engine.Engine;
-import org.happysanta.gdtralive.game.util.FPMath;
 import org.happysanta.gdtralive.game.api.external.GdCanvas;
 import org.happysanta.gdtralive.game.api.model.Color;
+import org.happysanta.gdtralive.game.api.model.DecorLine;
 import org.happysanta.gdtralive.game.api.model.EngineStateRecord;
+import org.happysanta.gdtralive.game.api.model.ViewState;
+import org.happysanta.gdtralive.game.engine.Engine;
+import org.happysanta.gdtralive.game.util.FPMath;
+import org.happysanta.gdtralive.game.util.Fmt;
 
 public class FrameRender {
     private final int[][] m_KaaI = {
@@ -116,7 +118,7 @@ public class FrameRender {
         int i1 = state.engine().x() - state.fender().x();
         int j1 = state.engine().y() - state.fender().y();
         int k1;
-        if ((k1 = Engine._doIII(i1, j1)) != 0) {
+        if ((k1 = Engine.CALC_MAGIC(i1, j1)) != 0) {
             i1 = (int) (((long) i1 << 32) / (long) k1 >> 16);
             j1 = (int) (((long) j1 << 32) / (long) k1 >> 16);
         }
@@ -141,7 +143,7 @@ public class FrameRender {
         int i1 = state.engine().x() - state.fender().x();
         int j1 = state.engine().y() - state.fender().y();
         int k1;
-        if ((k1 = Engine._doIII(i1, j1)) != 0) {
+        if ((k1 = Engine.CALC_MAGIC(i1, j1)) != 0) {
             i1 = (int) (((long) i1 << 32) / (long) k1 >> 16);
             j1 = (int) (((long) j1 << 32) / (long) k1 >> 16);
         }
@@ -180,22 +182,25 @@ public class FrameRender {
         drawDriver(state, view, i1, j1, l1, i2);
         if (!(view.drawBike == 1)) drawBikeLines(state, view, i1, j1, l1, i2);
         drawTrackLine(view, state);
+        drawDecorLines(state.element0().x(), state.element0().y(), view, state);
     }
 
     public synchronized void drawTrackLine(ViewState view, EngineStateRecord state) {
         setColor(mm().getGameTheme().getTrackLineColor());
         int index;
-        for (index = 0; index < state.track.pointsCount - 1 && state.track.points[index][0] <= state.track.cameraX; index++)
+        int[][] points = state.track.points;
+        for (index = 0; index < state.track.pointsCount - 1 && points[index][0] <= state.track.cameraX; index++)
             ;
         if (index > 0)
             index--;
         do {
             try {
                 if (state.edit) {
+                    //draw point/selected point
                     setColor(new Color(255, 0, 0));
                     drawLineWheel(
-                            Utils.packInt(state.track.points[index][0]),
-                            Utils.packInt(state.track.points[index][1]),
+                            packInt(points[index][0]),
+                            packInt(points[index][1]),
                             state.selectedPointIndex == index ? 8 : 4,
                             view
                     );
@@ -209,30 +214,75 @@ public class FrameRender {
             }
             setColor(mm().getGameTheme().getTrackLineColor());
             if (!state.track.invisible.contains(index)) {
-                canvas.drawLine2((state.track.points[index][0] << 3) >> 16,
-                        (state.track.points[index][1] << 3) >> 16,
-                        (state.track.points[index + 1][0] << 3) >> 16,
-                        (state.track.points[index + 1][1] << 3) >> 16, view);
+                canvas.drawLine2(
+                        packInt(points[index][0]),
+                        packInt(points[index][1]),
+                        packInt(points[index + 1][0]),
+                        packInt(points[index + 1][1]),
+                        view
+                );
             }
             if (state.track.startPointIndex == index) {
-                drawStartFlag((state.track.points[state.track.startPointIndex][0] << 3) >> 16,
-                        (state.track.points[state.track.startPointIndex][1] << 3) >> 16, view, state);
+                drawStartFlag(packInt(points[state.track.startPointIndex][0]),
+                        packInt(points[state.track.startPointIndex][1]), view, state);
                 setColor(mm().getGameTheme().getTrackLineColor());
             }
             if (index != 0 && state.track.getLeagueSwitcher(index) != null) {
-                drawLeagueFlag((state.track.points[index][0] << 3) >> 16,
-                        (state.track.points[index][1] << 3) >> 16, view, state);
+                drawLeagueFlag(packInt(points[index][0]),
+                        packInt(points[index][1]), view, state);
                 setColor(mm().getGameTheme().getTrackLineColor());
             }
             if (state.track.finishPointIndex == index) {
-                drawFinishFlag((state.track.points[state.track.finishPointIndex][0] << 3) >> 16,
-                        (state.track.points[state.track.finishPointIndex][1] << 3) >> 16, view, state);
+                drawFinishFlag(packInt(points[state.track.finishPointIndex][0]),
+                        packInt(points[state.track.finishPointIndex][1]), view, state);
                 setColor(mm().getGameTheme().getTrackLineColor());
             }
-            if (state.track.points[index][0] > state.track.cameraY + drawableOffScreenOffset)
+            if (points[index][0] > state.track.cameraY + drawableOffScreenOffset)
                 break;
             index++;
         } while (true);
+    }
+
+    private void drawDecorLines(int e0X, int e0Y, ViewState view, EngineStateRecord state) {
+        for (DecorLine decorLine : state.track.getDecorLines()) {
+            int[][] points = decorLine.getPoints();
+            if (points == null || points.length < 2) {
+                continue;
+            }
+
+            e0X >>= 1;
+            e0Y >>= 1;
+            int pEndX = e0X - points[0][0];
+            int pEndY = (e0Y + 0x320000) - points[0][1];
+            int k3 = Engine.CALC_MAGIC(pEndX, pEndY);
+            pEndX = (int) (((long) pEndX << 32) / (long) (k3 >> 1 >> 1) >> 16);
+            pEndY = (int) (((long) pEndY << 32) / (long) (k3 >> 1 >> 1) >> 16);
+
+            for (int i = 0; i < points.length - 1; i++) {
+                Color color = decorLine.getColor();
+                setColor(color == null ? mm().getGameTheme().getTrackLineColor() : color);
+                canvas.drawLine2(packInt(points[i][0]), packInt(points[i][1]), packInt(points[i + 1][0]), packInt(points[i + 1][1]), view);
+
+                if (Boolean.TRUE.equals(decorLine.getPerspective())) {
+                    Color pColor = decorLine.getPerspectiveColor();
+                    setColor(pColor == null ? mm().getGameTheme().getPerspectiveColor() : pColor);
+                    int pStartX = pEndX;
+                    int pStartY = pEndY;
+                    pEndX = e0X - points[i + 1][0];
+                    pEndY = (e0Y + 0x320000) - points[i + 1][1];
+                    int l3 = Engine.CALC_MAGIC(pEndX, pEndY);
+                    pEndX = (int) (((long) pEndX << 32) / (long) (l3 >> 1 >> 1) >> 16);
+                    pEndY = (int) (((long) pEndY << 32) / (long) (l3 >> 1 >> 1) >> 16);
+                    canvas.drawLine2(packInt(points[i][0] + pStartX), packInt(points[i][1] + pStartY), packInt(points[i + 1][0] + pEndX), packInt(points[i + 1][1] + pEndY), view);
+                    canvas.drawLine2(packInt(points[i][0]), packInt(points[i][1]), packInt(points[i][0] + pStartX), packInt(points[i][1] + pStartY), view);
+                }
+            }
+            if (Boolean.TRUE.equals(decorLine.getPerspective())) {
+                Color pColor = decorLine.getPerspectiveColor();
+                setColor(pColor == null ? mm().getGameTheme().getPerspectiveColor() : pColor);
+                canvas.drawLine2(packInt(points[points.length - 1][0]), packInt(points[points.length - 1][1]), packInt(points[points.length - 1][0] + pEndX), packInt(points[points.length - 1][1] + pEndY), view);
+            }
+        }
     }
 
     public void drawPerspective(int k, int i1, ViewState view, EngineStateRecord state) {
@@ -247,13 +297,14 @@ public class FrameRender {
         int k2 = 0;
         int l2 = 0;
         int index;
-        for (index = 0; index < state.track.pointsCount - 1 && state.track.points[index][0] <= state.track.cameraX; index++)
+        int[][] points = state.track.points;
+        for (index = 0; index < state.track.pointsCount - 1 && points[index][0] <= state.track.cameraX; index++)
             ;
         if (index > 0)
             index--;
-        int i3 = k - state.track.points[index][0];
-        int j3 = (i1 + 0x320000) - state.track.points[index][1];
-        int k3 = Engine._doIII(i3, j3);
+        int i3 = k - points[index][0];
+        int j3 = (i1 + 0x320000) - points[index][1];
+        int k3 = Engine.CALC_MAGIC(i3, j3);
         i3 = (int) (((long) i3 << 32) / (long) (k3 >> 1 >> 1) >> 16);
         j3 = (int) (((long) j3 << 32) / (long) (k3 >> 1 >> 1) >> 16);
         setColor(mm().getGameTheme().getPerspectiveColor());
@@ -262,45 +313,48 @@ public class FrameRender {
                 break;
             int j1 = i3;
             int l1 = j3;
-            i3 = k - state.track.points[index + 1][0];
-            j3 = (i1 + 0x320000) - state.track.points[index + 1][1];
-            int l3 = Engine._doIII(i3, j3);
+            i3 = k - points[index + 1][0];
+            j3 = (i1 + 0x320000) - points[index + 1][1];
+            int l3 = Engine.CALC_MAGIC(i3, j3);
             i3 = (int) (((long) i3 << 32) / (long) (l3 >> 1 >> 1) >> 16);
             j3 = (int) (((long) j3 << 32) / (long) (l3 >> 1 >> 1) >> 16);
             if (!state.track.invisible.contains(index)) {
-                canvas.drawLine2((state.track.points[index][0] + j1 << 3) >> 16, (state.track.points[index][1] + l1 << 3) >> 16, (state.track.points[index + 1][0] + i3 << 3) >> 16, (state.track.points[index + 1][1] + j3 << 3) >> 16, view);
+                canvas.drawLine2(packInt(points[index][0] + j1), packInt(points[index][1] + l1), packInt(points[index + 1][0] + i3), packInt(points[index + 1][1] + j3), view);
             }
             if (!state.track.invisible.contains(index - 1) || !state.track.invisible.contains(index)) {
-                canvas.drawLine2((state.track.points[index][0] << 3) >> 16, (state.track.points[index][1] << 3) >> 16, (state.track.points[index][0] + j1 << 3) >> 16, (state.track.points[index][1] + l1 << 3) >> 16, view);
+                canvas.drawLine2(packInt(points[index][0]), packInt(points[index][1]), packInt(points[index][0] + j1), packInt(points[index][1] + l1), view);
             }
             if (index > 1) {
-                if (state.track.points[index][0] > state.track.shadowX && k2 == 0)
+                if (points[index][0] > state.track.shadowX && k2 == 0)
                     k2 = index - 1;
-                if (state.track.points[index][0] > state.track.shadowY && l2 == 0)
+                if (points[index][0] > state.track.shadowY && l2 == 0)
                     l2 = index - 1;
             }
             if (state.track.startPointIndex == index) {
-                drawStartFlag((state.track.points[state.track.startPointIndex][0] + j1 << 3) >> 16, (state.track.points[state.track.startPointIndex][1] + l1 << 3) >> 16, view, state);
+                drawStartFlag(packInt(points[state.track.startPointIndex][0] + j1), packInt(points[state.track.startPointIndex][1] + l1), view, state);
                 setColor(mm().getGameTheme().getPerspectiveColor());
             }
             if (index != 0 && state.track.getLeagueSwitcher(index) != null) {
-                drawLeagueFlag((state.track.points[index][0] + j1 << 3) >> 16, (state.track.points[index][1] + l1 << 3) >> 16, view, state);
+                drawLeagueFlag(packInt(points[index][0] + j1), packInt(points[index][1] + l1), view, state);
                 setColor(mm().getGameTheme().getPerspectiveColor());
             }
             if (state.track.finishPointIndex == index) {
-                drawFinishFlag((state.track.points[state.track.finishPointIndex][0] + j1 << 3) >> 16, (state.track.points[state.track.finishPointIndex][1] + l1 << 3) >> 16, view, state);
+                drawFinishFlag(packInt(points[state.track.finishPointIndex][0] + j1), packInt(points[state.track.finishPointIndex][1] + l1), view, state);
                 setColor(mm().getGameTheme().getPerspectiveColor());
             }
-            if (state.track.points[index][0] > state.track.cameraY + drawableOffScreenOffset)
+            if (points[index][0] > state.track.cameraY + drawableOffScreenOffset)
                 break;
             index++;
         } while (true);
         int k1 = i3;
         int i2 = j3;
-        canvas.drawLine2((state.track.points[state.track.pointsCount - 1][0] << 3) >> 16,
-                (state.track.points[state.track.pointsCount - 1][1] << 3) >> 16,
-                (state.track.points[state.track.pointsCount - 1][0] + k1 << 3) >> 16,
-                (state.track.points[state.track.pointsCount - 1][1] + i2 << 3) >> 16, view);
+        canvas.drawLine2(
+                packInt(points[state.track.pointsCount - 1][0]),
+                packInt(points[state.track.pointsCount - 1][1]),
+                packInt(points[state.track.pointsCount - 1][0] + k1),
+                packInt(points[state.track.pointsCount - 1][1] + i2),
+                view
+        );
         if (state.shadowsEnabled)
             drawShadows(k2, l2, view, state);
     }
@@ -309,40 +363,65 @@ public class FrameRender {
     public void drawShadows(int k, int index, ViewState view, EngineStateRecord state) {
         try {
             if (index <= state.track.pointsCount - 1) {
-                int j1 = Math.max(state.track.shadow_m_gI - (state.track.points[k][1] + state.track.points[index + 1][1] >> 1), 0);
-                if (state.track.shadow_m_gI <= state.track.points[k][1] || state.track.shadow_m_gI <= state.track.points[index + 1][1])
+                int[][] points = state.track.points;
+                int j1 = Math.max(state.track.shadow_m_gI - (points[k][1] + points[index + 1][1] >> 1), 0);
+                if (state.track.shadow_m_gI <= points[k][1] || state.track.shadow_m_gI <= points[index + 1][1])
                     j1 = Math.min(j1, 0x50000);
                 state.track.shadow_m_rI = (int) ((long) state.track.shadow_m_rI * 49152L >> 16) + (int) ((long) j1 * 16384L >> 16);
                 if (state.track.shadow_m_rI <= 0x88000) {
                     int k1 = (int) (0x190000L * (long) state.track.shadow_m_rI >> 16) >> 16;
                     canvas.setColor(k1, k1, k1);
-                    int l1 = state.track.points[k][0] - state.track.points[k + 1][0];
+                    int l1 = points[k][0] - points[k + 1][0];
                     //todo java.lang.ArithmeticException: divide by zero
-                    int i2 = (int) (((long) (state.track.points[k][1] - state.track.points[k + 1][1]) << 32) / (long) l1 >> 16);
-                    int j2 = state.track.points[k][1] - (int) ((long) state.track.points[k][0] * (long) i2 >> 16);
+                    int i2 = (int) (((long) (points[k][1] - points[k + 1][1]) << 32) / (long) l1 >> 16);
+                    int j2 = points[k][1] - (int) ((long) points[k][0] * (long) i2 >> 16);
                     int k2 = (int) ((long) state.track.shadowX * (long) i2 >> 16) + j2;
-                    l1 = state.track.points[index][0] - state.track.points[index + 1][0];
-                    i2 = (int) (((long) (state.track.points[index][1] - state.track.points[index + 1][1]) << 32) / (long) l1 >> 16);
-                    j2 = state.track.points[index][1] - (int) ((long) state.track.points[index][0] * (long) i2 >> 16);
+                    l1 = points[index][0] - points[index + 1][0];
+                    i2 = (int) (((long) (points[index][1] - points[index + 1][1]) << 32) / (long) l1 >> 16);
+                    j2 = points[index][1] - (int) ((long) points[index][0] * (long) i2 >> 16);
                     int l2 = (int) ((long) state.track.shadowY * (long) i2 >> 16) + j2;
                     if (k == index && !state.track.getInvisible().contains(k)) {
-                        canvas.drawLine2((state.track.shadowX << 3) >> 16, (k2 + 0x10000 << 3) >> 16, (state.track.shadowY << 3) >> 16, (l2 + 0x10000 << 3) >> 16, view);
+                        canvas.drawLine2(
+                                packInt(state.track.shadowX),
+                                packInt(k2 + 0x10000),
+                                packInt(state.track.shadowY),
+                                packInt(l2 + 0x10000),
+                                view
+                        );
                         return;
                     }
                     if (!state.track.getInvisible().contains(k)) {
-                        canvas.drawLine2((state.track.shadowX << 3) >> 16, (k2 + 0x10000 << 3) >> 16, (state.track.points[k + 1][0] << 3) >> 16, (state.track.points[k + 1][1] + 0x10000 << 3) >> 16, view);
+                        canvas.drawLine2(
+                                packInt(state.track.shadowX),
+                                packInt(k2 + 0x10000),
+                                packInt(points[k + 1][0]),
+                                packInt(points[k + 1][1] + 0x10000),
+                                view
+                        );
                     }
 
                     if (false) {//todo draw shadows on min x point
                         for (int i3 = k + 1; i3 < index; i3++) {
                             if (!state.track.getInvisible().contains(i3)) {
-                                canvas.drawLine2((state.track.points[i3][0] << 3) >> 16, (state.track.points[i3][1] + 0x10000 << 3) >> 16, (state.track.points[i3 + 1][0] << 3) >> 16, (state.track.points[i3 + 1][1] + 0x10000 << 3) >> 16, view);
+                                canvas.drawLine2(
+                                        packInt(points[i3][0]),
+                                        packInt(points[i3][1] + 0x10000),
+                                        packInt(points[i3 + 1][0]),
+                                        packInt(points[i3 + 1][1] + 0x10000),
+                                        view
+                                );
                             }
                         }
                     }
 
                     if (!state.track.getInvisible().contains(index)) {
-                        canvas.drawLine2((state.track.points[index][0] << 3) >> 16, (state.track.points[index][1] + 0x10000 << 3) >> 16, (state.track.shadowY << 3) >> 16, (l2 + 0x10000 << 3) >> 16, view);
+                        canvas.drawLine2(
+                                packInt(points[index][0]),
+                                packInt(points[index][1] + 0x10000),
+                                packInt(state.track.shadowY),
+                                packInt(l2 + 0x10000),
+                                view
+                        );
                     }
                 }
             }

@@ -15,6 +15,7 @@ import org.happysanta.gdtralive.game.api.dto.LevelPack;
 import org.happysanta.gdtralive.game.api.dto.Theme;
 import org.happysanta.gdtralive.game.api.dto.TrackParams;
 import org.happysanta.gdtralive.game.api.exception.InvalidTrackException;
+import org.happysanta.gdtralive.game.api.model.DecorLine;
 import org.happysanta.gdtralive.game.api.model.ElementRecord;
 import org.happysanta.gdtralive.game.api.model.IElement;
 import org.happysanta.gdtralive.game.api.model.Mod;
@@ -315,6 +316,11 @@ public class Utils {
         data.setAuthor(from.getAuthor());
         data.setLeague(from.getLeague());
         data.setLeagueSwitchers(from.getLeagueSwitchers());
+        List<DecorLine> decorLines = from.getDecorLines();
+        for (DecorLine decorLine : decorLines) {
+            decorLine.setPoints(packPoints(decorLine.getPoints()));
+        }
+        data.setDecorLines(decorLines);
         data.setStartX(Utils.packInt(from.getStartX()));
         data.setStartY(Utils.packInt(from.getStartY()));
         data.setFinishX(Utils.packInt(from.getFinishX()));
@@ -327,15 +333,7 @@ public class Utils {
         data.setDeadlineY(from.getDeadlineY());
         data.setCheckFinishCoordinates(from.isCheckFinishCoordinates());
 
-        int[][] pointsFrom = from.getPoints();
-        int[][] points = new int[pointsFrom.length][2];
-        for (int i = 0; i < pointsFrom.length; i++) {
-            int[] X_Y = new int[2];
-            X_Y[0] = Utils.packInt(pointsFrom[i][0]);
-            X_Y[1] = Utils.packInt(pointsFrom[i][1]);
-            points[i] = X_Y;
-        }
-        data.setPoints(points);
+        data.setPoints(packPoints(from.getPoints()));
         return data;
     }
 
@@ -344,7 +342,24 @@ public class Utils {
         data.setStartY(Utils.unpackInt(data.getStartY()));
         data.setFinishX(Utils.unpackInt(data.getFinishX()));
         data.setFinishY(Utils.unpackInt(data.getFinishY()));
-        int[][] pointsFrom = data.getPoints();
+        for (DecorLine decorLine : data.getDecorLines()) {
+            decorLine.setPoints(unpackPoints(decorLine.getPoints()));
+        }
+        data.setPoints(unpackPoints(data.getPoints()));
+    }
+
+    private static int[][] packPoints(int[][] pointsFrom) {
+        int[][] points = new int[pointsFrom.length][2];
+        for (int i = 0; i < pointsFrom.length; i++) {
+            int[] X_Y = new int[2];
+            X_Y[0] = Utils.packInt(pointsFrom[i][0]);
+            X_Y[1] = Utils.packInt(pointsFrom[i][1]);
+            points[i] = X_Y;
+        }
+        return points;
+    }
+
+    private static int[][] unpackPoints(int[][] pointsFrom) {
         int[][] points = new int[pointsFrom.length][2];
         for (int i = 0; i < pointsFrom.length; i++) {
             try {
@@ -356,7 +371,7 @@ public class Utils {
                 e.printStackTrace();
             }
         }
-        data.setPoints(points);
+        return points;
     }
 
     public static String[] getScaleOptions() {

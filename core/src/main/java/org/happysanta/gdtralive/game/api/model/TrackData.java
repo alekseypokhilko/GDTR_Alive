@@ -36,6 +36,7 @@ public class TrackData implements Serializable {
 	public String author;
 	public Set<Integer> invisible = new HashSet<>();
 	public List<LeagueSwitcher> leagueSwitchers = new ArrayList<>(); // point -> league
+	public List<DecorLine> decorLines = new ArrayList<>();
 	public boolean checkFinishCoordinates = false;
 	public boolean checkBackwardCollision = true;
 	public Integer deadlineY;
@@ -349,5 +350,13 @@ public class TrackData implements Serializable {
 			}
 		}
 		return null;
+	}
+
+	public List<DecorLine> getDecorLines() {
+		return decorLines;
+	}
+
+	public void setDecorLines(List<DecorLine> decorLines) {
+		this.decorLines = decorLines;
 	}
 }

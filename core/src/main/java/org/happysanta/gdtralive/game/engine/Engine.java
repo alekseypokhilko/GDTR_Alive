@@ -114,12 +114,12 @@ public class Engine {
         setMode(1);
     }
 
-    public static int _doIII(int j, int i1) {
-        int j1 = j >= 0 ? j : -j;
+    public static int CALC_MAGIC(int endX, int endY) {
+        int j1 = endX >= 0 ? endX : -endX;
         int k1;
         int l1;
         int i2;
-        if ((k1 = i1 >= 0 ? i1 : -i1) >= j1) {
+        if ((k1 = endY >= 0 ? endY : -endY) >= j1) {
             l1 = k1;
             i2 = j1;
         } else {
@@ -127,14 +127,6 @@ public class Engine {
             i2 = k1;
         }
         return (int) (64448L * (long) l1 >> 16) + (int) (28224L * (long) i2 >> 16);
-    }
-
-    public int getDrawSpriteState() {
-        if (drawBiker && drawBike)
-            return 3; //no sprites
-        if (drawBike)
-            return 1;
-        return !drawBiker ? 0 : 2;
     }
 
     public void setDrawSpriteState(int j) {
@@ -325,7 +317,7 @@ public class Engine {
     private void autoplay() {
         int j = m_Hak[FRONT_WHEEL].m_ifan[m_vaI].x - m_Hak[2].m_ifan[m_vaI].x;
         int i1 = m_Hak[FRONT_WHEEL].m_ifan[m_vaI].y - m_Hak[2].m_ifan[m_vaI].y;
-        int j1 = _doIII(j, i1);
+        int j1 = CALC_MAGIC(j, i1);
         i1 = (int) (((long) i1 << 32) / (long) j1 >> 16);
         stop = false;
         if (i1 < 0) {
@@ -349,7 +341,7 @@ public class Engine {
         if (!crashedInAir_MAYBE) { // не реагирует на клаву
             int j = m_Hak[FRONT_WHEEL].m_ifan[m_vaI].x - m_Hak[2].m_ifan[m_vaI].x;
             int i1 = m_Hak[FRONT_WHEEL].m_ifan[m_vaI].y - m_Hak[2].m_ifan[m_vaI].y;
-            int j1 = _doIII(j, i1);
+            int j1 = CALC_MAGIC(j, i1);
             j = (int) (((long) j << 32) / (long) j1 >> 16);
             i1 = (int) (((long) i1 << 32) / (long) j1 >> 16);
             if (gas && acceleration >= -league().getM_qI())
@@ -639,7 +631,7 @@ public class Engine {
         for (int k3 = 0; k3 < 6; k3++) {
             int j2 = m_Hak[k3].m_ifan[j].p - j1;
             int k2 = m_Hak[k3].m_ifan[j].d - l1;
-            if ((j3 = _doIII(j2, k2)) > 0x1e0000) {
+            if ((j3 = CALC_MAGIC(j2, k2)) > 0x1e0000) {
                 int l2 = (int) (((long) j2 << 32) / (long) j3 >> 16);
                 int i3 = (int) (((long) k2 << 32) / (long) j3 >> 16);
                 m_Hak[k3].m_ifan[j].p -= l2;
@@ -662,7 +654,7 @@ public class Engine {
         int j1 = n2.x - n3.x;
         int l1 = n2.y - n3.y;
         int i2;
-        if (((i2 = _doIII(j1, l1)) >= 0 ? i2 : -i2) >= 3) {
+        if (((i2 = CALC_MAGIC(j1, l1)) >= 0 ? i2 : -i2) >= 3) {
             j1 = (int) (((long) j1 << 32) / (long) i2 >> 16);
             l1 = (int) (((long) l1 << 32) / (long) i2 >> 16);
             int j2 = i2 - n1.y;
@@ -737,7 +729,7 @@ public class Engine {
         trackPhysic._aIIV(j1 - Constants.m_foraI[0], i1 + Constants.m_foraI[0], m_Hak[5].m_ifan[j].y);
         int k1 = m_Hak[FRONT_WHEEL].m_ifan[j].x - m_Hak[BACK_WHEEL].m_ifan[j].x;
         int l1 = m_Hak[FRONT_WHEEL].m_ifan[j].y - m_Hak[BACK_WHEEL].m_ifan[j].y;
-        int i2 = _doIII(k1, l1);
+        int i2 = CALC_MAGIC(k1, l1);
         k1 = (int) (((long) k1 << 32) / (long) i2 >> 16);
         int j2 = -(int) (((long) l1 << 32) / (long) i2 >> 16);
         int k2 = k1;
@@ -798,7 +790,7 @@ public class Engine {
             i2 = league().getM_aeI();
             j2 = league().getM_adI();
         }
-        int k2 = _doIII(m_EI, m_CI);
+        int k2 = CALC_MAGIC(m_EI, m_CI);
         m_EI = (int) (((long) m_EI << 32) / (long) k2 >> 16);
         m_CI = (int) (((long) m_CI << 32) / (long) k2 >> 16);
         int l2 = n1.p;
