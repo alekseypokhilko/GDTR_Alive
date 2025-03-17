@@ -26,7 +26,7 @@ public class Fmt {
         return String.format("%s>", label);
     }
 
-    public static String sp(String left, String right) {
+    public static String sp(String left, Object right) {
         return String.format("%s %s", left, right);
     }
 

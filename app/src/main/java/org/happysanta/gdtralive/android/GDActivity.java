@@ -43,7 +43,6 @@ import org.happysanta.gdtralive.game.Menu;
 import org.happysanta.gdtralive.game.MenuFactory;
 import org.happysanta.gdtralive.game.ModManager;
 import org.happysanta.gdtralive.game.api.Constants;
-import org.happysanta.gdtralive.game.api.EditorMode;
 import org.happysanta.gdtralive.game.api.GDFile;
 import org.happysanta.gdtralive.game.api.GameMode;
 import org.happysanta.gdtralive.game.api.MenuType;
@@ -276,14 +275,7 @@ public class GDActivity extends Activity implements GdPlatform {
                                 int shiftX = -(touchX - rawX) / 2;
                                 int shiftY = -(touchY - rawY) / 2;
                                 //System.out.println("shiftX= " + shiftX + " shiftY=" + shiftY);
-                                EditorMode editorMode = trackEditor.editorMode;
-                                if (editorMode == EditorMode.CAMERA_MOVE) {
-                                    gameView.getGdView().shift(shiftX, shiftY);
-                                } else if (editorMode == EditorMode.POINT_MOVE || editorMode == EditorMode.POINT_SELECTION) {
-                                    trackEditor.shiftTrackPoint(Utils.unpackInt(shiftX), Utils.unpackInt(-shiftY));
-                                } else if (editorMode == EditorMode.START_POINT_MOVE) {
-                                    trackEditor.shiftStartPoint(Utils.unpackInt(shiftX), Utils.unpackInt(-shiftY));
-                                }
+                                trackEditor.onTouch(shiftX, shiftY);
                                 this.touchX = rawX;
                                 this.touchY = rawY;
                             }

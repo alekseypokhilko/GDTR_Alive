@@ -32,10 +32,6 @@ import org.happysanta.gdtralive.game.util.Utils;
 public class TrackEditorView implements GdTrackEditor {
     private static final int BUTTON_HEIGHT = 50;
     private static final int DEFAULT_OFFSET = 10;
-    private static final EditorMode[] MOVE_EDIT_MODES = new EditorMode[]{
-            EditorMode.POINT_SELECTION,
-            EditorMode.POINT_MOVE,
-    };
     private static final EditorMode[] SELECTION_EDIT_MODES = new EditorMode[]{
             EditorMode.START_POINT_MOVE,
             EditorMode.START_FLAG_SELECTION,
@@ -65,6 +61,7 @@ public class TrackEditorView implements GdTrackEditor {
     private final MenuImageView up;
     private final MenuImageView down;
     private final TextMenuElement pointText;
+    private final TextMenuElement modeText;
 
     public TrackEditorView(GDActivity gd, Application application, ModManager modManager) {
         this.application = application;
@@ -78,10 +75,12 @@ public class TrackEditorView implements GdTrackEditor {
         MenuImageView remove = button(R.drawable.c_delete, v -> handleRemoveButton());
         MenuImageView invisible = button(R.drawable.c_invisible, v -> handleInvisibleButton());
         MenuImageView cameraMoveMode = button(R.drawable.c_camera, v -> handleCameraModeButton());
-        MenuImageView pointModeSelection = button(R.drawable.c_points, v -> handleTrackMoveModeButton());
+        MenuImageView pointSelection = button(R.drawable.c_points, v -> setPointSelectionMode());
+        MenuImageView pointMove = button(R.drawable.c_point_move1, v -> setPointMoveMode());
         MenuImageView objectEditModeSelection = button(R.drawable.c_objects, v -> handleObjectEditMode());
         IInputTextElement offsetInput = application.getPlatform().getPlatformMenuElementFactory().editText(Fmt.colon(s(R.string.offset)), "" + DEFAULT_OFFSET, this::saveOffset);
         pointText = (TextMenuElement) application.getPlatform().getPlatformMenuElementFactory().text("[x, y]");
+        modeText = (TextMenuElement) application.getPlatform().getPlatformMenuElementFactory().text("");
 
         modeLayout = new MenuLinearLayout(gd, false);
         inputLayout = new MenuLinearLayout(gd, false);
@@ -89,11 +88,12 @@ public class TrackEditorView implements GdTrackEditor {
         moveLayout = new MenuLinearLayout(gd, false);
         //initModeSelection
         LinearLayout modeRow = new LinearLayout(gd);
-        modeRow.setPadding(Helpers.getDp(KeyboardController.PADDING), Helpers.getDp(KeyboardController.PADDING), Helpers.getDp(KeyboardController.PADDING), 0);
+        modeRow.setPadding(Helpers.getDp(KeyboardController.PADDING), Helpers.getDp(KeyboardController.PADDING), Helpers.getDp(KeyboardController.PADDING), Helpers.getDp(KeyboardController.PADDING));
         modeRow.setOrientation(LinearLayout.VERTICAL);
         modeRow.addView(cameraMoveMode, getLayoutParams());
         modeRow.addView(objectEditModeSelection, getLayoutParams());
-        modeRow.addView(pointModeSelection, getLayoutParams());
+        modeRow.addView(pointSelection, getLayoutParams());
+        modeRow.addView(pointMove, getLayoutParams());
         modeLayout.setOrientation(LinearLayout.VERTICAL);
         modeLayout.addView(modeRow);
         modeLayout.setGravity(Gravity.TOP);
@@ -105,6 +105,7 @@ public class TrackEditorView implements GdTrackEditor {
         inputRow.setOrientation(LinearLayout.VERTICAL);
         inputRow.addView((View) offsetInput.getView());
         inputRow.addView((View) pointText.getView());
+        inputRow.addView((View) modeText.getView());
         inputLayout.setOrientation(LinearLayout.VERTICAL);
         inputLayout.addView(inputRow);
         inputLayout.setGravity(Gravity.TOP | Gravity.CENTER);
@@ -114,7 +115,6 @@ public class TrackEditorView implements GdTrackEditor {
         LinearLayout actionRow = new LinearLayout(gd);
         actionRow.setPadding(Helpers.getDp(KeyboardController.PADDING), Helpers.getDp(KeyboardController.PADDING), Helpers.getDp(KeyboardController.PADDING), 0);
         actionRow.setOrientation(LinearLayout.VERTICAL);
-//        actionRow.addView(pointModeSelection, getLayoutParams());
         actionRow.addView(add, getLayoutParams());
         actionRow.addView(remove, getLayoutParams());
         actionRow.addView(invisible, getLayoutParams());
@@ -216,6 +216,7 @@ public class TrackEditorView implements GdTrackEditor {
                 updateUi();
             });
 
+            game.getView().resetShift();
             up.setVisibility(View.VISIBLE);
             down.setVisibility(View.VISIBLE);
         }
@@ -279,43 +280,49 @@ public class TrackEditorView implements GdTrackEditor {
         updateUi();
     }
 
-    private void handleTrackMoveModeButton() {
-        if (currentEditMode + 1 >= MOVE_EDIT_MODES.length) {
-            currentEditMode = 0;
-        } else {
-            currentEditMode += 1;
-        }
-        if (MOVE_EDIT_MODES[currentEditMode] == EditorMode.POINT_SELECTION) {
-            showMode(R.string.mode_point_selection);
-            editorMode = EditorMode.POINT_SELECTION;
-            left.setOnClickListener(v -> selectPreviousPoint());
-            right.setOnClickListener(v -> selectNextPoint());
-            up.setOnClickListener(NO_OP);
-            down.setOnClickListener(NO_OP);
-            up.setVisibility(View.GONE);
-            down.setVisibility(View.GONE);
-        }
-        if (MOVE_EDIT_MODES[currentEditMode] == EditorMode.POINT_MOVE) {
-            showMode(R.string.mode_point_move);
-            editorMode = EditorMode.POINT_MOVE;
-            left.setOnClickListener(v -> {
-                track().points[selectedPointIndex][0] -= offset;
-                updateUi();
-            });
-            right.setOnClickListener(v -> {
-                track().points[selectedPointIndex][0] += offset;
-                updateUi();
-            });
-            up.setOnClickListener(v -> {
-                track().points[selectedPointIndex][1] += offset;
-                updateUi();
-            });
-            down.setOnClickListener(v -> {
-                track().points[selectedPointIndex][1] -= offset;
-                updateUi();
-            });
-            up.setVisibility(View.VISIBLE);
-            down.setVisibility(View.VISIBLE);
+    private void setPointSelectionMode() {
+        showMode(R.string.mode_point_selection);
+        editorMode = EditorMode.POINT_SELECTION;
+        left.setOnClickListener(v -> selectPreviousPoint());
+        right.setOnClickListener(v -> selectNextPoint());
+        up.setOnClickListener(NO_OP);
+        down.setOnClickListener(NO_OP);
+        up.setVisibility(View.GONE);
+        down.setVisibility(View.GONE);
+    }
+
+    private void setPointMoveMode() {
+        showMode(R.string.mode_point_move);
+        editorMode = EditorMode.POINT_MOVE;
+        left.setOnClickListener(v -> {
+            track().points[selectedPointIndex][0] -= offset;
+            updateUi();
+        });
+        right.setOnClickListener(v -> {
+            track().points[selectedPointIndex][0] += offset;
+            updateUi();
+        });
+        up.setOnClickListener(v -> {
+            track().points[selectedPointIndex][1] += offset;
+            updateUi();
+        });
+        down.setOnClickListener(v -> {
+            track().points[selectedPointIndex][1] -= offset;
+            updateUi();
+        });
+        up.setVisibility(View.VISIBLE);
+        down.setVisibility(View.VISIBLE);
+    }
+
+    public void onTouch(int shiftX, int shiftY) {
+        if (editorMode == EditorMode.CAMERA_MOVE) {
+            game.getView().shift(shiftX, shiftY);
+        } else if (editorMode == EditorMode.POINT_MOVE) {
+            shiftTrackPoint(Utils.unpackInt(shiftX), Utils.unpackInt(-shiftY));
+        } else if (editorMode == EditorMode.POINT_SELECTION) {
+            shiftSelectedPoint(shiftX);
+        } else if (editorMode == EditorMode.START_POINT_MOVE) {
+            shiftStartPoint(Utils.unpackInt(shiftX), Utils.unpackInt(-shiftY));
         }
     }
 
@@ -328,6 +335,12 @@ public class TrackEditorView implements GdTrackEditor {
     public void shiftStartPoint(int shiftX, int shiftY) {
         track().startX += shiftX;
         track().startY += shiftY;
+        updateUi();
+    }
+
+    public void shiftSelectedPoint(int shiftX) {
+        selectedPointIndex = Math.min(Math.max(selectedPointIndex + shiftX/2, 0), track().points.length - 1);
+        engine.selectedPointIndex = selectedPointIndex;
         updateUi();
     }
 
@@ -377,6 +390,7 @@ public class TrackEditorView implements GdTrackEditor {
             track().points = Utils.addPos(track().points, selectedPointIndex + 1, point);
             track().pointsCount++;
             selectNextPoint();
+            setPointMoveMode();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -393,7 +407,8 @@ public class TrackEditorView implements GdTrackEditor {
     private void updateUi() {
         try {
             pointText.setText(String.format(
-                    "[%s, %s]",
+                    "[%si, %sx, %sy]",
+                    selectedPointIndex,
                     Utils.packInt(track().points[selectedPointIndex][0]),
                     Utils.packInt(track().points[selectedPointIndex][1]))
             );
@@ -403,7 +418,7 @@ public class TrackEditorView implements GdTrackEditor {
     }
 
     private void showMode(int modeId) {
-        game.showInfoMessage(Fmt.colon(s(R.string.mode), s(modeId)), 10000);
+        modeText.setText(s(modeId));
     }
 
     public void createNew(String playerName) {

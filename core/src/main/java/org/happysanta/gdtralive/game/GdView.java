@@ -2,13 +2,16 @@ package org.happysanta.gdtralive.game;
 
 import org.happysanta.gdtralive.game.api.LoadingState;
 import org.happysanta.gdtralive.game.api.Platform;
+import org.happysanta.gdtralive.game.api.S;
 import org.happysanta.gdtralive.game.api.Sprite;
 import org.happysanta.gdtralive.game.api.external.GdPlatform;
+import org.happysanta.gdtralive.game.api.external.GdStr;
 import org.happysanta.gdtralive.game.api.model.MessageElement;
 import org.happysanta.gdtralive.game.api.model.ViewState;
 import org.happysanta.gdtralive.game.engine.Engine;
 import org.happysanta.gdtralive.game.api.external.GdCanvas;
 import org.happysanta.gdtralive.game.api.model.EngineStateRecord;
+import org.happysanta.gdtralive.game.util.Fmt;
 
 import java.util.Timer;
 
@@ -16,6 +19,8 @@ public class GdView {
 
     private final GdPlatform platform;
     private final Engine engine;
+    private final Game game;
+    private final GdStr str;
     private final FrameRender frameRender;
     private LoadingState loadingState;
 
@@ -31,9 +36,12 @@ public class GdView {
     private int infoMessageIndex;
     private Timer timer;
 
-    public GdView(FrameRender frameRender, Engine engine, int width, int height, GdPlatform platform) {
+    public GdView(FrameRender frameRender, Engine engine, int width, int height,
+                  GdPlatform platform, Game game, GdStr str) {
         this.platform = platform;
         this.frameRender = frameRender;
+        this.game = game;
+        this.str = str;
         infoMessageNeedDeleting = false;
         drawTimer = true;
         loadingState = LoadingState.SPLASH1;
@@ -97,6 +105,7 @@ public class GdView {
         }
         if (drawTimer) {
             frameRender.drawTimer(engine.timerTime, viewState);
+            frameRender.drawAttemptCounter(viewState, Fmt.sp(str.s(S.ATTEMPT), game.attemptCount));
         }
         if (infoMessage != null) {
             frameRender.drawInfoMessage(infoMessage, viewState);

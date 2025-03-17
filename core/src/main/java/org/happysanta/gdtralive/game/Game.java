@@ -40,6 +40,7 @@ public class Game {
     private final Trainer trainer;
     private final KeyboardHandler keyboardHandler;
     private GameParams params;
+    public int attemptCount = 0;
     private long startedTime = 0;
     private long finishedTime = 0;
     private long pausedTime = 0;
@@ -61,14 +62,13 @@ public class Game {
             } catch (InvalidTrackException ignore) {
             }
         }
-        this.view = new GdView(frameRender, engine, width, height, application.getPlatform());
+        this.view = new GdView(frameRender, engine, width, height, application.getPlatform(), this, application.getStr());
         this.recorder = new Recorder(engine, application.getFileStorage(), settings);
         this.player = new Player(engine, () -> restart(true));
         this.trainer = new Trainer(engine, view, application.getStr());
         this.keyboardHandler = new KeyboardHandler(application, engine, settings.getInputOption());
         this.str = application.getStr();
         this.settings = settings;
-//        view.adjustDimensions(true); //todo move
     }
 
     public void init(GdMenu menu) {
@@ -291,6 +291,7 @@ public class Game {
     }
 
     public void restart(boolean showLevelName) {
+        this.attemptCount++;
         view.setDrawTimer(params != null && params.getMode() != GameMode.TRACK_EDITOR && !application.isMenuShown());
         engine.resetToStart_MAYBE();
         startedTime = 0;
@@ -399,6 +400,7 @@ public class Game {
 
     public void startTrack(GameParams params) {
         this.params = params;
+        this.attemptCount = 0;
         if (GameMode.REPLAY == params.getMode()) {
             player.reset();
             player.setTrackRecord(params.getTrackRecord());

@@ -11,6 +11,8 @@ public class ColorUtil {
 
     static {
         //https://cssgenerator.org/rgba-and-hex-color-generator.html
+        colors.put("random", Color.random());
+        colors.put("random_once", Color.randomOnce());
         colors.put("lime", new Color(0, 255, 0));
         colors.put("blue", new Color(0, 0, 255));
         colors.put("red", new Color(255, 0, 0));

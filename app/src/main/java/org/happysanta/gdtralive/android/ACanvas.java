@@ -159,6 +159,11 @@ public class ACanvas implements GdCanvas {
         canvas.drawText(time, 18, -infoFont.ascent() + 17, timerFont);
     }
 
+    public void drawAttemptCounter(int color, String time, ViewState view) {
+        timerFont.setColor(color);
+        canvas.drawText(time, view.width / 2 - infoFont.measureText(time) / 2, 50, timerFont);
+    }
+
     public void drawArc(int i1, Float j1, Float k1, int l1) {
         paint.setStyle(Paint.Style.STROKE);
         canvas.drawArc(new RectF(j1, k1, j1 + l1, k1 + l1), -((i1 >> 16) + 170), -90, false, paint);

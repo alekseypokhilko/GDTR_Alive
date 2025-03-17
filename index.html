@@ -155,13 +155,7 @@
             currentPoint = this;
             editor.onmousemove = function () {
                 if (mode == Modes.MOVE) {
-                    if (points.indexOf(currentPoint) != points.length - 1 && getMouseX() > parseInt(points[points.indexOf(currentPoint) + 1].style.left) + 6) {
-                        currentPoint.style.left = (parseInt(points[points.indexOf(currentPoint) + 1].style.left) - 1) + "px";
-                    } else if (points.indexOf(currentPoint) != 0 && getMouseX() < parseInt(points[points.indexOf(currentPoint) - 1].style.left) + 6) {
-                        currentPoint.style.left = (parseInt(points[points.indexOf(currentPoint) - 1].style.left) + 1) + "px";
-                    } else {
-                        currentPoint.style.left = (getMouseX() - 6) + "px";
-                    }
+                    currentPoint.style.left = (getMouseX() - 6) + "px";
                     currentPoint.style.top = (getMouseY() - 6) + "px";
                     updateCanvas();
                 }
@@ -373,6 +367,9 @@
 
 
     function load() {
+        if (true) {
+            return
+        }
         if (confirm("You previous level will be removed. Continue?")) {
             clear();
             var loadedFile = document.getElementById('loadedFile').files[0];

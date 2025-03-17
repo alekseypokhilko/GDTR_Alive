@@ -30,3 +30,6 @@ Based on https://github.com/evgenyzinoviev/gravitydefied with new features:
 - PC version (alpha)
 - Core app logic separated from android dependencies
 - Refactored internal game components
+
+
+<a href="https://www.flaticon.com/free-icons/full-screen" title="full screen icons">Full screen icons created by Catalin Fertu - Flaticon</a>

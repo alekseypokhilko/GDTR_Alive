@@ -129,15 +129,6 @@ public class Engine {
         return (int) (64448L * (long) l1 >> 16) + (int) (28224L * (long) i2 >> 16);
     }
 
-    public void setDrawSpriteState(int j) {
-        drawBiker = false;
-        drawBike = false;
-        if ((j & 2) != 0)
-            drawBiker = true;
-        if ((j & 1) != 0)
-            drawBike = true;
-    }
-
     public void setMode(int j) {
         m_zI = j;
         switch (j) {
@@ -160,6 +151,7 @@ public class Engine {
         setStartCoordinates_MAYBE(trackPhysic.getStartX(), trackPhysic.getStartY());
         timerTime = 0;
         respawn = null;
+
         acceleration = 0;
         m_kI = 0;
         crashedInAir_MAYBE = false;
@@ -539,9 +531,6 @@ public class Engine {
         int i1 = 0;
         int j1 = j;
         int j2;
-        if (trackPhysic.track.deadlineY != null && trackPhysic.track.deadlineY > currentY_MAYBE()) { //todo front wheel
-            return LevelState.CRASHED;
-        }
         do {
             if (i1 >= j)
                 break;
@@ -586,6 +575,9 @@ public class Engine {
             crashedInAir_MAYBE = true;
         if (l1 > 0x460000)
             crashedInAir_MAYBE = true;
+        if (trackPhysic.track.deadlineY != null && trackPhysic.track.deadlineY > currentY_MAYBE()) { //todo front wheel
+            return LevelState.CRASHED_IN_AIR;
+        }
         return LevelState.IN_PROCESS;
     }
 

@@ -26,6 +26,7 @@ public interface GdCanvas {
     void drawInfoMessage2(String message, Color color, ViewState view);
 
     void drawTimer2(int color, String time, ViewState view);
+    void drawAttemptCounter(int color, String count, ViewState view);
 
     void drawSpriteWithRotation(Float j, Float k, ViewState view, EngineStateRecord state, Float fAngleDeg, Sprite sprite);
 

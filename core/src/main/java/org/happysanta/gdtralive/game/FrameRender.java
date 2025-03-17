@@ -843,4 +843,8 @@ public class FrameRender {
     public void drawTimer(long millis, ViewState view) {
         canvas.drawTimer2(mm().getInterfaceTheme().getTextColorInt(), Fmt.durationString(millis), view);
     }
+
+    public void drawAttemptCounter(ViewState view, String msg) {
+        canvas.drawAttemptCounter(mm().getInterfaceTheme().getTextColorInt(), msg, view);
+    }
 }
