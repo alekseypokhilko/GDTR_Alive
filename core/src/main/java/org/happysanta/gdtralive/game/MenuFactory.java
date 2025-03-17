@@ -548,7 +548,9 @@ public class MenuFactory<T> {
     private MenuScreen<T> createTrackOptions(Map<MenuType, MenuScreen<T>> r) {
         return e.screen(str.s(S.track), r.get(MenuType.TRACKS)).builder((s, data) -> {
             TrackParams track = data.getTrackRef();
-            Utils.unpackTrack(track.getData());
+            if (data.getValue() == null) {
+                Utils.unpackTrack(track.getData());
+            }
             trackEditor.setCurrentTrack(track);
             s.clear();
             s.add(e.textHtmlBold(str.s(S.name), track.getData().getName()));
