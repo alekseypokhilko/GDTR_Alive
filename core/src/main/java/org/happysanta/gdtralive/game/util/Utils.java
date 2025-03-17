@@ -64,14 +64,15 @@ public class Utils {
 
     public static TrackParams initTrackTemplate(String playerName) {
         TrackData track = Utils.trackTemplate(playerName);
+        track.unpacked = true;
         TrackParams trackParams = new TrackParams();
         trackParams.setData(track);
         trackParams.getData().setGuid(track.getGuid());
         trackParams.getData().setName(track.getName());
 
         Theme theme = Theme.defaultTheme();
-        trackParams.setGameTheme(theme.getGameTheme());
-        trackParams.setLeagueTheme(theme.getLeagueThemes().get(track.getLeague()));
+//        trackParams.setGameTheme(theme.getGameTheme());
+//        trackParams.setLeagueTheme(theme.getLeagueThemes().get(track.getLeague()));
         return trackParams;
     }
 
@@ -317,9 +318,15 @@ public class Utils {
         data.setAuthor(from.getAuthor());
         data.setLeague(from.getLeague());
         data.setLeagueSwitchers(from.getLeagueSwitchers());
-        List<DecorLine> decorLines = from.getDecorLines();
-        for (DecorLine decorLine : decorLines) {
-            decorLine.setPoints(packPoints(decorLine.getPoints()));
+
+        List<DecorLine> decorLines = new ArrayList<>();
+        for (DecorLine decorLine : from.getDecorLines()) {
+            DecorLine dl = new DecorLine();
+            dl.setColor(decorLine.getColor());
+            dl.setPerspective(decorLine.getPerspective());
+            dl.setPerspectiveColor(decorLine.getPerspectiveColor());
+            dl.setPoints(packPoints(decorLine.getPoints()));
+            decorLines.add(dl);
         }
         data.setDecorLines(decorLines);
         data.setStartX(Utils.packInt(from.getStartX()));

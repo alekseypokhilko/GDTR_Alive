@@ -548,8 +548,9 @@ public class MenuFactory<T> {
     private MenuScreen<T> createTrackOptions(Map<MenuType, MenuScreen<T>> r) {
         return e.screen(str.s(S.track), r.get(MenuType.TRACKS)).builder((s, data) -> {
             TrackParams track = data.getTrackRef();
-            if (data.getValue() == null) {
+            if (!track.getData().unpacked) {
                 Utils.unpackTrack(track.getData());
+                track.getData().unpacked = true;
             }
             trackEditor.setCurrentTrack(track);
             s.clear();
@@ -563,14 +564,14 @@ public class MenuFactory<T> {
                 track.getData().setName(Fmt.copy(track.getData().getName()));
                 track.getData().setGuid(UUID.randomUUID().toString());
                 track.getData().setAuthor(application.getSettings().getPlayerName());
-                application.getFileStorage().save(track, GDFile.TRACK, Fmt.trackName(track.getData()));
+                application.getFileStorage().save(track.pack(), GDFile.TRACK, Fmt.trackName(track.getData()));
             }));
             s.add(e.action(str.s(S.rename), __ -> {
                 MenuData menuData = new MenuData(track.getData().getName());
                 menuData.setHandler(o -> {
                     String newName = Utils.fixFileName((String) o);
                     track.getData().setName(newName);
-                    application.getFileStorage().save(track, GDFile.TRACK, Fmt.trackName(track.getData()));
+                    application.getFileStorage().save(track.pack(), GDFile.TRACK, Fmt.trackName(track.getData()));
                     s.build(new MenuData(track));
                     menu.back();
                 });

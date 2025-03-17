@@ -14,6 +14,8 @@ import java.util.Set;
  */
 public class TrackData implements Serializable {
 
+	public transient boolean unpacked = false;
+
 	public int league;
 	public int startX;
 	public int startY;

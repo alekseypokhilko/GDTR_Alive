@@ -476,7 +476,7 @@ public class TrackEditorView implements GdTrackEditor {
 
     public void saveTrack() {
         String trackName = Fmt.trackName(currentTrack.getData());
-        TrackParams track = new TrackParams(Utils.packTrack(currentTrack.getData()));
+        TrackParams track = currentTrack.pack();
         track.getData().getLeagueSwitchers().remove(0);
         application.getFileStorage().save(track, GDFile.TRACK, trackName);
     }
