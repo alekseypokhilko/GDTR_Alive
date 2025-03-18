@@ -26,6 +26,7 @@ public class Engine {
     private boolean godMode = false;
     private boolean edit;
     public int selectedPointIndex = 0;
+    public int selectedLineIndex = 0;
     private EngineStateRecord replayState;
     private EngineStateRecord respawn = null;
 
@@ -990,6 +991,7 @@ public class Engine {
         state.track = trackPhysic.track;
         state.edit = edit;
         state.selectedPointIndex = selectedPointIndex;
+        state.selectedLineIndex = selectedLineIndex;
         state.perspectiveEnabled = trackPhysic.isPerspectiveEnabled();
         state.shadowsEnabled = trackPhysic.isShadowsEnabled();
         state.elements = list.toArray(new Element[6]);
@@ -1021,6 +1023,7 @@ public class Engine {
         state.track = trackPhysic.track;
         state.edit = edit;
         state.selectedPointIndex = selectedPointIndex;
+        state.selectedLineIndex = selectedLineIndex;
         state.perspectiveEnabled = trackPhysic.isPerspectiveEnabled();
         state.shadowsEnabled = trackPhysic.isShadowsEnabled();
         state.elements = elements;
@@ -1033,8 +1036,11 @@ public class Engine {
         state.Y = deltaY == 0 ? null : deltaY;
         state.ft = flagTwitch;
 
-        int progress = getProgress();
-        state.p = progress == 0 ? null : progress;
+        try {
+            int progress = getProgress();
+            state.p = progress == 0 ? null : progress;
+        } catch (Exception ignore) {
+        }
         return state;
     }
 

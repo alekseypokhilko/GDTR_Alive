@@ -26,6 +26,7 @@ public class EngineStateRecord implements Serializable {
     public transient TrackData track;
     public transient boolean edit;
     public transient int selectedPointIndex;
+    public transient int selectedLineIndex;
     public transient boolean perspectiveEnabled;
     public transient boolean shadowsEnabled;
     public transient boolean replay = false;

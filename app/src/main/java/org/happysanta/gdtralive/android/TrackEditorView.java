@@ -22,6 +22,7 @@ import org.happysanta.gdtralive.game.api.dto.TrackParams;
 import org.happysanta.gdtralive.game.api.external.GdTrackEditor;
 import org.happysanta.gdtralive.game.api.menu.element.IInputTextElement;
 import org.happysanta.gdtralive.game.api.menu.element.TextMenuElement;
+import org.happysanta.gdtralive.game.api.model.DecorLine;
 import org.happysanta.gdtralive.game.api.model.GameParams;
 import org.happysanta.gdtralive.game.api.model.TrackData;
 import org.happysanta.gdtralive.game.engine.Engine;
@@ -50,6 +51,7 @@ public class TrackEditorView implements GdTrackEditor {
     public int currentEditMode = 0;
     public EditorMode editorMode = EditorMode.CAMERA_MOVE;
     public int selectedPointIndex = 0;
+    public int selectedLineIndex = 0;
     private TrackParams currentTrack;
 
     private final MenuLinearLayout modeLayout;
@@ -78,6 +80,7 @@ public class TrackEditorView implements GdTrackEditor {
         MenuImageView pointSelection = button(R.drawable.c_points, v -> setPointSelectionMode());
         MenuImageView pointMove = button(R.drawable.c_point_move1, v -> setPointMoveMode());
         MenuImageView objectEditModeSelection = button(R.drawable.c_objects, v -> handleObjectEditMode());
+        MenuImageView lineSelector = button(R.drawable.c_line_edit, v -> setLineSelectMode());
         IInputTextElement offsetInput = application.getPlatform().getPlatformMenuElementFactory().editText(Fmt.colon(s(R.string.offset)), "" + DEFAULT_OFFSET, this::saveOffset);
         pointText = (TextMenuElement) application.getPlatform().getPlatformMenuElementFactory().text("[x, y]");
         modeText = (TextMenuElement) application.getPlatform().getPlatformMenuElementFactory().text("");
@@ -92,6 +95,7 @@ public class TrackEditorView implements GdTrackEditor {
         modeRow.setOrientation(LinearLayout.VERTICAL);
         modeRow.addView(cameraMoveMode, getLayoutParams());
         modeRow.addView(objectEditModeSelection, getLayoutParams());
+        modeRow.addView(lineSelector, getLayoutParams());
         modeRow.addView(pointSelection, getLayoutParams());
         modeRow.addView(pointMove, getLayoutParams());
         modeLayout.setOrientation(LinearLayout.VERTICAL);
@@ -165,6 +169,19 @@ public class TrackEditorView implements GdTrackEditor {
             button.setOnClickListener(listener);
         }
         return button;
+    }
+
+    private void setLineSelectMode() {
+        showMode(R.string.mode_line_selection);
+        editorMode = EditorMode.LINE_MANAGE;
+        selectedPointIndex = 0;
+        engine.selectedPointIndex = 0;
+        left.setOnClickListener(v -> selectPreviousLine());
+        right.setOnClickListener(v -> selectNextLine());
+        up.setOnClickListener(NO_OP);
+        down.setOnClickListener(NO_OP);
+        up.setVisibility(View.GONE);
+        down.setVisibility(View.GONE);
     }
 
     private void handleObjectEditMode() {
@@ -257,6 +274,10 @@ public class TrackEditorView implements GdTrackEditor {
         return engine.getTrackPhysic().getTrack();
     }
 
+    private int[][] decorLine() {
+        return track().getDecorLines().get(selectedLineIndex - 1).getPoints();
+    }
+
     private void finishFlagBack() {
         if (track().finishPointIndex > 0) {
             track().finishPointIndex--;
@@ -295,19 +316,35 @@ public class TrackEditorView implements GdTrackEditor {
         showMode(R.string.mode_point_move);
         editorMode = EditorMode.POINT_MOVE;
         left.setOnClickListener(v -> {
-            track().points[selectedPointIndex][0] -= offset;
+            if (selectedLineIndex == 0) {
+                track().points[selectedPointIndex][0] += offset;
+            } else {
+                decorLine()[selectedPointIndex][0] -= offset;
+            }
             updateUi();
         });
         right.setOnClickListener(v -> {
-            track().points[selectedPointIndex][0] += offset;
+            if (selectedLineIndex == 0) {
+                track().points[selectedPointIndex][0] += offset;
+            } else {
+                decorLine()[selectedPointIndex][0] += offset;
+            }
             updateUi();
         });
         up.setOnClickListener(v -> {
-            track().points[selectedPointIndex][1] += offset;
+            if (selectedLineIndex == 0) {
+                track().points[selectedPointIndex][1] += offset;
+            } else {
+                decorLine()[selectedPointIndex][1] += offset;
+            }
             updateUi();
         });
         down.setOnClickListener(v -> {
-            track().points[selectedPointIndex][1] -= offset;
+            if (selectedLineIndex == 0) {
+                track().points[selectedPointIndex][1] -= offset;
+            } else {
+                decorLine()[selectedPointIndex][1] -= offset;
+            }
             updateUi();
         });
         up.setVisibility(View.VISIBLE);
@@ -327,8 +364,13 @@ public class TrackEditorView implements GdTrackEditor {
     }
 
     public void shiftTrackPoint(int shiftX, int shiftY) {
-        track().points[selectedPointIndex][0] += shiftX;
-        track().points[selectedPointIndex][1] += shiftY;
+        if (selectedLineIndex == 0) {
+            track().points[selectedPointIndex][0] += shiftX;
+            track().points[selectedPointIndex][1] += shiftY;
+        } else {
+            decorLine()[selectedPointIndex][0] += shiftX;
+            decorLine()[selectedPointIndex][1] += shiftY;
+        }
         updateUi();
     }
 
@@ -339,7 +381,7 @@ public class TrackEditorView implements GdTrackEditor {
     }
 
     public void shiftSelectedPoint(int shiftX) {
-        selectedPointIndex = Math.min(Math.max(selectedPointIndex + shiftX/2, 0), track().points.length - 1);
+        selectedPointIndex = Math.min(Math.max(selectedPointIndex + shiftX, 0), track().points.length - 1);
         engine.selectedPointIndex = selectedPointIndex;
         updateUi();
     }
@@ -352,11 +394,45 @@ public class TrackEditorView implements GdTrackEditor {
         updateUi();
     }
 
-    private void handleInvisibleButton() {
-        if (track().invisible.contains(selectedPointIndex)) {
-            track().invisible.remove(selectedPointIndex);
+    private void selectNextPoint() {
+        if (selectedLineIndex == 0) {
+            if (selectedPointIndex < track().pointsCount - 1) {
+                selectedPointIndex++;
+            }
         } else {
-            track().invisible.add(selectedPointIndex);
+            if (selectedPointIndex < decorLine().length - 1) {
+                selectedPointIndex++;
+            }
+        }
+        engine.selectedPointIndex = selectedPointIndex;
+        updateUi();
+    }
+
+    private void selectPreviousLine() {
+        if (selectedLineIndex > 0) {
+            selectedLineIndex--;
+            engine.selectedLineIndex = selectedLineIndex;
+        }
+        updateUi();
+    }
+
+    private void selectNextLine() {
+        if (selectedLineIndex < track().getDecorLines().size()) {
+            selectedLineIndex++;
+        } else {
+            selectedLineIndex = track().getDecorLines().size();
+        }
+        engine.selectedLineIndex = selectedLineIndex;
+        updateUi();
+    }
+
+    private void handleInvisibleButton() {
+        if (selectedLineIndex == 0) {
+            if (track().invisible.contains(selectedPointIndex)) {
+                track().invisible.remove(selectedPointIndex);
+            } else {
+                track().invisible.add(selectedPointIndex);
+            }
         }
         updateUi();
     }
@@ -372,46 +448,93 @@ public class TrackEditorView implements GdTrackEditor {
     }
 
     private void handleRemoveButton() {
-        try {
-            track().points = Utils.removeElement(track().points, selectedPointIndex);
-            track().pointsCount--;
+        if (editorMode == EditorMode.LINE_MANAGE && selectedLineIndex > 0) {
+            track().getDecorLines().remove(selectedLineIndex - 1);
+            selectPreviousLine();
             updateUi();
-        } catch (Exception e) {
-            e.printStackTrace();
+        } else {
+            if (selectedLineIndex == 0) {
+                try {
+                    track().points = Utils.removeElement(track().points, selectedPointIndex);
+                    track().pointsCount--;
+                    updateUi();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else {
+                try {
+                    track().getDecorLines().get(selectedLineIndex - 1).setPoints(
+                            Utils.removeElement(decorLine(), selectedPointIndex)
+                    );
+                    updateUi();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
     private void handleAddButton() {
-        try {
-            int[] point = new int[]{
-                    track().points[selectedPointIndex][0] + offset,
-                    track().points[selectedPointIndex][1]
-            };
-            track().points = Utils.addPos(track().points, selectedPointIndex + 1, point);
-            track().pointsCount++;
-            selectNextPoint();
-            setPointMoveMode();
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (editorMode == EditorMode.LINE_MANAGE) {
+            DecorLine decorLine = new DecorLine();
+            decorLine.setPerspective(true);
+            decorLine.setPoints(new int[][]{
+                    {track().startX + Utils.unpackInt(30), track().startY + Utils.unpackInt(30)},
+                    {track().startX + Utils.unpackInt(50), track().startY + Utils.unpackInt(50)}
+            });
+            track().getDecorLines().add(decorLine);
+            selectNextLine();
+            game.getView().resetShift();
+            updateUi();
+        } else {
+            if (selectedLineIndex == 0) {
+                try {
+                    int[] point = new int[]{
+                            track().points[selectedPointIndex][0] + offset,
+                            track().points[selectedPointIndex][1]
+                    };
+                    track().points = Utils.addPos(track().points, selectedPointIndex + 1, point);
+                    track().pointsCount++;
+                    selectNextPoint();
+                    setPointMoveMode();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else {
+                try {
+                    int[] point = new int[]{
+                            decorLine()[selectedPointIndex][0] + offset,
+                            decorLine()[selectedPointIndex][1]
+                    };
+                    track().getDecorLines().get(selectedLineIndex - 1).setPoints(
+                            Utils.addPos(decorLine(), selectedPointIndex + 1, point)
+                    );
+                    selectNextPoint();
+                    setPointMoveMode();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
-    }
-
-    private void selectNextPoint() {
-        if (selectedPointIndex < track().pointsCount - 1) {
-            selectedPointIndex++;
-            engine.selectedPointIndex = selectedPointIndex;
-        }
-        updateUi();
     }
 
     private void updateUi() {
         try {
-            pointText.setText(String.format(
-                    "[%si, %sx, %sy]",
-                    selectedPointIndex,
-                    Utils.packInt(track().points[selectedPointIndex][0]),
-                    Utils.packInt(track().points[selectedPointIndex][1]))
-            );
+            if (selectedLineIndex == 0) {
+                pointText.setText(String.format(
+                        "[%si, %sx, %sy]",
+                        selectedPointIndex,
+                        Utils.packInt(track().points[selectedPointIndex][0]),
+                        Utils.packInt(track().points[selectedPointIndex][1]))
+                );
+            } else {
+                pointText.setText(String.format(
+                        "[%si, %sx, %sy]",
+                        selectedPointIndex,
+                        Utils.packInt(decorLine()[selectedPointIndex][0]),
+                        Utils.packInt(decorLine()[selectedPointIndex][1]))
+                );
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -19,7 +19,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewManager;
 import android.view.ViewTreeObserver;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -118,8 +117,6 @@ public class GDActivity extends Activity implements GdPlatform {
 
         ModManager modManager = application.getModManager();
         gameView.setModManager(modManager);
-
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         scrollView = new ObservableScrollView(this);
         scrollView.setBackgroundColor(modManager.getInterfaceTheme().getMenuBackgroundColorInt());

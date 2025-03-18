@@ -113,6 +113,7 @@
 	<string name="mode_start_flag_move">Start flag move</string>
 	<string name="mode_finish_flag_move">Finish flag move</string>
 	<string name="mode_point_selection">Point selection</string>
+	<string name="mode_line_selection">Line selection</string>
 	<string name="mode_point_move">Point move</string>
 	<string name="mode_camera_move">Camera move</string>
 

@@ -120,6 +120,7 @@
     <string name="mode">Режим</string>
     <string name="mode_camera_move">Переміщення камери</string>
     <string name="mode_finish_flag_move">Позиція прапорця фінішу</string>
+    <string name="mode_line_selection">Вибір линии</string>
     <string name="mode_point_move">Приміщення точки</string>
     <string name="mode_point_selection">Вибір точки</string>
     <string name="mode_start_flag_move">Позиція прапорця старту</string>

@@ -234,8 +234,7 @@ public class TrackPhysic {
             if (!new LeagueSwitcher(0, engine.league).equals(track.leagueSwitchers.get(0))) {
                 track.leagueSwitchers.add(0, new LeagueSwitcher(0, engine.league));
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ignore) {
             track.leagueSwitchers.add(0, new LeagueSwitcher(0, engine.league));
         }
     }

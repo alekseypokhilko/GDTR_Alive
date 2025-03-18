@@ -12,6 +12,8 @@ import org.happysanta.gdtralive.game.engine.Engine;
 import org.happysanta.gdtralive.game.util.FPMath;
 import org.happysanta.gdtralive.game.util.Fmt;
 
+import java.util.List;
+
 public class FrameRender {
     private final int[][] m_KaaI = {
             {0x2cccc, -52428},
@@ -195,7 +197,7 @@ public class FrameRender {
             index--;
         do {
             try {
-                if (state.edit) {
+                if (state.edit && state.selectedLineIndex == 0) {
                     //draw point/selected point
                     setColor(new Color(255, 0, 0));
                     drawLineWheel(
@@ -244,7 +246,9 @@ public class FrameRender {
     }
 
     private void drawDecorLines(int e0X, int e0Y, ViewState view, EngineStateRecord state) {
-        for (DecorLine decorLine : state.track.getDecorLines()) {
+        List<DecorLine> decorLines = state.track.getDecorLines();
+        for (int dlI = 0; dlI < decorLines.size(); dlI++) {
+            DecorLine decorLine = decorLines.get(dlI);
             int[][] points = decorLine.getPoints();
             if (points == null || points.length < 2) {
                 continue;
@@ -263,6 +267,21 @@ public class FrameRender {
                 setColor(color == null ? mm().getGameTheme().getTrackLineColor() : color);
                 canvas.drawLine2(packInt(points[i][0]), packInt(points[i][1]), packInt(points[i + 1][0]), packInt(points[i + 1][1]), view);
 
+                try {
+                    if (state.edit && state.selectedLineIndex > 0 && dlI == state.selectedLineIndex - 1) {
+                        //draw point/selected point
+                        setColor(new Color(255, 0, 0));
+                        drawLineWheel(
+                                packInt(points[i][0]),
+                                packInt(points[i][1]),
+                                state.selectedPointIndex == i ? 8 : 4,
+                                view
+                        );
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
                 if (Boolean.TRUE.equals(decorLine.getPerspective())) {
                     Color pColor = decorLine.getPerspectiveColor();
                     setColor(pColor == null ? mm().getGameTheme().getPerspectiveColor() : pColor);
@@ -276,6 +295,21 @@ public class FrameRender {
                     canvas.drawLine2(packInt(points[i][0] + pStartX), packInt(points[i][1] + pStartY), packInt(points[i + 1][0] + pEndX), packInt(points[i + 1][1] + pEndY), view);
                     canvas.drawLine2(packInt(points[i][0]), packInt(points[i][1]), packInt(points[i][0] + pStartX), packInt(points[i][1] + pStartY), view);
                 }
+            }
+
+            try {
+                if (state.edit && state.selectedLineIndex > 0 && dlI == state.selectedLineIndex - 1) {
+                    //draw point/selected point
+                    setColor(new Color(255, 0, 0));
+                    drawLineWheel(
+                            packInt(points[points.length -1 ][0]),
+                            packInt(points[points.length -1][1]),
+                            state.selectedPointIndex == points.length -1 ? 8 : 4,
+                            view
+                    );
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
             if (Boolean.TRUE.equals(decorLine.getPerspective())) {
                 Color pColor = decorLine.getPerspectiveColor();
@@ -545,7 +579,7 @@ public class FrameRender {
         l2 = FPMath.sin(j2);
         for (int k3 = 0; k3 < 5; k3++) {
             //spokes
-            setColor(mm().getTheme().getLeagueThemes().get(state.league()).getBackWheelsSpokeColor());
+            setColor(mm().getTheme().getLeagueThemes().get(state.league()).getFrontWheelsSpokeColor());
             canvas.drawLine(state.frontWheel().x(), state.frontWheel().y(), state.frontWheel().x() + l1, state.frontWheel().y() + i2, view);
             i3 = l1;
             l1 = (int) ((long) k2 * (long) l1 >> 16) + (int) ((long) (-l2) * (long) i2 >> 16);
@@ -573,7 +607,7 @@ public class FrameRender {
                 l[l3][2] = state.backWheel().x() + l1;
                 l[l3][3] = state.backWheel().y() + i2;
             }
-            setColor(mm().getTheme().getLeagueThemes().get(state.league()).getFrontWheelsSpokeColor());
+            setColor(mm().getTheme().getLeagueThemes().get(state.league()).getBackWheelsSpokeColor());
             canvas.drawLine(l[l3][0], l[l3][1], l[l3][2], l[l3][3], view);
             int j3 = l1;
             l1 = (int) ((long) k2 * (long) l1 >> 16) + (int) ((long) (-l2) * (long) i2 >> 16);

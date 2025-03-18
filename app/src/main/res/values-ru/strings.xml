@@ -80,6 +80,7 @@
 	<string name="mode_start_flag_move">Флаг старта</string>
 	<string name="mode_finish_flag_move">Флаг финиша</string>
 	<string name="mode_point_selection">Выбор точки</string>
+	<string name="mode_line_selection">Выбор линии</string>
 	<string name="mode_point_move">Двигать точку</string>
 	<string name="mode_camera_move">Камера</string>
 
