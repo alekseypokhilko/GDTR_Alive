@@ -234,7 +234,7 @@ public class FrameRender {
                         packInt(points[index][1]), view, state);
                 setColor(mm().getGameTheme().getTrackLineColor());
             }
-            if (state.track.finishPointIndex == index) {
+            if (state.track.finishPointIndex == index || state.track.finishPointIndex == state.track.points.length - 1) {
                 drawFinishFlag(packInt(points[state.track.finishPointIndex][0]),
                         packInt(points[state.track.finishPointIndex][1]), view, state);
                 setColor(mm().getGameTheme().getTrackLineColor());
@@ -380,6 +380,10 @@ public class FrameRender {
                 break;
             index++;
         } while (true);
+        if (state.track.finishPointIndex == state.track.points.length - 1) {
+            drawFinishFlag(packInt(points[state.track.finishPointIndex][0] + i3), packInt(points[state.track.finishPointIndex][1] + j3), view, state);
+            setColor(mm().getGameTheme().getPerspectiveColor());
+        }
         int k1 = i3;
         int i2 = j3;
         canvas.drawLine2(
