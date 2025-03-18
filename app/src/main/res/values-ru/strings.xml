@@ -290,6 +290,9 @@
 	<string name="textColor">Текст</string>
 	<string name="gameBackgroundColor">Фон</string>
 	<string name="trackLineColor">Трек</string>
+	<string name="decor_line">Декор линия</string>
+	<string name="deadlineY">Дедлайн Y</string>
 	<string name="perspectiveColor">Перспектива</string>
 	<string name="startFlagColor">Старт</string>
+	<string name="lineColor">Цвет линии</string>
 </resources>

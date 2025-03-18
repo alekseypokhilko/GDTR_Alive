@@ -168,11 +168,16 @@ public class ModManager {
         this.currentTrackTheme = null;
 
         TrackTheme trackTheme = new TrackTheme();
-        if (track.getGameTheme() != null) {
-            trackTheme.setGameTheme(track.getGameTheme());
-        }
-        if (track.getLeagueTheme() != null) {
-            trackTheme.setLeagueTheme(track.getLeagueTheme());
+        GameTheme trackGT = track.getGameTheme();
+        if (trackGT != null) {
+            GameTheme gt = getGameTheme().copy();
+            if (trackGT.getTrackLineColor() != null) {
+                gt.setTrackLineColor(trackGT.getTrackLineColor());
+            }
+            if (trackGT.getPerspectiveColor() != null) {
+                gt.setPerspectiveColor(trackGT.getPerspectiveColor());
+            }
+            trackTheme.setGameTheme(gt);
         }
         if (trackTheme.getGameTheme() != null || trackTheme.getLeagueTheme() != null) {
             this.currentTrackTheme = trackTheme;
@@ -281,9 +286,9 @@ public class ModManager {
 
     public Theme loadTheme(String name) {
         Theme theme;
-        if ("GDTR Original".equals(name)) {
+        if (Constants.ORIGINAL_THEME.equals(name)) {
             theme = Theme.defaultTheme();
-        } else if ("GDTR Black".equals(name)) {
+        } else if (Constants.BLACK_THEME.equals(name)) {
             theme = Theme.amoledMod();
         } else {
             try {

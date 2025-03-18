@@ -5,7 +5,6 @@ import org.happysanta.gdtralive.game.util.Utils;
 
 public class TrackParams {
     private GameTheme gameTheme;
-    private LeagueTheme leagueTheme;
     private TrackData data;
 
     public TrackParams() {
@@ -24,6 +23,9 @@ public class TrackParams {
     }
 
     public GameTheme getGameTheme() {
+        if (gameTheme == null) {
+            gameTheme = new GameTheme();
+        }
         return gameTheme;
     }
 
@@ -31,18 +33,9 @@ public class TrackParams {
         this.gameTheme = gameTheme;
     }
 
-    public LeagueTheme getLeagueTheme() {
-        return leagueTheme;
-    }
-
-    public void setLeagueTheme(LeagueTheme leagueTheme) {
-        this.leagueTheme = leagueTheme;
-    }
-
     public TrackParams pack() {
         TrackParams trackParams = new TrackParams();
         trackParams.setGameTheme(gameTheme);
-        trackParams.setLeagueTheme(leagueTheme);
         trackParams.setData(data.unpacked ? Utils.packTrack(data) : data);
         return trackParams;
     }

@@ -15,6 +15,7 @@ import org.happysanta.gdtralive.android.menu.views.MenuLinearLayout;
 import org.happysanta.gdtralive.game.Application;
 import org.happysanta.gdtralive.game.Game;
 import org.happysanta.gdtralive.game.ModManager;
+import org.happysanta.gdtralive.game.api.Constants;
 import org.happysanta.gdtralive.game.api.EditorMode;
 import org.happysanta.gdtralive.game.api.GDFile;
 import org.happysanta.gdtralive.game.api.GameMode;
@@ -557,6 +558,9 @@ public class TrackEditorView implements GdTrackEditor {
         if (currentTrack == null) {
             currentTrack = game.getParams().getTrackParams();
         }
+        application.getModManager().installTheme(
+                application.getModManager().loadTheme(Constants.ORIGINAL_THEME)
+        );
         game.startTrack(GameParams.of(GameMode.TRACK_EDITOR, currentTrack.getData()));
         application.editMode();
         showLayout();

@@ -8,6 +8,8 @@ import java.util.Set;
 public class Constants {
     public static final String DEFAULT_MOD = "GDTR Alive";
     public static final String ORIGINAL_MOD = "GDTR Original";
+    public static final String ORIGINAL_THEME = "GDTR Original";
+    public static final String BLACK_THEME = "GDTR Black";
     public static final String APP_DIRECTORY = "GDTR_Alive";
     public static final int PICKFILE_MRG_RESULT_CODE = 234567;
     public static final int PICKFILE_MOD_RESULT_CODE = 734567;
@@ -33,11 +35,13 @@ public class Constants {
     public static int[] m_foraI = {0x1c000, 0x10000, 32768};
 
     public static Set<String> IGNORE_SAVE = new HashSet<>();
+    public static Set<String> DEFAULT_THEMES = new HashSet<>();
 
     static {
         IGNORE_SAVE.add(ORIGINAL_MOD);
         IGNORE_SAVE.add(DEFAULT_MOD);
-        IGNORE_SAVE.add("GDTR Black");
+        IGNORE_SAVE.add(BLACK_THEME);
+        IGNORE_SAVE.add(ORIGINAL_THEME);
         IGNORE_SAVE.add("GDTR ULTIMATE Δ");
         IGNORE_SAVE.add("GDTR ULTIMATE β");
         IGNORE_SAVE.add("GDTR ULTIMATE π");
@@ -47,5 +51,7 @@ public class Constants {
         IGNORE_SAVE.add("GDTR ULTIMATE λ");
         IGNORE_SAVE.add("GDTR ULTIMATE Ξ");
         IGNORE_SAVE.add("GDTR ULTIMATE γ");
+        DEFAULT_THEMES.add(ORIGINAL_THEME);
+        DEFAULT_THEMES.add(BLACK_THEME);
     }
 }

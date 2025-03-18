@@ -291,7 +291,6 @@ public class Utils {
                 TrackData from = track.getData();
                 TrackParams tr = new TrackParams();
                 tr.setGameTheme(track.getGameTheme());
-                tr.setLeagueTheme(track.getLeagueTheme());
                 tr.setData(packTrack(from));
                 tracks.add(tr);
             }

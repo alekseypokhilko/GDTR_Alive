@@ -46,6 +46,7 @@ public class AStr implements GdStr {
         strings.put(S.league_properties, R.string.league_properties);
         strings.put(S.league, R.string.league);
         strings.put(S.track_properties, R.string.track_properties);
+        strings.put(S.decor_line, R.string.decor_line);
         strings.put(S.interface_properties, R.string.interface_properties);
         strings.put(S.themes, R.string.themes);
         strings.put(S.import_theme, R.string.import_theme);
@@ -166,6 +167,8 @@ public class AStr implements GdStr {
         strings.put(S.textColor, R.string.textColor);
         strings.put(S.gameBackgroundColor, R.string.gameBackgroundColor);
         strings.put(S.trackLineColor, R.string.trackLineColor);
+        strings.put(S.lineColor, R.string.lineColor);
+        strings.put(S.deadlineY, R.string.deadlineY);
         strings.put(S.perspectiveColor, R.string.perspectiveColor);
         strings.put(S.startFlagColor, R.string.startFlagColor);
         strings.put(S.finishFlagColor, R.string.finishFlagColor);

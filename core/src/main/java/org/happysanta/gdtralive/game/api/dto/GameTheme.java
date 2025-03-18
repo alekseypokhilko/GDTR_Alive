@@ -3,11 +3,11 @@ package org.happysanta.gdtralive.game.api.dto;
 import org.happysanta.gdtralive.game.api.model.Color;
 
 public class GameTheme {
-    private Color gameBackgroundColor = new Color(255, 255, 255);
-    private Color trackLineColor = new Color(0, 255, 0);
-    private Color perspectiveColor = new Color(0, 170, 0);
-    private Color startFlagColor = new Color(0, 0, 0);
-    private Color finishFlagColor = new Color(0, 0, 0);
+    private Color gameBackgroundColor;// = new Color(255, 255, 255);
+    private Color trackLineColor;// = new Color(0, 255, 0);
+    private Color perspectiveColor;// = new Color(0, 170, 0);
+    private Color startFlagColor;// = new Color(0, 0, 0);
+    private Color finishFlagColor;// = new Color(0, 0, 0);
 
     public Color getGameBackgroundColor() {
         return gameBackgroundColor;
@@ -47,5 +47,15 @@ public class GameTheme {
 
     public void setFinishFlagColor(Color finishFlagColor) {
         this.finishFlagColor = finishFlagColor;
+    }
+
+    public GameTheme copy() {
+        GameTheme gt = new GameTheme();
+        gt.setGameBackgroundColor(gameBackgroundColor);
+        gt.setTrackLineColor(trackLineColor);
+        gt.setPerspectiveColor(perspectiveColor);
+        gt.setFinishFlagColor(finishFlagColor);
+        gt.setStartFlagColor(startFlagColor);
+        return gt;
     }
 }

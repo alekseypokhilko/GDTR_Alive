@@ -104,6 +104,9 @@
 	<string name="textColor">Text color</string>
 	<string name="gameBackgroundColor">Background color</string>
 	<string name="trackLineColor">Track color</string>
+	<string name="lineColor">Line color</string>
+	<string name="decor_line">Decor line</string>
+	<string name="deadlineY">Deadline Y</string>
 	<string name="perspectiveColor">Perspective color</string>
 	<string name="startFlagColor">Start flag color</string>
 	<string name="finishFlagColor">Finish flag color</string>

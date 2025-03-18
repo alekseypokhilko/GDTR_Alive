@@ -23,6 +23,7 @@ import org.happysanta.gdtralive.game.api.menu.element.IInputTextElement;
 import org.happysanta.gdtralive.game.api.menu.element.IMenuItemElement;
 import org.happysanta.gdtralive.game.api.menu.element.IOptionsMenuElement;
 import org.happysanta.gdtralive.game.api.model.Color;
+import org.happysanta.gdtralive.game.api.model.DecorLine;
 import org.happysanta.gdtralive.game.api.model.GameParams;
 import org.happysanta.gdtralive.game.api.model.MenuData;
 import org.happysanta.gdtralive.game.api.model.Mod;
@@ -221,7 +222,6 @@ public class MenuFactory<T> {
             s.add(e.textHtmlBold(str.s(S.author), track.getData().getAuthor()));
             s.add(e.editText(Fmt.colon(str.s(S.name)), track.getData().getName(), item -> trackEditor.getCurrentTrack().getData().setName(item.getText().trim())));
             s.add(e.emptyLine(false));
-            s.add(e.textHtmlBold(str.s(S.league_properties), null));
             s.add(e.selector(str.s(S.league), track.getData().league, application.getModManager().getLeagueNames(), screen, it -> {
                 if (it._charvZ()) {
                     MenuScreen<T> leagueSelectorCurrentMenu = it.getCurrentMenu();
@@ -232,6 +232,51 @@ public class MenuFactory<T> {
                     this.get(MenuType.TRACK_EDITOR_OPTIONS).build(new MenuData(trackEditor.getCurrentTrack()));
                 }
             }));
+
+            s.add(e.textHtmlBold(str.s(S.track_properties), null));
+            Map<String, Color> colors = ColorUtil.colors;
+            String[] colorNames = ColorUtil.colorNames;
+
+            GameTheme gt = trackEditor.getCurrentTrack().getGameTheme();
+            gt = gt == null ? new GameTheme() : gt;
+            GameTheme finalGt = gt;
+            String deadlineY = track.getData().getDeadlineY() == null
+                    ? ""
+                    : "" + track.getData().getDeadlineY();
+            s.add(e.editText(Fmt.colon(str.s(S.deadlineY)), deadlineY, item -> {
+                try {
+                    trackEditor.getCurrentTrack().getData().setDeadlineY(Integer.parseInt(item.getText().trim()));
+                } catch (Exception ignore) {
+                    trackEditor.getCurrentTrack().getData().setDeadlineY(null);
+                }
+            }));
+            s.add(e.color(str.s(S.trackLineColor), ColorUtil.indexOf(finalGt.getTrackLineColor()), s, item -> {
+                if (item._charvZ()) menu.setCurrentMenu(item.getCurrentMenu());
+                finalGt.setTrackLineColor(colors.get(colorNames[item.getSelectedOption()]));
+                application.getModManager().setTrackTheme(trackEditor.getCurrentTrack());
+            }));
+            s.add(e.color(str.s(S.perspectiveColor), ColorUtil.indexOf(finalGt.getPerspectiveColor()), s, item -> {
+                if (item._charvZ()) menu.setCurrentMenu(item.getCurrentMenu());
+                finalGt.setPerspectiveColor(colors.get(colorNames[item.getSelectedOption()]));
+                application.getModManager().setTrackTheme(trackEditor.getCurrentTrack());
+            }));
+
+            for (int i = 0; i < trackEditor.getCurrentTrack().getData().getDecorLines().size(); i++) {
+                s.add(e.textHtmlBold(Fmt.sp(str.s(S.decor_line), (i + 1)), null));
+                DecorLine dl = trackEditor.getCurrentTrack().getData().getDecorLines().get(i);
+                s.add(e.color(str.s(S.lineColor), ColorUtil.indexOf(dl.getColor()), s, item -> {
+                    if (item._charvZ()) menu.setCurrentMenu(item.getCurrentMenu());
+                    dl.setColor(colors.get(colorNames[item.getSelectedOption()]));
+                }));
+                s.add(e.toggle(str.s(S.perspective), dl.getPerspective() ? 0 : 1, item -> {
+                    dl.setPerspective(item.getSelectedOption() == 0);
+                }));
+                s.add(e.color(str.s(S.perspectiveColor), ColorUtil.indexOf(dl.getColor()), s, item -> {
+                    if (item._charvZ()) menu.setCurrentMenu(item.getCurrentMenu());
+                    dl.setPerspectiveColor(colors.get(colorNames[item.getSelectedOption()]));
+                }));
+            }
+
             System.gc(); //hopefully
             return s;
         });
@@ -830,7 +875,10 @@ public class MenuFactory<T> {
 
         GdSettings settings = application.getSettings();
         screen.add(e.selector(str.s(S.scale), settings.getScale(), scaleOptions, screen,
-                item -> application.getModManager().adjustScale(item.getSelectedOption())));
+                item -> {
+                    if (item._charvZ()) menu.setCurrentMenu(item.getCurrentMenu());
+                    application.getModManager().adjustScale(item.getSelectedOption());
+                }));
         screen.add(e.toggle(str.s(S.recording_enabled), settings.isRecordingEnabled() ? 0 : 1,
                 item -> game.setRecordingEnabled(item.getSelectedOption() == 0)));
         screen.add(e.toggle(str.s(S.ghost_enabled), settings.isGhostEnabled() ? 0 : 1,

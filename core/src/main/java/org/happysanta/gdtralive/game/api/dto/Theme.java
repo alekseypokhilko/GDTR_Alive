@@ -81,7 +81,15 @@ public class Theme {
         theme.setInterfaceTheme(new InterfaceTheme());
         theme.setLevelNames(initDefaultLevelNames());
         theme.setLeagueThemes(LeagueTheme.getDefaultLeagueProperties());
-        theme.setGameTheme(new GameTheme());
+
+        GameTheme gameTheme = new GameTheme();
+        gameTheme.setGameBackgroundColor(new Color(255, 255, 255));
+        gameTheme.setTrackLineColor(new Color(0, 255, 0));
+        gameTheme.setPerspectiveColor(new Color(0, 170, 0));
+        gameTheme.setStartFlagColor(new Color(0, 0, 0));
+        gameTheme.setFinishFlagColor(new Color(0, 0, 0));
+
+        theme.setGameTheme(gameTheme);
         return theme;
     }
 
