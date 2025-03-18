@@ -9,7 +9,7 @@ public class LeagueSwitcher {
         this.l = league;
     }
 
-    public int getPointIndex() {
+    public Integer getPointIndex() {
         return pi;
     }
 

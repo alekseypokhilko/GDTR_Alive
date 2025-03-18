@@ -25,6 +25,7 @@ import org.happysanta.gdtralive.game.api.menu.element.IOptionsMenuElement;
 import org.happysanta.gdtralive.game.api.model.Color;
 import org.happysanta.gdtralive.game.api.model.DecorLine;
 import org.happysanta.gdtralive.game.api.model.GameParams;
+import org.happysanta.gdtralive.game.api.model.LeagueSwitcher;
 import org.happysanta.gdtralive.game.api.model.MenuData;
 import org.happysanta.gdtralive.game.api.model.Mod;
 import org.happysanta.gdtralive.game.api.model.ModEntity;
@@ -221,7 +222,7 @@ public class MenuFactory<T> {
             s.add(e.textHtmlBold(str.s(S.guid), track.getData().getGuid()));
             s.add(e.textHtmlBold(str.s(S.author), track.getData().getAuthor()));
             s.add(e.editText(Fmt.colon(str.s(S.name)), track.getData().getName(), item -> trackEditor.getCurrentTrack().getData().setName(item.getText().trim())));
-            s.add(e.emptyLine(false));
+            s.add(e.emptyLine(true));
             s.add(e.selector(str.s(S.league), track.getData().league, application.getModManager().getLeagueNames(), screen, it -> {
                 if (it._charvZ()) {
                     MenuScreen<T> leagueSelectorCurrentMenu = it.getCurrentMenu();
@@ -274,6 +275,24 @@ public class MenuFactory<T> {
                 s.add(e.color(str.s(S.perspectiveColor), ColorUtil.indexOf(dl.getColor()), s, item -> {
                     if (item._charvZ()) menu.setCurrentMenu(item.getCurrentMenu());
                     dl.setPerspectiveColor(colors.get(colorNames[item.getSelectedOption()]));
+                }));
+            }
+
+            for (int i = 0; i < trackEditor.getCurrentTrack().getData().getLeagueSwitchers().size(); i++) {
+                if (i == 0) {
+                    continue;
+                }
+                LeagueSwitcher ls = trackEditor.getCurrentTrack().getData().getLeagueSwitchers().get(i);
+                s.add(e.textHtmlBold(Fmt.sp(str.s(S.league_switcher), ("i=" + ls.getPointIndex())), null));
+                s.add(e.selector(str.s(S.league), ls.getLeague(), application.getModManager().getLeagueNames(), screen, it -> {
+                    if (it._charvZ()) {
+                        MenuScreen<T> leagueSelectorCurrentMenu = it.getCurrentMenu();
+                        it.setScreen(menu.getCurrentMenu());
+                        menu.setCurrentMenu(leagueSelectorCurrentMenu);
+                    } else {
+                        ls.setLeague(it.getSelectedOption());
+                        this.get(MenuType.TRACK_EDITOR_OPTIONS).build(new MenuData(trackEditor.getCurrentTrack()));
+                    }
                 }));
             }
 

@@ -117,6 +117,8 @@
 	<string name="mode_finish_flag_move">Finish flag move</string>
 	<string name="mode_point_selection">Point selection</string>
 	<string name="mode_line_selection">Line selection</string>
+	<string name="league_switcher">League switcher</string>
+	<string name="mode_league_switcher_selection">League switcher</string>
 	<string name="mode_point_move">Point move</string>
 	<string name="mode_camera_move">Camera move</string>
 

@@ -25,10 +25,13 @@ import org.happysanta.gdtralive.game.api.menu.element.IInputTextElement;
 import org.happysanta.gdtralive.game.api.menu.element.TextMenuElement;
 import org.happysanta.gdtralive.game.api.model.DecorLine;
 import org.happysanta.gdtralive.game.api.model.GameParams;
+import org.happysanta.gdtralive.game.api.model.LeagueSwitcher;
 import org.happysanta.gdtralive.game.api.model.TrackData;
 import org.happysanta.gdtralive.game.engine.Engine;
 import org.happysanta.gdtralive.game.util.Fmt;
 import org.happysanta.gdtralive.game.util.Utils;
+
+import java.util.Collections;
 
 //todo separate view and controller
 public class TrackEditorView implements GdTrackEditor {
@@ -56,6 +59,7 @@ public class TrackEditorView implements GdTrackEditor {
     private TrackParams currentTrack;
 
     private final MenuLinearLayout modeLayout;
+    private final MenuLinearLayout objLayout;
     private final MenuLinearLayout inputLayout;
     private final MenuLinearLayout moveLayout;
     private final MenuLinearLayout actionLayout;
@@ -82,11 +86,13 @@ public class TrackEditorView implements GdTrackEditor {
         MenuImageView pointMove = button(R.drawable.c_point_move1, v -> setPointMoveMode());
         MenuImageView objectEditModeSelection = button(R.drawable.c_objects, v -> handleObjectEditMode());
         MenuImageView lineSelector = button(R.drawable.c_line_edit, v -> setLineSelectMode());
+        MenuImageView leagueSwitcher = button(R.drawable.levels_wheel2, v -> setLeagueSwitcherMode());
         IInputTextElement offsetInput = application.getPlatform().getPlatformMenuElementFactory().editText(Fmt.colon(s(R.string.offset)), "" + DEFAULT_OFFSET, this::saveOffset);
         pointText = (TextMenuElement) application.getPlatform().getPlatformMenuElementFactory().text("[x, y]");
         modeText = (TextMenuElement) application.getPlatform().getPlatformMenuElementFactory().text("");
 
         modeLayout = new MenuLinearLayout(gd, false);
+        objLayout = new MenuLinearLayout(gd, false);
         inputLayout = new MenuLinearLayout(gd, false);
         actionLayout = new MenuLinearLayout(gd, false);
         moveLayout = new MenuLinearLayout(gd, false);
@@ -95,8 +101,6 @@ public class TrackEditorView implements GdTrackEditor {
         modeRow.setPadding(Helpers.getDp(KeyboardController.PADDING), Helpers.getDp(KeyboardController.PADDING), Helpers.getDp(KeyboardController.PADDING), Helpers.getDp(KeyboardController.PADDING));
         modeRow.setOrientation(LinearLayout.VERTICAL);
         modeRow.addView(cameraMoveMode, getLayoutParams());
-        modeRow.addView(objectEditModeSelection, getLayoutParams());
-        modeRow.addView(lineSelector, getLayoutParams());
         modeRow.addView(pointSelection, getLayoutParams());
         modeRow.addView(pointMove, getLayoutParams());
         modeLayout.setOrientation(LinearLayout.VERTICAL);
@@ -104,6 +108,18 @@ public class TrackEditorView implements GdTrackEditor {
         modeLayout.setGravity(Gravity.TOP);
         modeLayout.setPadding(0, 0, 0, Helpers.getDp(KeyboardController.PADDING));
         modeLayout.setLayoutParams(getFrameParams(Gravity.TOP));
+        //initObjectSelection
+        LinearLayout objRow = new LinearLayout(gd);
+        objRow.setPadding(Helpers.getDp(KeyboardController.PADDING), Helpers.getDp(KeyboardController.PADDING), Helpers.getDp(KeyboardController.PADDING), Helpers.getDp(KeyboardController.PADDING));
+        objRow.setOrientation(LinearLayout.VERTICAL);
+        objRow.addView(objectEditModeSelection, getLayoutParams());
+        objRow.addView(lineSelector, getLayoutParams());
+        objRow.addView(leagueSwitcher, getLayoutParams());
+        objLayout.setOrientation(LinearLayout.VERTICAL);
+        objLayout.addView(objRow);
+        objLayout.setGravity(Gravity.TOP | Gravity.END);
+        objLayout.setPadding(0, 100, 0, Helpers.getDp(KeyboardController.PADDING));
+        objLayout.setLayoutParams(getFrameParams(Gravity.TOP | Gravity.END));
         //initOffsetInput
         LinearLayout inputRow = new LinearLayout(gd);
         inputRow.setPadding(Helpers.getDp(KeyboardController.PADDING), Helpers.getDp(KeyboardController.PADDING), Helpers.getDp(KeyboardController.PADDING), 0);
@@ -233,11 +249,15 @@ public class TrackEditorView implements GdTrackEditor {
                 track().startY -= offset;
                 updateUi();
             });
-
-            game.getView().resetShift();
             up.setVisibility(View.VISIBLE);
             down.setVisibility(View.VISIBLE);
         }
+    }
+
+    private void setLeagueSwitcherMode() {
+        setPointSelectionMode();
+        showMode(R.string.mode_league_switcher_selection);
+        editorMode = EditorMode.LEAGUE_SWITCHER_SELECTION;
     }
 
     private void handleCameraModeButton() {
@@ -318,7 +338,7 @@ public class TrackEditorView implements GdTrackEditor {
         editorMode = EditorMode.POINT_MOVE;
         left.setOnClickListener(v -> {
             if (selectedLineIndex == 0) {
-                track().points[selectedPointIndex][0] += offset;
+                track().points[selectedPointIndex][0] -= offset;
             } else {
                 decorLine()[selectedPointIndex][0] -= offset;
             }
@@ -450,9 +470,9 @@ public class TrackEditorView implements GdTrackEditor {
 
     private void handleRemoveButton() {
         if (editorMode == EditorMode.LINE_MANAGE && selectedLineIndex > 0) {
-            track().getDecorLines().remove(selectedLineIndex - 1);
-            selectPreviousLine();
-            updateUi();
+            removeDecorLine();
+        } else if (editorMode == EditorMode.LEAGUE_SWITCHER_SELECTION) {
+            removeLeagueSwitcher();
         } else {
             if (selectedLineIndex == 0) {
                 try {
@@ -477,16 +497,9 @@ public class TrackEditorView implements GdTrackEditor {
 
     private void handleAddButton() {
         if (editorMode == EditorMode.LINE_MANAGE) {
-            DecorLine decorLine = new DecorLine();
-            decorLine.setPerspective(true);
-            decorLine.setPoints(new int[][]{
-                    {track().startX + Utils.unpackInt(30), track().startY + Utils.unpackInt(30)},
-                    {track().startX + Utils.unpackInt(50), track().startY + Utils.unpackInt(50)}
-            });
-            track().getDecorLines().add(decorLine);
-            selectNextLine();
-            game.getView().resetShift();
-            updateUi();
+            addDecorLine();
+        } else if (editorMode == EditorMode.LEAGUE_SWITCHER_SELECTION) {
+            addLeagueSwitcher();
         } else {
             if (selectedLineIndex == 0) {
                 try {
@@ -517,6 +530,59 @@ public class TrackEditorView implements GdTrackEditor {
                 }
             }
         }
+    }
+
+    private void addDecorLine() {
+        DecorLine decorLine = new DecorLine();
+        decorLine.setPerspective(true);
+        decorLine.setPoints(new int[][]{
+                {track().startX + Utils.unpackInt(30), track().startY + Utils.unpackInt(30)},
+                {track().startX + Utils.unpackInt(50), track().startY + Utils.unpackInt(50)}
+        });
+        track().getDecorLines().add(decorLine);
+        selectNextLine();
+        game.getView().resetShift();
+        updateUi();
+    }
+
+    private void removeDecorLine() {
+        track().getDecorLines().remove(selectedLineIndex - 1);
+        selectPreviousLine();
+        updateUi();
+    }
+
+    private void addLeagueSwitcher() {
+        for (int i = track().getLeagueSwitchers().size() - 1; i >= 0; i--) {
+            LeagueSwitcher ls = track().getLeagueSwitchers().get(i);
+            if (selectedPointIndex > ls.getPointIndex()) {
+                if (track().getLeagueSwitchers().size() - 1 == i) {
+                    track().getLeagueSwitchers().add(new LeagueSwitcher(selectedPointIndex, 1));
+                } else {
+                    track().getLeagueSwitchers().add(i, new LeagueSwitcher(selectedPointIndex, 1));
+                }
+                break;
+            }
+            if (ls.getPointIndex() == selectedPointIndex) {
+                break;
+            }
+            if (selectedPointIndex < ls.getPointIndex() && i == 0) {
+                track().getLeagueSwitchers().add(0, new LeagueSwitcher(selectedPointIndex, 1));
+                break;
+            }
+        }
+        Collections.sort(track().getLeagueSwitchers(), (obj1, obj2) -> obj1.getPointIndex().compareTo(obj2.getPointIndex()));
+        updateUi();
+    }
+
+    private void removeLeagueSwitcher() {
+        for (int i = 0; i < track().getLeagueSwitchers().size(); i++) {
+            LeagueSwitcher ls = track().getLeagueSwitchers().get(i);
+            if (ls.getPointIndex() == selectedPointIndex) {
+                track().getLeagueSwitchers().remove(i);
+            }
+        }
+        Collections.sort(track().getLeagueSwitchers(), (obj1, obj2) -> obj1.getPointIndex().compareTo(obj2.getPointIndex()));
+        updateUi();
     }
 
     private void updateUi() {
@@ -620,6 +686,7 @@ public class TrackEditorView implements GdTrackEditor {
     public MenuLinearLayout[] getViews() {
         return new MenuLinearLayout[]{
                 modeLayout,
+                objLayout,
                 moveLayout,
                 actionLayout,
                 inputLayout,

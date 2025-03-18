@@ -41,6 +41,7 @@ public enum S {
     league_properties,
     track_properties,
     decor_line,
+    league_switcher,
     interface_properties,
     themes,
     import_theme,
