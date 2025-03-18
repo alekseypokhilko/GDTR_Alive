@@ -75,13 +75,13 @@
     <string name="game_properties">Свойства игры</string>
 	<string name="finishFlagColor">Финиш</string>
 	<string name="mode">Режим</string>
-	<string name="offset">Сдвиг</string>
+	<string name="offset">Шаг</string>
 	<string name="mode_start_point_move">Позиция старта</string>
-	<string name="mode_start_flag_move">Позиция флага старта</string>
-	<string name="mode_finish_flag_move">Позиция флага финиша</string>
+	<string name="mode_start_flag_move">Флаг старта</string>
+	<string name="mode_finish_flag_move">Флаг финиша</string>
 	<string name="mode_point_selection">Выбор точки</string>
-	<string name="mode_point_move">Перемещение точки</string>
-	<string name="mode_camera_move">Перемещение камеры</string>
+	<string name="mode_point_move">Двигать точку</string>
+	<string name="mode_camera_move">Камера</string>
 
 	<string name="achievements">Достижения</string>
 	<string name="trial_master">Мастер триала</string>

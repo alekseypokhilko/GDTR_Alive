@@ -445,10 +445,10 @@ public class TrackEditorView implements GdTrackEditor {
         engine.setEditMode(false);
         currentTrack = null;
         selectedPointIndex = 0;
+        engine.selectedPointIndex = 0;
         editorMode = null;
         game.getView().resetShift();
         modManager.setTrackTheme(null);
-        game.showInfoMessage("", 10);
         application.getMenu().back();
     }
 

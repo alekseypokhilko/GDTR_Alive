@@ -65,7 +65,7 @@ public class Game {
         this.view = new GdView(frameRender, engine, width, height, application.getPlatform(), this, application.getStr());
         this.recorder = new Recorder(engine, application.getFileStorage(), settings);
         this.player = new Player(engine, () -> restart(true));
-        this.trainer = new Trainer(engine, view, application.getStr());
+        this.trainer = new Trainer(engine, this);
         this.keyboardHandler = new KeyboardHandler(application, engine, settings.getInputOption());
         this.str = application.getStr();
         this.settings = settings;
