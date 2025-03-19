@@ -904,6 +904,21 @@ public class MenuFactory<T> {
                 item -> settings.setGhostEnabled(item.getSelectedOption() == 0)));
         screen.add(e.toggle(str.s(S.god_mode), settings.isGodModeEnabled() ? 0 : 1,
                 item -> game.setGodModeEnabled(item.getSelectedOption() == 0)));
+
+        int localeIndex = 0;
+        for (int i = 0; i < Constants.LOCALES.size(); i++) {
+            if (Constants.LOCALES.get(i).equals(settings.getLocale())) {
+                localeIndex = i;
+                break;
+            }
+        }
+        screen.add(e.selector(str.s(S.locale), localeIndex, Constants.LOCALES.toArray(new String[]{}), screen,
+                item -> {
+                    if (item._charvZ()) menu.setCurrentMenu(item.getCurrentMenu());
+                    String code = Constants.LOCALES.get(item.getSelectedOption());
+                    settings.setLocale(code);
+                    application.getPlatform().changeLocale(code);
+                }));
         screen.add(e.toggle(str.s(S.perspective), settings.isPerspectiveEnabled() ? 0 : 1,
                 item -> game.setPerspectiveEnabled(item.getSelectedOption() == 0)));
         screen.add(e.toggle(str.s(S.shadows), settings.isShadowsEnabled() ? 0 : 1,

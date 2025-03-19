@@ -82,6 +82,7 @@ public enum S {
     recording_enabled,
     ghost_enabled,
     god_mode,
+    locale,
     perspective,
     shadows,
     driver_sprite,

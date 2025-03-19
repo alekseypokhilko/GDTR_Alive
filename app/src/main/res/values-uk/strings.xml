@@ -168,6 +168,7 @@
     <string name="send_logs">Надіслати журнали</string>
     <string name="series_lover">Поціновувач серіалів</string>
     <string name="series_lover_description">Дивіться записи треків</string>
+    <string name="locale">Язык (нужен рестарт)</string>
     <string name="shadows">Тіні</string>
     <string name="share">Поділитися через..</string>
     <string name="show_keyboard">Показати клавіатуру</string>

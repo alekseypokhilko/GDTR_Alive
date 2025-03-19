@@ -49,6 +49,9 @@ public class GdSettingsImpl implements GdSettings {
 
     private static final String NAME = "name";
     public static final String NAME_DEFAULT = "Player";
+
+    private static final String LOCALE = "locale";
+    public static final String LOCALE_DEFAULT = "en";
     private static final String LEVELS_SORT = "level_sort"; // in download list
     private static final int LEVELS_SORT_DEFAULT = 0;
 
@@ -73,6 +76,7 @@ public class GdSettingsImpl implements GdSettings {
         setScale(SCALE_OPTION_DEFAULT);
         setLevelsSort(LEVELS_SORT_DEFAULT);
         setPlayerName(NAME_DEFAULT);
+        setLocale(LOCALE_DEFAULT);
     }
 
     public long getLevelId() {
@@ -198,6 +202,14 @@ public class GdSettingsImpl implements GdSettings {
 
     public void setPlayerName(String name) {
         storage.setString(NAME, name);
+    }
+
+    public String getLocale() {
+        return storage.getString(LOCALE, LOCALE_DEFAULT);
+    }
+
+    public void setLocale(String code) {
+        storage.setString(LOCALE, code);
     }
 
     @Override

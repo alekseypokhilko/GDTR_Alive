@@ -34,6 +34,8 @@ public interface GdSettings {
     void setLevelsSort(int type);
     String getPlayerName();
     void setPlayerName(String name);
+    String getLocale();
+    void setLocale(String code);
 
     int getGameSpeed();
 }

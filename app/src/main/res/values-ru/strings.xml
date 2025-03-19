@@ -105,6 +105,7 @@
     <string name="ghost_enabled">Призрак</string>
     <string name="god_mode">Режим бога</string>
 	<string name="perspective">Перспектива</string>
+	<string name="locale">Язык (нужен рестарт)</string>
 	<string name="shadows">Тени</string>
 	<string name="driver_sprite">Скин водителя</string>
 	<string name="bike_sprite">Скин мотоцикла</string>

@@ -1,7 +1,9 @@
 package org.happysanta.gdtralive.game.api;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
@@ -36,6 +38,7 @@ public class Constants {
 
     public static Set<String> IGNORE_SAVE = new HashSet<>();
     public static Set<String> DEFAULT_THEMES = new HashSet<>();
+    public static List<String> LOCALES = new ArrayList<>();
 
     static {
         IGNORE_SAVE.add(ORIGINAL_MOD);
@@ -53,5 +56,9 @@ public class Constants {
         IGNORE_SAVE.add("GDTR ULTIMATE γ");
         DEFAULT_THEMES.add(ORIGINAL_THEME);
         DEFAULT_THEMES.add(BLACK_THEME);
+
+        LOCALES.add("en");
+        LOCALES.add("ru");
+        LOCALES.add("uk");
     }
 }

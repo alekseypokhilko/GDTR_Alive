@@ -37,4 +37,6 @@ public interface GdPlatform {
 
     String getAppVersion();
     void share(GDFile gdFile, String name);
+
+    void changeLocale(String code);
 }

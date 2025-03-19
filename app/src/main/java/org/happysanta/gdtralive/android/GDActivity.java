@@ -8,10 +8,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -67,6 +69,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class GDActivity extends Activity implements GdPlatform {
@@ -112,6 +115,8 @@ public class GDActivity extends Activity implements GdPlatform {
         AGameView gameView = new AGameView(this);
 
         this.application = new Application(this, new ASettingsStorage(), str, fileStorage, dataSource, gameView);
+        changeLocale(application.getSettings().getLocale());
+        
         viewPlatformMenuElementFactory = new APlatformMenuElementFactory<>(application, this);
         this.menuFactory = new MenuFactory<>(application, this, viewPlatformMenuElementFactory);
 
@@ -685,5 +690,14 @@ public class GDActivity extends Activity implements GdPlatform {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void changeLocale(String code) {
+        Resources res = getResources();
+        DisplayMetrics dm = res.getDisplayMetrics();
+        android.content.res.Configuration conf = res.getConfiguration();
+        conf.setLocale(new Locale(code.toLowerCase())); // API 17+ only.
+        res.updateConfiguration(conf, dm);
     }
 }

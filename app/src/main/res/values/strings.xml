@@ -141,6 +141,7 @@
 	<string name="ghost_enabled">Ghost</string>
 	<string name="god_mode">God mode</string>
 	<string name="perspective">Perspective</string>
+	<string name="locale">Language (restart needed)</string>
 	<string name="shadows">Shadows</string>
 	<string name="driver_sprite">Driver sprite</string>
 	<string name="bike_sprite">Bike sprite</string>

@@ -87,6 +87,7 @@ public class AStr implements GdStr {
         strings.put(S.scale, R.string.scale);
         strings.put(S.recording_enabled, R.string.recording_enabled);
         strings.put(S.ghost_enabled, R.string.ghost_enabled);
+        strings.put(S.locale, R.string.locale);
         strings.put(S.perspective, R.string.perspective);
         strings.put(S.shadows, R.string.shadows);
         strings.put(S.driver_sprite, R.string.driver_sprite);
