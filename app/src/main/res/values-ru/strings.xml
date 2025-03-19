@@ -47,6 +47,7 @@
 	<string name="tracks">Треки</string>
 	<string name="track">Трек</string>
 	<string name="attempt">Попытка</string>
+	<string name="attempts">Попытки</string>
 	<string name="training_mode">Тренировочный режим</string>
 	<string name="league">Лига</string>
 	<string name="restart">Перезапуск</string>

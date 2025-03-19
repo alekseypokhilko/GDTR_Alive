@@ -154,7 +154,7 @@ public class Game {
                     updateProgress(modEntity, params);
                     application.getModManager().saveModState();
                 }
-                MenuData finishedMenu = Mapper.getFinishedMenuData(params, lastTrackTime, modEntity);
+                MenuData finishedMenu = Mapper.getFinishedMenuData(params, lastTrackTime, modEntity, attemptCount);
                 menu.showMenu(finishedMenu);
 
                 if (menu.canStartTrack()) {
@@ -442,7 +442,7 @@ public class Game {
             engine.setLeague(league);
             engine.loadTrack(track);
         } catch (InvalidTrackException e) {
-            throw new RuntimeException(e); //todo skip damaged track
+            e.printStackTrace();
         }
     }
 

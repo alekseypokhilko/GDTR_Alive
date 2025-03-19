@@ -15,10 +15,11 @@ public class Mapper {
         return inGameMenu;
     }
 
-    public static MenuData getFinishedMenuData(GameParams params, long lastTrackTime, ModEntity level) {
+    public static MenuData getFinishedMenuData(GameParams params, long lastTrackTime, ModEntity level, int attemptCount) {
         MenuData data = new MenuData();
         data.setMenuMode(MenuMode.FINISHED);
         data.setGameMode(params.getMode());
+        data.setAttemptCount(attemptCount);
         data.setTrackName(params.getTrackData().name);
         data.setTrackId(Utils.getTrackId(params.getTrackData()));
         data.setLastTrackTime(lastTrackTime);

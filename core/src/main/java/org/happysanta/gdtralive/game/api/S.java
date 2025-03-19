@@ -5,6 +5,7 @@ public enum S {
     FINISHED,
     WHEELIE,
     ATTEMPT,
+    ATTEMPTS,
 
     TRIAL_MASTER,
     TRIAL_MASTER_DESC,

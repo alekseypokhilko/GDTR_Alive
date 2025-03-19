@@ -16,6 +16,7 @@ public class AStr implements GdStr {
         strings.put(S.FINISHED, R.string.finished1);
         strings.put(S.WHEELIE, R.string.wheelie);
         strings.put(S.ATTEMPT, R.string.attempt);
+        strings.put(S.ATTEMPTS, R.string.attempts);
         strings.put(S.TRIAL_MASTER, R.string.trial_master);
         strings.put(S.TRIAL_MASTER_DESC, R.string.trial_master_description);
         strings.put(S.GAMBLER, R.string.gambler);

@@ -47,7 +47,8 @@
 	<string name="level">Level</string>
 	<string name="tracks">Tracks</string>
 	<string name="track">Track</string>
-	<string name="attempt">Attempt </string>
+	<string name="attempt">Attempt</string>
+	<string name="attempts">Attempts</string>
 	<string name="training_mode">Training mode</string>
 	<string name="league">League</string>
 	<string name="restart">Restart</string>

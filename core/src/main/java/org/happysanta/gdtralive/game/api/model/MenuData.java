@@ -13,6 +13,7 @@ public class MenuData {
     private String trackName;
     private String trackId;
     private int selectedLevel;
+    private int attemptCount;
     private int selectedTrack;
     private int selectedLeague;
     private int newSelectedLevel;
@@ -207,6 +208,14 @@ public class MenuData {
 
     public void setHandler(Consumer<Object> handler) {
         this.handler = handler;
+    }
+
+    public int getAttemptCount() {
+        return attemptCount;
+    }
+
+    public void setAttemptCount(int attemptCount) {
+        this.attemptCount = attemptCount;
     }
 
     @Override

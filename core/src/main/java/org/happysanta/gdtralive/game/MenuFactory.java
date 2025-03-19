@@ -1077,6 +1077,7 @@ public class MenuFactory<T> {
         finishedMenu.clear();
         long millis = data.getLastTrackTime();
         finishedMenu.add(e.textHtml(String.format("<b>%s</b>: %s", str.s(S.time), Fmt.durationString(millis))));
+        finishedMenu.add(e.textHtml(String.format("<b>%s</b>: %s", str.s(S.ATTEMPTS), data.getAttemptCount())));
         for (String s : application.getHighScoreManager().getFormattedScores(data.getTrackId(), data.getSelectedLeague())) {
             finishedMenu.add(e.text(s));
         }

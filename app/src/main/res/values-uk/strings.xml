@@ -11,7 +11,7 @@
     <string name="active_name_tpl">%1$s &lt;font color =#00a000> (Активний) &lt;/font></string>
     <string name="added_tpl">&lt;font color =#888888> Додано: &lt;/font> %1$s</string>
     <string name="app_name">GDTR Alive!</string>
-    <string name="attempt">"Спроба "</string>
+    <string name="attempt">"Спроба"</string>
     <string name="author">Автор</string>
     <string name="author_tpl">&lt;font Color =#888888> Автор: &lt;/font> %1$s</string>
     <string name="back">Назад</string>
@@ -191,6 +191,7 @@
     <string name="tracks">Треки</string>
     <string name="tracks_completed_tpl">%1$d з %2$d треків у &lt;b> %3$s &lt;/b> завершено.</string>
     <string name="tracks_tpl">&lt;font color=#888888>Треки:&lt;/font> %1$s</string>
+    <string name="attempts">Попытки</string>
     <string name="training_mode">Режим тренування</string>
     <string name="trial_master">Майстер тріалу</string>
     <string name="trial_master_description">Завершіть треки</string>
