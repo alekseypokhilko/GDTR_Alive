@@ -13,6 +13,7 @@ import org.happysanta.gdtralive.game.api.external.GdCanvas;
 import org.happysanta.gdtralive.game.api.model.EngineStateRecord;
 import org.happysanta.gdtralive.game.util.Fmt;
 
+import java.util.Map;
 import java.util.Timer;
 
 public class GdView {
@@ -102,6 +103,12 @@ public class GdView {
         frameRender.drawFrame(viewState, engineState);
         if (engine.getRespawn() != null) {
             frameRender.drawRespawnBike(viewState, engine.getRespawn());
+        }
+        for (Map.Entry<String, EngineStateRecord> opponent : engine.getOpponents().entrySet()) {
+            EngineStateRecord state = opponent.getValue();
+            state.name = opponent.getKey();
+            state.replay = true;
+            frameRender.drawOpponent(viewState, state);
         }
         if (drawTimer) {
             frameRender.drawTimer(engine.timerTime, viewState);

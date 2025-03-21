@@ -24,6 +24,7 @@ public interface GdCanvas {
     float offsetY(float j, int offsetY);
 
     void drawInfoMessage2(String message, Color color, ViewState view);
+    void drawOpponentName(String message, Color color, ViewState view, int x, int y);
 
     void drawTimer2(int color, String time, ViewState view);
     void drawAttemptCounter(int color, String count, ViewState view);

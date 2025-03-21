@@ -13,11 +13,11 @@ import android.graphics.RectF;
 import android.os.Build;
 
 import org.happysanta.gdtralive.R;
+import org.happysanta.gdtralive.game.ModManager;
+import org.happysanta.gdtralive.game.api.Sprite;
 import org.happysanta.gdtralive.game.api.external.GdCanvas;
 import org.happysanta.gdtralive.game.api.model.Color;
-import org.happysanta.gdtralive.game.ModManager;
 import org.happysanta.gdtralive.game.api.model.EngineStateRecord;
-import org.happysanta.gdtralive.game.api.Sprite;
 import org.happysanta.gdtralive.game.api.model.ViewState;
 
 import java.io.ByteArrayOutputStream;
@@ -31,6 +31,7 @@ public class ACanvas implements GdCanvas {
     private final Paint paint;
     private final Paint infoFont;
     private final Paint timerFont;
+    private final Paint opponentNameFont;
 
     public static Map<Sprite, GDBitmapHolder> interfaceSprites = getDefaultInterfaceSprites();
     private final LinkedHashMap<String, Object> props = new LinkedHashMap<>();
@@ -51,6 +52,11 @@ public class ACanvas implements GdCanvas {
         timerFont.setTextSize(18);
         timerFont.setAntiAlias(true);
         timerFont.setTypeface(Global.robotoCondensedTypeface);
+
+        opponentNameFont = new Paint();
+        opponentNameFont.setTextSize(10);
+        opponentNameFont.setAntiAlias(true);
+        opponentNameFont.setTypeface(Global.robotoCondensedTypeface);
 
         this.props.put(Sprite.START_FLAG_0.name(), fromDrawable(R.drawable.s_flag_start0));
         this.props.put(Sprite.START_FLAG_1.name(), fromDrawable(R.drawable.s_flag_start1));
@@ -152,6 +158,13 @@ public class ACanvas implements GdCanvas {
         setColor(color);
         infoFont.setColor(paint.getColor());
         canvas.drawText(message, view.width / 2 - infoFont.measureText(message) / 2, view.height / 5, infoFont);
+    }
+
+    @Override
+    public void drawOpponentName(String message, Color color, ViewState view, int x, int y) {
+        setColor(color);
+        opponentNameFont.setColor(paint.getColor());
+        canvas.drawText(message, offsetX(x, view.offsetX), offsetY(y, view.offsetY) + 20, opponentNameFont);
     }
 
     public void drawTimer2(int color, String time, ViewState view) {

@@ -111,6 +111,35 @@ public class FrameRender {
         canvas.drawRect(0, 0, view.width, view.height, view);
     }
 
+    public void drawOpponent(ViewState view, EngineStateRecord state) {
+        //todo refactoring extract common parts to method
+        view.drawBike = 0;
+        view.drawBiker2 = 0;
+        view.drawBiker = 0;
+        dimmed = true;
+        int i1 = state.engine().x() - state.fender().x();
+        int j1 = state.engine().y() - state.fender().y();
+        int k1;
+        if ((k1 = Engine.CALC_MAGIC(i1, j1)) != 0) {
+            i1 = (int) (((long) i1 << 32) / (long) k1 >> 16);
+            j1 = (int) (((long) j1 << 32) / (long) k1 >> 16);
+        }
+        int l1 = -j1;
+        int i2 = i1;
+
+
+        drawWheelsLines(state, view);
+        if (view.drawBike == 1) {
+            setColor(mm().getLeagueTheme(state.league()).getBikeColor());
+        } else {
+            setColor(mm().getLeagueTheme(state.league()).getBikeLinesColor());
+        }
+        drawFork(state, view);
+        drawDriver(state, view, i1, j1, l1, i2);
+        drawBikeLines(state, view, i1, j1, l1, i2);
+        dimmed = false;
+    }
+
     public void drawRespawnBike(ViewState view, EngineStateRecord state) {
         //todo refactoring extract common parts to method
         view.drawBike = 0;
@@ -137,6 +166,7 @@ public class FrameRender {
         drawFork(state, view);
         drawDriver(state, view, i1, j1, l1, i2);
         drawBikeLines(state, view, i1, j1, l1, i2);
+//        canvas.drawOpponentName("elixcat", mm().getInterfaceTheme().getInfoMessageColor(), view, state);
         dimmed = false;
     }
 
@@ -757,6 +787,12 @@ public class FrameRender {
             int l7 = 0x10000;
             setColor(mm().getLeagueTheme(state.league()).getBikerHeadColor());
             drawLineWheel((i6 << 2) >> 16, (j6 << 2) >> 16, (l7 + l7 << 2) >> 16, view);
+            if (state.name != null) {
+                canvas.drawOpponentName(state.name,
+                        mm().getInterfaceTheme().getInfoMessageColor(),
+                        view, (i6 << 2) >> 16, (j6 << 2) >> 16);
+            }
+
         }
 
         setColor(mm().getLeagueTheme(state.league()).getSteeringColor());

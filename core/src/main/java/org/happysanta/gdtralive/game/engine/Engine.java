@@ -2,19 +2,21 @@ package org.happysanta.gdtralive.game.engine;
 
 import org.happysanta.gdtralive.game.api.Constants;
 import org.happysanta.gdtralive.game.api.LevelState;
-import org.happysanta.gdtralive.game.api.model.LeagueProperties;
+import org.happysanta.gdtralive.game.api.exception.InvalidTrackException;
 import org.happysanta.gdtralive.game.api.external.GdSettings;
 import org.happysanta.gdtralive.game.api.model.Element;
-import org.happysanta.gdtralive.game.api.exception.InvalidTrackException;
-import org.happysanta.gdtralive.game.api.model.TrackData;
 import org.happysanta.gdtralive.game.api.model.ElementRecord;
 import org.happysanta.gdtralive.game.api.model.EngineStateRecord;
 import org.happysanta.gdtralive.game.api.model.FullEngineState;
+import org.happysanta.gdtralive.game.api.model.LeagueProperties;
+import org.happysanta.gdtralive.game.api.model.TrackData;
 import org.happysanta.gdtralive.game.util.FPMath;
 import org.happysanta.gdtralive.game.util.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Engine {
     private static final int BACK_WHEEL_CIRCLE = 2;
@@ -29,6 +31,7 @@ public class Engine {
     public int selectedLineIndex = 0;
     private EngineStateRecord replayState;
     private EngineStateRecord respawn = null;
+    private Map<String, EngineStateRecord> opponents = new ConcurrentHashMap<>();
 
     private final TrackPhysic trackPhysic;
     public Element[] elements;
@@ -152,6 +155,7 @@ public class Engine {
         setStartCoordinates_MAYBE(trackPhysic.getStartX(), trackPhysic.getStartY());
         timerTime = 0;
         respawn = null;
+        opponents = new ConcurrentHashMap<>();
 
         acceleration = 0;
         m_kI = 0;
@@ -1070,6 +1074,22 @@ public class Engine {
 
     public void setRespawn(EngineStateRecord respawn) {
         this.respawn = respawn;
+    }
+
+    public Map<String, EngineStateRecord> getOpponents() {
+        return opponents;
+    }
+
+    public void setOpponents(Map<String, EngineStateRecord> opponents) {
+        this.opponents = opponents;
+    }
+
+    public void addOpponent(String name, EngineStateRecord opponent) {
+        opponents.put(name, opponent);
+    }
+
+    public void removeOpponent(String name) {
+        opponents.remove(name);
     }
 
     public void setGodMode(boolean godMode) {
