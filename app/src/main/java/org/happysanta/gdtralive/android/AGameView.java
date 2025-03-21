@@ -58,7 +58,12 @@ public class AGameView extends View implements GdGameView {
     public void onDraw(Canvas g) {
         g.save();
         float density = modManager.getGameDensity();
-        g.scale(density, density);
+        if (true) {
+            g.scale(density, density);
+        } else {
+            //flip
+            g.scale(-density, density, getWidth() / (density + 1), 0);
+        }
         if (height1 != getHeight()) {
             adjustDimensions();
         }

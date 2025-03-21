@@ -27,13 +27,6 @@
     <string name="bikerBodyColor">Тіло</string>
     <string name="bikerHeadColor">Голова</string>
     <string name="bikerLegColor">Нога</string>
-    <string name="call_notification_answer_action">Відповісти</string>
-    <string name="call_notification_answer_video_action">Відео</string>
-    <string name="call_notification_decline_action">Відхилити</string>
-    <string name="call_notification_hang_up_action">Завершити</string>
-    <string name="call_notification_incoming_text">Вхідний виклик</string>
-    <string name="call_notification_ongoing_text">Активний виклик</string>
-    <string name="call_notification_screening_text">Вхідний виклик (Фільтр)</string>
     <string name="campaign">Кампанія</string>
     <string name="campaign_select">Виберіть кампанію</string>
     <string name="cancel">Скасувати</string>
@@ -198,7 +191,6 @@
     <string name="saved">Збережено</string>
     <string name="scale">Масштаб</string>
     <string name="screen_type">Телефон</string>
-    <string name="search_menu_title">Пошук</string>
     <string name="send_logs">Надіслати журнали</string>
     <string name="series_lover">Поціновувач серіалів</string>
     <string name="series_lover_description">Дивіться записи треків</string>
@@ -210,7 +202,6 @@
     <string name="sort_by">Сортувати:</string>
     <string name="start">Старт</string>
     <string name="startFlagColor">Старт</string>
-    <string name="status_bar_notification_info_overflow">999+</string>
     <string name="steeringColor">Кермо</string>
     <string name="success">Успішно</string>
     <string name="successfully_installed">Рівні успішно встановлені.</string>

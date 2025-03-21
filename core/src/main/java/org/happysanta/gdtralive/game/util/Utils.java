@@ -452,4 +452,41 @@ public class Utils {
         }
         return outputStream.toByteArray();
     }
+
+    public static void flip(TrackData track) {
+//        String json = Utils.toJson(track);
+//        System.out.println();
+        for (int k = 0; k < track.points.length; k++) {
+            if (track.startPointIndex == 0 && track.points[k][0] > track.startX)
+                track.startPointIndex = k + 1;
+            if (track.finishPointIndex == 0 && track.points[k][0] > track.finishX)
+                track.finishPointIndex = k;
+        }
+        int[][] flipped = new int[track.points.length][2];
+        int index = 1;
+        int[] tmp = new int[]{
+                track.points[track.points.length - 1][0],
+                track.points[track.points.length - 1][1]
+        };
+        flipped[0] = tmp;
+        for (int i = track.points.length - 2; i >= 0; i--) {
+
+            int[] point = new int[]{
+                    tmp[0] + Math.abs(tmp[0] - track.points[i][0]),
+                    track.points[i][1]
+            };
+            flipped[index] = point;
+            index++;
+        }
+
+        track.points = flipped;
+
+        int oldStartPointIndex = track.startPointIndex;
+        int oldFinishPointIndex = track.finishPointIndex;
+        track.startPointIndex = track.points.length - oldFinishPointIndex;
+        track.finishPointIndex = track.points.length - oldStartPointIndex;
+
+        track.startX = track.points[track.startPointIndex][0] - Utils.unpackInt(100);
+        track.startY = track.points[track.startPointIndex][1] + Utils.unpackInt(100);
+    }
 }

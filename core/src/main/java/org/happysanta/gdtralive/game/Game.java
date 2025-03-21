@@ -508,6 +508,7 @@ public class Game {
     private void loadTrack(TrackData track, int league) {
         try {
             engine.setLeague(league);
+            //Utils.flip(track);
             engine.loadTrack(track);
         } catch (InvalidTrackException e) {
             e.printStackTrace();
