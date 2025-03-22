@@ -14,6 +14,7 @@ public class ServerConfig {
 
     public String getHost() {
         return host;
+        //return "192.168.0.13";
     }
 
     public void setHost(String host) {
@@ -29,6 +30,6 @@ public class ServerConfig {
     }
 
     public String url() {
-        return String.format("http://%s:%s", host, port);
+        return String.format("http://%s:%s", getHost(), port);
     }
 }

@@ -1,19 +1,14 @@
 package org.happysanta.gdtralive.server.controller;
 
-import org.happysanta.gdtralive.server.api.ScoreDto;
+import org.happysanta.gdtralive.game.api.dto.ScoreDto;
 import org.happysanta.gdtralive.server.service.ScoreService;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.*;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -23,8 +18,10 @@ public class ScoreController {
     private final ScoreService service;
 
     @GetMapping("/track/{trackId}/{league}")
-    public List<ScoreDto> getTrackHighScores(@PathVariable("trackId") String trackId, @PathVariable("league") Integer league) {
-        return service.getTrackHighScores(trackId, league);
+    public List<ScoreDto> getTrackHighScores(@PathVariable("trackId") String trackId,
+                                             @PathVariable("league") Integer league,
+                                             @RequestParam(value = "roomId", required = false) String roomId) {
+        return service.getTrackHighScores(trackId, league, roomId);
     }
 
     @PostMapping

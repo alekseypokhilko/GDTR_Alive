@@ -113,7 +113,8 @@
 	<string name="input">Управление</string>
 	<string name="active_camera">Активная камера</string>
 	<string name="vibrate_on_touch">Вибрировать на прикосновении</string>
-	<string name="show_keyboard">Показать клавиатуру</string>
+    <string name="test_features">Тестовые фичи</string>
+    <string name="show_keyboard">Показать клавиатуру</string>
 	<string name="clear_highscore">Очистить рекорды</string>
 	<string name="full_reset">Полный сброс</string>
 	<string name="reset">Сброс</string>

@@ -4,70 +4,86 @@ import static org.happysanta.gdtralive.android.Helpers.getGDActivity;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Build;
 
 import org.happysanta.gdtralive.game.api.external.GdSettingsStorage;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 public class ASettingsStorage implements GdSettingsStorage {
 
-    private static SharedPreferences preferences;
+    private static SharedPreferences PREFERENCES;
+    private static Map<String, Object> CACHE = new ConcurrentHashMap<>();
 
     static {
-        preferences = getGDActivity().getSharedPreferences("GDSettings", Context.MODE_PRIVATE);
+        PREFERENCES = getGDActivity().getSharedPreferences("GDSettings", Context.MODE_PRIVATE);
     }
 
     @Override
     public void setLong(String key, long value) {
-        SharedPreferences.Editor editor = preferences.edit();
+        SharedPreferences.Editor editor = PREFERENCES.edit();
         editor.putLong(key, value);
-        editorApply(editor);
+        editor.apply();
+        CACHE.put(key, value);
     }
 
     @Override
     public void setInt(String key, int value) {
-        SharedPreferences.Editor editor = preferences.edit();
+        SharedPreferences.Editor editor = PREFERENCES.edit();
         editor.putInt(key, value);
-        editorApply(editor);
+        editor.apply();
+        CACHE.put(key, value);
     }
 
     @Override
     public void setBoolean(String key, boolean value) {
-        SharedPreferences.Editor editor = preferences.edit();
+        SharedPreferences.Editor editor = PREFERENCES.edit();
         editor.putBoolean(key, value);
-        editorApply(editor);
+        editor.apply();
+        CACHE.put(key, value);
     }
 
     @Override
     public void setString(String key, String value) {
-        SharedPreferences.Editor editor = preferences.edit();
+        SharedPreferences.Editor editor = PREFERENCES.edit();
         editor.putString(key, value);
-        editorApply(editor);
+        editor.apply();
+        CACHE.put(key, value);
     }
 
     @Override
     public long getLong(String key, long defValue) {
-        return preferences.getLong(key, defValue);
+        Object value = CACHE.get(key);
+        if (value != null) {
+            return (long) value;
+        }
+        return PREFERENCES.getLong(key, defValue);
     }
 
     @Override
     public int getInt(String key, int defValue) {
-        return preferences.getInt(key, defValue);
+        Object value = CACHE.get(key);
+        if (value != null) {
+            return (int) value;
+        }
+        return PREFERENCES.getInt(key, defValue);
     }
 
     @Override
     public boolean getBoolean(String key, boolean defValue) {
-        return preferences.getBoolean(key, defValue);
+        Object value = CACHE.get(key);
+        if (value != null) {
+            return (boolean) value;
+        }
+        return PREFERENCES.getBoolean(key, defValue);
     }
 
     @Override
     public String getString(String key, String defValue) {
-        return preferences.getString(key, defValue);
-    }
-
-    private void editorApply(SharedPreferences.Editor editor) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD)
-            editor.apply();
-        else
-            editor.commit();
+        Object value = CACHE.get(key);
+        if (value != null) {
+            return (String) value;
+        }
+        return PREFERENCES.getString(key, defValue);
     }
 }

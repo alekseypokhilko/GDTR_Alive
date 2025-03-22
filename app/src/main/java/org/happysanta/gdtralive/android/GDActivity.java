@@ -698,4 +698,14 @@ public class GDActivity extends Activity implements GdPlatform {
         conf.setLocale(new Locale(code.toLowerCase())); // API 17+ only.
         res.updateConfiguration(conf, res.getDisplayMetrics());
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        try {
+            application.getGame().resetState();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

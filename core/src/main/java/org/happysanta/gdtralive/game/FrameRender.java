@@ -585,7 +585,7 @@ public class FrameRender {
         int j1 = (int) ((long) (i1 = 114688/*state.aI*/) * 58982L >> 16);
         int k1 = (int) ((long) i1 * 45875L >> 16);
 
-        if (mm().getTheme().getLeagueThemes().get(state.league()).isDrawWheelLines()) {
+        if (view.drawBike == 0 || mm().getTheme().getLeagueThemes().get(state.league()).isDrawWheelLines()) {
             Color frontWheelsColor = mm().getTheme().getLeagueThemes().get(state.league()).getFrontWheelsColor();
             if (frontWheelsColor != null) {
                 setColor(frontWheelsColor);

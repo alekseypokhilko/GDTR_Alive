@@ -1,9 +1,10 @@
 package org.happysanta.gdtralive.server.service.mapper;
 
-import org.happysanta.gdtralive.server.api.ScoreDto;
+import org.happysanta.gdtralive.game.api.dto.ScoreDto;
 import org.happysanta.gdtralive.server.storage.model.ScoreEntity;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Component
@@ -15,7 +16,7 @@ public class ScoreMapper {
         entity.setLeague(score.getLeague());
         entity.setTime(score.getTime());
         entity.setName(score.getName());
-        entity.setDate(score.getDate());
+        entity.setDate(LocalDate.parse(score.getDate()));
         return entity;
     }
 
@@ -26,7 +27,7 @@ public class ScoreMapper {
         dto.setLeague(score.getLeague());
         dto.setTime(score.getTime());
         dto.setName(score.getName());
-        dto.setDate(score.getDate());
+        dto.setDate(score.getDate().toString());
         return dto;
     }
 

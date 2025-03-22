@@ -3,6 +3,7 @@ package org.happysanta.gdtralive.game.api.model;
 import org.happysanta.gdtralive.game.util.Fmt;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,13 @@ public class HighScores {
         this.scores = new HashMap<>();
         for (int i = 0; i < league + 1; i++) {
             //todo refactoring
+            scores.put(i, new ArrayList<>());
+        }
+    }
+
+    public HighScores() {
+        this.scores = new HashMap<>();
+        for (int i = 0; i < 4; i++) {
             scores.put(i, new ArrayList<>());
         }
     }
@@ -48,5 +56,10 @@ public class HighScores {
 
     public List<Score> get(int league) {
         return scores.get(league);
+    }
+
+    public void add(Score score, int league) {
+        scores.get(league).add(score);
+        Collections.sort(scores.get(league), (s1, s2) -> s1.getTime().compareTo(s2.getTime()));
     }
 }

@@ -39,7 +39,7 @@ public class Score {
         this.name = name;
     }
 
-    public long getTime() {
+    public Long getTime() {
         return time;
     }
 

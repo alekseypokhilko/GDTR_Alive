@@ -96,6 +96,7 @@ public class AStr implements GdStr {
         strings.put(S.input, R.string.input);
         strings.put(S.active_camera, R.string.active_camera);
         strings.put(S.vibrate_on_touch, R.string.vibrate_on_touch);
+        strings.put(S.test_features, R.string.test_features);
         strings.put(S.show_keyboard, R.string.show_keyboard);
         strings.put(S.confirm_clear, R.string.confirm_clear);
         strings.put(S.erase_text1, R.string.erase_text1);

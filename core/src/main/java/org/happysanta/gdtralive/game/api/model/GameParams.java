@@ -12,6 +12,7 @@ public class GameParams {
     private TrackRecord trackRecord;
     private int level;
     private int track;
+    private String roomId;
 
     private GameParams(GameMode mode, TrackData trackData, int league, int level, int track) {
         this.mode = mode;
@@ -20,6 +21,14 @@ public class GameParams {
         this.level = level;
         this.track = track;
         this.trackParams = null;
+    }
+
+    private GameParams(GameMode mode, TrackData trackData, String roomId) {
+        this.mode = mode;
+        this.trackData = trackData;
+        this.league = trackData.getLeague();
+        this.trackParams = null;
+        this.roomId = roomId;
     }
 
     private GameParams(GameMode mode, TrackData trackData) {
@@ -50,6 +59,10 @@ public class GameParams {
 
     public static GameParams of(GameMode mode, TrackData track) {
         return new GameParams(mode, track);
+    }
+
+    public static GameParams of(GameMode mode, TrackData track, String roomId) {
+        return new GameParams(mode, track, roomId);
     }
 
     public static GameParams of(TrackRecord trackRecord) {
@@ -86,5 +99,9 @@ public class GameParams {
 
     public int getLeague() {
         return league;
+    }
+
+    public String getRoomId() {
+        return roomId;
     }
 }

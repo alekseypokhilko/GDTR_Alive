@@ -12,10 +12,14 @@ import org.happysanta.gdtralive.game.http.APIClient;
 import org.happysanta.gdtralive.game.http.ConfigApi;
 import org.happysanta.gdtralive.game.http.ServerConfig;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 /**
  * Core application logic
  */
 public class Application {
+    public ExecutorService executor = Executors.newFixedThreadPool(5);
     private Game game;
     private GdMenu menu;
     private ServerConfig serverConfig;
@@ -327,4 +331,13 @@ public class Application {
         setFullResetting(true);
         destroyApp(true);
     }
+
+    public void runOnIOThread(Runnable action) {
+        try {
+            executor.submit(action);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }

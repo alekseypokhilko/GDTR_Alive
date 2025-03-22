@@ -26,6 +26,8 @@ public class Constants {
 
     public static final String GITHUB_BASE_URL = "https://raw.githubusercontent.com";
     public static final String SERVER_CONFIG_URL = "/alekseypokhilko/GDTR_Alive/refs/heads/main/server/src/main/resources/servers.json";
+    public static final String HANDSHAKE_PREFIX = "~";
+    public static final String DISCONNECTED = "disconnected";
 
     // Keyboard
     public static final String[] BUTTON_RESOURCES = {

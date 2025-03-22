@@ -149,6 +149,7 @@
 	<string name="input">Input</string>
 	<string name="active_camera">Active camera</string>
 	<string name="vibrate_on_touch">Vibrate on touch</string>
+	<string name="test_features">Test features</string>
 	<string name="show_keyboard">Keyboard</string>
 	<string name="clear_highscore">Clear highscore</string>
 	<string name="full_reset">Full Reset</string>

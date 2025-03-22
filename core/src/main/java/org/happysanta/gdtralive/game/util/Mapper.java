@@ -1,10 +1,12 @@
 package org.happysanta.gdtralive.game.util;
 
 import org.happysanta.gdtralive.game.api.MenuMode;
+import org.happysanta.gdtralive.game.api.dto.ScoreDto;
 import org.happysanta.gdtralive.game.api.model.MenuData;
 import org.happysanta.gdtralive.game.api.model.GameParams;
 import org.happysanta.gdtralive.game.api.model.Mod;
 import org.happysanta.gdtralive.game.api.model.ModEntity;
+import org.happysanta.gdtralive.game.api.model.Score;
 
 public class Mapper {
     public static MenuData mapInGameMenuData(GameParams params) {
@@ -48,5 +50,28 @@ public class Mapper {
         entity.setTrackCountsByLevel(mod.getTrackCounts());
         entity.initIfClear();
         return entity;
+    }
+
+    public static Score fromDto(ScoreDto dto) {
+        Score score = new Score();
+        score.setTrackId(dto.getTrackId());
+        score.setLeague(dto.getLeague());
+        score.setTime(dto.getTime());
+        score.setName(dto.getName());
+        score.setDate(dto.getDate());
+        return score;
+    }
+
+    public static ScoreDto toDto(Score score, String roomId) {
+        ScoreDto scoreDto = new ScoreDto();
+        if (roomId != null) {
+            scoreDto.setRoomId(roomId);
+        }
+        scoreDto.setDate(score.getDate());
+        scoreDto.setName(score.getName());
+        scoreDto.setTime(score.getTime());
+        scoreDto.setLeague(score.getLeague());
+        scoreDto.setTrackId(score.getTrackId());
+        return scoreDto;
     }
 }

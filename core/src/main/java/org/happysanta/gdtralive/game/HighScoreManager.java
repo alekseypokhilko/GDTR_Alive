@@ -5,6 +5,7 @@ import org.happysanta.gdtralive.game.api.external.GdDataSource;
 import org.happysanta.gdtralive.game.api.model.HighScores;
 import org.happysanta.gdtralive.game.api.model.Score;
 import org.happysanta.gdtralive.game.http.APIClient;
+import org.happysanta.gdtralive.game.util.Mapper;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -23,18 +24,16 @@ public class HighScoreManager {
     public HighScores getHighScores(String trackId, int league) {
         try {
             String url = application.getServerConfig().url();
-            CompletableFuture<List<ScoreDto>> future = CompletableFuture.supplyAsync(() -> APIClient.serverCall(url, serverApi -> serverApi.trackScores(trackId, league)));
+
+            //todo lower version
+            CompletableFuture<List<ScoreDto>> future = CompletableFuture.supplyAsync(
+                    () -> APIClient.serverCall(url, api -> api.trackScores(trackId, league, application.getGame().getParams().getRoomId()))
+            );
             List<ScoreDto> scoreDtos = future.get(3, TimeUnit.SECONDS);
             HighScores highScores = new HighScores(league);
             List<Score> scores = highScores.get(league);
             for (ScoreDto dto : scoreDtos) {
-                Score score = new Score();
-                score.setTrackId(dto.getTrackId());
-                score.setLeague(dto.getLeague());
-                score.setTime(dto.getTime());
-                score.setName(dto.getName());
-                score.setDate(dto.getDate());
-                scores.add(score);
+                scores.add(Mapper.fromDto(dto));
             }
             return highScores;
         } catch (Exception e) {

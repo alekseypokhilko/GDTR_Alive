@@ -12,7 +12,6 @@ import org.happysanta.gdtralive.game.api.Constants;
 import org.happysanta.gdtralive.game.api.GDFile;
 import org.happysanta.gdtralive.game.api.dto.LeagueTheme;
 import org.happysanta.gdtralive.game.api.dto.LevelPack;
-import org.happysanta.gdtralive.game.api.dto.Theme;
 import org.happysanta.gdtralive.game.api.dto.TrackParams;
 import org.happysanta.gdtralive.game.api.exception.InvalidTrackException;
 import org.happysanta.gdtralive.game.api.model.DecorLine;
@@ -29,6 +28,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
+import java.net.DatagramPacket;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.ArrayList;
@@ -70,7 +70,7 @@ public class Utils {
         trackParams.getData().setGuid(track.getGuid());
         trackParams.getData().setName(track.getName());
 
-        Theme theme = Theme.defaultTheme();
+//        Theme theme = Theme.defaultTheme();
 //        trackParams.setGameTheme(theme.getGameTheme());
 //        trackParams.setLeagueTheme(theme.getLeagueThemes().get(track.getLeague()));
         return trackParams;
@@ -488,5 +488,9 @@ public class Utils {
 
         track.startX = track.points[track.startPointIndex][0] - Utils.unpackInt(100);
         track.startY = track.points[track.startPointIndex][1] + Utils.unpackInt(100);
+    }
+
+    public static String mapOpponentId(DatagramPacket packet) {
+        return new String(Arrays.copyOf(packet.getData(), 36), StandardCharsets.UTF_8);
     }
 }

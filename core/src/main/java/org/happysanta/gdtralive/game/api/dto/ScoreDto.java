@@ -1,10 +1,10 @@
 package org.happysanta.gdtralive.game.api.dto;
 
-import java.time.LocalDate;
 import java.util.UUID;
 
 public class ScoreDto {
     private UUID id;
+    private String roomId;
     private String trackId;
     private Integer league;
     private Long time;
@@ -17,6 +17,14 @@ public class ScoreDto {
 
     public void setId(UUID id) {
         this.id = id;
+    }
+
+    public String getRoomId() {
+        return roomId;
+    }
+
+    public void setRoomId(String roomId) {
+        this.roomId = roomId;
     }
 
     public String getTrackId() {

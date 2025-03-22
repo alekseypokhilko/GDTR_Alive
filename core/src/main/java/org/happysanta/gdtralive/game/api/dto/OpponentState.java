@@ -4,7 +4,9 @@ import org.happysanta.gdtralive.game.api.model.EngineStateRecord;
 
 public class OpponentState {
     private String name;
+    private String status;
     private EngineStateRecord state;
+    private Long count = System.currentTimeMillis();
 
     public OpponentState() {
     }
@@ -28,5 +30,21 @@ public class OpponentState {
 
     public void setState(EngineStateRecord state) {
         this.state = state;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public Long getCount() {
+        return count;
+    }
+
+    public void setCount(Long count) {
+        this.count = count;
     }
 }

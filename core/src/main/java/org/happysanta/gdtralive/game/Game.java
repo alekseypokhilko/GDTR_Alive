@@ -4,6 +4,7 @@ import org.happysanta.gdtralive.game.api.Constants;
 import org.happysanta.gdtralive.game.api.GameMode;
 import org.happysanta.gdtralive.game.api.LevelState;
 import org.happysanta.gdtralive.game.api.S;
+import org.happysanta.gdtralive.game.api.dto.OpponentDisconnectRequest;
 import org.happysanta.gdtralive.game.api.dto.OpponentState;
 import org.happysanta.gdtralive.game.api.dto.ScoreDto;
 import org.happysanta.gdtralive.game.api.exception.InvalidTrackException;
@@ -26,8 +27,8 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.SocketTimeoutException;
 import java.nio.charset.StandardCharsets;
-import java.util.concurrent.ExecutorService;
 
 /**
  * Core game logic
@@ -36,7 +37,6 @@ public class Game {
     private final Object menuLock = new Object();
     private final Object gameLock = new Object();
 
-    public ExecutorService executor = null; //Executors.newFixedThreadPool(5);
     private final Engine engine;
     private final Application application;
     private final GdSettings settings;
@@ -72,39 +72,6 @@ public class Game {
             } catch (InvalidTrackException ignore) {
             }
         }
-        if (false) {
-            try {
-                udpSocket = new DatagramSocket();
-                udpSocket.setSoTimeout(100);
-                receiverThread = new Thread(() -> {
-                    while (!Thread.interrupted()) {
-                        try {
-                            byte[] buf2 = new byte[(Integer) 1024];
-                            DatagramPacket packet = new DatagramPacket(buf2, buf2.length);
-                            if (udpSocket.isClosed()) {
-                                return;
-                            }
-                            udpSocket.receive(packet);
-                            executor.submit(() -> {
-                                try {
-                                    String message = new String(packet.getData(), StandardCharsets.UTF_8).trim();
-                                    OpponentState opponentState = Utils.fromJson(message, OpponentState.class);
-                                    engine.addOpponent(opponentState.getName(), opponentState.getState());
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            });
-                        } catch (Exception e) {
-                            e.printStackTrace();//todo
-                        }
-                    }
-                }, "online-" + 27654 + "-thread");
-                receiverThread.start();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-                application.getPlatform().notify(ex.getMessage());
-            }
-        }
         this.view = new GdView(frameRender, engine, width, height, application.getPlatform(), this, application.getStr());
         this.recorder = new Recorder(engine, application.getFileStorage(), settings);
         this.player = new Player(engine, () -> restart(true));
@@ -112,6 +79,18 @@ public class Game {
         this.keyboardHandler = new KeyboardHandler(application, engine, settings.getInputOption());
         this.str = application.getStr();
         this.settings = settings;
+
+        if (settings.isTestFeaturesEnabled()) {
+            try {
+                udpSocket = new DatagramSocket();
+                udpSocket.setSoTimeout(1000);
+                receiverThread = new Thread(this::receiveOnlinePacket, "online-thread");
+                receiverThread.start();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                application.getPlatform().notify(ex.getMessage());
+            }
+        }
     }
 
     public void init(GdMenu menu) {
@@ -307,27 +286,8 @@ public class Game {
     }
 
     private void captureOrPlay() {
-
-        if (GameMode.ONLINE == params.getMode() && false) {
-            try {
-                executor.submit(() -> {
-                    try {
-                        OpponentState opponentState = new OpponentState(settings.getPlayerName(), engine.getState());
-                        String json = Utils.toJson(opponentState);
-                        byte[] bytes = json.getBytes(StandardCharsets.UTF_8);
-                        String host = "192.168.0.13";// application.getServerConfig().getHost();
-                        DatagramPacket p = new DatagramPacket(
-                                bytes, bytes.length,
-                                InetAddress.getByName(host), 27654
-                        );
-                        udpSocket.send(p);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                });
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        if (GameMode.ONLINE == params.getMode()) {
+            sendState();
         }
         if (GameMode.REPLAY == params.getMode()) {
             recorder.setCapturingMode(false);
@@ -441,15 +401,9 @@ public class Game {
         application.getHighScoreManager().saveHighScore(score);
 
         try {
-            ScoreDto scoreDto = new ScoreDto();
-            scoreDto.setDate(score.getDate());
-            scoreDto.setName(score.getName());
-            scoreDto.setTime(score.getTime());
-            scoreDto.setLeague(score.getLeague());
-            scoreDto.setTrackId(score.getTrackId());
-
+            ScoreDto scoreDto = Mapper.toDto(score, params.getRoomId());
             String url = application.getServerConfig().url();
-            new Thread(() -> APIClient.serverCall(url, serverApi -> serverApi.sendScore(scoreDto))).start();
+            application.runOnIOThread(() -> APIClient.serverCall(url, serverApi -> serverApi.sendScore(scoreDto)));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -490,6 +444,9 @@ public class Game {
             view.setDrawTimer(false);
             loadTrack(params.getTrackData(), params.getTrackData().league);
             return;
+        }
+        if (GameMode.ONLINE == params.getMode()) {
+            joinRoom();
         }
         TrackData track = params.getTrackData();
         engine.setEditMode(false);
@@ -603,9 +560,11 @@ public class Game {
     }
 
     public void resetState() {
+        disconnectFromRoom();
         trainer.stop();
         recorder.reset();
         player.reset();
+        engine.resetOpponents();
     }
 
     public GameParams getParams() {
@@ -614,5 +573,89 @@ public class Game {
 
     public KeyboardHandler getKeyboardHandler() {
         return keyboardHandler;
+    }
+
+    private void joinRoom() {
+        if (settings.isTestFeaturesEnabled()) {
+            application.runOnIOThread(() -> {
+                String json = String.format("%s%s", Constants.HANDSHAKE_PREFIX, settings.getPlayerId());
+                for (int i = 0; i < 10; i++) { //todo
+                    send(json);
+                }
+            });
+        }
+    }
+
+    private void sendState() {
+        if (settings.isTestFeaturesEnabled()) {
+            application.runOnIOThread(() -> {
+                OpponentState opponentState = new OpponentState(settings.getPlayerName(), engine.getState());
+                String msg = String.format("%s%s", settings.getPlayerId(), Utils.toJson(opponentState));
+                send(msg);
+            });
+        }
+    }
+
+    private void disconnectFromRoom() {
+        if (params != null && params.getMode() == GameMode.ONLINE) {
+            if (settings.isTestFeaturesEnabled()) {
+                try {
+                    String url = application.getServerConfig().url();
+                    OpponentDisconnectRequest req = new OpponentDisconnectRequest();
+                    req.setRoomId(params.getRoomId());
+                    req.setId(settings.getPlayerId());
+                    for (int i = 0; i < 10; i++) { //todo
+                        application.runOnIOThread(() -> APIClient.serverCall(url, serverApi -> serverApi.opponentDisconnect(req)));
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private void receiveOnlinePacket() {
+        while (!Thread.interrupted()) {
+            try {
+                if (udpSocket.isClosed()) {
+                    return;
+                }
+                byte[] buf2 = new byte[1024];
+                DatagramPacket packet = new DatagramPacket(buf2, buf2.length);
+                udpSocket.receive(packet);
+                application.runOnIOThread(() -> handleOnlineMessage(packet));
+            } catch (SocketTimeoutException ignore) {
+            } catch (Exception e) {
+                e.printStackTrace();//todo
+            }
+        }
+    }
+
+    private void handleOnlineMessage(DatagramPacket packet) {
+        try {
+            String opponentId = Utils.mapOpponentId(packet);
+            String message = new String(packet.getData(), StandardCharsets.UTF_8).trim();
+            OpponentState opponentState = Utils.fromJson(message.substring(message.indexOf("{")), OpponentState.class);
+            if (Constants.DISCONNECTED.equals(opponentState.getStatus())) {
+                engine.removeOpponent(opponentId);
+            } else {
+                engine.addOpponent(opponentId, opponentState);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void send(String msg) {
+        try {
+            byte[] bytes = msg.getBytes(StandardCharsets.UTF_8);
+            DatagramPacket p = new DatagramPacket(
+                    bytes, bytes.length,
+                    InetAddress.getByName(application.getServerConfig().getHost()), 27654
+            );
+            udpSocket.send(p);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

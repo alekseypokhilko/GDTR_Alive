@@ -5,6 +5,7 @@ buildscript {
         google() // new which replace https://maven.google.com
         jcenter()
         mavenCentral()
+        mavenLocal()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:8.8.1' //todo to android
@@ -16,5 +17,6 @@ allprojects {
         google()
         jcenter()
         mavenCentral()
+        mavenLocal()
     }
 }

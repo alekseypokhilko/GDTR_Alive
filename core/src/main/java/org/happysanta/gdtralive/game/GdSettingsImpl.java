@@ -3,6 +3,8 @@ package org.happysanta.gdtralive.game;
 import org.happysanta.gdtralive.game.api.external.GdSettings;
 import org.happysanta.gdtralive.game.api.external.GdSettingsStorage;
 
+import java.util.UUID;
+
 public class GdSettingsImpl implements GdSettings {
 
     private static final String LEVEL_ID = "level_id";
@@ -41,6 +43,9 @@ public class GdSettingsImpl implements GdSettings {
     private static final String VIBRATE_ENABLED = "vibrate_enabled";
     private static final boolean VIBRATE_ENABLED_DEFAULT = true;
 
+    private static final String TEST_FEATURES_ENABLED = "test_features_enabled";
+    private static final boolean TEST_FEATURES_ENABLED_DEFAULT = false;
+
     private static final String KEYBOARD_IN_MENU_ENABLED = "keyboard_enabled";
     private static final boolean KEYBOARD_IN_MENU_ENABLED_DEFAULT = true;
 
@@ -49,6 +54,9 @@ public class GdSettingsImpl implements GdSettings {
 
     private static final String NAME = "name";
     public static final String NAME_DEFAULT = "Player";
+
+    private static final String PLAYER_ID = "player_id";
+    public static final String PLAYER_ID_DEFAULT = UUID.randomUUID().toString();
 
     private static final String LOCALE = "locale";
     public static final String LOCALE_DEFAULT = "en";
@@ -71,11 +79,13 @@ public class GdSettingsImpl implements GdSettings {
         setBikeSpriteEnabled(BIKE_SPRITE_ENABLED_DEFAULT);
         setLookAheadEnabled(LOOK_AHEAD_ENABLED_DEFAULT);
         setVibrateOnTouchEnabled(VIBRATE_ENABLED_DEFAULT);
+        setTestFeaturesEnabled(TEST_FEATURES_ENABLED_DEFAULT);
         setKeyboardInMenuEnabled(KEYBOARD_IN_MENU_ENABLED_DEFAULT);
         setInputOption(INPUT_OPTION_DEFAULT);
         setScale(SCALE_OPTION_DEFAULT);
         setLevelsSort(LEVELS_SORT_DEFAULT);
         setPlayerName(NAME_DEFAULT);
+        setPlayerId(PLAYER_ID_DEFAULT); //todo get from server???
         setLocale(LOCALE_DEFAULT);
     }
 
@@ -177,6 +187,14 @@ public class GdSettingsImpl implements GdSettings {
         storage.setBoolean(VIBRATE_ENABLED, enabled);
     }
 
+    public boolean isTestFeaturesEnabled() {
+        return storage.getBoolean(TEST_FEATURES_ENABLED, TEST_FEATURES_ENABLED_DEFAULT);
+    }
+
+    public void setTestFeaturesEnabled(boolean enabled) {
+        storage.setBoolean(TEST_FEATURES_ENABLED, enabled);
+    }
+
     public int getInputOption() {
         return storage.getInt(INPUT_OPTION, INPUT_OPTION_DEFAULT);
     }
@@ -202,6 +220,18 @@ public class GdSettingsImpl implements GdSettings {
 
     public void setPlayerName(String name) {
         storage.setString(NAME, name);
+    }
+
+    public String getPlayerId() {
+        String string = storage.getString(PLAYER_ID, PLAYER_ID_DEFAULT);
+        if (string == null) {
+            setPlayerId(PLAYER_ID_DEFAULT);
+        }
+        return string;
+    }
+
+    public void setPlayerId(String playerId) {
+        storage.setString(PLAYER_ID, playerId);
     }
 
     public String getLocale() {

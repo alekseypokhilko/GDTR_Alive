@@ -4,16 +4,16 @@ import org.happysanta.gdtralive.game.api.LoadingState;
 import org.happysanta.gdtralive.game.api.Platform;
 import org.happysanta.gdtralive.game.api.S;
 import org.happysanta.gdtralive.game.api.Sprite;
+import org.happysanta.gdtralive.game.api.dto.OpponentState;
+import org.happysanta.gdtralive.game.api.external.GdCanvas;
 import org.happysanta.gdtralive.game.api.external.GdPlatform;
 import org.happysanta.gdtralive.game.api.external.GdStr;
+import org.happysanta.gdtralive.game.api.model.EngineStateRecord;
 import org.happysanta.gdtralive.game.api.model.MessageElement;
 import org.happysanta.gdtralive.game.api.model.ViewState;
 import org.happysanta.gdtralive.game.engine.Engine;
-import org.happysanta.gdtralive.game.api.external.GdCanvas;
-import org.happysanta.gdtralive.game.api.model.EngineStateRecord;
 import org.happysanta.gdtralive.game.util.Fmt;
 
-import java.util.Map;
 import java.util.Timer;
 
 public class GdView {
@@ -101,14 +101,13 @@ public class GdView {
         EngineStateRecord engineState = engine.getStateReference();
         ViewState viewState = getViewState(width, height);
         frameRender.drawFrame(viewState, engineState);
+        for (OpponentState opponent : engine.getOpponents().values()) {
+            opponent.getState().replay = true;
+            opponent.getState().name = opponent.getName();
+            frameRender.drawOpponent(viewState, opponent.getState());
+        }
         if (engine.getRespawn() != null) {
             frameRender.drawRespawnBike(viewState, engine.getRespawn());
-        }
-        for (Map.Entry<String, EngineStateRecord> opponent : engine.getOpponents().entrySet()) {
-            EngineStateRecord state = opponent.getValue();
-            state.name = opponent.getKey();
-            state.replay = true;
-            frameRender.drawOpponent(viewState, state);
         }
         if (drawTimer) {
             frameRender.drawTimer(engine.timerTime, viewState);

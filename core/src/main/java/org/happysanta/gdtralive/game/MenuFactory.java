@@ -9,6 +9,8 @@ import org.happysanta.gdtralive.game.api.S;
 import org.happysanta.gdtralive.game.api.dto.GameTheme;
 import org.happysanta.gdtralive.game.api.dto.InterfaceTheme;
 import org.happysanta.gdtralive.game.api.dto.LeagueTheme;
+import org.happysanta.gdtralive.game.api.dto.OpponentJoinRequest;
+import org.happysanta.gdtralive.game.api.dto.RoomDto;
 import org.happysanta.gdtralive.game.api.dto.Theme;
 import org.happysanta.gdtralive.game.api.dto.ThemeHeader;
 import org.happysanta.gdtralive.game.api.dto.TrackParams;
@@ -32,6 +34,7 @@ import org.happysanta.gdtralive.game.api.model.ModEntity;
 import org.happysanta.gdtralive.game.api.model.TrackRecord;
 import org.happysanta.gdtralive.game.api.util.Consumer;
 import org.happysanta.gdtralive.game.api.util.Function;
+import org.happysanta.gdtralive.game.http.APIClient;
 import org.happysanta.gdtralive.game.util.ColorUtil;
 import org.happysanta.gdtralive.game.util.Fmt;
 import org.happysanta.gdtralive.game.util.Utils;
@@ -42,6 +45,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 public class MenuFactory<T> {
     public static final int OK = 0;
@@ -751,10 +756,30 @@ public class MenuFactory<T> {
                     menu.setCurrentMenu(leagueSelectorCurrentMenu);
                 }
             });
-            if (false) {
-                s.add(e.action("Online", __ -> {
-                    application.getModManager().activateMod(Constants.ORIGINAL_MOD);
-                    game.startTrack(GameParams.of(GameMode.ONLINE, application.getModManager().loadLevel(2, 9), 2, 2, 9));
+            if (application.getSettings().isTestFeaturesEnabled()) {
+                s.add(e.action("Online β", __ -> {
+                    CountDownLatch latch = new CountDownLatch(1);
+                    try {
+                        String url = application.getServerConfig().url();
+                        OpponentJoinRequest req = new OpponentJoinRequest();
+                        req.setId(application.getSettings().getPlayerId());
+                        application.runOnIOThread(() -> {
+                            RoomDto roomDto = APIClient.serverCall(url, serverApi -> serverApi.opponentJoined(req));
+                            application.getModManager().activateMod(Constants.ORIGINAL_MOD);
+                            game.startTrack(GameParams.of(GameMode.ONLINE,
+                                    application.getModManager().loadLevel(1, 2), //todo track id
+                                    roomDto.getId()));
+                            latch.countDown();
+                        });
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        actionGoToPlayMenu();
+                    }
+                    try {
+                        latch.await(3l, TimeUnit.SECONDS);//todo
+                    } catch (InterruptedException ex) {
+                       actionGoToPlayMenu();
+                    }
                 }));
             }
             s.add(e.menu(str.s(S.campaign), this.get(MenuType.CAMPAIGN), __ -> {
@@ -942,6 +967,8 @@ public class MenuFactory<T> {
             }));
             screen.add(e.toggle(str.s(S.vibrate_on_touch), settings.isVibrateOnTouchEnabled() ? 0 : 1,
                     item -> settings.setVibrateOnTouchEnabled(item.getSelectedOption() == 0)));
+            screen.add(e.toggle(str.s(S.test_features), settings.isTestFeaturesEnabled() ? 0 : 1,
+                    item -> settings.setTestFeaturesEnabled(item.getSelectedOption() == 0)));
             screen.add(e.toggle(str.s(S.show_keyboard), settings.isKeyboardInMenuEnabled() ? 0 : 1,
                     item -> {
                         boolean enabled = item.getSelectedOption() == 0;

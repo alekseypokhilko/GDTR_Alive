@@ -91,6 +91,7 @@ public enum S {
     input,
     active_camera,
     vibrate_on_touch,
+    test_features,
     show_keyboard,
     confirm_clear,
     erase_text1,

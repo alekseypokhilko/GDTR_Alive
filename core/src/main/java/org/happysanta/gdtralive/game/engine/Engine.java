@@ -2,6 +2,7 @@ package org.happysanta.gdtralive.game.engine;
 
 import org.happysanta.gdtralive.game.api.Constants;
 import org.happysanta.gdtralive.game.api.LevelState;
+import org.happysanta.gdtralive.game.api.dto.OpponentState;
 import org.happysanta.gdtralive.game.api.exception.InvalidTrackException;
 import org.happysanta.gdtralive.game.api.external.GdSettings;
 import org.happysanta.gdtralive.game.api.model.Element;
@@ -31,7 +32,8 @@ public class Engine {
     public int selectedLineIndex = 0;
     private EngineStateRecord replayState;
     private EngineStateRecord respawn = null;
-    private Map<String, EngineStateRecord> opponents = new ConcurrentHashMap<>();
+    //opponentId(playerId) <-> OpponentState
+    private final Map<String, OpponentState> opponents = new ConcurrentHashMap<>();
 
     private final TrackPhysic trackPhysic;
     public Element[] elements;
@@ -155,7 +157,6 @@ public class Engine {
         setStartCoordinates_MAYBE(trackPhysic.getStartX(), trackPhysic.getStartY());
         timerTime = 0;
         respawn = null;
-        opponents = new ConcurrentHashMap<>();
 
         acceleration = 0;
         m_kI = 0;
@@ -1076,20 +1077,25 @@ public class Engine {
         this.respawn = respawn;
     }
 
-    public Map<String, EngineStateRecord> getOpponents() {
+    public Map<String, OpponentState> getOpponents() {
         return opponents;
     }
 
-    public void setOpponents(Map<String, EngineStateRecord> opponents) {
-        this.opponents = opponents;
+    public void addOpponent(String opponentId, OpponentState opponent) {
+        OpponentState prew = opponents.get(opponentId);
+        if (prew != null && opponent.getCount() > prew.getCount()) {
+            opponents.put(opponentId, opponent);
+            return;
+        }
+        opponents.put(opponentId, opponent);
     }
 
-    public void addOpponent(String name, EngineStateRecord opponent) {
-        opponents.put(name, opponent);
+    public void removeOpponent(String opponentId) {
+        opponents.remove(opponentId);
     }
 
-    public void removeOpponent(String name) {
-        opponents.remove(name);
+    public void resetOpponents() {
+        opponents.clear();
     }
 
     public void setGodMode(boolean godMode) {
