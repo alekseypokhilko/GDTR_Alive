@@ -468,7 +468,7 @@ public class Engine {
         }
         if (!godMode && (levelState == LevelState.CRASHED || m_mZ)) {
             return LevelState.CRASHED;
-        } else if (!godMode && crashedInAir_MAYBE) {
+        } else if (crashedInAir_MAYBE) {
             return LevelState.CRASHED_IN_AIR;
         } else if (isStartNotCrossed()) {
             frontWheelTouchedGround = false;
@@ -1083,11 +1083,9 @@ public class Engine {
 
     public void addOpponent(String opponentId, OpponentState opponent) {
         OpponentState prew = opponents.get(opponentId);
-        if (prew != null && opponent.getCount() > prew.getCount()) {
+        if (prew == null || opponent.getCount() > prew.getCount()) {
             opponents.put(opponentId, opponent);
-            return;
         }
-        opponents.put(opponentId, opponent);
     }
 
     public void removeOpponent(String opponentId) {

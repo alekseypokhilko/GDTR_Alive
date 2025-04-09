@@ -6,7 +6,7 @@ public class OpponentState {
     private String name;
     private String status;
     private EngineStateRecord state;
-    private Long count = System.currentTimeMillis();
+    private Long count;
 
     public OpponentState() {
     }
@@ -14,6 +14,7 @@ public class OpponentState {
     public OpponentState(String name, EngineStateRecord state) {
         this.name = name;
         this.state = state;
+        this.count = System.nanoTime();
     }
 
     public String getName() {

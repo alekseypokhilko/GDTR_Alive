@@ -400,14 +400,16 @@ public class Game {
         score.setName(settings.getPlayerName());
         application.getHighScoreManager().saveHighScore(score);
 
-        try {
-            ScoreDto scoreDto = Mapper.toDto(score, params.getRoomId());
-            String url = application.getServerConfig().url();
-            application.runOnIOThread(() -> APIClient.serverCall(url, serverApi -> serverApi.sendScore(scoreDto)));
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (settings.isTestFeaturesEnabled()) {
+            try {
+                ScoreDto scoreDto = Mapper.toDto(score, params.getRoomId());
+                String url = application.getServerConfig().url();
+                application.runOnIOThread(() -> APIClient.serverCall(url, serverApi -> serverApi.sendScore(scoreDto)));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            Achievement.achievements.get(Achievement.Type.TRIAL_MASTER).increment();
         }
-        Achievement.achievements.get(Achievement.Type.TRIAL_MASTER).increment();
     }
 
     public GdView getView() {
@@ -588,8 +590,8 @@ public class Game {
 
     private void sendState() {
         if (settings.isTestFeaturesEnabled()) {
+            OpponentState opponentState = new OpponentState(settings.getPlayerName(), engine.getState());
             application.runOnIOThread(() -> {
-                OpponentState opponentState = new OpponentState(settings.getPlayerName(), engine.getState());
                 String msg = String.format("%s%s", settings.getPlayerId(), Utils.toJson(opponentState));
                 send(msg);
             });

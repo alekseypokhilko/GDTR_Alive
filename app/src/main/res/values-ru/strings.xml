@@ -300,4 +300,6 @@
 	<string name="perspectiveColor">Перспектива</string>
 	<string name="startFlagColor">Старт</string>
 	<string name="lineColor">Цвет линии</string>
+    <string name="splashColor">Экран загрузки</string>
+	<string name="keyboardPosition">Позиция клавиатуры</string>
 </resources>

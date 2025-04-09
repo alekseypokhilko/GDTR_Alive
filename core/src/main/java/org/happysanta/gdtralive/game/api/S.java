@@ -153,6 +153,7 @@ public enum S {
     lockSkinIndex,
     menuBackgroundColor,
     keyboardTextColor,
+    keyboardPosition,
     keyboardBackgroundColor,
     menuTitleTextColor,
     menuTitleBackgroundColor,

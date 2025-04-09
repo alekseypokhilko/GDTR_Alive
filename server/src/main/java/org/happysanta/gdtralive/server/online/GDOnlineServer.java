@@ -170,6 +170,7 @@ public class GDOnlineServer {
         }
         return roomScores.get(league).stream()
                 .map(score -> Mapper.toDto(score, roomId))
+                .limit(10)
                 .collect(Collectors.toList());
     }
 }

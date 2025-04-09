@@ -22,22 +22,23 @@ public class HighScoreManager {
     }
 
     public HighScores getHighScores(String trackId, int league) {
-        try {
-            String url = application.getServerConfig().url();
-
-            //todo lower version
-            CompletableFuture<List<ScoreDto>> future = CompletableFuture.supplyAsync(
-                    () -> APIClient.serverCall(url, api -> api.trackScores(trackId, league, application.getGame().getParams().getRoomId()))
-            );
-            List<ScoreDto> scoreDtos = future.get(3, TimeUnit.SECONDS);
-            HighScores highScores = new HighScores(league);
-            List<Score> scores = highScores.get(league);
-            for (ScoreDto dto : scoreDtos) {
-                scores.add(Mapper.fromDto(dto));
+        if (application.getSettings().isTestFeaturesEnabled()) {
+            try {
+                String url = application.getServerConfig().url();
+                //todo lower version
+                CompletableFuture<List<ScoreDto>> future = CompletableFuture.supplyAsync(
+                        () -> APIClient.serverCall(url, api -> api.trackScores(trackId, league, application.getGame().getParams().getRoomId()))
+                );
+                List<ScoreDto> scoreDtos = future.get(3, TimeUnit.SECONDS);
+                HighScores highScores = new HighScores(league);
+                List<Score> scores = highScores.get(league);
+                for (ScoreDto dto : scoreDtos) {
+                    scores.add(Mapper.fromDto(dto));
+                }
+                return highScores;
+            } catch (Exception e) {
+                e.printStackTrace(); //todo
             }
-            return highScores;
-        } catch (Exception e) {
-            e.printStackTrace(); //todo
         }
         return getLocalHighScores(trackId, league);
     }

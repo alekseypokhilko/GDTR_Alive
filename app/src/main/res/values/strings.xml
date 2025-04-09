@@ -93,10 +93,11 @@
 	<string name="infoMessageColor">Info message color</string>
 	<string name="progressBackgroundColor">Progress BG color</string>
 	<string name="progressColor">Progress color</string>
-	<string name="splashColor">splashColor</string>
+	<string name="splashColor">Splash screen color</string>
 	<string name="lockSkinIndex">lockSkinIndex</string>
 	<string name="menuBackgroundColor">menuBackgroundColor</string>
 	<string name="keyboardTextColor">Keyboard text color</string>
+	<string name="keyboardPosition">Keyboard position</string>
 	<string name="keyboardBackgroundColor">keyboardBackgroundColor</string>
 	<string name="menuTitleTextColor">Menu title color</string>
 	<string name="menuTitleBackgroundColor">menuTitleBackgroundColor</string>

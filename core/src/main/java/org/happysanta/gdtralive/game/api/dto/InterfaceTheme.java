@@ -8,6 +8,7 @@ public class InterfaceTheme {
     private Color progressColor = new Color(41, 170, 39);
     private Color splashColor = new Color(255, 255, 255);
     private int lockSkinIndex = 0;
+    private int keyboardPosition = 50;
     private Color menuBackgroundColor = Color.of("0x00ffffff");
     private Color keyboardTextColor = Color.of("0xff000000");
     private Color keyboardBackgroundColor = Color.of("0x00ffffff");
@@ -39,6 +40,14 @@ public class InterfaceTheme {
 
     public int getMenuBackgroundColorInt() {
         return menuBackgroundColor.intValue();
+    }
+
+    public int getKeyboardPosition() {
+        return keyboardPosition;
+    }
+
+    public void setKeyboardPosition(int keyboardPosition) {
+        this.keyboardPosition = keyboardPosition;
     }
 
     public int getKeyboardTextColorInt() {

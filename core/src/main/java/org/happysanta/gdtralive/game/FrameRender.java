@@ -129,11 +129,7 @@ public class FrameRender {
 
 
         drawWheelsLines(state, view);
-        if (view.drawBike == 1) {
-            setColor(mm().getLeagueTheme(state.league()).getBikeColor());
-        } else {
-            setColor(mm().getLeagueTheme(state.league()).getBikeLinesColor());
-        }
+        setColor(mm().getLeagueTheme(state.league()).getBikeLinesColor());
         drawFork(state, view);
         drawDriver(state, view, i1, j1, l1, i2);
         drawBikeLines(state, view, i1, j1, l1, i2);
@@ -332,9 +328,9 @@ public class FrameRender {
                     //draw point/selected point
                     setColor(new Color(255, 0, 0));
                     drawLineWheel(
-                            packInt(points[points.length -1 ][0]),
-                            packInt(points[points.length -1][1]),
-                            state.selectedPointIndex == points.length -1 ? 8 : 4,
+                            packInt(points[points.length - 1][0]),
+                            packInt(points[points.length - 1][1]),
+                            state.selectedPointIndex == points.length - 1 ? 8 : 4,
                             view
                     );
                 }

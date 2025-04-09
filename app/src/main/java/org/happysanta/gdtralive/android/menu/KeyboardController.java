@@ -8,6 +8,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import org.happysanta.gdtralive.android.Helpers;
 import org.happysanta.gdtralive.game.Application;
 import org.happysanta.gdtralive.game.KeyboardHandler;
 
@@ -52,7 +53,7 @@ public class KeyboardController implements View.OnTouchListener {
 		rect.left += PADDING_DP;
 		rect.right -= PADDING_DP;
 		rect.top += PADDING_DP;
-		rect.bottom -= PADDING_DP;
+		rect.bottom -= Helpers.getDp(application.getModManager().getInterfaceTheme().getKeyboardPosition());
 
 		// int action = actionRaw & MotionEvent.ACTION_MASK;
 		int action = event.getActionMasked();

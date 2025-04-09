@@ -163,6 +163,7 @@ public class AStr implements GdStr {
         strings.put(S.lockSkinIndex, R.string.lockSkinIndex);
         strings.put(S.menuBackgroundColor, R.string.menuBackgroundColor);
         strings.put(S.keyboardTextColor, R.string.keyboardTextColor);
+        strings.put(S.keyboardPosition, R.string.keyboardPosition);
         strings.put(S.keyboardBackgroundColor, R.string.keyboardBackgroundColor);
         strings.put(S.menuTitleTextColor, R.string.menuTitleTextColor);
         strings.put(S.menuTitleBackgroundColor, R.string.menuTitleBackgroundColor);

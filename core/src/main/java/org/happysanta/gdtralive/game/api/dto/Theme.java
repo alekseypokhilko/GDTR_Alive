@@ -106,8 +106,8 @@ public class Theme {
 
         GameTheme game = theme.getGameTheme();
         game.setGameBackgroundColor(new Color(0, 0, 0));
-        game.setTrackLineColor(new Color(255, 255, 255));
-        game.setPerspectiveColor(new Color(150, 150, 150));
+        //game.setTrackLineColor(new Color(255, 255, 255));
+        //game.setPerspectiveColor(new Color(150, 150, 150));
         game.setStartFlagColor(new Color(0, 255, 0));
         game.setFinishFlagColor(new Color(100, 100, 255));
 
@@ -123,7 +123,7 @@ public class Theme {
         itheme.setFrameBackgroundColor(Color.of("0x00ffffff"));
         itheme.setMainMenuBackgroundColor(Color.of("0x00ffffff"));
         itheme.setTextColor(Color.of("0xffffffff"));
-        itheme.setSplashColor(new Color(255, 255, 255));
+        itheme.setSplashColor(new Color(0, 0, 0));
         itheme.setLockSkinIndex(2);
 
         LeagueTheme league100 = theme.getLeagueThemes().get(0);

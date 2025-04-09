@@ -461,9 +461,19 @@ public class MenuFactory<T> {
                 it.setMenuTitleTextColor(colors.get(colorNames[item.getSelectedOption()]));
                 reloadTheme(theme);
             }));
+            s.add(e.color(str.s(S.splashColor), ColorUtil.indexOf(it.getSplashColor()), s, item -> {
+                if (item._charvZ()) menu.setCurrentMenu(item.getCurrentMenu());
+                it.setSplashColor(colors.get(colorNames[item.getSelectedOption()]));
+                reloadTheme(theme);
+            }));
             s.add(e.color(str.s(S.keyboardTextColor), ColorUtil.indexOf(it.getKeyboardTextColor()), s, item -> {
                 if (item._charvZ()) menu.setCurrentMenu(item.getCurrentMenu());
                 it.setKeyboardTextColor(colors.get(colorNames[item.getSelectedOption()]));
+                reloadTheme(theme);
+            }));
+            s.add(e.selector(str.s(S.keyboardPosition), it.getKeyboardPosition(), Utils.getScaleOptions(), s, item -> {
+                if (item._charvZ()) menu.setCurrentMenu(item.getCurrentMenu());
+                it.setKeyboardPosition(Integer.parseInt(Utils.getScaleOptions()[item.getSelectedOption()]));
                 reloadTheme(theme);
             }));
 
@@ -778,7 +788,7 @@ public class MenuFactory<T> {
                     try {
                         latch.await(3l, TimeUnit.SECONDS);//todo
                     } catch (InterruptedException ex) {
-                       actionGoToPlayMenu();
+                        actionGoToPlayMenu();
                     }
                 }));
             }

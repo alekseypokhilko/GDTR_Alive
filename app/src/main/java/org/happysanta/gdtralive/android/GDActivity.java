@@ -199,7 +199,7 @@ public class GDActivity extends Activity implements GdPlatform {
         }
 
         keyboardLayout.setGravity(Gravity.BOTTOM);
-        keyboardLayout.setPadding(0, 0, 0, Helpers.getDp(KeyboardController.PADDING));
+        keyboardLayout.setPadding(0, 0, 0, Helpers.getDp(modManager.getInterfaceTheme().getKeyboardPosition()));
         keyboardLayout.setOnTouchListener(keyboardController);
         keyboardLayout.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.BOTTOM));
 
@@ -311,6 +311,7 @@ public class GDActivity extends Activity implements GdPlatform {
                     ThemeObjectsReference.keyboardBackgroundRef[i].setBackgroundColor(modManager.getInterfaceTheme().getKeyboardBackgroundColor());
                 }
             }
+            keyboardLayout.setPadding(0, 0, 0, Helpers.getDp(modManager.getInterfaceTheme().getKeyboardPosition()));
         });
 
         frame.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
@@ -610,7 +611,7 @@ public class GDActivity extends Activity implements GdPlatform {
         if (requestCode == Constants.PICKFILE_MOD_RESULT_CODE && resultCode == Activity.RESULT_OK) {
             Uri uri = data.getData();
             try (InputStream inputStream = Helpers.getGDActivity().getContentResolver().openInputStream(uri)) {
-                Mod mod = Utils.read(inputStream, GDFile.MOD);
+                Mod mod = Utils.fromJson(new String(Utils.unzip(inputStream)), GDFile.MOD);
                 MenuScreen modMenu = menuFactory.get(MenuType.MOD_OPTIONS).build(new MenuData(mod, mod.getName()));
                 menu.setCurrentMenu(modMenu);
             } catch (Exception e) {
@@ -632,7 +633,7 @@ public class GDActivity extends Activity implements GdPlatform {
         if (requestCode == Constants.PICKFILE_RECORD_RESULT_CODE && resultCode == Activity.RESULT_OK) {
             Uri uri = data.getData();
             try (InputStream inputStream = Helpers.getGDActivity().getContentResolver().openInputStream(uri)) {
-                TrackRecord trackRecord = Utils.read(inputStream, GDFile.RECORD);
+                TrackRecord trackRecord = Utils.fromJson(new String(Utils.unzip(inputStream)), GDFile.RECORD);
                 MenuScreen recordMenu = menuFactory.get(MenuType.RECORDING_OPTIONS).build(new MenuData(trackRecord, null));
                 menu.setCurrentMenu(recordMenu);
             } catch (Exception e) {
